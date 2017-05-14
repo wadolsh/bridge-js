@@ -1,0 +1,1904 @@
+<!-- Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE in the project root for license information. -->
+
+
+<link rel="stylesheet" href="/repo/fabric/2.4.1/fabric.min.css" />
+<link rel="stylesheet" href="/repo/fabric/2.4.1/fabric.components.min.css" />
+
+<body>
+<template id="FabricFunction" data-bridge-load-script="true">
+  ##
+  window.Fabric = {
+    prop: function(props) {
+      var propStrArray = [];
+      Object.keys(props).forEach(function(key) {
+        if (props[key]) propStrArray.push(key + '="' + props[key] + '"');
+      });
+      return propStrArray.join(' ');
+    },
+    css: function() {
+      var args = (arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments));
+      var propStrArray = [];
+      args.forEach(function(props) {
+        if (!props) return; 
+        if (typeof props === 'string') return propStrArray.push(props);
+        Object.keys(props).forEach(function(key) {
+          if (props[key]) propStrArray.push(key);
+        });
+      });
+      return propStrArray.join(' ');
+    },
+    is: function(data, isKey) {
+      if (isKey instanceof Array) {
+        var array = new Array();
+        for (var i=0, size=isKey.length; i < size; i++) {
+          if (data[isKey[i]]) array.push(isKey[i]);
+        }
+        isKey = array.filter(Boolean).join(' is-');
+      }
+      return isKey ? 'is-' + isKey : '';
+    },
+    ListItem: {
+      toggleSelection: function(e, edata, tmplElem) {
+        tmplElem.classList.toggle('is-selected');
+        var isSelected = tmplElem.classList.contains('is-selected');
+        if (edata.selectedFunc && isSelected) {
+          edata.selectedFunc(e, edata, tmplElem);
+        } else if (edata.unSelectedFunc) {
+          edata.unSelectedFunc(e, edata, tmplElem);
+        }
+      }
+    }
+  }
+  ##
+</template>
+
+<template id="ms-Button">
+  &lt;button type="##=data.type||'button'##" id="##=data.id##" class="ms-Button ms-Button--##=data.typeClass## ##=data.class##" style="##=data.style##" data-bridge-event="##:data.event##" ##=Fabric.prop(data.prop||{})## &gt;
+    <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--##=data.icon##"></i></span>
+    <span class="ms-Button-label">##%data.label##</span>
+    ##if (data.description) {##<span class="ms-Button-description">##=data.description##</span>##}##
+  </button>
+</template>
+
+<template id="ms-Pivot">
+  <ul class="ms-Pivot ms-Pivot--##=data.typeClass && data.typeClass.join ? data.typeClass.join(' ms-Pivot--') : data.typeClass || ''##">
+    ##(data.items || []).forEach(function(selected, idx){
+      selected.typeClass = selected.typeClass || data.typeClass;
+      selected.event = selected.event || data.event;
+      selected.clickEvent = selected.clickEvent || data.clickEvent;
+      selected.iconEvent = selected.iconEvent || data.iconEvent;
+      selected.clickCallback = selected.clickCallback || data.clickCallback;
+      selected.select = function() {
+        tmplScope.trigger['link' + idx].click();
+      }
+    ##
+    <li class="ms-Pivot-link ms-Pivot-link--##=selected.typeClass## ##=selected.class## ##=data.selected == selected.label ? 'is-selected' : ''##"
+        data-bridge-event="##:selected.event || {triggerKey: 'link' + idx, click: selected.clickEvent || function(e, clickData, tmplElem) {
+            (tmplElem.querySelector('.is-selected') || e.target).classList.remove('is-selected');
+            e.target.classList.add('is-selected');
+            if (selected.clickCallback) selected.clickCallback.call(tmplElem, e, clickData, selected);
+          }}##">
+      ##if (selected.icon) {##<i class="##=selected.icon=='ellipsis' ? 'ms-Pivot-ellipsis' : ''## ms-Icon ms-Icon--##=selected.icon##" data-bridge-event="##:selected.iconEvent##"></i>##}##
+      ##=selected.label##
+    </li>
+    ##})##
+  </ul>
+</template>
+
+<template id="msbr-Pagination">
+  <style id="style-msbr-Pagination">
+    .msbr-Pagination .ms-Pivot {
+      float: left;
+    }
+    .msbr-Pagination .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link.fixed:not(.is-selected) {
+      background-color: #DEECF9; /*##=data.fixedBgColor##*/
+    }
+    .msbr-Pagination .ms-Pivot.ms-Pivot--tabs {
+      height: 32px;
+    }
+    .msbr-Pagination .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link {
+      line-height: 32px;
+      height: 32px
+    }
+    .msbr-Pagination .ms-Dropdown {
+      float: left;
+    }
+  </style>
+  <div class="msbr-Pagination ##=data.class##" style="##=data.style##">
+  ##
+    var pageData = data;
+    var totalCount = data.totalCount;
+    var pageNum = data.pageNum;
+    var pageSize = data.pageSize;
+    var pageLength = data.pageLength;
+
+    var clickCallback = data.clickCallback;
+    var pageSizeChangeEvent = data.pageSizeChangeEvent;
+    
+    var endNum = Math.max(Math.ceil(totalCount / pageSize), 1);
+
+    var items = new Array();
+    items.push({label: 1, class: 'fixed'});
+
+    var flowLength = endNum - 2 > 0 ? Math.min(pageLength, endNum) - 2 : 0;
+    var flowLengthHalf = Math.ceil(flowLength / 2);
+
+    startNum = 1;
+    var flowStart = startNum + 1;
+    var flowSEnd = endNum - 1;
+
+    if (pageNum - flowLengthHalf < flowStart) {
+      flowSEnd = flowLength + startNum;
+    } else if (pageNum + flowLengthHalf > flowSEnd) {
+      flowStart = endNum - flowLength;
+    } else {
+      flowStart = pageNum - (flowLengthHalf - 1);
+      flowSEnd = pageNum + (flowLengthHalf - 1);
+    }
+
+    for (var i=flowStart,size=flowSEnd + 1;i < size; i++) {
+      items.push({label: i});
+    }
+    if (startNum != endNum) items.push({label: endNum, class: 'fixed'});
+
+  ##
+  ##%bridge.tmpl('ms-Pivot')({
+    typeClass: data.typeClass,
+    selected: pageNum,
+    class: data.pivotClass,
+    items: items,
+    clickCallback: clickCallback
+  })##
+  ##%bridge.tmpl('ms-Dropdown')({
+    title: pageSize + ' (' + totalCount + ')',
+    titleFunc: function(pageSize, data) {
+      return pageSize + ' (' + totalCount + ')';
+    },
+    value: pageSize,
+    class: data.dropDownClass,
+    style: data.dropDownStyle,
+    items: [
+      {value: 5},
+      {value: 10},
+      {value: 20},
+      {value: 50},
+      {value: 100},
+      {value: 500},
+      {value: 1000},
+      {value: 5000},
+      {value: 10000}
+    ],
+    itemSelectEvent: pageSizeChangeEvent
+  })##
+  </div>
+</template>
+
+<template id="ms-Table">
+  &lt;table class="ms-Table ##=data.class##" data-bridge-event="##:data.tableEvent##"&gt;
+    ##
+    var items = data.items || [];
+    var metaData = data.metaData;
+    if (!metaData) {
+      metaData = new Array();
+      Object.keys(items[0] instanceof Object ? items[0] : {}).forEach(function(key) {
+        metaData.push({name: key, label: key});
+      });
+      if (items.length > 0 && metaData.length === 0) {
+        metaData.push({name: '$arrayData', label: ''});
+      }
+    }
+    var checkboxEvent = {click: function(e, evData, tmplElem) {
+      //e.stopPropagation();
+      e.target.parentElement.classList.toggle('is-selected');
+      if (data.checkboxEventCallback) data.checkboxEventCallback.call(tmplElem, e, evData);
+    }};
+    ##
+    &lt;thead&gt;
+      <!--  ms-bgColor-##=data.bgColor## ms-fontColor-##=data.fontColor## ms-borderColor-##=data.borderColor## -->
+      &lt;tr&gt;
+        ##if (data.rowCheck) {##
+          &lt;th class="ms-Table-rowCheck" data-bridge-event="##:{click: function(e, data, tmplElem) {
+          var headerTr = e.target.parentElement;
+          var isSelected = headerTr.classList.contains('is-selected');
+          Array.prototype.forEach.call(tmplElem.getElementsByTagName('tr'), function(node) {
+            node.classList[isSelected ? 'remove' : 'add']("is-selected");
+          });
+        }}##"&gt; &lt;/th&gt;
+        ##}##
+        ##var cloumn = null;
+          for (var j=0,size=metaData.length; j < size; j++) {
+            column = metaData[j];
+            column = metaData[j] = typeof column === 'string' ? {name: column, label: column} : column;
+        ##
+        &lt;th&gt; ##=column.label ## &lt;/th&gt;
+        ##}##
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      ##for (var i=0,sizei=items.length; i < sizei; i++) { var selected = items[i];##
+      &lt;tr data-bridge-event="##:(data.rowSelectEvent)::{sel: selected, data: data, self: this, index: i}##"
+                data-bridge-load="##:function(target, edata){
+                  target.value = edata;
+                }::selected##"&gt;
+        ##if (data.rowCheck) {##
+          &lt;td class="ms-Table-rowCheck" data-bridge-event="##:checkboxEvent##"&gt;&lt;/td&gt;
+        ##}##
+        ##
+        var column = null;
+        for (var j=0,sizej=metaData.length; j < sizej; j++) {
+          column = metaData[j];
+        ##
+        &lt;td&gt;
+          ##var value = column.name == '$arrayData' ? selected : 
+            column.value instanceof Function ? column.value(column, selected) : (selected[column.name] || column.value)
+            if (value instanceof Element) {##
+              ##%value##
+          ##} else {##
+              ##=value##
+          ##}##
+        &lt;/td&gt;
+        ##}##
+      &lt;/tr&gt;
+      ##}##
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+</template>
+
+<template id="ms-Table1">
+  <div class="ms-Table ##=data.class##">
+    ##
+    var items = data.items || [];
+    var metaData = data.metaData;
+    if (!metaData) {
+      metaData = new Array();
+      Object.keys(items[0] instanceof Object ? items[0] : {}).forEach(function(key) {
+        metaData.push({name: key, label: key});
+      });
+      if (items.length > 0 && metaData.length === 0) {
+        metaData.push({name: '$arrayData', label: ''});
+      }
+    }
+    var checkboxEvent = {click: function(e, evData, tmplElem) {
+      //e.stopPropagation();
+      e.target.parentElement.classList.toggle('is-selected');
+      if (data.checkboxEventCallback) data.checkboxEventCallback.call(tmplElem, e, evData);
+    }};
+    ##
+    <!--  ms-bgColor-##=data.bgColor## ms-fontColor-##=data.fontColor## ms-borderColor-##=data.borderColor## -->
+    <div class="ms-Table-row" data-bridge-event="##:{click: function(e, data, tmplElem) {
+        Array.prototype.forEach.call(tmplElem.getElementsByClassName('ms-Table-row'), function(node) {
+          //console.log(node.click);
+        });
+    }}##">
+      ##if (data.rowCheck)##<span class="ms-Table-cell ms-Table-rowCheck"></span>
+      ##for (var j=0,size=metaData.length; j < size; j++) {##
+      <span class="ms-Table-cell">##=metaData[j].label##</span>
+      ##}##
+    </div>
+    
+    ##for (var i=0,sizei=items.length; i < sizei; i++) { var selected = items[i];##
+    <div class="ms-Table-row" data-bridge-event="##:(data.rowSelectEvent || checkboxEvent)::{sel: selected, data: data, self: this}##">
+      ##if (data.rowCheck) {##<span class="ms-Table-cell ms-Table-rowCheck" data-bridge-event="##:checkboxEvent##"></span>##}##
+      ##
+      var column = null;
+      for (var j=0,sizej=metaData.length; j < sizej; j++) {
+        column = metaData[j];
+      ##
+      <span class="ms-Table-cell">
+        ##var value = column.name == '$arrayData' ? selected : 
+          column.value instanceof Function ? column.value(column, selected) : (selected[column.name] || column.value)
+          if (value instanceof Element) {##
+            ##%value##
+        ##} else {##
+            ##=value##
+        ##}##
+      </span>
+      ##}##
+    </div>
+    ##}##
+  </div>
+</template>
+
+<template id="ms-Dialog">
+  <div class="ms-Dialog ms-Dialog--##=data.typeClass## ##=data.class##">
+    ##
+    var closeEvent = {click: function(e, evData, tmplElem) {
+      tmplElem.parentElement.removeChild(tmplElem);
+    }};
+    ##
+    <div class="ms-Overlay"></div>
+    <div class="ms-Dialog-main" style="##=data.width ? 'width:' + data.width : null##">
+      <button class="ms-Dialog-button ms-Dialog-button--close" data-bridge-event="##:closeEvent##"><i class="ms-Icon ms-Icon--x"></i></button>
+      <div class="ms-Dialog-header">
+        ##if (data.title) {##<p class="ms-Dialog-title">##=data.title##</p>##}##
+      </div>
+      <div class="ms-Dialog-inner">
+        <div class="ms-Dialog-content" data-bridge-event="##:data.contentEvent##">
+          ##if (data.subText) {##<p class="ms-Dialog-subText">##=data.subText##</p>##}##
+          ##if (typeof data.content === 'string') {## 
+            ##=data.content##
+          ##} else {##
+            ##%data.content##
+          ##}##
+        </div>
+        <div class="ms-Dialog-actions">
+          <div class="ms-Dialog-actionsRight">
+            ##%data.actions##
+            ##if (data.okEvent) {##
+            <button class="ms-Dialog-action ms-Button ms-Button--primary" data-bridge-event="##:data.okEvent##">
+              <span class="ms-Button-label">##=data.okLabel||'Ok'##</span>
+            </button>
+            ##}##
+            <button class="ms-Dialog-action ms-Button" data-bridge-event="##:data.closeEvent||closeEvent##">
+              <span class="ms-Button-label">##=data.cancelLabel||'Cancel'##</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="ms-ListItem">
+  <div class="ms-ListItem ms-ListItem--##=data.typeClass## ##=Fabric.is(data, ['unseen', 'unread', 'selectable', 'selected'])## ##=data.class##" data-bridge-event="##:data.event##">
+    ##if (data.image) {##<div class="ms-ListItem-image" style="background-image: ##=data.image##"></div>##}##
+    ##if (data.primaryText) {##<span class="ms-ListItem-primaryText">##=data.primaryText##</span>##}##
+    ##if (data.secondaryText) {##<span class="ms-ListItem-secondaryText">##=data.secondaryText##</span>##}##
+    ##if (data.tertiaryText) {##<span class="ms-ListItem-tertiaryText">
+        ##if (data.tertiaryText instanceof Element) {##
+          ##%data.tertiaryText##
+        ##} else {##
+          ##=data.tertiaryText##
+        ##}##</span>##}##
+    ##if (data.metaText) {##<span class="ms-ListItem-metaText">##%data.metaText##</span>##}##
+    <div class="ms-ListItem-selectionTarget" data-bridge-event="##:[Fabric.ListItem.toggleSelection, data.toggleSelection]##"></div>
+    <div class="ms-ListItem-actions">
+      ##(data.actions || []).forEach(function(action, index) {##
+      <div class="ms-ListItem-action" data-bridge-event="##:action.event##"><i class="ms-Icon ms-Icon--##=action.icon##"></i></div>
+      ##});##
+    </div>
+  </div>
+</template>
+
+<template id="ms-List">
+  <ul class="ms-List ms-List--##=data.typeClass## ##=data.class##" style="##=data.style##" data-bridge-event="##:data.event##">
+    ##
+    var nonblocking = data.nonblocking;
+    var itemProp = data.itemProp;
+    var listItemTmpl = data.listItemTmpl || bridge.tmpl('ms-ListItem');
+    (data.items || []).forEach(function(selected) {
+      if (itemProp) {
+        Object.keys(itemProp).forEach(function(propKey) {
+          selected[propKey] = selected[propKey] || itemProp[propKey];
+        });
+      }
+    ##
+      ##%listItemTmpl(selected)::nonblocking##
+    ##});##
+  </ul>
+</template>
+
+<template id="ms-Link">
+  <a href="##=data.link || 'javascript:void(0);'##" class="ms-Link ms-Link--##=data.typeClass##" data-bridge-event="##:data.event##" target="##=data.target || '_self'##">##=data.label##</a>
+</template>
+
+<template id="msbr-Form">
+  <form class="##=data.class##" style="##=data.style##">
+  ##%data.header##
+  ##
+  var TextField = bridge.tmpl('ms-TextField');
+  var formData = data.formData || {};
+
+  var fieldData = data.fieldData;
+  var fieldArray = new Array();
+  if (!(fieldData instanceof Array)) {
+    var label = null;
+    var selected = null;
+    if (formData) Object.keys(fieldData || formData).forEach(function(key) {
+      var selected = fieldData[key];
+
+      if (selected instanceof Function) return;
+      fieldArray.push({label: fieldData ? selected.label : key,
+                      name: key,
+                      value: formData[key],
+                      typeClass: selected.typeClass,
+                      type: selected.type,
+                      event: selected.event,
+                      class: selected.class,
+                      element: selected.element,
+                      tmpl: selected.tmpl,
+                      options: selected.options,
+                      data: formData});
+    });
+    
+  } else {
+    fieldArray = fieldData;
+  }
+  fieldArray.forEach(function(selected, index) {
+        if (selected instanceof Function) return;
+        selected.class = selected.class || data.class;
+        selected.typeClass = selected.typeClass || data.typeClass;
+        selected.input = selected.input || data.input;
+        ##
+    ##%selected.element ? selected.element :
+          selected.tmpl ? selected.tmpl(selected, formData, data, tmplScope) : TextField(selected.value ? selected : Object.assign({}, selected, {value: formData[selected.name]}))##
+  ##});##
+  ##%data.footer##
+  </form>
+</template>
+
+<template id="ms-TextFieldList">
+  <div>
+  ##
+  var TextField = bridge.tmpl('ms-TextField');
+  (data.items || []).forEach(function(selected) {
+        selected.class = selected.class || data.class;
+        selected.typeClass = selected.typeClass || data.typeClass;
+        selected.input = selected.input || data.input;
+  ##
+    ##%TextField(selected)##
+  ##});##
+  </div>
+</template>
+
+<template id="ms-TextField">
+  <div class="ms-TextField ms-TextField--##=data.typeClass## ##=data.class##" data-bridge-event="##:data.event##">
+    ##
+      if (data.typeClass == 'placeholder') {
+        data.placeholder = data.label;
+        delete data.label;
+      }
+      var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata) {
+        if (e.keyCode == 13) data.enterKeyEvent();
+      }} : null;
+      var loadEvent = function(target, edata, tmplElem) {
+        tmplElem.input = target;
+        tmplScope.input = target;
+        if (edata.readonly) target.readOnly = edata.readonly;
+      }
+    ##
+    ##if (data.label) {##<label class="ms-Label">##=data.label##</label>##}##
+    ##if (data.type=='textarea') {##<textarea class="ms-TextField-field" rows="##=(data.rows || 3)##" name="##=data.name##" id="##=data.id##"
+                                      placeholder="##=data.placeholder##" data-bridge-load="##:loadEvent##" data-bridge-event="##:[enterKeyEvent, data.inputEvent]##">##=data.value##</textarea>
+    ##} else {##<input class="ms-TextField-field" type="##=data.type || 'text'##" name="##=data.name##" id="##=data.id##" value="##=data.value##"
+                  placeholder="##=data.placeholder##" list="##=data.listId || 'datalist_' + data.name##" data-bridge-load="##:loadEvent##" data-bridge-event="##:[enterKeyEvent, data.inputEvent]##">
+        ##if(data.type == 'search' && data.options) {##
+        <datalist id="##=data.listId || 'datalist_' + data.name##">
+          ##data.options.forEach(function(option) {##
+          &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
+          ##});##
+        </datalist>
+        ##}##
+    ##}; if (data.desc) {##<span class="ms-TextField-description">##=data.desc##</span>##}##
+  </div>
+</template>
+
+<template id="ms-ChoiceField">
+  <div class="ms-ChoiceField ##=data.class##" style="##=data.style##">
+    &lt;input id="##=tmplScope._id##" class="ms-ChoiceField-input" type="##=data.type##" name="##=data.name##" value="##=data.value##"  data-bridge-load="##:function(target, edata, tmplElem) {
+      tmplElem.input = target;
+      tmplScope.input = target;
+    }##" data-bridge-event="##:data.event##" ##=data.checked ? 'checked' : ''## &gt;
+    <label for="##=tmplScope._id##" class="ms-ChoiceField-field">
+      <span class="ms-Label">##=data.label##</span>
+    </label>
+  </div>
+</template>
+
+<template id="ms-ChoiceFieldGroup">
+  ##
+  var name = data.name;
+  tmplScope.value = function() {
+    return tmplScope.element.querySelector('input[name="' + name + '"]:checked').value;
+  }
+  ##
+  <div class="ms-ChoiceFieldGroup ##=data.class##" data-bridge-event="##:data.event##">
+    <div class="ms-ChoiceFieldGroup-title">
+      <label class="ms-Label ##=data.labelCalss##">##=data.label##</label>
+    </div>
+    ##
+    var ChoiceField = bridge.tmpl('ms-ChoiceField');
+    (data.items || []).forEach(function(selected, index) {
+      selected.event = selected.event || data.choiceEvent;
+      selected.name = selected.name || data.name;
+      selected.id = selected.id || data.name + index;
+      selected.type = selected.type || data.type;
+      if (selected.value === data.value) selected.checked = true;
+      ##
+      ##%ChoiceField(selected)##
+    ##});##
+  </div>
+</template>
+
+<template id="ms-Dropdown">
+  ##
+  var id = data.id;
+  var name = data.name;
+  var value = data.value;
+  var labelKey = data.labelKey || 'label';
+  var valueKey = data.valueKey || 'value';
+  var labelFunc = data.labelFunc;
+  var itemSelectEvent = data.itemSelectEvent;
+
+  var itemSelect = function(e, edata, tmplElem) {
+    var target = e.target;
+    (tmplElem.querySelector('.is-selected') || target).classList.remove('is-selected');
+    target.classList.add('is-selected');
+    tmplElem.querySelector('.ms-Dropdown-select').value = target.getAttribute('value');
+    tmplElem.querySelector('.ms-Dropdown-title').innerText = data.titleFunc ? data.titleFunc(target.innerText, data) : e.target.innerText;
+    if (itemSelectEvent) itemSelectEvent.call(tmplElem, e, edata, data);
+    tmplElem.classList.toggle('is-open');
+  }
+  var isSelected = null;
+  var selectedData = null;
+  ##
+  <div class="ms-Dropdown ##=data.class## ##=data.disabled ? 'is-disabled' : ''##" style="##=data.style##" tabindex="0">
+    <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--##=data.icon || 'caretDown'##" data-bridge-event="##:data.iconEvent##"></i>
+    <select class="ms-Dropdown-select" name="##=name##" id="##=id##" value="##=value##" data-bridge-load="##:function(target, edata, tmplElem){
+      tmplScope.input = target;
+      tmplScope.selectValue = function(value) {
+        var target = tmplElem.querySelector('.ms-Dropdown-items li[value=' + value + ']');
+        if (target) target.click();
+      }
+      tmplScope.reset = function() {
+        var selected = tmplElem.querySelector('.is-selected')
+        if (selected) selected.classList.remove('is-selected');
+        tmplElem.querySelector('.ms-Dropdown-select').value = null;
+        tmplElem.querySelector('.ms-Dropdown-title').innerText = null;
+      }
+    }##">
+      ##(data.items || []).forEach(function(selected) {
+          selected[labelKey] = selected[labelKey] || selected[valueKey];
+          isSelected = value == selected[valueKey];
+          if (isSelected) selectedData = selected;
+      ##
+      &lt;option value="##=selected[valueKey]##" ##=isSelected ? 'selected' : ''##&gt;##=labelFunc ? labelFunc(selected) : selected[labelKey]##&lt;/option&gt;
+      ##});##
+    </select>
+    <span class="ms-Dropdown-title" data-bridge-event="##:{click: function(e, data, tmplElem) {
+        e.stopPropagation();
+        tmplElem.classList.toggle('is-open');
+      }}##">##=value ? (labelFunc ? labelFunc(selectedData) : selectedData[labelKey]) : data.title##</span>
+    <ul class="ms-Dropdown-items">
+    ##data.items.forEach(function(selected) {##
+      <li class="ms-Dropdown-item ##=(value && value == selected[valueKey]) ? 'is-selected' : ''##" value="##=selected[valueKey]##" data-bridge-event="##:[itemSelect, selected.event]::selected##">
+        ##=labelFunc ? labelFunc(selected) : selected[labelKey]##
+      </li>
+    ##});##
+    </ul>
+  </div>
+</template>
+
+<template id="ms-NavBar">
+  ##
+  var items = data.items || [];
+  ##
+  <div class="ms-NavBar ##=data.class##">
+    <div class="ms-NavBar-fixedMenu" style="##=data.fixedStyle##">
+      ##%data.fixedComponet##
+    </div>
+    <div class="ms-NavBar-openMenu js-openMenu" data-bridge-event="##:{click: function(e, data, tmplElem) {
+      event.stopPropagation();
+      tmplElem.classList.toggle('is-open');
+    }}##">
+      <i class="ms-Icon ms-Icon--##=data.menuIcon || 'menu' ##"></i>
+    </div>
+    <div class="ms-Overlay" data-bridge-event="##:{click: function(e, data, tmplElem) {
+      tmplElem.classList.remove('is-open');}}##"></div>
+    <ul class="ms-NavBar-items" data-bridge-event="##:{click: function(e, data, tmplElem) {
+      event.stopPropagation();
+      tmplElem.classList.toggle('is-open');
+    }}##">
+    ##
+    var selectedContentKey = data.selectedContentKey || '-';
+    items.forEach(function(selected) {
+      selected.typeClass = selected.typeClass || data.typeClass;
+      selected.name = selected.name || data.name;##
+      <li class="ms-NavBar-item ##=(selectedContentKey && selectedContentKey === selected.contentKey) ? 'is-selected' : null## ms-NavBar-item--##=selected.items ? 'hasMenu' : selected.typeClass##" data-bridge-event="##:[selected.event, {click: function(e, data, tmplElem) {
+          tmplElem.classList.toggle('is-open');
+          var beforeSelected = tmplElem.querySelector('li.is-selected');
+          if (beforeSelected) beforeSelected.classList.remove('is-selected');
+          this.classList.add('is-selected');
+          var openContextualMenu = tmplElem.querySelector('.ms-ContextualMenu.is-open');
+          var selfContextualMenu = this.querySelector('.ms-ContextualMenu');
+          if (openContextualMenu && openContextualMenu != selfContextualMenu) openContextualMenu.classList.remove('is-open');
+          if (selected.items) this.querySelector('.ms-ContextualMenu').classList.toggle('is-open');
+        }}]##">
+        <a class="ms-NavBar-link" href="##=selected.contentKey ? '#' + selected.contentKey : 'javascript:void(0);'##">
+          ##if (selected.icon) {##<i class="ms-Icon ms-Icon--##=selected.icon##"></i>##}##
+          ##=selected.label##
+        </a>
+        ##if (selected.items) {##
+        <ul class="ms-ContextualMenu">
+          ##(selected.items || []).forEach(function(subSelected) {##
+          <li class="ms-ContextualMenu-item" href="##=subSelected.contentKey ? '#' + subSelected.contentKey : 'javascript:void(0);'##" data-bridge-event="##:[subSelected.event, function(e, edata, tmplElem) {
+            this.parentElement.classList.remove('is-open');
+          }]##">
+            <a class="ms-ContextualMenu-link">##=subSelected.label##</a>
+          </li>
+          ##})##
+        </ul>
+        ##}##
+      </li>
+    ##});##
+    </ul>
+  </div>
+</template>
+
+<template id="ms-ContextualMenu">
+  <ul class="ms-ContextualMenu ##=data.class## ##=data.open ? 'is-open' : null##">
+  ##(data.items || []).forEach(function(selected) {##
+    <li class="ms-ContextualMenu-item">
+      <a class="ms-ContextualMenu-link ##=selected.is ? 'is-' + selected.is : null##" href="javascript:void(0);" data-bridge-event="##:selected.event##">##=selected.label##</a>
+    </li>
+  ##});##
+  </ul>
+</template>
+
+
+<template id="ms-Persona">
+  <div class="ms-Persona ms-Persona--##=data.typeClass## 
+                          ##=data.presence ? 'ms-Persona--' + data.presence : ''## 
+                          ##=data.square ? 'ms-Persona--square' : ''## 
+                          ##=data.class##"
+                          style="##=data.style##"
+                          data-bridge-event="##:data.event##">
+    <div class="ms-Persona-imageArea">
+      ##if(data.icon) {##<i class="ms-Persona-placeholder ms-Icon ms-Icon--##=data.icon##"></i>##}##
+      ##if(data.initialsText) {##<div class="ms-Persona-initials ms-Persona-initials--##=data.initialsColor || 'blue'##">##=data.initialsText##</div>##}##
+      ##if(data.imgSrc) {##<img class="ms-Persona-image" src="##=data.imgSrc##"></div>##}##
+    </div>
+    ##if(data.presence) {##<div class="ms-Persona-presence"></div>##}##
+    <div class="ms-Persona-details">
+      ##if(data.primaryText) {##<div class="ms-Persona-primaryText">##=data.primaryText##</div>##}##
+      ##if(data.secondaryText) {##<div class="ms-Persona-secondaryText">##=data.secondaryText##</div>##}##
+      ##if(data.tertiaryText) {##<div class="ms-Persona-tertiaryText">##=data.tertiaryText##</div>##}##
+      ##if(data.optionalText) {##<div class="ms-Persona-optionalText">##=data.optionalText##</div>##}##
+    </div>
+  </div>
+</template>
+
+<template id="ms-PeoplePicker">
+
+  ##
+  var typeClass = data.typeClass;
+  var isOutResultType = typeClass == 'Facepile' || typeClass == 'membersList';
+  var Persona = bridge.tmpl('ms-Persona');
+
+  var removeElementEvent = function(e, edata, tmplElem) {
+    var parent = this.parentElement;
+    /*
+    while(parent.tagName != 'LI') {
+      parent = parent.parentElement;
+    }
+    */
+    parent.parentElement.removeChild(parent);
+  }
+  
+  var selectElementEvent = function(e, item, tmplElem) {
+    item = Object.assign({}, item);
+    item.removeElementEvent = removeElementEvent;
+    item.Persona = Persona;
+    var targetName = isOutResultType ? 'SelectedPeople' : 'SearchBoxSelection';
+    if (isOutResultType) {
+      var selectedPeople = bridge.tmpl('ms-PeoplePicker-SelectedPeople')(item);
+      tmplScope.SelectedPeople.appendChild(selectedPeople.element || selectedPeople);
+    } else {
+      var searchBoxSelection = bridge.tmpl('ms-PeoplePicker-SearchBoxSelection')(item);
+      tmplScope.SearchBoxSelection.insertBefore(searchBoxSelection.element || searchBoxSelection, tmplScope.searchField);
+    }
+    if (item.selectElementEventCallBack) item.selectElementEventCallBack.call(this, e, item, tmplElem);
+  }
+  
+  var PeoplePickerSelectedSearchBoxSelection = bridge.tmpl('ms-PeoplePicker-SearchBoxSelection');
+  var PeoplePickerSelectedPeople = bridge.tmpl('ms-PeoplePicker-SelectedPeople');
+  ##
+  <div class="ms-PeoplePicker ms-PeoplePicker--##=typeClass## ##=data.class##">
+    ##if (data.label) {##<label class="ms-Label">##=data.label##</label>##}##
+    <div class="ms-PeoplePicker-searchBox" data-bridge-scope-key="##:'SearchBoxSelection'##">
+      ##if(!isOutResultType) (data.selectedItems || []).forEach(function(personaData) {
+        personaData.removeElementEvent = removeElementEvent;
+        personaData.Persona = Persona;
+      ##
+        ##%PeoplePickerSelectedSearchBoxSelection(personaData)##
+      ##});##
+      <input class="ms-PeoplePicker-searchField" type="text" placeholder="##=data.placeholder##" data-bridge-event="##:{
+        var: 'searchField',
+        click: function(e, edata, tmplElem) {
+          tmplElem.classList.toggle('is-active');
+        }, focus: function() {
+          this.blur();
+        }}##">
+    </div>
+    <div class="ms-PeoplePicker-results">
+      <div class="ms-PeoplePicker-resultGroups">
+        ##(data.groups || []).forEach(function(group) {##
+        <div class="ms-PeoplePicker-resultGroup">
+          ##if(group.title) {##<div class="ms-PeoplePicker-resultGroupTitle">##=group.title##</div>##}##
+          <ul class="ms-PeoplePicker-resultList">
+            ##(group.items || []).forEach(function(personaData) {##
+            <li class="ms-PeoplePicker-result" data-bridge-event="##:[selectElementEvent, personaData.addSelectedEvent]::personaData##">
+              <div role="button" class="ms-PeoplePicker-resultBtn" tabindex="0">
+                ##%Persona(personaData)##
+                ##if(data.removeResultEvent) {##
+                <button class="ms-PeoplePicker-resultAction js-resultRemove" data-bridge-event="##:[removeElementEvent, data.removeResultEvent]::personaData##">
+                  <i class="ms-Icon ms-Icon--x"></i>
+                </button>
+                ##}##
+              </div>
+            </li>
+            ##});##
+          </ul>
+        </div>
+        ##});##
+      </div>
+      ##if (data.searchMoreSecondary || data.searchMorePrimary) {##
+      <div class="ms-PeoplePicker-searchMore js-searchMore ##=data.isDisconnected ? 'ms-PeoplePicker-searchMore--disconnected' : ''##">
+        <div tabindex="0" role="button" class="ms-PeoplePicker-searchMoreBtn ms-PeoplePicker-searchMoreBtn--##=typeClass##">
+          <div class="ms-PeoplePicker-searchMoreIcon"><i class="ms-Icon ms-Icon--##=data.searchMoreIcon || 'search'##"></i></div>
+          <div class="ms-PeoplePicker-searchMoreSecondary">##=data.searchMoreSecondary##</div>
+          <div class="ms-PeoplePicker-searchMorePrimary">##=data.searchMorePrimary##</div>
+        </div>
+      </div>
+      ##}##
+    </div>
+    ##if (isOutResultType) {##
+    <div class="ms-PeoplePicker-selected is-active">
+      <div class="ms-PeoplePicker-selectedHeader">
+        <span class="ms-PeoplePicker-selectedCount"></span> newly added member<span>s</span>
+      </div>
+      <ul class="ms-PeoplePicker-selectedPeople" data-bridge-scope-key="##:'SelectedPeople'##">
+        ##(data.selectedItems || []).forEach(function(personaData) {
+          personaData.removeElementEvent = removeElementEvent;
+          personaData.Persona = Persona;
+        ##
+          ##%PeoplePickerSelectedPeople(personaData)##
+        ##});##
+      </ul>
+    </div>
+    ##}##
+  </div>
+</template>
+
+<template id="ms-PeoplePicker-SearchBoxSelection">
+  <div class="ms-PeoplePicker-persona">
+    ##%data.Persona(data)##
+    ##if(data.removeSelectedEvent) {##
+    <button class="ms-PeoplePicker-personaRemove" data-bridge-event="##:[data.removeElementEvent, data.removeSelectedEvent]##">
+      <i class="ms-Icon ms-Icon--x"></i>
+    </button>
+    ##}##
+  </div>
+</template>
+
+<template id="ms-PeoplePicker-SelectedPeople">
+  <li class="ms-PeoplePicker-selectedPerson">
+    ##%data.Persona(data)##
+    ##if (data.removeSelectedEvent) {##
+    <button class="ms-PeoplePicker-resultAction js-selectedRemove" data-bridge-event="##:[data.removeElementEvent, data.removeSelectedEvent]##"><i class="ms-Icon ms-Icon--x"></i></button>
+    ##}##
+  </li>
+</template>
+
+<template id="ms-ProgressIndicator">
+  ##
+  tmplScope.setProgress = function(progress, total) {
+    var _total = total || data.total || 100;
+    var percentage = progress / total;
+    var _width = tmplScope.itemProgress.offsetWidth;
+    tmplScope.itemName.innerText = data.itemName + ' (' + progress + ' / ' + _total + ')';
+    tmplScope.progressBar.style.width = Math.round(_width * percentage) + "px";
+  };
+  ##
+  <div class="ms-ProgressIndicator">
+    <div class="ms-ProgressIndicator-itemName" data-bridge-scope-key="##:'itemName'##">##=data.itemName##</div>
+    <div class="ms-ProgressIndicator-itemProgress" data-bridge-scope-key="##:'itemProgress'##">
+      <div class="ms-ProgressIndicator-progressTrack"></div>
+      <div class="ms-ProgressIndicator-progressBar" data-bridge-scope-key="##:'progressBar'##"></div>
+    </div>
+    <div class="ms-ProgressIndicator-itemDescription">##=data.itemDescription##</div>
+  </div>
+</template>
+
+
+var fabric = fabric || {};
+
+/**
+ * People Picker Plugin
+ *
+ * Adds basic demonstration functionality to .ms-PeoplePicker components.
+ * 
+ * @param  {jQuery Object}  One or more .ms-PeoplePicker components
+ * @return {jQuery Object}  The same components (allows for chaining)
+ */
+
+(function ($) {
+  $.fn.PeoplePicker = function () {
+
+    /** Iterate through each people picker provided. */
+    return this.each(function () {
+
+      var $peoplePicker = $(this);
+      var $searchField = $peoplePicker.find(".ms-PeoplePicker-searchField");
+      var $results = $peoplePicker.find(".ms-PeoplePicker-results");
+      var $selected = $peoplePicker.find('.ms-PeoplePicker-selected');
+      var $selectedPeople = $peoplePicker.find(".ms-PeoplePicker-selectedPeople");
+      var $selectedCount = $peoplePicker.find(".ms-PeoplePicker-selectedCount");
+      var $peopleList = $peoplePicker.find(".ms-PeoplePicker-peopleList");
+      var isActive = false;
+      var spinner;
+      var $personaCard = $('.ms-PeoplePicker').find('.ms-PersonaCard');
+
+      // Run when focused or clicked
+      function peoplePickerActive(event) {
+        /** Scroll the view so that the people picker is at the top. */
+        $('html, body').animate({
+          scrollTop: $peoplePicker.offset().top
+        }, 367);
+
+        /** Start by closing any open people pickers. */
+        if ( $peoplePicker.hasClass('is-active') ) {
+          $peoplePicker.removeClass("is-active");
+        }
+
+        /** Display a maxiumum of 5 people in Facepile variant */
+        if ($peoplePicker.hasClass('ms-PeoplePicker--Facepile') && $searchField.val() === "") {
+          $peopleList.children(":gt(4)").hide();
+        }
+
+        /** Animate results and members in Facepile variant. */
+        if ($peoplePicker.hasClass('ms-PeoplePicker--Facepile')) {
+          // $results.addClass('ms-u-slideDownIn20');
+          $selectedPeople.addClass('ms-u-slideDownIn20');
+          setTimeout(function() { $results.removeClass('ms-u-slideDownIn20'); $selectedPeople.removeClass('ms-u-slideDownIn20');}, 1000);
+        }
+
+        isActive = true;
+
+        /** Stop the click event from propagating, which would just close the dropdown immediately. */
+        event.stopPropagation();
+
+        /** Before opening, size the results panel to match the people picker. */
+        if (!$peoplePicker.hasClass('ms-PeoplePicker--Facepile')) {
+          $results.width($peoplePicker.width() - 2);
+        }
+
+        /** Show the $results by setting the people picker to active. */
+        $peoplePicker.addClass("is-active");
+
+        /** Temporarily bind an event to the document that will close the people picker when clicking anywhere. */
+        $(document).bind("click.peoplepicker", function() {
+            $peoplePicker.removeClass('is-active');
+            if ($peoplePicker.hasClass('ms-PeoplePicker--Facepile')) {
+              $peoplePicker.removeClass('is-searching');
+              $('.ms-PeoplePicker-selected').show();
+              $('.ms-PeoplePicker-searchMore').removeClass('is-active');
+              $searchField.val("");
+            }
+            $(document).unbind('click.peoplepicker');
+            isActive = false;
+        });
+      }
+      
+      /** Set to active when focusing on the input. */
+      $peoplePicker.on('focus', '.ms-PeoplePicker-searchField', function(event) {
+        peoplePickerActive(event);
+      });
+
+      /** Set to active when clicking on the input. */
+      $peoplePicker.on('click', '.ms-PeoplePicker-searchField', function(event) {
+        peoplePickerActive(event);
+      });
+
+      /** Keep the people picker active when clicking within it. */
+      $(this).click(function (event) {
+          event.stopPropagation();
+      });
+
+      /** Add the selected person to the text field or selected list and close the people picker. */
+      $results.on('click', '.ms-PeoplePicker-result', function () {
+          var $this = $(this); 
+          var selectedName = $this.find(".ms-Persona-primaryText").html();
+          var selectedTitle = $this.find(".ms-Persona-secondaryText").html();
+          var selectedInitials = (function() {
+            var name = selectedName.split(' ');
+            var nameInitials = '';
+
+            for (var i = 0; i < name.length; i++) {
+              nameInitials += name[i].charAt(0);
+            }
+
+            return nameInitials.substring(0,2);
+          })();
+          var selectedClasses = $this.find('.ms-Persona-initials').attr('class');
+          var selectedImage = (function() {
+            if ($this.find('.ms-Persona-image').length) {
+              var selectedImageSrc = $this.find('.ms-Persona-image').attr('src');
+              return '<img class="ms-Persona-image" src="' + selectedImageSrc + '" alt="Persona image">';
+            } else {
+              return '';
+            }
+          })();
+
+          /** Token html */
+          var personaHTML = '<div class="ms-PeoplePicker-persona">' +
+                              '<div class="ms-Persona ms-Persona--xs ms-Persona--square">' +
+                               '<div class="ms-Persona-imageArea">' +
+                                 '<div class="' + selectedClasses + '">' + selectedInitials + '</div>' +
+                                 selectedImage +
+                               '</div>' +
+                               '<div class="ms-Persona-presence"></div>' +
+                               '<div class="ms-Persona-details">' +
+                                 '<div class="ms-Persona-primaryText">' + selectedName + '</div>' +
+                              ' </div>' +
+                             '</div>' +
+                             '<button class="ms-PeoplePicker-personaRemove">' +
+                               '<i class="ms-Icon ms-Icon--x"></i>' +
+                            ' </button>' +
+                           '</div>';
+          /** List item html */
+          var personaListItem = '<li class="ms-PeoplePicker-selectedPerson">' +
+                                  '<div class="ms-Persona ms-Persona--sm">' +
+                                     '<div class="ms-Persona-imageArea">' +
+                                       '<div class="' + selectedClasses + '">' + selectedInitials + '</div>' +
+                                       selectedImage +
+                                     '</div>' +
+                                     '<div class="ms-Persona-presence"></div>' +
+                                     '<div class="ms-Persona-details">' +
+                                        '<div class="ms-Persona-primaryText">' + selectedName + '</div>' +
+                                        '<div class="ms-Persona-secondaryText">' + selectedTitle + '</div>' +
+                                      '</div>' +
+                                    '</div>' +
+                                    '<button class="ms-PeoplePicker-resultAction js-selectedRemove"><i class="ms-Icon ms-Icon--x"></i></button>' +
+                                '</li>';
+          /** Tokenize selected persona if not Facepile or memberslist variants */
+          if (!$peoplePicker.hasClass('ms-PeoplePicker--Facepile') && !$peoplePicker.hasClass('ms-PeoplePicker--membersList') ) {
+            $searchField.before(personaHTML);
+            $peoplePicker.removeClass("is-active");
+            resizeSearchField($peoplePicker);
+          }
+          /** Add selected persona to a list if Facepile or memberslist variants */
+          else {
+            if (!$selected.hasClass('is-active')) {
+              $selected.addClass('is-active');
+            }
+            /** Prepend persona list item html to selected people list */
+            $selectedPeople.prepend(personaListItem);
+            /** Close the picker */
+            $peoplePicker.removeClass("is-active");
+            /** Get the total amount of selected personas and display that number */
+            var count = $peoplePicker.find('.ms-PeoplePicker-selectedPerson').length;
+            $selectedCount.html(count);
+            /** Return picker back to default state:
+            - Show only the first five results in the people list for when the picker is reopened
+            - Make searchMore inactive
+            - Clear any search field text 
+            */
+            $peopleList.children().show();
+            $peopleList.children(":gt(4)").hide();
+
+            $('.ms-PeoplePicker-searchMore').removeClass('is-active');
+            $searchField.val("");
+          }
+      });
+
+      /** Remove the persona when clicking the personaRemove button. */
+      $peoplePicker.on('click', '.ms-PeoplePicker-personaRemove', function() {
+        $(this).parents('.ms-PeoplePicker-persona').remove();
+
+        /** Make the search field 100% width if all personas have been removed */
+        if ( $('.ms-PeoplePicker-persona').length === 0 ) {
+          $peoplePicker.find('.ms-PeoplePicker-searchField').outerWidth('100%');
+        } else {
+          resizeSearchField($peoplePicker);
+        }
+      });
+
+      /** Trigger additional searching when clicking the search more area. */
+      $results.on('click', '.js-searchMore', function() {
+        var $searchMore = $(this);
+        var primaryLabel = $searchMore.find(".ms-PeoplePicker-searchMorePrimary");
+        var originalPrimaryLabelText = primaryLabel.html();
+        var searchFieldText = $searchField.val();
+
+        /** Change to searching state. */
+        $searchMore.addClass("is-searching");
+        primaryLabel.html("Searching for " + searchFieldText);
+
+        /** Attach Spinner */
+        if (!spinner) {
+          spinner = new fabric.Spinner($searchMore.get(0));
+        } else {
+          spinner.start();
+        }
+
+        /** Show all results in Facepile variant */
+        if($peoplePicker.hasClass('ms-PeoplePicker--Facepile')) {
+          setTimeout(function() {$peopleList.children().show();}, 1500);
+        }
+        
+        /** Return the original state. */
+        setTimeout(function() {
+            $searchMore.removeClass("is-searching");
+            primaryLabel.html(originalPrimaryLabelText);
+            spinner.stop();
+        }, 1500);
+      });
+
+      /** Remove a result using the action icon. */
+      $results.on('click', '.js-resultRemove', function(event) {
+          event.stopPropagation();
+          $(this).parent(".ms-PeoplePicker-result").remove();
+      });
+
+      /** Expand a result if more details are available. */
+      $results.on('click', '.js-resultExpand', function(event) {
+          event.stopPropagation();
+          $(this).parent(".ms-PeoplePicker-result").toggleClass("is-expanded");
+      });
+
+      /** Remove a selected person using the action icon. */
+      $selectedPeople.on('click', '.js-selectedRemove', function(event) {
+          event.stopPropagation();
+          $(this).parent(".ms-PeoplePicker-selectedPerson").remove();
+          var count = $peoplePicker.find('.ms-PeoplePicker-selectedPerson').length;
+          $selectedCount.html(count);
+          if ($peoplePicker.find('.ms-PeoplePicker-selectedPerson').length === 0) {
+            $selected.removeClass('is-active');
+          }
+      });
+
+      var filterResults = function(results, currentSuggestion, currentValueExists) {
+        return results.find('.ms-Persona-primaryText').filter(function() {
+          if (currentValueExists) {
+            return $(this).text().toLowerCase() === currentSuggestion;
+          } else {
+            return $(this).text().toLowerCase() !== currentSuggestion;
+          }
+        }).parents('.ms-PeoplePicker-peopleListItem');
+      };
+
+      /** Search people picker items */
+      $peoplePicker.on('keyup', '.ms-PeoplePicker-searchField', function(evt) {
+        var suggested = [];
+        var newSuggestions = [];
+        var $pickerResult = $results.find('.ms-Persona-primaryText');
+
+        $peoplePicker.addClass('is-searching');
+
+        /** Hide members */
+        $selected.hide();
+
+        /** Show 5 results */
+        $peopleList.children(":lt(5)").show();
+
+        /** Show searchMore button */
+        $('.ms-PeoplePicker-searchMore').addClass('is-active');
+
+        /** Get array of suggested people */
+        $pickerResult.each(function() { suggested.push($(this).text()); });
+
+        /** Iterate over array to find matches and show matching items */
+        for (var i = 0; i < suggested.length; i++) {
+          var currentPersona = suggested[i].toLowerCase();
+          var currentValue = evt.target.value.toLowerCase();
+          var currentSuggestion;
+
+          if (currentPersona.indexOf(currentValue) > -1) {
+            currentSuggestion = suggested[i].toLowerCase();
+
+            newSuggestions.push(suggested[i]);
+
+            filterResults($results, currentSuggestion, true).show();
+          } else {
+            filterResults($results, currentSuggestion, false).hide();
+          }
+        }
+
+        /** Show members and hide searchmore when field is empty */
+        if ($(this).val() === "") {
+          $peoplePicker.removeClass('is-searching');
+          $selected.show();
+          $('.ms-PeoplePicker-searchMore').removeClass('is-active');
+          $selectedPeople.addClass('ms-u-slideDownIn20');
+          setTimeout(function() { $selectedPeople.removeClass('ms-u-slideDownIn20');}, 1000);
+          $peopleList.children(":gt(4)").hide();
+        }
+      });
+
+      /** Show persona card when clicking a persona in the members list */
+      $selectedPeople.on('click', '.ms-Persona', function() {
+        var selectedName = $(this).find(".ms-Persona-primaryText").html();
+        var selectedTitle = $(this).find(".ms-Persona-secondaryText").html();
+        var selectedInitials = (function() {
+          var name = selectedName.split(' ');
+          var nameInitials = '';
+
+          for (var i = 0; i < name.length; i++) {
+            nameInitials += name[i].charAt(0);
+          }
+
+          return nameInitials.substring(0,2);
+        })();
+        var selectedClasses = $(this).find('.ms-Persona-initials').attr('class');
+        var selectedImage = $(this).find('.ms-Persona-image').attr('src');
+        var $card = $('.ms-PersonaCard');
+        var $cardName = $card.find('.ms-Persona-primaryText');
+        var $cardTitle = $card.find('.ms-Persona-secondaryText');
+        var $cardInitials = $card.find('.ms-Persona-initials');
+        var $cardImage = $card.find('.ms-Persona-image');
+
+        /** Close any open persona cards */
+        $personaCard.removeClass('is-active');
+
+        /** Add data to persona card */
+        $cardName.text(selectedName);
+        $cardTitle.text(selectedTitle);
+        $cardInitials.text(selectedInitials);
+        $cardInitials.removeClass();
+        $cardInitials.addClass(selectedClasses);
+        $cardImage.attr('src', selectedImage);
+
+        /** Show persona card */
+        setTimeout(function() { 
+          $personaCard.addClass('is-active');
+          setTimeout(function(){$personaCard.css({'animation-name': 'none'});}, 300);
+        }, 100);
+
+        /** Align persona card on md and above screens */
+        if ($(window).width() > 480) {
+          var itemPositionTop = $(this).offset().top;
+          var correctedPositionTop = itemPositionTop + 10;
+
+          $personaCard.css({'top': correctedPositionTop, 'left': 0});          
+        } else {
+          $personaCard.css({'top': 'auto'});
+        }
+      });
+
+      /** Dismiss persona card when clicking on the document */
+      $(document).on('click', function(e) {
+        var $memberBtn = $('.ms-PeoplePicker-selectedPerson').find('.ms-Persona');
+
+        if (!$memberBtn.is(e.target) && !$personaCard.is(e.target) && $personaCard.has(e.target).length === 0) {
+          $personaCard.removeClass('is-active');
+          setTimeout(function(){$personaCard.removeAttr('style');}, 300);
+        } else {
+          $personaCard.addClass('is-active');
+        }
+      });
+    });
+  };
+
+  /** Resize the search field to match the search box */
+  function resizeSearchField($peoplePicker) {
+    var $searchBox = $peoplePicker.find('.ms-PeoplePicker-searchBox');
+
+    // Where is the right edge of the search box?
+    var searchBoxLeftEdge = $searchBox.position().left;
+    var searchBoxWidth = $searchBox.outerWidth();
+    var searchBoxRightEdge = searchBoxLeftEdge + searchBoxWidth;
+
+    // Where is the right edge of the last persona component?
+    var $lastPersona = $searchBox.find('.ms-PeoplePicker-persona:last');
+    var lastPersonaLeftEdge = $lastPersona.offset().left;
+    var lastPersonaWidth = $lastPersona.outerWidth();
+    var lastPersonaRightEdge = lastPersonaLeftEdge + lastPersonaWidth;
+
+    // Adjust the width of the field to fit the remaining space.
+    var newFieldWidth = searchBoxRightEdge - lastPersonaRightEdge - 7;
+
+    // Don't let the field get too tiny.
+    if (newFieldWidth < 100) {
+      newFieldWidth = "100%";
+    }
+
+    // Set the width of the search field
+    $peoplePicker.find('.ms-PeoplePicker-searchField').outerWidth(newFieldWidth);
+  }
+})(jQuery);
+
+<template id="ms-PersonaCard">
+  <div class="ms-PersonaCard ms-PersonaCard--##=data.typeClass## ##=data.class##">
+    <div class="ms-PersonaCard-persona">
+      <div class="ms-Persona ms-Persona--square ms-Persona--xl">
+        <div class="ms-Persona-imageArea">
+          <i class="ms-Persona-placeholder ms-Icon ms-Icon--##=data.imgIcon||'person'##"></i> <img class="ms-Persona-image" src="##=data.imgSrc##">
+        </div>
+        <div class="ms-Persona-presence"></div>
+        <div class="ms-Persona-details">
+          <div class="ms-Persona-primaryText">
+            ##=data.primaryText##
+          </div>
+          <div class="ms-Persona-secondaryText">
+            ##=data.secondaryText##
+          </div>
+          <div class="ms-Persona-tertiaryText">
+            ##=data.tertiaryText##
+          </div>
+          <div class="ms-Persona-optionalText">
+            ##=data.optionalText##
+          </div>
+        </div>
+      </div>
+    </div>
+    ##
+      var actionSelectEvent = {click: function(e, idx, tmplElem) {
+        var active = tmplElem.querySelector('.ms-PersonaCard-action.is-active')
+        if (active) active.classList.remove('is-active');
+        active = tmplElem.querySelector('.ms-PersonaCard-actionDetails.is-active')
+        if (active) active.classList.remove('is-active');
+        
+        tmplElem.querySelector('.ms-PersonaCard-action.action-' + idx).classList.add('is-active');
+        tmplElem.querySelector('.ms-PersonaCard-actionDetails.detail-' + idx).classList.add('is-active');
+        tmplElem.querySelector('.ms-PersonaCard-details-parent').style.setProperty('margin-left', ('-' + (idx * 100) + '%'), 'important');
+      }}
+      var detailExpanderEvent = {click: function(e, data) {
+        //e.target.classList.add('is-collapsed');
+      }}
+    ##
+    <ul class="ms-PersonaCard-actions">
+      ##(data.actions||[]).forEach(function(selected, idx) {##
+      <li id="" class="ms-PersonaCard-action ##='action-' + idx## ##=selected.active ? 'is-active' : ''##" data-bridge-event="##:selected.actionEvent || actionSelectEvent::idx##">
+        <i class="ms-Icon ms-Icon--##=selected.actionIcon##"></i>
+      </li>
+      ##});##
+      ##if (data.overflowLabel) {##<li class="ms-PersonaCard-overflow" alt="##=data.overflowTitle##" title="##=data.overflowTitle##">##=data.overflowLabel##</li>##}##
+      ##if (data.orgIcon) {##
+      <li id="" class="ms-PersonaCard-action ms-PersonaCard-orgChart">
+        <i class="ms-Icon ms-Icon--##=data.orgIcon##"></i>
+      </li>
+      ##}##
+    </ul>
+    <div class="ms-PersonaCard-actionDetailBox">
+      <ul id="" class="ms-PersonaCard-details-parent ms-PersonaCard-detailChat">
+        ##(data.actions||[]).forEach(function(selected, index) {##
+        <li id="" class="ms-PersonaCard-actionDetails ##=selected.active ? 'is-active' : ''## detail-##=index##" data-bridge-event="##:detailExpanderEvent##">
+          ##%selected.header##
+          ##if (selected.details) selected.details.forEach(function(detail, dindex) {##
+          <div class="ms-PersonaCard-detailLine">
+            <span class="ms-PersonaCard-detailLabel">##=detail.label##</span>
+            ##=detail.content##
+            ##%detail.contentElement##
+          </div>
+          ##});##
+          ##%selected.footer##
+        </li>
+        ##});##
+        ##if (data.orgIcon) {##
+        <li id="" class="ms-PersonaCard-actionDetails detail-##=data.actions ? data.actions.length : ''##">
+          <div class="ms-OrgChart">
+            ##%data.orgElement##
+          </div>
+        </li><!-- /org chart -->
+        ##};##
+      </ul>
+    </div>
+  </div>
+</template>
+
+
+
+<template id="ms-CommandBar">
+  <div class="ms-CommandBar ##=data.class##">
+    ##if (data.search) {##
+    <div class="ms-CommandBarSearch">
+      <input class="ms-CommandBarSearch-input" type="text" placeholder="##=data.search.placeholder##" value="##=data.search.value##" tabindex="1" data-bridge-event="##:data.search.inputEvent##">
+      <div class="ms-CommandBarSearch-iconWrapper ms-CommandBarSearch-iconSearchWrapper" data-bridge-event="##:data.search.iconEvent##">
+        <i class="ms-Icon ms-Icon--search"></i>
+      </div>
+      <div class="ms-CommandBarSearch-iconWrapper ms-CommandBarSearch-iconClearWrapper ms-font-s"></div>
+    </div>
+    ##} else {##
+      <style type="text/css">
+        .ms-CommandBar-mainArea {
+          padding-left: 10px;
+        }
+      </style>
+    ##}; if (data.side) {##
+    <div class="ms-CommandBar-sideCommands">
+      <div class="ms-CommandBarItem">
+        <div class="ms-CommandBarItem-linkWrapper">
+          <a class="ms-CommandBarItem-link" tabindex="1" data-bridge-event="##:data.side.event##">
+            <span class="ms-CommandBarItem-icon ms-Icon ms-Icon--##=data.side.icon##"></span>
+            <span class="ms-CommandBarItem-commandText ms-font-m ms-font-weight-regular">##=data.side.label##</span>
+            ##if (data.side.subIcon) {##<i class="ms-CommandBarItem-chevronDown ms-Icon ms-Icon--##=data.side.subIcon##"></i>##}##
+          </a>
+        </div>
+      </div>
+    </div>
+    ##}##
+    <div class="ms-CommandBar-mainArea">
+      ##if (data.main) data.main.forEach(function(selected) {##
+      <div class="ms-CommandBarItem ##=selected.icon ? '' : 'ms-CommandBarItem--hasTextOnly'## ##=selected.class##">
+        <div class="ms-CommandBarItem-linkWrapper">
+          <a class="ms-CommandBarItem-link" tabindex="1" data-bridge-event="##:selected.event##">
+            ##if (selected.icon) {##<span class="ms-CommandBarItem-icon ms-Icon ms-Icon--##=selected.icon##"></span>##}##
+            <span class="ms-CommandBarItem-commandText ms-font-m ms-font-weight-regular">##=selected.label##</span>
+            ##if (selected.subIcon) {##<i class="ms-CommandBarItem-chevronDown ms-Icon ms-Icon--##=selected.subIcon##"></i>##}##
+          </a>
+        </div>
+      </div>
+      ##})##
+      <!-- Overflow Command -->
+      <div class="ms-CommandBarItem ms-CommandBarItem--iconOnly ms-CommandBarItem-overflow">
+        <div class="ms-CommandBarItem-linkWrapper">
+          <a class="ms-CommandBarItem-link" tabindex="2"><span class="ms-CommandBarItem-icon ms-Icon ms-Icon--ellipsis"></span>
+            <span class="ms-CommandBarItem-commandText ms-font-m ms-font-weight-regular">Ellipsis</span>
+            <i class="ms-CommandBarItem-chevronDown ms-Icon ms-Icon--chevronDown"></i>
+          </a>
+        </div>
+        <ul class="ms-CommandBar-overflowMenu ms-ContextualMenu"></ul>
+      </div><!-- End Overflow Command -->
+    </div>
+  </div>
+</template>
+
+<template id="ms-Panel">
+  <div class="ms-Panel ms-Panel--##=data.typeClass && data.typeClass.join ? data.typeClass.join(' ms-Panel--') : data.typeClass || ''## ##=data.class##"
+      style="##=data.style##" data-bridge-load="##:function(target){
+    tmplScope.open = function() {
+      target.classList.add('is-open');
+      //target.classList.remove('ms-Panel-animateOut');
+      //target.classList.add('ms-Panel-animateIn');
+    }
+    tmplScope.close = function() {
+      target.classList.remove('is-open');
+      //target.classList.remove('ms-Panel-animateIn');
+      //target.classList.add('ms-Panel-animateOut');
+    }
+    tmplScope.toggle = function() {
+      target.classList.toggle('is-open');
+    }
+  }##">
+    <div class="ms-Panel-main">
+      
+      <div class="ms-Panel-commands">
+        ##if (data.CommandBar) {##
+          ##%bridge.tmpl('ms-CommandBar')(data.CommandBar)##
+        ##}##
+          <button class="ms-Panel-closeButton ms-PanelAction-close" data-bridge-event="##:function(e, edata, tmplElem) {
+            tmplScope.close();
+          }##">
+              <i class="ms-Panel-closeIcon ms-Icon ms-Icon--x"></i>
+          </button>
+      </div>
+      <div class="ms-Panel-contentInner">
+          ##if(data.headerText) {##<p class="ms-Panel-headerText">##=data.headerText##</p>##}##
+          <div class="ms-Panel-content">
+              <span class="ms-font-m">##=data.contentText##</span>
+              ##%data.content##
+          </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+<template id="ms-Label">
+  <label class="ms-Label ##=data.class##" style="##=data.style##">##=data.label##</label>
+</template>
+
+<template id="ms-Icon">
+  <i class="ms-Icon ms-Icon--##=data.icon## ##=data.class##" style="##=data.style##" aria-hidden="true" data-bridge-event="##:data.event##"></i>
+</template>
+
+<template id="ms-Spinner">
+  ##
+  // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE in the project root for license information.
+  var fabric = fabric || {};
+  fabric.Spinner = function(target) {
+      var _target = target;
+      var eightSize = 0.179;
+      var circleObjects = [];
+      var animationSpeed = 90;
+      var interval;
+      var spinner;
+      var numCircles;
+      var offsetSize;
+      var fadeIncrement = 0;
+      var parentSize;
+  
+      /**
+       * @function start - starts or restarts the animation sequence
+       * @memberOf fabric.Spinner
+       */
+      function start() {
+          interval = setInterval(function() {
+              var i = circleObjects.length;
+              while(i--) {
+                  _fade(circleObjects[i]);
+              }
+          }, animationSpeed);
+      }
+  
+      /**
+       * @function stop - stops the animation sequence
+       * @memberOf fabric.Spinner
+       */
+      function stop() {
+          clearInterval(interval);
+      }
+  
+      //private methods
+  
+      function _init() {
+          //for backwards compatibility
+          if (_target.className.indexOf("ms-Spinner") === -1) {
+              spinner = document.createElement("div");
+              spinner.className = "ms-Spinner";
+              _target.appendChild(spinner);
+          } else {
+              spinner = _target;
+          }
+  
+          offsetSize = eightSize;
+          numCircles = 8;
+          parentSize = spinner.className.indexOf("large") > -1 ? 28 : 20;
+          _createCirclesAndArrange();
+          _initializeOpacities();
+          start();
+      }
+  
+      function _initializeOpacities() {
+          var i = 0;
+          var j = 1;
+          var opacity;
+          fadeIncrement = 1 / numCircles;
+  
+          for (i; i < numCircles; i++) {
+              var circleObject = circleObjects[i];
+              opacity = (fadeIncrement * j++);
+              _setOpacity(circleObject.element, opacity);
+          }
+      }
+  
+      function _fade(circleObject) {
+          var opacity = _getOpacity(circleObject.element) - fadeIncrement;
+  
+          if (opacity <= 0) {
+              opacity = 1;
+          }
+  
+          _setOpacity(circleObject.element, opacity);
+      }
+  
+      function _getOpacity(element) {
+          return parseFloat(window.getComputedStyle(element).getPropertyValue("opacity"));
+      }
+  
+      function _setOpacity(element, opacity) {
+          element.style.opacity = opacity;
+      }
+  
+      function _createCircle() {
+          var circle = document.createElement('div');
+          circle.className = "ms-Spinner-circle";
+          circle.style.width = circle.style.height = parentSize * offsetSize + "px";
+          return circle;
+      }
+  
+      function _createCirclesAndArrange() {
+  
+          var angle = 0;
+          var offset = parentSize * offsetSize;
+          var step = (2 * Math.PI) / numCircles;
+          var i = numCircles;
+          var circleObject;
+          var radius = (parentSize - offset) * 0.5;
+  
+          while (i--) {
+              var circle = _createCircle();
+              var x = Math.round(parentSize * 0.5 + radius * Math.cos(angle) - circle.clientWidth * 0.5) - offset * 0.5;
+              var y = Math.round(parentSize * 0.5 + radius * Math.sin(angle) - circle.clientHeight * 0.5) - offset * 0.5;
+              spinner.appendChild(circle);
+              circle.style.left = x + 'px';
+              circle.style.top = y + 'px';
+              angle += step;
+              circleObject = { element:circle, j:i };
+              circleObjects.push(circleObject);
+          }
+      }
+  
+      _init();
+  
+      return {
+          start:start,
+          stop:stop
+      };
+  };
+  ##
+  <div class="ms-Spinner ms-Spinner--##=data.typeClass## ##=data.class##" style="##=data.style##" data-bridge-load="##:function(target) {
+    var spinner = new fabric.Spinner(target);
+    spinner.start();
+    target.start = spinner.start;
+    target.stop = spinner.stop;
+  }##">
+    ##if(data.label) {##<div class="ms-Spinner-label">##=data.label##</div>##}##
+  </div>
+</template>
+
+<template id="ms-Callout">
+  <div style="position:absolute;" class="ms-Callout ms-Callout--##=data.typeClass instanceof Array ? data.typeClass.join(' ms-Callout--') : data.typeClass##">
+    <div class="ms-Callout-main">
+      <div class="ms-Callout-header">
+        <p class="ms-Callout-title">##=data.title##</p>
+      </div>
+      ##if(data.typeClass instanceof Array ? data.typeClass.includes('close') : data.typeClass != 'close') {##
+      <button class="ms-Callout-close" data-bridge-event="##:function(e, edata, tmplElem) {
+        tmplElem.remove();
+      }##"><i class="ms-Icon ms-Icon--x"></i></button>
+      ##}##
+      <div class="ms-Callout-inner">
+        <div class="ms-Callout-content">
+          <p class="ms-Callout-subText">
+          ##if (typeof data.content === 'string') {## 
+            ##=data.content##
+          ##} else {##
+            ##%data.content##
+          ##}##
+          </p>
+        </div>
+        <div class="ms-Callout-actions">
+          ##%data.actions##
+        </div>
+      </div>
+    </div>
+  </div>
+
+</template>
+
+<template id="ms-Toggle">
+  ##
+  var loadEvent = function(target, edata, tmplElem) {
+    tmplElem.input = target;
+    tmplScope.input = target;
+  }
+  ##
+  <div class="ms-Toggle ms-Toggle--##=data.typeClass## ##=data.disabled ? 'is-disabled' : ''##" data-bridge-event="##:data.event##">
+    <span class="ms-Toggle-description">##=data.description##</span>
+    &lt;input type="checkbox" id="##=data.id##" class="ms-Toggle-input" data-bridge-load="##:loadEvent##" data-bridge-event="##:data.inputEvent##" ##=data.checked ? 'checked' : ''## &gt;
+    <label for="##=data.id##" class="ms-Toggle-field">
+      <span class="ms-Label ms-Label--off">##=data.offLabel##</span>
+      <span class="ms-Label ms-Label--on">##=data.onLabel##</span>
+    </label>
+  </div>
+</template>
+
+
+
+<template id="ms-DatePicker">
+  
+  ##
+  (function ($) {
+
+    /**
+     * DatePicker Plugin
+     */
+  
+    $.fn.DatePicker = function (options) {
+  
+      return this.each(function () {
+  
+        /** Set up variables and run the Pickadate plugin. */
+        var $datePicker = $(this);
+        var $dateField = $datePicker.find('.ms-TextField-field').pickadate($.extend({
+          // Strings and translations.
+          weekdaysShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  
+          // Don't render the buttons
+          today: '',
+          clear: '',
+          close: '',
+  
+          // Events
+          onStart: function() {
+            initCustomView($datePicker);
+          },
+  
+          // Classes
+          klass: {
+  
+            // The element states
+            input: 'ms-DatePicker-input',
+            active: 'ms-DatePicker-input--active',
+  
+            // The root picker and states
+            picker: 'ms-DatePicker-picker',
+            opened: 'ms-DatePicker-picker--opened',
+            focused: 'ms-DatePicker-picker--focused',
+  
+            // The picker holder
+            holder: 'ms-DatePicker-holder',
+  
+            // The picker frame, wrapper, and box
+            frame: 'ms-DatePicker-frame',
+            wrap: 'ms-DatePicker-wrap',
+            box: 'ms-DatePicker-dayPicker',
+  
+            // The picker header
+            header: 'ms-DatePicker-header',
+  
+            // Month & year labels
+            month: 'ms-DatePicker-month',
+            year: 'ms-DatePicker-year',
+  
+            // Table of dates
+            table: 'ms-DatePicker-table',
+  
+            // Weekday labels
+            weekdays: 'ms-DatePicker-weekday',
+  
+            // Day states
+            day: 'ms-DatePicker-day',
+            disabled: 'ms-DatePicker-day--disabled',
+            selected: 'ms-DatePicker-day--selected',
+            highlighted: 'ms-DatePicker-day--highlighted',
+            now: 'ms-DatePicker-day--today',
+            infocus: 'ms-DatePicker-day--infocus',
+            outfocus: 'ms-DatePicker-day--outfocus',
+  
+          }
+        },options||{}));
+        var $picker = $dateField.pickadate('picker');
+  
+        /** Respond to built-in picker events. */
+        $picker.on({
+          render: function() {
+            updateCustomView($datePicker);
+          },
+          open: function() {
+            scrollUp($datePicker);
+          }
+        });
+  
+      });
+    };
+  
+    /**
+     * After the Pickadate plugin starts, this function
+     * adds additional controls to the picker view.
+     */
+    function initCustomView($datePicker) {
+  
+      /** Get some variables ready. */
+      var $monthControls = $datePicker.find('.ms-DatePicker-monthComponents');
+      var $goToday = $datePicker.find('.ms-DatePicker-goToday');
+      var $monthPicker = $datePicker.find('.ms-DatePicker-monthPicker');
+      var $yearPicker = $datePicker.find('.ms-DatePicker-yearPicker');
+      var $pickerWrapper = $datePicker.find('.ms-DatePicker-wrap');
+      var $picker = $datePicker.find('.ms-TextField-field').pickadate('picker');
+  
+      /** Move the month picker into position. */
+      $monthControls.appendTo($pickerWrapper);
+      $goToday.appendTo($pickerWrapper);
+      $monthPicker.appendTo($pickerWrapper);
+      $yearPicker.appendTo($pickerWrapper);
+  
+      /** Update the custom view. */
+      updateCustomView($datePicker);
+  
+      /** Move back one month. */
+      $monthControls.on('click', '.js-prevMonth', function(event) {
+        event.preventDefault();
+        var newMonth = $picker.get('highlight').month - 1;
+        changeHighlightedDate($picker, null, newMonth, null);
+      });
+  
+      /** Move ahead one month. */
+      $monthControls.on('click', '.js-nextMonth', function(event) {
+        event.preventDefault();
+        var newMonth = $picker.get('highlight').month + 1;
+        changeHighlightedDate($picker, null, newMonth, null);
+      });
+  
+      /** Move back one year. */
+      $monthPicker.on('click', '.js-prevYear', function(event) {
+        event.preventDefault();
+        var newYear = $picker.get('highlight').year - 1;
+        changeHighlightedDate($picker, newYear, null, null);
+      });
+  
+      /** Move ahead one year. */
+      $monthPicker.on('click', '.js-nextYear', function(event) {
+        event.preventDefault();
+        var newYear = $picker.get('highlight').year + 1;
+        changeHighlightedDate($picker, newYear, null, null);
+      });
+  
+      /** Move back one decade. */
+      $yearPicker.on('click', '.js-prevDecade', function(event) {
+        event.preventDefault();
+        var newYear = $picker.get('highlight').year - 10;
+        changeHighlightedDate($picker, newYear, null, null);
+      });
+  
+      /** Move ahead one decade. */
+      $yearPicker.on('click', '.js-nextDecade', function(event) {
+        event.preventDefault();
+        var newYear = $picker.get('highlight').year + 10;
+        changeHighlightedDate($picker, newYear, null, null);
+      });
+  
+      /** Go to the current date, shown in the day picking view. */
+      $goToday.click(function(event) {
+        event.preventDefault();
+  
+        /** Select the current date, while keeping the picker open. */
+        var now = new Date();
+        $picker.set('select', [now.getFullYear(), now.getMonth(), now.getDate()]);
+  
+        /** Switch to the default (calendar) view. */
+        $datePicker.removeClass('is-pickingMonths').removeClass('is-pickingYears');
+  
+      });
+  
+      /** Change the highlighted month. */
+      $monthPicker.on('click', '.js-changeDate', function(event) {
+        event.preventDefault();
+  
+        /** Get the requested date from the data attributes. */
+        var newYear = $(this).attr('data-year');
+        var newMonth = $(this).attr('data-month');
+        var newDay = $(this).attr('data-day');
+  
+        /** Update the date. */
+        changeHighlightedDate($picker, newYear, newMonth, newDay);
+  
+        /** If we've been in the "picking months" state on mobile, remove that state so we show the calendar again. */
+        if ($datePicker.hasClass('is-pickingMonths')) {
+          $datePicker.removeClass('is-pickingMonths');
+        }
+      });
+  
+      /** Change the highlighted year. */
+      $yearPicker.on('click', '.js-changeDate', function(event) {
+        event.preventDefault();
+  
+        /** Get the requested date from the data attributes. */
+        var newYear = $(this).attr('data-year');
+        var newMonth = $(this).attr('data-month');
+        var newDay = $(this).attr('data-day');
+  
+        /** Update the date. */
+        changeHighlightedDate($picker, newYear, newMonth, newDay);
+  
+        /** If we've been in the "picking years" state on mobile, remove that state so we show the calendar again. */
+        if ($datePicker.hasClass('is-pickingYears')) {
+          $datePicker.removeClass('is-pickingYears');
+        }
+      });
+  
+      /** Switch to the default state. */
+      $monthPicker.on('click', '.js-showDayPicker', function() {
+        $datePicker.removeClass('is-pickingMonths');
+        $datePicker.removeClass('is-pickingYears');
+      });
+  
+      /** Switch to the is-pickingMonths state. */
+      $monthControls.on('click', '.js-showMonthPicker', function() {
+        $datePicker.toggleClass('is-pickingMonths');
+      });
+  
+      /** Switch to the is-pickingYears state. */
+      $monthPicker.on('click', '.js-showYearPicker', function() {
+        $datePicker.toggleClass('is-pickingYears');
+      });
+  
+    }
+  
+    /** Change the highlighted date. */
+    function changeHighlightedDate($picker, newYear, newMonth, newDay) {
+  
+      /** All letiables are optional. If not provided, default to the current value. */
+      if (typeof newYear === "" || newYear === null) {
+        newYear = $picker.get("highlight").year;
+      }
+      if (typeof newMonth === "" || newMonth === null) {
+        newMonth = $picker.get("highlight").month;
+      }
+      if (typeof newDay === "" || newDay === null) {
+        newDay = $picker.get("highlight").date;
+      }
+  
+      /** Update it. */
+      $picker.set('highlight', [newYear, newMonth, newDay]);
+  
+    }
+  
+  
+    /** Whenever the picker renders, do our own rendering on the custom controls. */
+    function updateCustomView($datePicker) {
+  
+      /** Get some variables ready. */
+      var $monthPicker = $datePicker.find('.ms-DatePicker-monthPicker');
+      var $yearPicker = $datePicker.find('.ms-DatePicker-yearPicker');
+      var $picker = $datePicker.find('.ms-TextField-field').pickadate('picker');
+  
+      /** Set the correct year. */
+      $monthPicker.find('.ms-DatePicker-currentYear').text($picker.get('view').year);
+  
+      /** Highlight the current month. */
+      $monthPicker.find('.ms-DatePicker-monthOption').removeClass('is-highlighted');
+      $monthPicker.find('.ms-DatePicker-monthOption[data-month="' + $picker.get('highlight').month + '"]').addClass('is-highlighted');
+  
+      /** Generate the grid of years for the year picker view. */
+  
+        // Start by removing any existing generated output. */
+      $yearPicker.find('.ms-DatePicker-currentDecade').remove();
+      $yearPicker.find('.ms-DatePicker-optionGrid').remove();
+  
+      // Generate the output by going through the years.
+      var startingYear = $picker.get('highlight').year - 11;
+      var decadeText = startingYear + " - " + (startingYear + 11);
+      var output = '<div class="ms-DatePicker-currentDecade">' + decadeText + '</div>';
+      output += '<div class="ms-DatePicker-optionGrid">';
+      for (var year = startingYear; year < (startingYear + 12); year++) {
+        output += '<span class="ms-DatePicker-yearOption js-changeDate" data-year="' + year + '">' + year +'</span>';
+      }
+      output += '</div>';
+  
+      // Output the title and grid of years generated above.
+      $yearPicker.append(output);
+  
+      /** Highlight the current year. */
+      $yearPicker.find('.ms-DatePicker-yearOption').removeClass('is-highlighted');
+      $yearPicker.find('.ms-DatePicker-yearOption[data-year="' + $picker.get('highlight').year + '"]').addClass('is-highlighted');
+    }
+    
+    /** Scroll the page up so that the field the date picker is attached to is at the top. */
+    function scrollUp($datePicker) {
+      $('html, body').animate({
+        scrollTop: $datePicker.offset().top
+      }, 367);
+    }
+  
+  })(jQuery);
+  ##
+  
+  
+  <div class="ms-DatePicker">
+    <div class="ms-TextField"><label class="ms-Label">Start date</label> <i class="ms-DatePicker-event ms-Icon ms-Icon--event"></i> <input class="ms-TextField-field" type="text" placeholder="Select a date…"></div>
+    <div class="ms-DatePicker-monthComponents"><span class="ms-DatePicker-nextMonth js-nextMonth"><i class="ms-Icon ms-Icon--chevronRight"></i></span> <span class="ms-DatePicker-prevMonth js-prevMonth"><i class="ms-Icon ms-Icon--chevronLeft"></i></span>
+      <div class="ms-DatePicker-headerToggleView js-showMonthPicker"></div>
+    </div>
+    <span class="ms-DatePicker-goToday js-goToday">Go to today</span>
+    <div class="ms-DatePicker-monthPicker">
+      <div class="ms-DatePicker-header">
+        <div class="ms-DatePicker-yearComponents"><span class="ms-DatePicker-nextYear js-nextYear"><i class="ms-Icon ms-Icon--chevronRight"></i></span> <span class="ms-DatePicker-prevYear js-prevYear"><i class="ms-Icon ms-Icon--chevronLeft"></i></span></div>
+        <div class="ms-DatePicker-currentYear js-showYearPicker"></div>
+      </div>
+      <div class="ms-DatePicker-optionGrid"><span class="ms-DatePicker-monthOption js-changeDate" data-month="0">Jan</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="1">Feb</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="2">Mar</span> <span class="ms-DatePicker-monthOption js-changeDate"
+          data-month="3">Apr</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="4">May</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="5">Jun</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="6">Jul</span>      <span class="ms-DatePicker-monthOption js-changeDate" data-month="7">Aug</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="8">Sep</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="9">Oct</span>
+        <span
+          class="ms-DatePicker-monthOption js-changeDate" data-month="10">Nov</span> <span class="ms-DatePicker-monthOption js-changeDate" data-month="11">Dec</span></div>
+    </div>
+    <div class="ms-DatePicker-yearPicker">
+      <div class="ms-DatePicker-decadeComponents"><span class="ms-DatePicker-nextDecade js-nextDecade"><i class="ms-Icon ms-Icon--chevronRight"></i></span> <span class="ms-DatePicker-prevDecade js-prevDecade"><i class="ms-Icon ms-Icon--chevronLeft"></i></span></div>
+    </div>
+  </div>
+</template>
+
+<style>
+  .ms-NavBar-fixedMenu {
+    float: left;
+    height: 40px;
+    line-height: 40px;
+    margin-right: 10px;
+  }
+</style>
+
+<script>
+var isEdge = function() {
+  var myNav = navigator.userAgent.toLowerCase();
+  return (myNav.indexOf('edge') != -1) ? true : false;
+}
+
+if (bridge.tmplTool) {
+  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
+  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML);
+  console.log('bridge.Office-UI-Fabric.components.html');
+}
+</script>
+
+</body>

@@ -1,0 +1,259 @@
+
+<body>
+<template id="msbr-Login">
+  <div id="login">
+    ##
+    var br = bridge;
+    var mode = data.mode || 'login';
+    var loginModel = {
+    	signup: {click: function(e, eData, tmplElem) {
+        tmplScope.data.mode = 'signup';
+        tmplScope.element.render(tmplScope.data);
+    	}},
+    	signupCancel: {click: function(e, data) {
+        tmplScope.data.mode = 'login';
+    	  tmplScope.element.render(tmplScope.data);
+    	}},
+    }
+
+    var TextField = bridge.tmpl('ms-TextField');
+    var TextFieldList = bridge.tmpl('ms-TextFieldList');
+    var Button = bridge.tmpl('ms-Button');
+    var Link = bridge.tmpl('ms-Link');
+
+    if (mode == 'info') {##
+    <div class="well form-signin panel-body">
+      <h3>Info</h3>
+      ##%data.info##
+    </div>
+    ##} else if (mode == 'signup') {##
+    <div class="form-signin">
+      <h3>Sign Up</h3>
+      ##%TextFieldList({items: [
+        {label: 'ID', type: 'text', name:'login_id', typeClass: 'placeholder'},
+        {label: 'Password', type: 'password', name:'password', typeClass: 'placeholder'},
+        {label: 'Confirm Password', type: 'password', name:'password2', typeClass: 'placeholder'},
+        {label: 'Name', type: 'text', name:'name', typeClass: 'placeholder'},
+        {label: 'E-mail', type: 'email', name:'email', typeClass: 'placeholder'}
+      ]})##
+      <br/>
+      ##%Button({label: 'OK', typeClass: 'primary', event: data.signupInsert})##
+      ##%Button({label: 'Cancel', typeClass: '', event: loginModel.signupCancel})##
+    </div>
+    ##} else if(mode == 'login') {##
+    <div class="well form-signin panel-body">
+      <h3>Login</h3>
+      ##%TextFieldList({items: [
+          {label: 'ID', type:'text', name:'login_id', typeClass: 'placeholder'},
+          {label: 'Password', type: 'password', name:'password', typeClass: 'placeholder'}
+      ]})##
+      <br/>
+      ##%Button({label: 'Login', typeClass: 'primary', event: data.doLogin})##
+      ##%Button({label: 'Sign Up', typeClass: '', event: loginModel.signup})##
+    </div>
+    ##}##
+  </div>
+</template>
+
+<template id="msbr-CrudTable">
+  ##
+  var fieldData = data.fieldData;
+  var tableData = data.table || {};
+  var addButton = data.addButton || {};
+  var attachEditor = data.attachEditor || function(formElem, formOkElem, formCancelElem) {
+    
+  };
+  var conn = new bridge.Connector(data.conn);
+
+  var listTable = bridge.tmpl('ms-Table')({
+    metaData: tableData.metaData,
+    rowSelectEvent: tableData.rowSelectEvent || function(e, edata) {
+      var getEditorElem = function() {
+        return editorElem;
+      }
+      var elements = createEditor(getEditorElem, edata.sel);
+      var editorElem = attachEditor(elements.formElem, elements.formOkElem, elements.formCancelElem);
+    }
+  });
+
+  var listTableRrflash = function(callback) {
+    conn.reset()
+        .reqList('list', data.trtr_id)
+        .request(function(result) {
+      if (result.error) {
+        alert(result.error);
+        return;
+      }
+      listTable = listTable.reflash({items: result.list});
+      if (callback) callback(); 
+    });
+  }
+  listTableRrflash();
+
+  var createEditor = function(getEditorElem, formData) {
+
+      var formElem = tmpl.msbr.Form({fieldData: fieldData, formData: formData || null});
+      var formOkElem = tmpl.ms.Button({label: data.okLabel || 'OK', typeClass: 'primary', event: data.okEvent || function() {
+        var formObj = bridge.form.editor(formElem, fieldData);
+        
+        conn.reset()
+            .reqSave('saveResult', formObj.values)
+            .request(function(result) {
+          if (result.error) {
+            alert(result.error);
+            return;
+          }
+          listTableRrflash(function() {
+            if (getEditorElem) getEditorElem().remove();
+          });
+        });
+      }});
+
+      var formCancelElem = tmpl.ms.Button({label: data.cancelLabel || 'Cancel', event: data.cancelEvent || function() {
+        if (getEditorElem) getEditorElem().remove();
+      }});
+
+      return {
+        formElem: formElem,
+        formOkElem: formOkElem,
+        formCancelElem: formCancelElem
+      }
+  }
+  
+  var addButton = bridge.tmpl('ms-Button')({
+    label: addButton.label || 'ADD',
+    typeClass: addButton.typeClass || 'primary',
+    event: addButton.event || function() {
+      var getEditorElem = function() {
+        return editorElem;
+      }
+      var elements = createEditor(getEditorElem, null);
+      var editorElem = attachEditor(elements.formElem, elements.formOkElem, elements.formCancelElem);
+    }
+  });
+  
+  ##
+  <div class="msbr-CrudTable ##=data.class##" style="##=data.style##">
+    ##%[listTable, addButton]##
+  </div>
+</template>
+
+
+
+
+<template id="msbr-JsonEditor">
+  ##
+  var json = data.json || {};
+  var aceArea = document.createElement('div');
+  aceArea.innerText = JSON.stringify(json);
+
+  var diffTable = tmpl.ms.Table({});
+
+  var editor = ace.edit(aceArea);
+  editor.setTheme("ace/theme/monokai");
+  editor.getSession().setMode("ace/mode/json");
+  editor.on("change", function(e) {
+    var editerValue = null;
+    try {
+      editerValue = new Function('return (' + editor.getValue() + ')')();
+    } catch(e) {
+      diffTable = diffTable.render({items: [{error: e}]});
+      return;
+    }
+
+    diff = bridge.form.diffObject(json, editerValue);
+    var diffList = new Array();
+    diff.keys.forEach(function(key) {
+      diffList.push({key: key, before: diff.before[key], after: diff.after[key]});
+    });
+    
+    diffTable = diffTable.render({items: diffList});
+  });
+
+
+  ##
+  <div style="height: 100%">
+    <div style="height: calc(60% - 4px);">
+      ##%aceArea##
+    </div>
+    <div style="height: calc(40%);">
+      ##%diffTable##
+    </div>
+  </div>
+</template>
+
+<template id="msbr-Form">
+  <div class="##=data.class##" style="##=data.style##">
+  ##%data.header##
+  ##
+  var TextField = bridge.tmpl('ms-TextField');
+  var formData = data.formData || {};
+
+  var fieldData = data.fieldData;
+  var fieldArray = new Array();
+  if (!(fieldData instanceof Array)) {
+    var label = null;
+    var selected = null;
+    if (formData) Object.keys(fieldData || formData).forEach(function(key) {
+      var selected = fieldData[key];
+
+      if (selected instanceof Function) return;
+      fieldArray.push({label: fieldData ? selected.label : key,
+                      name: key,
+                      value: formData[key],
+                      type: selected.type,
+                      required: selected.required,
+                      disabled: selected.disabled,
+                      isFocused: selected.isFocused,
+                      multiline: selected.multiline,
+                      underlined: selected.underlined,
+                      event: selected.event,
+                      className: selected.className,
+                      element: selected.element,
+                      tmpl: selected.tmpl,
+                      //options: selected.options,
+                      data: formData});
+    });
+    
+  } else {
+    fieldArray = fieldData;
+  }
+  fieldArray.forEach(function(selected, index) {
+        if (selected instanceof Function) return;
+        selected.className = selected.className || data.className;
+        selected.required = selected.required || data.required;
+        selected.disabled = selected.disabled || data.disabled;
+        selected.isFocused = selected.isFocused || data.isFocused;
+        selected.multiline = selected.multiline || data.multiline;
+        selected.underlined = selected.underlined || data.underlined;
+        selected.input = selected.input || data.input;
+        ##
+    ##%selected.element ? selected.element :
+          selected.tmpl ? selected.tmpl(selected, formData, data, tmplScope) : TextField(selected.value ? selected : Object.assign({}, selected, {value: formData[selected.name]}))##
+  ##});##
+  ##%data.footer##
+  </div>
+  ###
+  var formObj = bridge.form.editor(this, fieldData);
+  tmplScope.formObj = formObj;
+  tmplScope.getFormObj = function() {
+    return tmplScope.formObj = bridge.form.editor(tmplScope.element, fieldData);
+  }
+  ##
+</template>
+
+
+<script>
+var isEdge = function() {
+  var myNav = navigator.userAgent.toLowerCase();
+  return (myNav.indexOf('edge') != -1) ? true : false;
+}
+
+if (bridge.tmplTool) {
+  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
+  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML);
+  console.log('bridge.Office-UI-Fabric.extend.components.html');
+}
+</script>
+
+</body>

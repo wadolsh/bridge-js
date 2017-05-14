@@ -1,0 +1,2471 @@
+<!-- Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE in the project root for license information. -->
+
+<script src="/repo/systemjs/system.js"></script>
+<script src="/repo/fabric/4.1.0/fabric.utilities.system.js"></script>
+<link rel="stylesheet" href="/repo/fabric/4.1.0/fabric.min.css" />
+
+<body>
+<template id="FabricFunction" data-bridge-load-script="true">
+  <style id="style-Fabric">
+    ol,ul{list-style:none}
+  </style>
+  ##
+  window.Fabric = Object.assign(window.Fabric || {}, {
+    prop: function(props) {
+      if (!props) return '';
+      var propStrArray = [];
+      Object.keys(props).forEach(function(key) {
+        if (props[key]) propStrArray.push(key + '="' + props[key] + '"');
+      });
+      return propStrArray.join(' ');
+    },
+    css: function() {
+      var args = (arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments));
+      var cssStrArray = [];
+      args.forEach(function(props) {
+        if (!props) return; 
+        if (typeof props === 'string') return cssStrArray.push(props);
+        Object.keys(props).forEach(function(key) {
+          if (props[key]) cssStrArray.push(key);
+        });
+      });
+      return cssStrArray.join(' ');
+    },
+    style: function(styles) {
+      var styleStrArray = [];
+      Object.keys(styles).forEach(function(key) {
+        if (styles[key]) styleStrArray.push(key + ': ' + styles[key] + ';');
+      });
+      return styleStrArray.join(' ');
+    },
+    htmlTag: function(tagName, attrs, contents) {
+          attrs = attrs || [];
+          var element = document.createElement(tagName);
+          Object.keys(attrs).forEach(function(key) {
+              //element.setAttribute(key, attrs[key]);
+              element[key] = attrs[key];
+          });
+          if (contents) {
+            if (contents instanceof Array) {
+              contents.forEach(function(content) {
+                element.appendChild(content.element || content);
+              });
+            } else if (typeof contents === 'string') {
+              element.innerHTML = contents;
+            } else {
+              element.appendChild(contents.element || contents);
+            }
+          }
+          return element;
+    },
+    is: function(data, isKey) {
+      if (isKey instanceof Array) {
+        var array = new Array();
+        for (var i=0, size=isKey.length; i < size; i++) {
+          if (data[isKey[i]]) array.push(isKey[i]);
+        }
+        isKey = array.filter(Boolean).join(' is-');
+      }
+      return isKey ? 'is-' + isKey : '';
+    },
+    ListItem: {
+      toggleSelection: function(e, edata, tmplElem) {
+        tmplElem.classList.toggle('is-selected');
+        var isSelected = tmplElem.classList.contains('is-selected');
+        if (edata.selectedFunc && isSelected) {
+          edata.selectedFunc(e, edata, tmplElem);
+        } else if (edata.unSelectedFunc) {
+          edata.unSelectedFunc(e, edata, tmplElem);
+        }
+      }
+    }
+  });
+  
+  KeyCodes = {
+    a: 65,
+    backspace: 8,
+    comma: 188,
+    del: 46,
+    down: 40,
+    end: 35,
+    enter: 13,
+    escape: 27,
+    home: 36,
+    left: 37,
+    pageDown: 34,
+    pageUp: 33,
+    right: 39,
+    semicolon: 186,
+    space: 32,
+    tab: 9,
+    up: 38
+  }
+
+  ##
+</template>
+
+<template id="ms-Button">
+  <style id="style-ms-Button">
+    .ms-Button{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;font-weight:400;box-sizing:border-box;margin:0;padding:0;box-shadow:none;color:#333333;background-color:#f4f4f4;border:1px solid #f4f4f4;cursor:pointer;display:inline-block;height:32px;min-width:80px;padding:4px 20px 6px}
+    .ms-Button::-moz-focus-inner{border:0}
+    .ms-Button{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-Button:focus:after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    .ms-Button:hover{background-color:#eaeaea;border-color:#eaeaea}
+    .ms-Button:hover .ms-Button-label{color:#000000}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Button:hover{color:#1AEBFF;border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Button:hover{color:#37006E;border-color:#37006E}
+    }
+    .ms-Button:focus{background-color:#eaeaea;border-color:#f4f4f4;outline:1px solid transparent}
+    .ms-Button:focus .ms-Button-label{color:#000000}
+    .ms-Button:active{background-color:#0078d7;border-color:#0078d7}
+    .ms-Button:active .ms-Button-label{color:#ffffff}
+    .ms-Button.is-disabled,.ms-Button:disabled{background-color:#f4f4f4;border-color:#f4f4f4;cursor:default}
+    .ms-Button.is-disabled .ms-Button-label,.ms-Button:disabled .ms-Button-label{color:#a6a6a6}
+    .ms-Button.is-disabled:focus,.ms-Button.is-disabled:hover,.ms-Button:disabled:focus,.ms-Button:disabled:hover{outline:0}
+    .ms-Button-label{color:#333333;font-weight:600;font-size:14px}
+    .ms-Button-description,.ms-Button-icon{display:none}
+    .ms-Fabric.is-focusVisible .ms-Button:focus{color:#000000}
+    .ms-Fabric.is-focusVisible .ms-Button:focus:before{border-color:#0078d7}
+    .ms-Button.ms-Button--primary{background-color:#0078d7;border-color:#0078d7}
+    .ms-Button.ms-Button--primary .ms-Button-label{color:#ffffff}
+    .ms-Button.ms-Button--primary:hover{background-color:#005a9e;border-color:#005a9e}
+    .ms-Button.ms-Button--primary:focus{background-color:#005a9e;border-color:#0078d7}
+    .ms-Button.ms-Button--primary:active{background-color:#0078d7;border-color:#0078d7}
+    .ms-Button.ms-Button--primary.is-disabled,.ms-Button.ms-Button--primary:disabled{background-color:#f4f4f4;border-color:#f4f4f4}
+    .ms-Button.ms-Button--primary.is-disabled .ms-Button-label,.ms-Button.ms-Button--primary:disabled .ms-Button-label{color:#a6a6a6}
+    .ms-Fabric.is-focusVisible .ms-Button.ms-Button--primary:focus{color:#ffffff}
+    .ms-Fabric.is-focusVisible .ms-Button.ms-Button--primary:focus:before{border-color:#004578}
+    .ms-Button.ms-Button--hero{background-color:transparent;border:0;height:auto}
+    .ms-Button.ms-Button--hero .ms-Button-icon{color:#0078d7;display:inline-block;padding-top:5px;font-size:20px;line-height:1}
+    html[dir=ltr] .ms-Button.ms-Button--hero .ms-Button-icon{margin-right:8px}
+    html[dir=rtl] .ms-Button.ms-Button--hero .ms-Button-icon{margin-left:8px}
+    .ms-Button.ms-Button--hero .ms-Button-label{color:#0078d7;font-size:21px;font-weight:100;vertical-align:top}
+    .ms-Button.ms-Button--hero:focus .ms-Button-icon,.ms-Button.ms-Button--hero:hover .ms-Button-icon{color:#005a9e}
+    .ms-Button.ms-Button--hero:focus .ms-Button-label,.ms-Button.ms-Button--hero:hover .ms-Button-label{color:#004578}
+    .ms-Button.ms-Button--hero:active .ms-Button-icon{color:#0078d7}.ms-Button.ms-Button--hero:active .ms-Button-label{color:#0078d7}
+    .ms-Button.ms-Button--hero.is-disabled .ms-Button-icon,.ms-Button.ms-Button--hero:disabled .ms-Button-icon{color:#c8c8c8}
+    .ms-Button.ms-Button--hero.is-disabled .ms-Button-label,.ms-Button.ms-Button--hero:disabled .ms-Button-label{color:#a6a6a6}
+    .ms-Button.ms-Button--compound{display:block;height:auto;max-width:280px;min-height:72px;padding:20px}
+    .ms-Button.ms-Button--compound .ms-Button-label{display:block;color:#000000;margin-top:-5px}
+    html[dir=ltr] .ms-Button.ms-Button--compound .ms-Button-label{text-align:left}
+    html[dir=rtl] .ms-Button.ms-Button--compound .ms-Button-label{text-align:right}
+    .ms-Button.ms-Button--compound .ms-Button-description{color:#666666;display:block;font-size:12px;position:relative;top:3px}
+    html[dir=ltr] .ms-Button.ms-Button--compound .ms-Button-description{text-align:left}
+    html[dir=rtl] .ms-Button.ms-Button--compound .ms-Button-description{text-align:right}
+    .ms-Button.ms-Button--compound:hover .ms-Button-description{color:#212121}
+    .ms-Button.ms-Button--compound:focus{border-color:#0078d7;background-color:#f4f4f4}
+    .ms-Button.ms-Button--compound:focus .ms-Button-label{color:#333333}
+    .ms-Button.ms-Button--compound:focus .ms-Button-description{color:#666666}
+    .ms-Button.ms-Button--compound:active{background-color:#0078d7}
+    .ms-Button.ms-Button--compound:active .ms-Button-description,.ms-Button.ms-Button--compound:active .ms-Button-label{color:#ffffff}
+    .ms-Button.ms-Button--compound.is-disabled .ms-Button-description,.ms-Button.ms-Button--compound.is-disabled .ms-Button-label,.ms-Button.ms-Button--compound:disabled .ms-Button-description,.ms-Button.ms-Button--compound:disabled .ms-Button-label{color:#a6a6a6}
+    .ms-Button.ms-Button--compound.is-disabled:active,.ms-Button.ms-Button--compound.is-disabled:focus,.ms-Button.ms-Button--compound:disabled:active,.ms-Button.ms-Button--compound:disabled:focus{border-color:#f4f4f4;background-color:#f4f4f4}
+    .ms-Button.ms-Button--compound.is-disabled:active .ms-Button-description,.ms-Button.ms-Button--compound.is-disabled:active .ms-Button-label,.ms-Button.ms-Button--compound.is-disabled:focus .ms-Button-description,.ms-Button.ms-Button--compound.is-disabled:focus .ms-Button-label,.ms-Button.ms-Button--compound:disabled:active .ms-Button-description,.ms-Button.ms-Button--compound:disabled:active .ms-Button-label,.ms-Button.ms-Button--compound:disabled:focus .ms-Button-description,.ms-Button.ms-Button--compound:disabled:focus .ms-Button-label{color:#a6a6a6}
+    .ms-Button.ms-Button--command{background-color:transparent;border:none;height:40px;min-width:0;padding:0 8px}
+    html[dir=ltr] .ms-Button.ms-Button--command{text-align:left}
+    html[dir=rtl] .ms-Button.ms-Button--command{text-align:right}
+    .ms-Button.ms-Button--command .ms-Icon{line-height:40px}
+    .ms-Button.ms-Button--command .ms-Button-label{color:#333333;line-height:40px}
+    .ms-Button.ms-Button--command .ms-Button-icon{vertical-align:top;color:#0078d7;display:inline-block;position:relative;font-size:16px}
+    html[dir=ltr] .ms-Button.ms-Button--command .ms-Button-icon{text-align:left}
+    html[dir=rtl] .ms-Button.ms-Button--command .ms-Button-icon{text-align:right}
+    html[dir=ltr] .ms-Button.ms-Button--command .ms-Button-icon{margin-right:8px}
+    html[dir=rtl] .ms-Button.ms-Button--command .ms-Button-icon{margin-left:8px}
+    .ms-Button.ms-Button--command .ms-Button-label{font-weight:400}
+    .ms-Button.ms-Button--command:focus .ms-Button-icon,.ms-Button.ms-Button--command:focus .ms-Button-label,.ms-Button.ms-Button--command:hover .ms-Button-icon,.ms-Button.ms-Button--command:hover .ms-Button-label{color:#004578}
+    .ms-Button.ms-Button--command:active .ms-Button-icon,.ms-Button.ms-Button--command:active .ms-Button-label{color:#0078d7}
+    .ms-Button.ms-Button--command.is-disabled .ms-Button-icon,.ms-Button.ms-Button--command:disabled .ms-Button-icon{color:#c8c8c8}
+    .ms-Button.ms-Button--command.is-disabled .ms-Button-label,.ms-Button.ms-Button--command:disabled .ms-Button-label{color:#a6a6a6}
+    .ms-Button.ms-Button--icon{background-color:transparent;color:#666666;padding:0;min-width:auto;height:auto;border:0}
+    .ms-Button.ms-Button--icon::-moz-focus-inner{border:0}.ms-Button.ms-Button--icon{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-Button.ms-Button--icon:focus:after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}.ms-Button.ms-Button--icon:active,.ms-Button.ms-Button--icon:hover{background-color:transparent;color:#333333}
+    .ms-Button.ms-Button--icon:focus{background-color:transparent}
+    .ms-Button.ms-Button--icon .ms-Icon{font-size:16px;padding:8px}
+    .ms-Button.ms-Button--icon .ms-Button-icon{display:inline}
+    .ms-Button.ms-Button--icon.is-disabled,.ms-Button.ms-Button--icon:disabled{color:#c8c8c8;background-color:transparent}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Button.ms-Button--icon{color:#fff100}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Button.ms-Button--icon{color:#00188f}
+    }
+    .ms-Button.ms-Button--primary.disabled{background-color:#f4f4f4;border-color:#f4f4f4;pointer-events:none;cursor:default}
+    .ms-Button.ms-Button--primary.disabled .ms-Button-label{color:#a6a6a6}
+    html[dir=ltr] .ms-Button+.ms-Button{margin-left:6px}
+    html[dir=rtl] .ms-Button+.ms-Button{margin-right:6px}
+    html[dir=ltr] .ms-Button.ms-Button--command+.ms-Button.ms-Button--command{margin-left:14px}
+    html[dir=rtl] .ms-Button.ms-Button--command+.ms-Button.ms-Button--command{margin-right:14px}
+    a.ms-Button{text-decoration:none;text-align:center}
+  </style>
+  ##
+  var buttonType = data.buttonType;
+  var className = data.className;
+  var disabled = data.disabled;
+  var href = data.href;
+  var label = data.label;
+  var children = data.children;
+  var renderAsAnchor = !!href;
+  var tag = renderAsAnchor ? 'a' : 'button';
+  
+  var icon = data.icon;
+  
+  var description = data.description;
+  var ariaLabel = data.ariaLabel;
+  var ariaDescription = data.ariaDescription;
+  
+  var _id = tmplScope._id;
+  var labelId = _id + 'labelId';
+  var descriptionId = _id + 'descriptionId';
+  var ariaDescriptionId = _id + 'ariaDescriptionId';
+  
+  var prop = Fabric.prop({
+    href: data.href,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabel ? null : labelId,
+    'aria-describedby': ariaDescription ? ariaDescriptionId : description ? descriptionId : null,
+  });
+  ##
+  
+  &lt;##=tag## class="##=Fabric.css('ms-Button', {
+    'ms-Button--primary': buttonType === 'primary',
+    'ms-Button--hero': buttonType === 'hero',
+    'ms-Button--compound': buttonType === 'compound',
+    'ms-Button--command': buttonType === 'command',
+    'ms-Button--icon': buttonType === 'icon',
+    'disabled': (renderAsAnchor && disabled)
+  }, className)##" style="##=data.style##" ##=prop## ##=disabled ? 'disabled' : null## data-bridge-event="##:data.event##"&gt;
+    ##if (icon) {##<span class="ms-Button-icon"><i class="ms-Icon ms-Icon--##=icon##"></i></span>##}##
+    <span class="ms-Button-label" id="##=labelId##">##=label####%children##</span>
+    ##if (description) {##<span class="ms-Button-description" id="##=descriptionId##">##=description##</span>##}##
+    ##if (ariaDescription) {##<span class="ms-u-screenReaderOnly" id="##=ariaDescriptionId##">##=ariaDescription##</span>##}##
+  &lt;/##=tag##&gt;
+</template>
+
+<template id="ms-Dialog">
+  <style id="style-ms-Dialog">
+    .ms-Dialog{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;background-color:transparent;position:fixed;height:100%;width:100%;top:0;display:block;line-height:100vh;text-align:center}
+    html[dir=ltr] .ms-Dialog{left:0}
+    html[dir=rtl] .ms-Dialog{right:0}
+    .ms-Dialog::before{vertical-align:middle;display:inline-block;content:"";height:100%;width:0}
+    .ms-Dialog .ms-Button.ms-Button--compound{display:block}
+    html[dir=ltr] .ms-Dialog .ms-Button.ms-Button--compound{margin-left:0}
+    html[dir=rtl] .ms-Dialog .ms-Button.ms-Button--compound{margin-right:0}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dialog .ms-Overlay{opacity:0}
+    }
+    .ms-Dialog-main{vertical-align:middle;display:inline-block;box-shadow:0 0 5px 0 rgba(0,0,0,.4);background-color:#ffffff;box-sizing:border-box;line-height:1.35;margin:auto;width:288px;position:relative;outline:3px solid transparent;max-height:100%;overflow-y:auto}
+    html[dir=ltr] .ms-Dialog-main{text-align:left}
+    html[dir=rtl] .ms-Dialog-main{text-align:right}
+    .ms-Dialog-button.ms-Dialog-button--close{display:none}
+    .ms-Dialog-button.ms-Dialog-button--close .ms-Icon.ms-Icon--Cancel{color:#666666;font-size:16px}
+    .ms-Dialog-inner{height:100%;padding:0 28px 20px}
+    .ms-Dialog-header{position:relative;display:table-row;width:100%;box-sizing:border-box}
+    .ms-Dialog-title{margin:0;display:table-cell;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:21px;font-weight:100;color:#333333;padding:20px 28px 20px;width:100%}
+    .ms-Dialog-topButton{display:table-cell;vertical-align:top;padding:12px 12px 0 0}
+    html[dir=rtl] .ms-Dialog-topButton{padding:12px 0 0 12px}
+    .ms-Dialog-content{position:relative;width:100%}
+    .ms-Dialog-content .ms-Button.ms-Button--compound{margin-bottom:20px}
+    .ms-Dialog-content .ms-Button.ms-Button--compound:last-child{margin-bottom:0}
+    .ms-Dialog-subText{margin:0 0 20px 0;padding-top:8px;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:12px;font-weight:400;color:#333333;font-weight:300;line-height:1.5}
+    .ms-Dialog-actions{position:relative;width:100%;min-height:24px;line-height:24px;margin:20px 0 0;font-size:0}
+    .ms-Dialog-actions .ms-Button{line-height:normal}.ms-Dialog-actionsRight{font-size:0}
+    html[dir=ltr] .ms-Dialog-actionsRight{text-align:right}
+    html[dir=rtl] .ms-Dialog-actionsRight{text-align:left}
+    html[dir=ltr] .ms-Dialog-actionsRight{margin-right:-4px}
+    html[dir=rtl] .ms-Dialog-actionsRight{margin-left:-4px}
+    .ms-Dialog-actionsRight .ms-Dialog-action{margin:0 4px}
+    .ms-Dialog.ms-Dialog--close:not(.ms-Dialog--lgHeader) .ms-Dialog-button.ms-Dialog-button--close{display:block}
+    .ms-Dialog.ms-Dialog--multiline .ms-Dialog-title{font-size:28px}
+    .ms-Dialog.ms-Dialog--multiline .ms-Dialog-inner{padding:0 20px 20px}
+    .ms-Dialog.ms-Dialog--lgHeader .ms-Dialog-header{background-color:#0078d7}
+    .ms-Dialog.ms-Dialog--lgHeader .ms-Dialog-title{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:28px;font-weight:100;color:#ffffff;padding:26px 28px 28px;margin-bottom:8px}
+    .ms-Dialog.ms-Dialog--lgHeader .ms-Dialog-subText{font-size:14px}
+    @media (min-width:480px){
+      .ms-Dialog-main{width:auto;min-width:288px;max-width:340px}
+    }
+  </style>
+  ##
+  var _id = tmplScope._id;
+
+  var type = data.type || 'normal';
+  var className = data.className;
+  var containerClassName = data.containerClassName;
+  var isDarkOverlay = data.isDarkOverlay || true;
+  var closeButtonAriaLabel = data.closeButtonAriaLabel;
+  var isBlocking = data.isBlocking || false;
+
+  var title = data.title;
+  var subText = data.subText;
+  var contents = data.contents || [];
+  var footers = data.footers || [];
+
+  var onDismiss = data.onDismiss || function() {
+    var element = tmplScope.element;
+    element.parentNode.removeChild(element);
+  }
+  tmplScope.onDismiss = onDismiss;
+  ##
+  &lt;div class="ms-Dialog ##=className## ##=Fabric.css({'ms-Dialog--lgHeader': type === 'largeHeader', 'ms-Dialog--close': type === 'close'})##"
+  ##=Fabric.prop({'aria-labelledby': title ? _id + '-title' : '', 'aria-desribedby': subText ? id + '-subText' : ''})##&gt;
+    ##%tmpl.ms.Overlay({'isDarkThemed': isDarkOverlay, event: isBlocking ? null : onDismiss })##
+    <div class="##=Fabric.css('ms-Dialog-main', containerClassName)##">
+      <div class="ms-Dialog-header">
+        <p class="ms-Dialog-title" id="##=_id + '-title'##">##=title##</p>
+        <div class="ms-Dialog-topButton">
+          ##%tmpl.ms.Button({className: 'ms-Dialog-button ms-Dialog-button--close', buttonType:'icon', icon: 'Cancel', ariaLabel: closeButtonAriaLabel, event: onDismiss})##
+        </div>
+      </div>
+      <div class="ms-Dialog-inner">
+        <div class="ms-Dialog-content">
+          ##if (subText) {##
+          <p class="ms-Dialog-subText" id="##=_id + '-subText'##">##=subText##</p>
+          ##}##
+          ##if (typeof contents === 'string') {## 
+            ##=data.contents##
+          ##} else {##
+            ##%data.contents##
+          ##}##
+        </div>
+        <div class="ms-Dialog-actions">
+          <div class="ms-Dialog-actionsRight">
+            ##footers.forEach(function(scopeObj) {##
+              <span class="ms-Dialog-action">##%scopeObj##</span>
+            ##});##
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="ms-List">
+  ##
+  var pageElements = data.items || [];
+  var cells = null;
+  var pageStyle = data.pageStyle;
+  var renderCell = data.renderCell || function(item, cellIndex, pageIndex) {
+    return item;
+  }
+  ##
+  <div class="ms-List ##=data.className##" >
+    <div class='ms-List-surface'>
+      ##if (pageElements) pageElements.forEach(function(page, i) {##
+      <div class='ms-List-page' key="##page.key##" ref="##=page.key##" style="##=pageStyle##">
+        ##
+        cells = page.items || page;
+        if (cells) Object.keys(cells).forEach(function(key, ii) {
+          var item = cells[key];
+          if (item instanceof Function) return;
+        ##
+        <div class='ms-List-cell' data-list-index="##i + page.startIndex##">
+          ##%(item.renderCell || page.renderCell || renderCell)(item, ii, i)##
+        </div>
+        ##});##
+      </div>
+      ##});##
+    </div>
+  </div>
+</template>
+
+
+<template id="ms-Link">
+  <style id="style-ms-Link">
+    .ms-Link{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;color:#0078d7;text-decoration:none;cursor:pointer;padding:0;margin:0;background:0 0;display:inline;border:none;width:auto;max-width:100%;overflow:inherit;text-overflow:inherit}
+    .ms-Link::-moz-focus-inner{border:0}
+    .ms-Link{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-Link:focus:after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    html[dir=ltr] .ms-Link{text-align:left}
+    html[dir=rtl] .ms-Link{text-align:right}
+    .ms-Link.is-disabled{color:#a6a6a6;pointer-events:none;cursor:default}
+    .ms-Link:focus,.ms-Link:hover{color:#004578}.ms-Link:active{color:#0078d7}
+    button.ms-Link{font-size:inherit}
+  </style>
+  ##
+  var tag = data.href ? 'a' : 'button';
+  var href = data.href ? 'href=" + data.href + "' : '';
+  ##
+  &lt;##=tag## ##=href## class="ms-Link ##=Fabric.is(data, 'disabled')##" data-bridge-event="##:data.event##" target="##=data.target || '_self'##"&gt;##=data.label##&lt;/##=tag##&gt;
+</template>
+
+<template id="ms-TextFieldList">
+  <div>
+  ##
+  var TextField = bridge.tmpl('ms-TextField');
+  (data.items || []).forEach(function(selected) {
+        selected.class = selected.class || data.class;
+        selected.typeClass = selected.typeClass || data.typeClass;
+        selected.input = selected.input || data.input;
+  ##
+    ##%TextField(selected)##
+  ##});##
+  </div>
+</template>
+
+<template id="ms-TextField">
+  <style id="style-ms-TextField">
+    .ms-Label{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;box-sizing:border-box;margin:0;padding:0;box-shadow:none;color:#333333;font-size:12px;font-weight:400;box-sizing:border-box;display:block;padding:5px 0}
+    .ms-Label.is-required::after{content:' *';color:#a80000}
+    .ms-Label.is-disabled{color:#a6a6a6}
+    .ms-TextField{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;box-sizing:border-box;margin:0;padding:0;box-shadow:none;color:#333333;font-size:14px;font-weight:400;margin-bottom:8px}
+    .ms-TextField .ms-Label{font-size:14px;font-weight:400}
+    .ms-TextField.is-disabled .ms-TextField-field{background-color:#f4f4f4;border-color:#f4f4f4;pointer-events:none;cursor:default}
+    .ms-TextField.is-disabled::-webkit-input-placeholder{color:#a6a6a6}
+    .ms-TextField.is-disabled::-moz-placeholder{color:#a6a6a6}
+    .ms-TextField.is-disabled:-moz-placeholder{color:#a6a6a6}
+    .ms-TextField.is-disabled:-ms-input-placeholder{color:#a6a6a6}
+    .ms-TextField.is-required .ms-Label::after{content:' *';color:#a80000}
+    .ms-TextField.is-required::-webkit-input-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-required::-moz-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-required:-moz-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-required:-ms-input-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-active{border-color:#0078d7}
+    .ms-TextField-field{box-sizing:border-box;margin:0;padding:0;box-shadow:none;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;border:1px solid #c8c8c8;border-radius:0;font-weight:400;font-size:14px;color:#333333;height:32px;padding:6px 12px 7px 12px;width:100%;min-width:180px;outline:0;text-overflow:ellipsis}
+    html[dir=rtl] .ms-TextField-field{padding:6px 12px 7px 12px}.ms-TextField-field:hover{border-color:#767676}
+    .ms-TextField-field:focus{border-color:#0078d7}
+    @media screen and (-ms-high-contrast:active){
+      .ms-TextField-field:focus,.ms-TextField-field:hover{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-TextField-field:focus,.ms-TextField-field:hover{border-color:#37006E}
+    }
+    .ms-TextField-field[disabled]{background-color:#f4f4f4;border-color:#f4f4f4;pointer-events:none;cursor:default}
+    .ms-TextField-field::-webkit-input-placeholder{color:#666666}
+    .ms-TextField-field::-moz-placeholder{color:#666666}
+    .ms-TextField-field:-moz-placeholder{color:#666666}
+    .ms-TextField-field:-ms-input-placeholder{color:#666666}
+    .ms-TextField-description{color:#767676;font-size:11px}
+    .ms-TextField.ms-TextField--underlined{border-bottom:1px solid #c8c8c8;display:table;width:100%;min-width:180px}
+    .ms-TextField.ms-TextField--underlined:hover{border-color:#767676}
+    @media screen and (-ms-high-contrast:active){
+      .ms-TextField.ms-TextField--underlined:hover{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-TextField.ms-TextField--underlined:hover{border-color:#37006E}
+    }
+    .ms-TextField.ms-TextField--underlined:active,.ms-TextField.ms-TextField--underlined:focus{border-color:#0078d7}
+    .ms-TextField.ms-TextField--underlined .ms-Label{font-size:14px;display:table-cell;vertical-align:top;padding-top:9px;height:32px;width:1%;white-space:nowrap}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{margin-right:8px}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{margin-left:8px}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{padding-left:12px}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{padding-right:12px}
+    .ms-TextField.ms-TextField--underlined .ms-TextField-field{border:0;display:table-cell;padding-top:8px;padding-bottom:3px}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-TextField-field{float:left}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-TextField-field{float:right}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:left}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:right}
+    .ms-TextField.ms-TextField--underlined .ms-TextField-field:active,.ms-TextField.ms-TextField--underlined .ms-TextField-field:focus,.ms-TextField.ms-TextField--underlined .ms-TextField-field:hover{outline:0}
+    .ms-TextField.ms-TextField--underlined.is-disabled{border-bottom-color:#eaeaea}
+    .ms-TextField.ms-TextField--underlined.is-disabled .ms-Label{color:#a6a6a6}
+    .ms-TextField.ms-TextField--underlined.is-disabled .ms-TextField-field{background-color:transparent;color:#a6a6a6}
+    .ms-TextField.ms-TextField--underlined.is-active{border-color:#0078d7}
+    @media screen and (-ms-high-contrast:active){
+      .ms-TextField.ms-TextField--underlined.is-active{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-TextField.ms-TextField--underlined.is-active{border-color:#37006E}
+    }
+    .ms-TextField.ms-TextField--multiline .ms-TextField-field{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;color:#333333;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;font-size:14px;font-weight:400;line-height:17px;min-height:60px;min-width:260px;padding-top:6px;overflow:auto}
+    .ms-TextField-errorMessage{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:12px;font-weight:400;color:#a80000;margin:0;padding-top:5px}
+    .ms-TextField-invalid,.ms-TextField-invalid:focus,.ms-TextField-invalid:hover{border-color:#a80000}
+    .ms-u-screenReaderOnly{position:absolute;text-indent:-9999px;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;border:0}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{padding-left:12px}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{padding-right:12px}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{padding-right:0}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{padding-left:0}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:left}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:right}
+    .ms-TextField.ms-TextField--multiline .ms-TextField-field.ms-TextField-field--unresizable{resize:none}
+    .ms-TextField-hidden{display:none}
+  </style>
+  ##
+  var _id = tmplScope._id;
+  var _descriptionId  = _id + '-TextFieldDescription';
+  var className = data.className;
+  var iconClass = data.iconClass;
+  var label = data.label;
+  var name = data.name;
+  var type = data.type || 'text';
+  var description = data.description;
+  
+  var event = data.event;
+  
+  var multiline = data.multiline || false;
+  var resizable = data.resizable || true;
+  var underlined = data.underlined || false;
+  var required = data.required;
+  var disabled = data.disabled;
+  var isFocused = data.isFocused;
+  
+  var ariaLabel = data.ariaLabel;
+  
+  var textFieldClassName = Fabric.css(
+    'ms-TextField',
+    className, {
+      'is-required': required,
+      'is-disabled': disabled,
+      'is-active': isFocused,
+      'ms-TextField--multiline': multiline,
+      'ms-TextField--underlined': underlined
+  });
+  
+  var state = {
+    value: data.value || data.defaultValue || '',
+    isFocused: false,
+    errorMessage: ''
+  };
+  
+  var _fieldClassName = function() {
+    var errorMessage = _errorMessage();
+    var textFieldClassName = null;
+
+    if (multiline && !resizable) {
+      textFieldClassName = 'ms-TextField-field ms-TextField-field--unresizable';
+    } else {
+      textFieldClassName = 'ms-TextField-field';
+    }
+
+    return Fabric.css(textFieldClassName, {
+      'ms-TextField-invalid': !!errorMessage
+    });
+  }
+  
+  var _errorMessage = function() {
+    var errorMessage = state.errorMessage ;
+    if (!errorMessage) {
+      errorMessage = data.errorMessage;
+    }
+    return errorMessage;
+  }
+
+  var inputProp = Fabric.prop({
+    'type': multiline ? null : type,
+    'name': name,
+    'class': _fieldClassName(),
+    'aria-label': ariaLabel,
+    'aria-describedby': _descriptionId,
+    'aria-invalid': !!state.errorMessage
+  });
+
+  var errorMessage = _errorMessage();
+  ##
+  <div class="##=textFieldClassName##">
+    ##% label ? tmpl.ms.Label({label: label, prop: {for: _id}}) : null##
+    ##if(iconClass) {##<i class="##=iconClass##"></i>##}##
+    ##if (multiline) {##
+    &lt;textarea id="##=_id##" value="##=state.value##" data-bridge-event="##:event##" ##=inputProp##&gt;</textarea>
+    ##} else {##
+    &lt;input id="##=_id##" value="##=state.value##" data-bridge-event="##:event##" ##=inputProp##&gt;</input>
+    ##};##
+    ##if(errorMessage) {##<div aria-live='assertive' class='ms-u-screenReaderOnly' data-automation-id='error-message'>##=errorMessage##</div>##}##
+    ##if(description || errorMessage) {##
+      <span id="##=_descriptionId##">
+        ##if(description) {##<span class='ms-TextField-description'>##=description##</span>##}##
+        ##if(errorMessage) {##<p class='ms-TextField-errorMessage ms-u-slideDownIn20'>##=errorMessage##</p>##}##
+      </span>
+    ##}##
+  </div>
+</template>
+
+<template id="ms-Dropdown">
+  <style id="style-ms-Dropdown">
+    .ms-Dropdown{box-sizing:border-box;margin:0;padding:0;box-shadow:none;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;font-weight:400;color:#333333;margin-bottom:10px;position:relative;outline:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+    .ms-Dropdown:active .ms-Dropdown-caretDown,.ms-Dropdown:active .ms-Dropdown-title,.ms-Dropdown:focus .ms-Dropdown-caretDown,.ms-Dropdown:focus .ms-Dropdown-title,.ms-Dropdown:hover .ms-Dropdown-caretDown,.ms-Dropdown:hover .ms-Dropdown-title{color:#000000}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown:active .ms-Dropdown-caretDown,.ms-Dropdown:active .ms-Dropdown-title,.ms-Dropdown:focus .ms-Dropdown-caretDown,.ms-Dropdown:focus .ms-Dropdown-title,.ms-Dropdown:hover .ms-Dropdown-caretDown,.ms-Dropdown:hover .ms-Dropdown-title{color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown:active .ms-Dropdown-caretDown,.ms-Dropdown:active .ms-Dropdown-title,.ms-Dropdown:focus .ms-Dropdown-caretDown,.ms-Dropdown:focus .ms-Dropdown-title,.ms-Dropdown:hover .ms-Dropdown-caretDown,.ms-Dropdown:hover .ms-Dropdown-title{color:#37006E}
+    }
+    .ms-Dropdown:active .ms-Dropdown-title,.ms-Dropdown:hover .ms-Dropdown-title{border-color:#0078d7}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown:active .ms-Dropdown-title,.ms-Dropdown:hover .ms-Dropdown-title{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown:active .ms-Dropdown-title,.ms-Dropdown:hover .ms-Dropdown-title{border-color:#37006E}
+    }
+    .ms-Dropdown:focus .ms-Dropdown-title{border-color:#0078d7}
+    @media screen and (-ms-high-contrast:active){  
+      .ms-Dropdown:focus .ms-Dropdown-title{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown:focus .ms-Dropdown-title{border-color:#37006E}
+    }
+    .ms-Dropdown .ms-Label{display:inline-block;margin-bottom:8px}
+    .ms-Dropdown.is-disabled .ms-Dropdown-title{background-color:#f4f4f4;border-color:#f4f4f4;color:#a6a6a6;cursor:default}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown.is-disabled .ms-Dropdown-title{border-color:#0f0;color:#0f0}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown.is-disabled .ms-Dropdown-title{border-color:#600000;color:#600000}
+    }
+    .ms-Dropdown.is-disabled .ms-Dropdown-caretDown{color:#a6a6a6}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown.is-disabled .ms-Dropdown-caretDown{color:#0f0}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown.is-disabled .ms-Dropdown-caretDown{color:#600000}
+    }
+    .ms-Dropdown-caretDown{color:#212121;font-size:12px;position:absolute;top:0;pointer-events:none;line-height:32px}
+    html[dir=ltr] .ms-Dropdown-caretDown{right:12px}
+    html[dir=rtl] .ms-Dropdown-caretDown{left:12px}
+    .ms-Dropdown-title{box-sizing:border-box;margin:0;padding:0;box-shadow:none;background:#ffffff;border:1px solid #c8c8c8;cursor:pointer;display:block;height:32px;line-height:30px;padding:0 32px 0 12px;position:relative;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    html[dir=rtl] .ms-Dropdown-title{padding:0 12px 0 32px}
+    .ms-Dropdown-items{box-sizing:border-box;margin:0;padding:0;box-shadow:none;box-shadow:0 0 5px 0 rgba(0,0,0,.4);background-color:#ffffff;list-style-type:none;width:100%;max-height:200px;overflow-y:scroll;top:auto;right:auto;bottom:auto;left:auto;max-width:100%;box-shadow:0 0 15px -5px rgba(0,0,0,.4);border:1px solid #eaeaea}
+    .ms-Dropdown-items::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border:none}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown-items{border:1px solid #ffffff}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown-items{border:1px solid #000000}
+    }
+    .ms-Dropdown-item{box-sizing:border-box;cursor:pointer;display:block;min-height:36px;line-height:20px;padding:6px 12px;position:relative;border:1px solid transparent;word-wrap:break-word}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown-item{border-color:#000000}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown-item{border-color:#ffffff}
+    }
+    .ms-Dropdown-item:hover{background-color:#f4f4f4;color:#000000}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown-item:hover{background-color:#1AEBFF;border-color:#1AEBFF;color:#000000}
+      .ms-Dropdown-item:hover:focus{border-color:#000000}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown-item:hover{background-color:#37006E;border-color:#37006E;color:#ffffff}
+    }
+    .ms-Dropdown-item::-moz-focus-inner{border:0}
+    .ms-Dropdown-item{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-Dropdown-item:focus:after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    .ms-Dropdown-item:focus{background-color:#f4f4f4}
+    .ms-Dropdown-item:active{background-color:#f4f4f4;color:#000000}
+    .ms-Dropdown-item.is-disabled{background:#ffffff;color:#a6a6a6;cursor:default}
+    .ms-Dropdown-item.is-selected,.ms-Dropdown-item.ms-Dropdown-item--selected{background-color:#dadada;color:#000000}
+    .ms-Dropdown-item.is-selected:hover,.ms-Dropdown-item.ms-Dropdown-item--selected:hover{background-color:#dadada}
+    .ms-Dropdown-item.is-selected::-moz-focus-inner,.ms-Dropdown-item.ms-Dropdown-item--selected::-moz-focus-inner{border:0}
+    .ms-Dropdown-item.is-selected,.ms-Dropdown-item.ms-Dropdown-item--selected{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-Dropdown-item.is-selected:focus:after,.ms-Fabric.is-focusVisible .ms-Dropdown-item.ms-Dropdown-item--selected:focus:after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Dropdown-item.is-selected,.ms-Dropdown-item.ms-Dropdown-item--selected{background-color:#1AEBFF;border-color:#1AEBFF;color:#000000}
+      .ms-Dropdown-item.is-selected:focus,.ms-Dropdown-item.ms-Dropdown-item--selected:focus{border-color:#000000}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Dropdown-item.is-selected,.ms-Dropdown-item.ms-Dropdown-item--selected{background-color:#37006E;border-color:#37006E;color:#ffffff}
+    }
+  </style>
+  ##
+  var name = data.name;
+  
+  var _id = tmplScope._id;
+  var label = data.label;
+  var options = data.options;
+
+  var isDisabled = data.isDisabled;
+  var isOpen = data.isOpen;
+  var selectedIndex = data.selectedIndex;
+
+  var prop = Fabric.prop({
+    'data-is-focusable': true,
+    id: _id,
+    class: Fabric.css('ms-Dropdown', {
+      'is-open': isOpen, 'is-disabled': isDisabled
+    }),
+    tabIndex: isDisabled ? -1 : 0,
+    'aria-expanded': isOpen ? 'true' : 'false',
+    'role': 'combobox',
+    'aria-label': label,
+    'aria-activedescendant': selectedIndex >= 0 ? (_id + '-list' + selectedIndex) : (_id + '-list'),
+    'aria-controls': _id + '-list'
+  });
+
+  var selectedKey = data.defaultSelectedKey !== undefined ? data.defaultSelectedKey : data.selectedKey;
+  
+  var setSelectedIndex = function(index) {
+    var selectedIndex = state.selectedIndex;
+
+    index = Math.max(0, Math.min(options.length - 1, index));
+
+    if (index !== selectedIndex) {
+      // Set the selected option.
+      state.selectedIndex = index;
+
+      if (onChanged) {
+        onChanged(options[index], index);
+      }
+    }
+  }
+
+  var _onRenderItem = function(item) {
+    return '<span>' + item.text + '</span>';
+  }
+
+  var _onPositioned = function() {
+    _focusZone.focus();
+  }
+
+  var _onItemClick = function(index) {
+    setSelectedIndex(index);
+    state.isOpen = false;
+    //_optionListScope.reflash({options: null, selectedIndex: state.selectedIndex});
+    //_dropDownScope.reflash({selectedOption: options[state.selectedIndex]});
+    if (tmplScope.callout) tmplScope.callout.remove();
+    tmplScope.reflash({isOpen: state.isOpen, selectedKey: options[state.selectedIndex].key});
+  }
+
+  var _onDismiss = function() {
+    state.isOpen = false;
+    //tmplScope.reflash({isOpen: state.isOpen});
+    if (tmplScope.callout) tmplScope.callout.remove();
+  }
+
+  var _getSelectedIndex = function(options, selectedKey) {
+    return Fabric.array.findIndex(options, function(option) {
+      return selectedKey ? option.key === selectedKey : option.isSelected || option.selected;
+    });
+  }
+  
+  var _onDropdownKeyDown = function(ev) {
+    switch (ev.which) {
+      case KeyCodes.enter:
+        state.isOpen = !state.isOpen;
+        break;
+
+      case KeyCodes.escape:
+        state.isOpen = false;
+        break;
+
+      case KeyCodes.up:
+        setSelectedIndex(state.selectedIndex - 1);
+        break;
+
+      case KeyCodes.down:
+        setSelectedIndex(state.selectedIndex + 1);
+        break;
+
+      case KeyCodes.home:
+        setSelectedIndex(0);
+        break;
+
+      case KeyCodes.end:
+        setSelectedIndex(options.length - 1);
+        break;
+
+      default:
+        return;
+    }
+
+    ev.stopPropagation();
+    ev.preventDefault();
+  }
+
+  var _onDropdownClick = function() {
+    var disabled = null;
+    if (isDisabled !== undefined) {
+      disabled = isDisabled;
+    }
+    if (!disabled) {
+      state.isOpen = !isOpen;
+    }
+    tmplScope.reflash({isOpen: state.isOpen});
+  }
+
+  var state = {
+    isOpen: false,
+    selectedIndex: _getSelectedIndex(options, selectedKey)
+  };
+  
+  if (!selectedKey && state.selectedIndex != undefined) selectedKey = options[state.selectedIndex].key;
+  
+  var selectedOption = options[state.selectedIndex];
+  var onChanged = data.onChanged;
+  var onRenderItem = _onRenderItem;
+
+  var _hiddenInput, _focusZone, _optionListScope, _dropDownScope, _dropdownLabel = null;
+  ##
+  <div class="ms-Dropdown-container">
+    ##%name ? _hiddenInput = Fabric.htmlTag('input', {type: 'hidden', name: name, value: selectedKey || null}) : null##
+    ##%label ? _dropdownLabel = Fabric.htmlTag('label', {id: id + '-label', class: "ms-Label"}, label) : null##
+    ##%_dropDownScope = tmpl.ms.DropdownDropdown({
+      prop: prop,
+      _onDropdownKeyDown: _onDropdownKeyDown,
+      _onDropdownClick: _onDropdownClick,
+      onRenderItem: onRenderItem,
+      selectedOption: selectedOption,
+      _onRenderItem: _onRenderItem
+    })##
+      ##%tmplScope.callout = isOpen ? tmpl.ms.Callout({
+        isBeakVisible: false,
+        class: 'ms-Dropdown-callout',
+        gapSpace: 0,
+        doNotLayer: false,
+        targetElement: _dropDownScope.element,
+        directionalHint: DirectionalHint.bottomLeftEdge,
+        onDismiss: _onDismiss,
+        content: _focusZone = tmpl.ms.FocusZone({
+          direction: 'vertical',
+          defaultActiveElement: '#' + _id + '-list' + selectedIndex,
+          content: _optionListScope = tmpl.ms.DropdownOptions({
+            _id: tmplScope._id,
+            options: options,
+            selectedIndex: selectedIndex,
+            _dropDown: _dropDownScope.element,
+            _onItemClick: _onItemClick
+          })
+        }).element
+      }) : null##
+  </div>
+</template>
+
+<template id="ms-Dropdown-Dropdown">
+  ##
+  var prop = data.prop;
+  var _onDropdownKeyDown = data._onDropdownKeyDown;
+  var _onDropdownClick = data._onDropdownClick;
+  var onRenderItem = data.onRenderItem;
+  var selectedOption = data.selectedOption;
+  var _onRenderItem = data._onRenderItem;
+  ##
+  &lt;div 
+    ##=prop## data-bridge-event="##:{
+      keyDown: _onDropdownKeyDown,
+      click: _onDropdownClick,
+    }##"&gt;
+    <span class='ms-Dropdown-title'>##=selectedOption ? onRenderItem(selectedOption, _onRenderItem) : ''##</span>
+    <i class='ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown'></i>
+  </div>
+</template>
+
+<template id="ms-Dropdown-Options">
+  ##
+  var _id = data._id;
+  var options = data.options || [];
+  var selectedIndex = data.selectedIndex;
+  var _dropDown = data._dropDown;
+  var _onItemClick = data._onItemClick;
+  tmplScope.afterAppendTo = function() {
+    tmplScope.element.style.width = (_dropDown.clientWidth - 2) + 'px';
+  }
+  ##
+  &lt;ul 
+    ##=Fabric.prop({
+      id: _id + '-list',
+      //style: Fabric.css({ width: _dropDown.clientWidth - 2 }),
+      class: 'ms-Dropdown-items',
+      role: 'listbox',
+      'aria-labelledby': _id + '-label'
+    })##&gt;
+    ##options.forEach(function(option, index) {##
+        &lt;li 
+          ##=Fabric.prop({
+            id: _id + '-list' + index.toString(),
+            key: option.key,
+            'data-index': index,
+            'data-is-focusable': true,
+            class: Fabric.css('ms-Dropdown-item', { 'is-selected': selectedIndex === index }),
+            role: 'option',
+            'aria-selected': selectedIndex === index ? 'true' : 'false',
+            'aria-label': option.text
+          })##
+          data-bridge-event="##:{
+            click: function() {
+              _onItemClick(index);
+            },
+            focus: function() {
+              setSelectedIndex(index);
+            }
+          }##"&gt;
+        ##=option.text##
+      </li>
+    ##})##
+  </ul>
+</template>
+
+<template id="ms-ContextualMenu">
+  <style id="style-ms-ContextualMenu">
+    .ms-ContextualMenu{background-color:#ffffff;min-width:180px}
+    .ms-ContextualMenu-list{list-style-type:none;margin:0;padding:0;line-height:0}
+    .ms-ContextualMenu-item{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;font-weight:400;color:#333333;position:relative;box-sizing:border-box}
+    .ms-ContextualMenu-link{font:inherit;color:inherit;background:0 0;border:none;min-width:100%;height:36px;line-height:36px;display:block;cursor:pointer;padding:0 6px}
+    .ms-ContextualMenu-link::-moz-focus-inner{border:0}
+    .ms-ContextualMenu-link{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-ContextualMenu-link:focus:after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    html[dir=ltr] .ms-ContextualMenu-link{text-align:left}
+    html[dir=rtl] .ms-ContextualMenu-link{text-align:right}
+    .ms-ContextualMenu-link:hover:not([disabled]){background:#f4f4f4}
+    .ms-ContextualMenu-link.is-disabled,.ms-ContextualMenu-link[disabled]{color:#c8c8c8;cursor:default;pointer-events:none}
+    .is-focusVisible .ms-ContextualMenu-link:focus{background:#f4f4f4}.ms-ContextualMenu-link.is-expanded,.ms-ContextualMenu-link.is-expanded:hover{background:#dadada;color:#000000;font-weight:600}
+    a.ms-ContextualMenu-link{padding:0 6px;text-rendering:auto;color:inherit;letter-spacing:normal;word-spacing:normal;text-transform:none;text-indent:0;text-shadow:none;box-sizing:border-box}
+    .ms-ContextualMenu-linkContent{white-space:nowrap;height:inherit}
+    .ms-ContextualMenu-divider{display:block;height:1px;background-color:#eaeaea;position:relative}
+    .ms-ContextualMenu-icon{color:#0078d7;display:inline-block;min-height:1px;width:14px;text-align:center;vertical-align:top;margin:0 4px}
+    .ms-ContextualMenu-itemText{padding:0 12px 0 4px}
+    html[dir=rtl] .ms-ContextualMenu-itemText{padding:0 4px 0 12px}
+    .ms-ContextualMenu-linkText{margin:0 4px;display:inline-block;vertical-align:top;white-space:nowrap}
+    .ms-Icon.ms-ContextualMenu-submenuChevron{position:absolute;height:36px;line-height:36px;vertical-align:middle;text-align:center;font-size:10px}
+    html[dir=ltr] .ms-Icon.ms-ContextualMenu-submenuChevron{right:8px}
+    html[dir=rtl] .ms-Icon.ms-ContextualMenu-submenuChevron{left:8px}
+  </style>
+  ##
+  var items = data.items;
+  var targetElement  = data.targetElement;
+  var targetPoint = data.targetPoint;
+  var useTargetPoint = data.useTargetPoint;
+  var isBeakVisible = data.isBeakVisible;
+  var beakWidth = data.beakWidth;
+  var directionalHint = data.directionalHint;
+  var gapSpace = data.gapSpace || 0;
+  var coverTarget = data.coverTarget;
+  var doNotLayer = data.doNotLayer;
+  var onDismiss = data.onDismiss;
+  var expandedMenuItemKey = data.expandedMenuItemKey;
+
+  var className = data.className;
+  
+  var labelElementId = data.labelElementId;
+  var submenuProps = data.submenuProps;
+  tmplScope.remove = function() {
+    if (tmplScope.callout) tmplScope.callout.remove();
+  }
+
+  window.addEventListener('resize', function (event) {
+    onDismiss();
+  });
+  //items && items.length > 0 ?
+  ##
+  ##%tmplScope.callout = items && items.length > 0 ? tmpl.ms.Callout({
+    targetElement: targetElement,
+    targetPoint: targetPoint,
+    useTargetPoint: useTargetPoint,
+    isBeakVisible: isBeakVisible,
+    beakWidth: beakWidth,
+    directionalHint: directionalHint,
+    gapSpace: gapSpace,
+    coverTarget: coverTarget,
+    doNotLayer: doNotLayer,
+    className: 'ms-ContextualMenu-Callout',
+    setInitialFocus: true,
+    onDismiss: onDismiss,
+    content: Fabric.htmlTag(
+      'div',
+      {className: Fabric.css('ms-ContextualMenu-container', className)},
+      tmpl.ms.FocusZone({
+        className: 'ms-ContextualMenu is-open',
+        //direction: FocusZoneDirection.vertical,
+        ariaLabelledBy: labelElementId,
+        role: 'menu',
+        content: [
+          tmpl.ms.ContextualMenuList({
+            items: items,
+            expandedMenuItemKey: expandedMenuItemKey
+          }),
+          submenuProps ? tmpl.ms.ContextualMenu(submenuProps) : null
+        ]
+      })
+    )
+  }) : null##
+</template>
+
+<template id="ms-ContextualMenu-List">
+  ##
+  var event = data.event;
+  var items = data.items || [];
+  var ariaLabel = data.ariaLabel;
+  var event = data.event;
+  var expandedMenuItemKey = data.expandedMenuItemKey || '----';
+
+  var subMenuId = tmplScope._id;
+  var prop = Fabric.prop({
+    class: 'ms-ContextualMenu-list is-open',
+    'aria-label': ariaLabel 
+  });
+  ##
+  &lt;ul ##=prop## data-bridge-event="##:event##"&gt;
+    ##items.forEach(function(item, index) {
+      if (item.name === '-') {##
+        <li
+          role="separator"
+          key="##=item.key || index##"
+          class="##=Fabric.css('ms-ContextualMenu-divider', item.className)##">
+        </li>
+      ##} else {##
+          <li
+            role="menuitem"
+            title="##=item.title##"
+            key="##=item.key || index##"
+            class="##=Fabric.css('ms-ContextualMenu-item', item.className)##">
+            ##if (item.href) {##
+            <div>
+              <a href="##=item.href##"
+                class="##=Fabric.css('ms-ContextualMenu-link', item.isDisabled || item.disabled ? 'is-disabled' : '')##"
+                role='menuitem'
+                data-bridge-event="##:function() {
+                  _onAnchorClick.bind(this, item);
+                }##">
+                ##%hasIcons ? tmpl.ms.Icon({prop: item.iconProps, className: 'ms-ContextualMenu-icon'}) : null##
+                <span class='ms-ContextualMenu-linkText ms-fontWeight-regular'>##=item.name##</span>
+              </a>
+            </div >
+            ##} else {
+            var itemEvent = Object.assign({
+              click: function() {
+                //this._onItemClick.bind(this, item);
+              },
+              keyDown: function() {
+                item.items && item.items.length ? this._onItemKeyDown.bind(this, item) : null;
+              },
+              mouseEnter: function() {
+                this._onItemMouseEnter.bind(this, item);
+              },
+              mouseLeave: function() {
+                this._onMouseLeave();
+              },
+              mouseDown: function() {
+                this._onItemMouseDown(item, ev);
+              }
+            }, item.event instanceof Function ? {click: item.event} : item.event);
+
+            ##
+              ##%tmpl.ms.Button(Object.assign(item, {
+                className: Fabric.css('ms-ContextualMenu-link', { 'is-expanded': (expandedMenuItemKey === item.key) }),
+                disabled: item.isDisabled || item.disabled,
+                event: itemEvent,
+                role: 'menuitem',
+                href: item.href,
+                title: item.title,
+                'aria-label': ariaLabel,
+                'aria-haspopup': item.items && item.items.length ? true : null,
+                'aria-owns': item.key === expandedMenuItemKey ? subMenuId : null
+              }))##
+            ##}##
+          </li>
+      ##}##
+    ##});##
+  </ul>
+</template>
+
+<template id="ms-CommandBar">
+  <style id="style-ms-CommandBar">
+    .ms-CommandBar{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;font-weight:400;color:#333333;position:relative;background-color:#f4f4f4;height:40px;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+    .ms-CommandBar-primaryCommands{position:absolute;overflow:hidden;display:inline;vertical-align:top;line-height:40px;margin:0 20px}
+    .ms-CommandBar-sideCommands{position:absolute}
+    html[dir=ltr] .ms-CommandBar-sideCommands{right:0}
+    html[dir=rtl] .ms-CommandBar-sideCommands{left:0}
+    html[dir=ltr] .ms-CommandBar-sideCommands{text-align:right}
+    html[dir=rtl] .ms-CommandBar-sideCommands{text-align:left}
+    html[dir=ltr] .ms-CommandBar-sideCommands{padding-right:20px}
+    html[dir=rtl] .ms-CommandBar-sideCommands{padding-left:20px}
+    .ms-CommandBarItem{display:inline-block;color:#0078d7;height:40px;outline:transparent;vertical-align:top;padding:0 4px}
+    @media screen and (-ms-high-contrast:active){
+        .ms-CommandBarItem{height:38px;outline:0}
+        html[dir=ltr] .ms-CommandBarItem{border-left:1px solid #000000}
+        html[dir=rtl] .ms-CommandBarItem{border-right:1px solid #000000}
+        html[dir=ltr] .ms-CommandBarItem{border-right:1px solid #000000}
+        html[dir=rtl] .ms-CommandBarItem{border-left:1px solid #000000}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-CommandBarItem{height:38px;outline:0}
+      html[dir=ltr] .ms-CommandBarItem{border-left:1px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarItem{border-right:1px solid #ffffff}
+      html[dir=ltr] .ms-CommandBarItem{border-right:1px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarItem{border-left:1px solid #ffffff}
+    }
+    .ms-CommandBarItem-chevronDown,.ms-CommandBarItem-commandText{display:inline-block;padding:0 4px;vertical-align:top}
+    .ms-CommandBarItem-text{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;font-weight:400;color:#333333;position:relative;background:0 0;border:none;line-height:40px;min-width:20px;text-align:center;padding:0 4px;display:block;height:100%}
+    .ms-Fabric .ms-CommandBarItem-text::-moz-focus-inner{border:0}.ms-Fabric .ms-CommandBarItem-text{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-CommandBarItem-text:focus:before{content:'';position:absolute;top:2px;right:2px;bottom:2px;left:2px;pointer-events:none;border:1px solid #666666}
+    .ms-CommandBarItem-text.ms-CommandBarItem--noName{padding:0 8px}
+    .ms-CommandBarItem-link{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;font-weight:400;color:#333333;position:relative;background:0 0;border:none;line-height:40px;min-width:20px;text-align:center;padding:0 4px;display:block;height:100%;cursor:pointer}
+    .ms-Fabric .ms-CommandBarItem-link::-moz-focus-inner{border:0}.ms-Fabric .ms-CommandBarItem-link{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-CommandBarItem-link:focus:before{content:'';position:absolute;top:2px;right:2px;bottom:2px;left:2px;pointer-events:none;border:1px solid #666666}
+    .ms-CommandBarItem-link.ms-CommandBarItem--noName{padding:0 8px}
+    @media screen and (-ms-high-contrast:active){
+      html[dir=ltr] .ms-CommandBarItem-link.is-expanded,html[dir=ltr] .ms-CommandBarItem-link:hover{border-left:1px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarItem-link.is-expanded,html[dir=rtl] .ms-CommandBarItem-link:hover{border-right:1px solid #ffffff}
+      html[dir=ltr] .ms-CommandBarItem-link.is-expanded,html[dir=ltr] .ms-CommandBarItem-link:hover{border-right:1px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarItem-link.is-expanded,html[dir=rtl] .ms-CommandBarItem-link:hover{border-left:1px solid #ffffff}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      html[dir=ltr] .ms-CommandBarItem-link.is-expanded,html[dir=ltr] .ms-CommandBarItem-link:hover{border-left:1px solid #000000}
+      html[dir=rtl] .ms-CommandBarItem-link.is-expanded,html[dir=rtl] .ms-CommandBarItem-link:hover{border-right:1px solid #000000}
+      html[dir=ltr] .ms-CommandBarItem-link.is-expanded,html[dir=ltr] .ms-CommandBarItem-link:hover{border-right:1px solid #000000}
+      html[dir=rtl] .ms-CommandBarItem-link.is-expanded,html[dir=rtl] .ms-CommandBarItem-link:hover{border-left:1px solid #000000}
+    }
+    .ms-CommandBarItem-link:hover{color:#212121;background-color:#eaeaea}
+    .ms-CommandBarItem-link:hover .ms-CommandBarItem-icon{color:#005a9e}
+    .ms-CommandBarItem-link:hover .ms-CommandBarItem-chevronDown{color:#3c3c3c}
+    .ms-CommandBarItem-link:hover .ms-CommandBarItem-overflow{color:#212121}
+    .ms-CommandBarItem-link.is-expanded{background-color:#dadada;color:#000000}
+    .ms-CommandBarItem-link.is-expanded .ms-CommandBarItem-icon{color:#004578}
+    .ms-CommandBarItem-link.is-expanded .ms-CommandBarItem-chevronDown{color:#212121}
+    .ms-CommandBarItem-link.is-expanded .ms-CommandBarItem-overflow{color:#000000}
+    .ms-CommandBarItem-link.is-expanded:hover{background-color:#d0d0d0}
+    .ms-CommandBarItem-icon{font-size:16px;color:#106ebe;padding:0 4px}
+    .ms-CommandBarItem-chevronDown{color:#666666;font-size:12px}
+    .ms-CommandBarItem-overflow{font-size:18px;color:#333333;padding:0 7px}
+    .ms-CommandBarSearch{width:208px;max-width:208px;background-color:#ffffff;color:#333333;height:40px;position:relative;box-sizing:border-box;border-color:transparent}
+    html[dir=ltr] .ms-CommandBarSearch{float:left}
+    html[dir=rtl] .ms-CommandBarSearch{float:right}
+    html[dir=ltr] .ms-CommandBarSearch{border-right:1px solid #eaeaea}
+    html[dir=rtl] .ms-CommandBarSearch{border-left:1px solid #eaeaea}
+    @media screen and (-ms-high-contrast:active){
+      .ms-CommandBarSearch{z-index:10}
+      html[dir=ltr] .ms-CommandBarSearch{border-right:1px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarSearch{border-left:1px solid #ffffff}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      html[dir=ltr] .ms-CommandBarSearch{border-right:1px solid #000000}
+      html[dir=rtl] .ms-CommandBarSearch{border-left:1px solid #000000}
+    }
+    .ms-CommandBarSearch:before{position:absolute;content:' ';right:0;bottom:0;left:0;margin:0 8px;border-bottom:1px solid #eaeaea}
+    .ms-CommandBarSearch:hover{color:#0078d7}
+    @media screen and (-ms-high-contrast:active){
+      html[dir=ltr] .ms-CommandBarSearch:hover{border-left:1px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarSearch:hover{border-right:1px solid #ffffff}
+      html[dir=ltr] .ms-CommandBarSearch:hover{border-right:1px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarSearch:hover{border-left:1px solid #ffffff}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      html[dir=ltr] .ms-CommandBarSearch:hover{border-left:1px solid #000000}
+      html[dir=rtl] .ms-CommandBarSearch:hover{border-right:1px solid #000000}
+      html[dir=ltr] .ms-CommandBarSearch:hover{border-right:1px solid #000000}
+      html[dir=rtl] .ms-CommandBarSearch:hover{border-left:1px solid #000000}
+    }
+    .ms-CommandBarSearch-input{height:40px;padding:8px 8px 8px 0;border:none;background-color:transparent;width:100%;box-sizing:border-box;outline:0;cursor:pointer;font-size:14px;-webkit-appearance:none;-webkit-border-radius:0}
+    html[dir=ltr] .ms-CommandBarSearch-input{border-left:42px solid transparent}
+    html[dir=rtl] .ms-CommandBarSearch-input{border-right:42px solid transparent}
+    @media screen and (-ms-high-contrast:active){
+      html[dir=ltr] .ms-CommandBarSearch-input{border-left:40px solid #000000}
+      html[dir=rtl] .ms-CommandBarSearch-input{border-right:40px solid #000000}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      html[dir=ltr] .ms-CommandBarSearch-input{border-left:40px solid #ffffff}
+      html[dir=rtl] .ms-CommandBarSearch-input{border-right:40px solid #ffffff}
+    }
+    .ms-CommandBarSearch-input::-ms-clear{display:none}
+    .ms-CommandBarSearch-iconSearchWrapper{display:block}
+    .ms-CommandBarSearch-iconArrowWrapper{display:none}
+    .ms-CommandBarSearch-iconArrowWrapper,.ms-CommandBarSearch-iconSearchWrapper{top:0}
+    html[dir=ltr] .ms-CommandBarSearch-iconArrowWrapper,html[dir=ltr] .ms-CommandBarSearch-iconSearchWrapper{padding-left:17px}
+    html[dir=rtl] .ms-CommandBarSearch-iconArrowWrapper,html[dir=rtl] .ms-CommandBarSearch-iconSearchWrapper{padding-right:17px}
+    html[dir=ltr] .ms-CommandBarSearch-iconArrowWrapper,html[dir=ltr] .ms-CommandBarSearch-iconSearchWrapper{padding-right:8px}
+    html[dir=rtl] .ms-CommandBarSearch-iconArrowWrapper,html[dir=rtl] .ms-CommandBarSearch-iconSearchWrapper{padding-left:8px}
+    .ms-CommandBarSearch-iconClearWrapper{display:none;top:1px;z-index:10}
+    html[dir=ltr] .ms-CommandBarSearch-iconClearWrapper{right:0}
+    html[dir=rtl] .ms-CommandBarSearch-iconClearWrapper{left:0}
+    .ms-CommandBarSearch.is-active{background-color:#c7e0f4;color:#000000}
+    .ms-CommandBarSearch.is-active:hover{background-color:#c7e0f4;color:#000000}
+    .ms-CommandBarSearch.is-active .ms-CommandBarSearch-input{cursor:text}
+    html[dir=ltr] .ms-CommandBarSearch.is-active .ms-CommandBarSearch-input{padding-right:40px}
+    html[dir=rtl] .ms-CommandBarSearch.is-active .ms-CommandBarSearch-input{padding-left:40px}
+    html[dir=ltr] .ms-CommandBarSearch.is-active .ms-CommandBarSearch-input{border-left-width:8px}
+    html[dir=rtl] .ms-CommandBarSearch.is-active .ms-CommandBarSearch-input{border-right-width:8px}
+    html[dir=ltr] .ms-CommandBarSearch.is-active.ms-CommandBarSearch--hasBack .ms-CommandBarSearch-input{border-left-width:40px}
+    html[dir=rtl] .ms-CommandBarSearch.is-active.ms-CommandBarSearch--hasBack .ms-CommandBarSearch-input{border-right-width:40px}
+    .ms-CommandBarSearch.is-active .ms-CommandBarSearch-iconSearchWrapper{display:none}
+    .ms-CommandBarSearch.is-active.ms-CommandBarSearch--hasBack .ms-CommandBarSearch-iconArrowWrapper{display:block}
+    html[dir=ltr] .ms-CommandBarSearch.is-active .ms-CommandBarSearch-input{padding-right:40px}
+    html[dir=rtl] .ms-CommandBarSearch.is-active .ms-CommandBarSearch-input{padding-left:40px}
+    .ms-CommandBarSearch.is-active .ms-CommandBarSearch-iconClearWrapper{display:block}
+    .ms-CommandBarSearch-iconWrapper{height:40px;line-height:40px;cursor:pointer;position:absolute;text-align:center}
+    .ms-CommandBarSearch .ms-Icon:before{font-size:16px;color:#0078d7}
+    .ms-CommandBarSearch-input,.ms-CommandBarSearch-input::-webkit-input-placeholder{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px}
+  </style>
+  ##
+  const OVERFLOW_KEY = 'overflow';
+  const OVERFLOW_WIDTH = 41.5;
+  
+  var _id = tmplScope._id;
+  var expandedMenuId = null;
+  var expandedMenuItemKey = OVERFLOW_KEY;
+  var contextualMenuTarget = null;
+  var contextualMenuItems = null;
+  var renderedOverflowItems = null;
+
+  var _onContextMenuDismiss = function() {
+    contextualMenu.reflash({
+      labelElementId: null,
+      items: null,
+      targetElement: null
+    });
+  }
+
+  var _onItemClick = function(item, ev) {
+    if (item.key === expandedMenuItemKey || !item.items || !item.items.length) {
+      _onContextMenuDismiss();
+    } else {
+      expandedMenuItemKey = item.key;
+      contextualMenu.reflash({
+        labelElementId: expandedMenuId = ev.currentTarget.id,
+        items: contextualMenuItems = item.items,
+        targetElement: contextualMenuTarget = ev.currentTarget
+      });
+    }
+  }
+  
+  var _onOverflowClick = function(ev) {
+    if (expandedMenuItemKey === OVERFLOW_KEY) {
+      _onContextMenuDismiss();
+    } else {
+      expandedMenuItemKey = OVERFLOW_KEY,
+      contextualMenu.reflash({
+        labelElementId: expandedMenuId = ev.currentTarget.id,
+        items: contextualMenuItems = renderedOverflowItems,
+        targetElement: contextualMenuTarget = ev.currentTarget
+      });
+    }
+  }
+  
+  var _onContextMenuDismiss = function(ev) {
+    if (!ev || !ev.relatedTarget || !refs.commandSurface.contains(ev.relatedTarget)) {
+        expandedMenuItemKey = null;
+        /*
+        contextualMenu.render(Object.assign(contextualMenu.data, {
+          labelElementId: expandedMenuId = null,
+          items: contextualMenuItems = null,
+          targetElement: contextualMenuTarget = null
+        }));
+        */
+        contextualMenu.remove();
+    } else {
+      ev.stopPropagation();
+      ev.preventDefault();
+    }
+  }
+  
+  var contextualMenu = null;
+  ##
+  <div class="ms-CommandBar">
+    ##if (data.search) {##
+    <div class="ms-CommandBarSearch">
+      <input class="ms-CommandBarSearch-input" type="text" placeholder="Search...">
+      <div class="ms-CommandBarSearch-iconWrapper ms-CommandBarSearch-iconSearchWrapper">
+        <i class="ms-Icon ms-Icon--Search"></i>
+      </div>
+      <div class="ms-CommandBarSearch-iconWrapper ms-CommandBarSearch-iconClearWrapper ms-font-s">
+        <i class="ms-Icon ms-Icon--Cancel"></i>
+      </div>
+    </div>
+    ##}##
+    <div role="menubar" class="ms-FocusZone">
+      ##if (data.items) {##
+      <div class="ms-CommandBar-primaryCommands">
+        ##(data.items || []).forEach(function(item) {##
+        <div class="ms-CommandBarItem">
+          <button class="ms-CommandBarItem-link" id="##=_id+item.key##" aria-haspopup="##=!!(item.items && item.items.length)##" role="menuitem" aria-label="##=item.ariaLabel || item.name##"
+                  data-bridge-event="##:[function(e, edata, tmplElem){
+                    _onItemClick(item, e);
+                  }, item.event]##">
+            ##if (!!item.icon) {##<span class="ms-CommandBarItem-icon ms-Icon ms-Icon--##=item.icon##"></span>##}##
+            <span class="ms-CommandBarItem-commandText">##=item.name##</span>
+            ##if(item.items && item.items.length) {##<i class="ms-CommandBarItem-chevronDown ms-Icon ms-Icon--chevronDown"></i>##}##
+          </button>
+        </div>
+        ##});##
+      </div>
+      ##}##
+      ##if (data.farItems) {##
+      <div class="ms-CommandBar-sideCommands">
+        ##(data.farItems || []).forEach(function(item) {##
+        <div class="ms-CommandBarItem">
+          <button class="ms-CommandBarItem-link" id="##=_id+item.key##" aria-haspopup="##=!!(item.items && item.items.length)##" role="menuitem" aria-label="##=(item.ariaLabel || item.name)##"
+                  data-bridge-event="##:[function(e, edata, tmplElem){
+                    _onItemClick(item, e);
+                  }, item.event]##">
+            ##if (!!item.icon) {##<span class="ms-CommandBarItem-icon ms-Icon ms-Icon--##=item.icon##"></span>##}##
+            <span class="ms-CommandBarItem-commandText">##=item.name##</span>
+            ##if(item.items && item.items.length) {##<i class="ms-CommandBarItem-chevronDown ms-Icon ms-Icon--ChevronDown"></i>##}##
+          </button>
+        </div>
+        ##});##
+      </div>
+      ##}##
+    </div>
+    ##%contextualMenu = tmpl.ms.ContextualMenu({
+      className: 'ms-CommandBar-menuHost',
+      onDismiss: _onContextMenuDismiss,
+      isBeakVisible: true,
+      //directionalHint: DirectionalHint.bottomAutoEdge,
+    })##
+  </div>
+</template>
+
+<template id="ms-Label">
+  <style id="style-ms-Label">
+    .ms-Label{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;font-weight:400;box-sizing:border-box;margin:0;padding:0;box-shadow:none;color:#333333;box-sizing:border-box;display:block;padding:5px 0}
+    .ms-Label.is-required::after{content:' *';color:#a80000}
+    .ms-Label.is-disabled{color:#a6a6a6}
+    .ms-TextField{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;box-sizing:border-box;margin:0;padding:0;box-shadow:none;color:#333333;font-size:14px;font-weight:400;margin-bottom:8px}
+    .ms-TextField .ms-Label{font-size:14px;font-weight:400}
+    .ms-TextField.is-disabled .ms-TextField-field{background-color:#f4f4f4;border-color:#f4f4f4;pointer-events:none;cursor:default}
+    .ms-TextField.is-disabled::-webkit-input-placeholder{color:#a6a6a6}
+    .ms-TextField.is-disabled::-moz-placeholder{color:#a6a6a6}
+    .ms-TextField.is-disabled:-moz-placeholder{color:#a6a6a6}
+    .ms-TextField.is-disabled:-ms-input-placeholder{color:#a6a6a6}
+    .ms-TextField.is-required .ms-Label::after{content:' *';color:#a80000}
+    .ms-TextField.is-required::-webkit-input-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-required::-moz-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-required:-moz-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-required:-ms-input-placeholder::after{content:' *';color:#a80000}
+    .ms-TextField.is-active{border-color:#0078d7}
+    .ms-TextField-field{box-sizing:border-box;margin:0;padding:0;box-shadow:none;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;border:1px solid #c8c8c8;border-radius:0;font-weight:400;font-size:14px;color:#333333;height:32px;padding:6px 12px 7px 12px;width:100%;outline:0;text-overflow:ellipsis}
+    html[dir=rtl] .ms-TextField-field{padding:6px 12px 7px 12px}
+    .ms-TextField-field:hover{border-color:#767676}
+    .ms-TextField-field:focus{border-color:#0078d7}
+    @media screen and (-ms-high-contrast:active){
+      .ms-TextField-field:focus,.ms-TextField-field:hover{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-TextField-field:focus,.ms-TextField-field:hover{border-color:#37006E}
+    }
+    .ms-TextField-field[disabled]{background-color:#f4f4f4;border-color:#f4f4f4;pointer-events:none;cursor:default}
+    .ms-TextField-field::-webkit-input-placeholder{color:#666666}
+    .ms-TextField-field::-moz-placeholder{color:#666666}
+    .ms-TextField-field:-moz-placeholder{color:#666666}.ms-TextField-field:-ms-input-placeholder{color:#666666}
+    .ms-TextField-description{color:#767676;font-size:11px}
+    .ms-TextField.ms-TextField--underlined{border-bottom:1px solid #c8c8c8;display:table;width:100%}
+    .ms-TextField.ms-TextField--underlined:hover{border-color:#767676}
+    @media screen and (-ms-high-contrast:active){
+      .ms-TextField.ms-TextField--underlined:hover{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-TextField.ms-TextField--underlined:hover{border-color:#37006E}
+    }
+    .ms-TextField.ms-TextField--underlined:active,.ms-TextField.ms-TextField--underlined:focus{border-color:#0078d7}
+    .ms-TextField.ms-TextField--underlined .ms-Label{font-size:14px;display:table-cell;vertical-align:top;padding-top:9px;height:32px;width:1%;white-space:nowrap}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{margin-right:8px}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{margin-left:8px}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{padding-left:12px}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{padding-right:12px}
+    .ms-TextField.ms-TextField--underlined .ms-TextField-field{border:0;display:table-cell;padding-top:8px;padding-bottom:3px}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-TextField-field{float:left}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-TextField-field{float:right}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:left}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:right}
+    .ms-TextField.ms-TextField--underlined .ms-TextField-field:active,.ms-TextField.ms-TextField--underlined .ms-TextField-field:focus,.ms-TextField.ms-TextField--underlined .ms-TextField-field:hover{outline:0}
+    .ms-TextField.ms-TextField--underlined.is-disabled{border-bottom-color:#eaeaea}
+    .ms-TextField.ms-TextField--underlined.is-disabled .ms-Label{color:#a6a6a6}
+    .ms-TextField.ms-TextField--underlined.is-disabled .ms-TextField-field{background-color:transparent;color:#a6a6a6}
+    .ms-TextField.ms-TextField--underlined.is-active{border-color:#0078d7}
+    @media screen and (-ms-high-contrast:active){
+      .ms-TextField.ms-TextField--underlined.is-active{border-color:#1AEBFF}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-TextField.ms-TextField--underlined.is-active{border-color:#37006E}
+    }
+    .ms-TextField.ms-TextField--multiline .ms-TextField-field{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;color:#333333;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;font-size:14px;font-weight:400;line-height:17px;min-height:60px;padding-top:6px;overflow:auto}
+    .ms-TextField-errorMessage{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;font-size:12px;font-weight:400;color:#a80000;margin:0;padding-top:5px}
+    .ms-TextField-invalid,.ms-TextField-invalid:focus,.ms-TextField-invalid:hover{border-color:#a80000}
+    .ms-u-screenReaderOnly{position:absolute;text-indent:-9999px;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;border:0}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{padding-left:12px}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{padding-right:12px}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-Label{padding-right:0}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-Label{padding-left:0}
+    html[dir=ltr] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:left}
+    html[dir=rtl] .ms-TextField.ms-TextField--underlined .ms-TextField-field{text-align:right}
+    .ms-TextField.ms-TextField--multiline .ms-TextField-field.ms-TextField-field--unresizable{resize:none}
+    .ms-TextField-hidden{display:none}
+  </style>
+  ##
+  var prop = data.prop;
+  var label = data.label;
+  var children = data.children;
+  var className = data.className || '';
+  var disabled = data.disabled;
+  var required = data.required;
+  ##
+  &lt;label class="##=Fabric.css('ms-Label', className, {'is-disabled': disabled, 'is-required': required})##" ##=Fabric.prop(prop)##&gt;##=label####%children##</label>
+</template>
+
+
+<template id="ms-Icon">
+  ##
+  var iconName = data.iconName;
+  var className = data.className;
+  var prop = Fabric.prop(Object.assign(data.prop || {}, {
+    class: Fabric.css('ms-Icon', 'ms-Icon--' + iconName, className)
+  }));
+  ##
+  &lt;i ##=prop## data-bridge-event="##:data.event##"&gt;</i>
+</template>
+
+
+<template id="ms-Callout">
+  <style id="style-ms-Callout">
+    .ms-Callout{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;box-shadow:0 0 15px -5px rgba(0,0,0,.4);position:absolute;border:1px solid #eaeaea;box-sizing:border-box}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Callout{border:1px solid #ffffff}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Callout{border:1px solid #000000}
+    }
+    .ms-Callout-container{position:relative}
+    .ms-Callout-main{background-color:#ffffff;overflow-y:auto;position:relative}
+    .ms-Callout-beak{position:absolute;background-color:#ffffff;box-shadow:inherit;border:inherit;box-sizing:border-box;-webkit-transform:rotate(45deg);transform:rotate(45deg)}
+    .ms-Callout-beakCurtain{position:absolute;top:0;right:0;bottom:0;left:0;background-color:#ffffff}
+  </style>
+  ##
+  var content = tmpl.ms.CalloutContent(data);
+  var doNotLayer = data.doNotLayer;
+  tmplScope.content = content;
+  tmplScope.remove = function() {
+    tmplScope.layer.remove();
+    content.remove();
+  }
+  ##
+  ##%doNotLayer ? content : tmplScope.layer = tmpl.ms.Layer({content: content})##
+</template>
+
+<template id="ms-CalloutContent">
+  ##
+  const BEAK_ORIGIN_POSITION = { top: 0, left: 0 };
+  const OFF_SCREEN_POSITION = { top: '-9999px', left: '0px' };
+  const BORDER_WIDTH = 1;
+  const SPACE_FROM_EDGE = 8;
+
+  var className = data.className;
+  var targetElement = data.targetElement;
+  
+  var gapSpace = data.gapSpace = data.gapSpace == undefined ? 16 : data.gapSpace;
+  var beakWidth = data.beakWidth = data.beakWidth == undefined ? 16 : data.beakWidth;
+  var isBeakVisible = data.isBeakVisible = data.isBeakVisible != undefined ? data.isBeakVisible : true;
+  var directionalHint = data.directionalHint = data.directionalHint || DirectionalHint.bottomAutoEdge;
+
+  var onDismiss = data.onDismiss;
+
+  var content = data.content;
+  var onLayerMounted = data.onLayerMounted;
+
+  var state = {
+    positions: null,
+    slideDirectionalClassName: null,
+    //calloutElement: null
+  };
+
+  var _didSetInitialFocus, _hostElement, _calloutElement, _calloutBeakElement, _targetWindow, _bounds, _maxHeight, _positionAttempts = null;
+
+  if (data.targetElement && data.targetElement.ownerDocument && data.targetElement.ownerDocument.defaultView) {
+    _targetWindow = data.targetElement.ownerDocument.defaultView;
+  } else {
+    _targetWindow = window;
+  }
+  this._positionAttempts = 0;
+
+  var _getMaxHeight = function() {
+    if (!_maxHeight) {
+      _maxHeight = _getBounds().height - BORDER_WIDTH * 2;
+    }
+    return this._maxHeight;
+  }
+
+  var _targetWindow, _target;
+  var _setTargetWindowAndElement = function(target) {
+    if (target) {
+      if (typeof target === 'string') {
+        var currentDoc = getDocument();
+        _target = currentDoc ? currentDoc.querySelector(target) : null;
+        _targetWindow = Fabric.dom.getWindow();
+      } else if (target.stopPropagation) {
+        _target = target;
+        _targetWindow = Fabric.dom.getWindow(target.toElement);
+      } else {
+        var targetElement = target;
+        _target = target;
+        _targetWindow = Fabric.dom.getWindow(targetElement);
+      }
+
+    } else {
+      _targetWindow = Fabric.dom.getWindow();
+    }
+  }
+
+  var _updatePosition = function() {
+    var positions = state.positions;
+    var hostElement = _hostElement;
+    var calloutElement = _calloutElement;
+
+    if (hostElement && calloutElement) {
+      var currentProps = {};
+      currentProps = Object.assign(currentProps, data);
+      currentProps.bounds = _getBounds();
+
+      var positionInfo = Fabric.positioning.getRelativePositions(currentProps, hostElement, calloutElement);
+
+      if ((!positions && positionInfo) ||
+        (positions && positionInfo &&
+          (positions.callout.top.toFixed(2) !== positionInfo.calloutPosition.top.toFixed(2) ||
+            positions.callout.left.toFixed(2) !== positionInfo.calloutPosition.left.toFixed(2))
+          && this._positionAttempts < 5)) {
+
+        _positionAttempts++;
+        state.positions = {
+          callout: positionInfo.calloutPosition,
+          beak: positionInfo.beakPosition,
+        };
+        state.slideDirectionalClassName = positionInfo.directionalClassName;
+      }
+    } else {
+      _positionAttempts = 0;
+    }
+    var style = state.positions ? state.positions.callout : OFF_SCREEN_POSITION;
+    //Object.assign(_calloutElement.style, style);
+    _calloutElement.style.top = style.top + 'px';
+    _calloutElement.style.left = style.left + 'px';
+    
+    if (_calloutBeakElement) {
+      var positions = state.positions;
+      var beakStyle = Fabric.style({
+        top: (positions && positions.beak ? positions.beak.top : BEAK_ORIGIN_POSITION.top) + 'px',
+        left: (positions && positions.beak ? positions.beak.left : BEAK_ORIGIN_POSITION.left) + 'px',
+        height: beakStyleWidth + 'px',
+        width: beakStyleWidth + 'px'
+      });
+      _calloutBeakElement.style.cssText = beakStyle;
+    }
+  }
+
+  var _getBounds = function() {
+    if (!_bounds) {
+      var currentBounds = data.bounds;
+
+      if (!currentBounds) {
+        currentBounds = {
+          top: 0 + SPACE_FROM_EDGE,
+          left: 0 + SPACE_FROM_EDGE,
+          right: _targetWindow.innerWidth - SPACE_FROM_EDGE,
+          bottom: _targetWindow.innerHeight - SPACE_FROM_EDGE,
+          width: _targetWindow.innerWidth - SPACE_FROM_EDGE * 2,
+          height: _targetWindow.innerHeight - SPACE_FROM_EDGE * 2
+        };
+      }
+      _bounds = currentBounds;
+    }
+    return _bounds;
+  }
+
+  var dismiss = function(ev) {
+    if (onDismiss) {
+      onDismiss(ev);
+    }
+  }
+
+  var _dismissOnLostFocus = function(ev) {
+    var target = ev.target;
+    if (ev.target !== _targetWindow &&
+      _hostElement && !Fabric.dom.elementContains(_hostElement, target) &&
+      (_target.stopPropagation ||
+        (!_target || (target !== _target && !Fabric.dom.elementContains(_target, target))))) {
+      dismiss(ev);
+    }
+  }
+
+  var beakStyleWidth = beakWidth;
+  var beakReactStyle = '';
+
+  var contentMaxHeight = _getMaxHeight();
+  var beakVisible = isBeakVisible && !!targetElement;
+  
+  tmplScope.beforeAppendTo = function() {
+    var target = data.targetElement ? data.targetElement : data.target;
+    _setTargetWindowAndElement(target);
+  }
+
+  tmplScope.afterAppendTo = function() {
+    if (_target) {
+      _targetWindow.addEventListener('scroll', function(ev) {
+        if (state.positions) {
+          _dismissOnLostFocus(ev);
+        }
+      });
+      _targetWindow.addEventListener('resize', dismiss);
+      _targetWindow.addEventListener('focus', _dismissOnLostFocus);
+      _targetWindow.addEventListener('click', _dismissOnLostFocus);
+  
+      if (onLayerMounted) {
+          onLayerMounted();
+      }
+    }
+    _updatePosition();
+  }
+
+  tmplScope.beforeRemove = function() {
+    _targetWindow.removeEventListener('resize', dismiss);
+    _targetWindow.removeEventListener('focus', _dismissOnLostFocus);
+    _targetWindow.removeEventListener('click', _dismissOnLostFocus);
+  }
+  ##
+  <div class="ms-Callout-container" data-bridge-load="##:function(target){_hostElement = target;}##">
+    &lt;div data-bridge-load="##:function(target){_calloutElement = target;}##"
+      ##=Fabric.prop({
+        class: Fabric.css(
+          'ms-Callout', className,
+          state.slideDirectionalClassName ? 'ms-u-' + state.slideDirectionalClassName : ''
+        ),
+        style: Fabric.style(state.positions ? state.positions.callout : OFF_SCREEN_POSITION)
+      })##
+      &gt;
+      ##if (beakVisible) {##
+        &lt;div data-bridge-load="##:function(target){_calloutBeakElement = target;}##"
+          ##=Fabric.prop({
+            class: 'ms-Callout-beak',
+            style: beakReactStyle
+          })##&gt;
+          </div>
+        <div class='ms-Callout-beakCurtain'></div>
+      ##}##
+      ##%tmpl.ms.Popup({
+        className: 'ms-Callout-main',
+        onDismiss: onDismiss,
+        shouldRestoreFocus: true,
+        prop: {
+          style: Fabric.css({maxHeight: contentMaxHeight})
+        },
+        content: content
+      })##
+    </div>
+  </div>
+</template>
+
+<template id="ms-Popup">
+  ##
+  var className = data.className;
+  var role = data.role;
+  var ariaLabelledBy = data.ariaLabelledBy;
+  var ariaDescribedBy = data.ariaDescribedBy;
+  var content = data.content;
+  var onDismiss = data.onDismiss;
+
+  var prop = data.prop || {};
+  ##
+  &lt;div
+    ##=Fabric.prop(Object.assign(prop, {
+      class: className,
+      role: role,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-desribedby': ariaDescribedBy
+    }))##
+    &gt;
+    ##%content##
+  </div>
+</template>
+
+<template id="ms-Check">
+  <style id="style-ms-Check">
+    .ms-Check{display:inline-block;cursor:default;vertical-align:top;width:20px;height:20px;text-align:center;position:relative}
+    .ms-Check.is-checked .ms-Check-background:before{background:#0078d7;border:1px solid #ffffff}
+    .ms-Check.is-checked .ms-Check-check{opacity:1;color:#ffffff}
+    .ms-Check:hover .ms-Check-check{opacity:1}
+    .ms-Check-check{left:0;right:0;position:absolute;line-height:20px;color:#c8c8c8;opacity:0}
+    .ms-Check-background:before{position:absolute;top:0;bottom:0;left:0;right:0;display:inline-block;margin:auto;height:18px;width:18px;background:#ffffff;border:1px solid #c8c8c8;border-radius:50%;content:' '}
+  </style>
+  <div class="ms-Check ##=data.isChecked ? 'is-checked' : ''## ##=data.className##">
+    <div class="ms-Check-background"></div>
+    <i class="ms-Check-check ms-Icon ms-Icon--CheckMark"></i>
+  </div>
+</template>
+
+<template id="ms-DetailsHeader">
+  <style id="style-ms-DetailsHeader">
+    .ms-DetailsHeader{display:inline-block;min-width:100%;height:36px;line-height:36px;white-space:nowrap;padding-bottom:1px;border-bottom:1px solid #eaeaea;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+    html[dir=ltr] .ms-DetailsHeader.is-selectAllHidden{padding-left:36px}
+    html[dir=rtl] .ms-DetailsHeader.is-selectAllHidden{padding-right:36px}
+    .ms-DetailsHeader-cell.is-check .ms-Check-background{visibility:hidden}
+    .ms-DetailsHeader-cell.is-check:hover .ms-Check-background,.ms-DetailsHeader.is-allSelected .ms-Check-background{visibility:visible}
+    .ms-DetailsHeader-cellWrapper{display:inline-block;position:relative}
+    .ms-DetailsHeader-cellSizeWrapper{display:inline-block;vertical-align:top}
+    .ms-DetailsHeader-cell{color:#c8c8c8;font-weight:400;position:relative;display:inline-block;box-sizing:border-box;padding:0 8px;border:none;line-height:inherit;margin:0;height:36px;vertical-align:top;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .ms-Fabric .ms-DetailsHeader-cell::-moz-focus-inner{border:0}
+    .ms-Fabric .ms-DetailsHeader-cell{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-DetailsHeader-cell:focus:before{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    html[dir=ltr] .ms-DetailsHeader-cell{text-align:left}
+    html[dir=rtl] .ms-DetailsHeader-cell{text-align:right}
+    html[dir=ltr] .ms-DetailsHeader-cell{text-align:left}
+    html[dir=rtl] .ms-DetailsHeader-cell{text-align:right}
+    .ms-DetailsHeader-cell.is-check{position:relative;padding:8px;margin:0}
+    .ms-DetailsHeader-cell.is-actionable{color:#666666}
+    .ms-DetailsHeader-cell.is-actionable:hover{color:#333333;background:#f8f8f8}
+    .ms-DetailsHeader-cell.is-actionable:active{background:#eaeaea}
+    .ms-DetailsHeader-cell.is-sizer{position:absolute;width:16px;cursor:ew-resize;bottom:0;top:0;height:inherit;z-index:99;background:0 0}
+    html[dir=ltr] .ms-DetailsHeader-cell.is-sizer{margin-left:-10px}
+    html[dir=rtl] .ms-DetailsHeader-cell.is-sizer{margin-right:-10px}
+    .ms-DetailsHeader-cell.is-empty{text-overflow:clip}
+    .ms-DetailsHeader-cell.is-sizer:after{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:#c8c8c8;opacity:0}
+    .ms-DetailsHeader-cell.is-sizer.is-resizing:after,.ms-DetailsHeader-cell.is-sizer:hover:after{opacity:1;-webkit-transition:opacity .3s linear;transition:opacity .3s linear}
+    .ms-DetailsHeader-collapseButton{text-align:center;-webkit-transform:rotate(-180deg);transform:rotate(-180deg);-webkit-transform-origin:50% 50%;transform-origin:50% 50%;-webkit-transition:-webkit-transform .1s linear;transition:-webkit-transform .1s linear;transition:transform .1s linear;transition:transform .1s linear,-webkit-transform .1s linear;width:20px;outline:0}
+    .ms-DetailsHeader-collapseButton.is-collapsed{-webkit-transform:rotate(0);transform:rotate(0)}
+    .ms-DetailsHeader-isSortedDescending{-webkit-transform:rotate(-180deg);transform:rotate(-180deg);-webkit-transform-origin:50% 50%;transform-origin:50% 50%}
+    .ms-DetailsHeader-cell .ms-Icon{color:#666666;opacity:1}
+    .ms-DetailsHeader-cell .ms-DetailsHeader-filterChevron.ms-Icon{color:#a6a6a6;vertical-align:middle}
+    html[dir=ltr] .ms-DetailsHeader-cell .ms-DetailsHeader-filterChevron.ms-Icon{padding-left:4px}
+    html[dir=rtl] .ms-DetailsHeader-cell .ms-DetailsHeader-filterChevron.ms-Icon{padding-right:4px}
+    html[dir=ltr] .ms-DetailsHeader-cell .ms-DetailsHeader-collapseButton.ms-Icon{padding-right:0}
+    html[dir=rtl] .ms-DetailsHeader-cell .ms-DetailsHeader-collapseButton.ms-Icon{padding-left:0}
+  </style>
+  ##
+  const INNER_PADDING = 16;
+  
+  var columns = data.columns || [];
+  var selectAllVisibility = data.selectAllVisibility;
+  ##
+  <div role="row" class="ms-DetailsHeader" data-automationid="DetailsHeader">
+    <div class="ms-FocusZone">
+      <div class="ms-DetailsHeader-cellWrapper" role="columnheader">
+        ##if (selectAllVisibility === 'visible') {##
+        <button class="ms-DetailsHeader-cell is-check" aria-pressed="false" tabindex="0">
+          ##%tmpl.ms.Check({isChecked: false})##
+        </button>
+        ##}##
+      </div>
+      
+      ##columns.forEach(function(column) {##
+      <div class="ms-DetailsHeader-cellSizeWrapper">
+        <div class="ms-DetailsHeader-cellWrapper" role="columnheader">
+          <button class="ms-DetailsHeader-cell is-actionable" style="##=Fabric.style({width: column.calculatedWidth})##" aria-haspopup="false" aria-label="thumbnail" aria-sort="none" data-automationid="ColumnsHeaderColumn" data-item-key="thumbnail">
+            <span>##=column.name##</span>
+          </button>
+        </div>
+        <div data-sizer-index="0" class="ms-DetailsHeader-cell is-sizer"></div>
+      </div>
+      ##});##
+    </div>
+  </div>
+</template>
+
+<template id="ms-DetailsRowFields">
+  ##
+  var item = data.item;
+  var itemIndex = data.itemIndex;
+  var columns = data.columns || [];
+  var onRenderItemColumn = data.onRenderItemColumn;
+  var event = data.event;
+  ##
+  <div class='ms-DetailsRow-fields' data-automationid='DetailsRowFields' data-bridge-event="##:event##">
+    ##columns.forEach(function(column, columnIndex) {
+        var prop = Fabric.prop({
+          key: columnIndex,
+          role: column.isRowHeader ? 'rowheader' : 'gridcell',
+          class: Fabric.css(
+            'ms-DetailsRow-cell', column.className, {
+              'is-multiline': column.isMultiline
+          }),
+          style: Fabric.prop({width: column.calculatedWidth}),
+          'data-automationid': 'DetailsRowCell',
+          'data-automation-key': column.key
+        });
+        var value = onRenderItemColumn ? onRenderItemColumn(item, columnIndex, column) : 
+                                        (item && column && column.fieldName) ? item[column.fieldName] : '';
+    ##
+    &lt;div ##=prop##&gt;
+      ##%value##
+    </div>
+    ##});##
+  </div>
+</template>
+
+<template id="ms-DetailsRow">
+  <style id="style-ms-DetailsRow">
+    .ms-DetailsRow{display:inline-block;min-width:100%;min-height:36px;margin:1px 0;vertical-align:top;white-space:nowrap;padding:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;box-sizing:border-box;background:0 0;border:none;vertical-align:top;line-height:16px}
+    .ms-Fabric .ms-DetailsRow::-moz-focus-inner{border:0}
+    .ms-Fabric .ms-DetailsRow{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-DetailsRow:focus:before{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    html[dir=ltr] .ms-DetailsRow{text-align:left}
+    html[dir=rtl] .ms-DetailsRow{text-align:right}
+    .ms-DetailsRow.ms-DetailsRow.is-selected{background:#d0d0d0}
+    .ms-DetailsRow:hover{background:#f4f4f4}
+    .ms-DetailsRow.is-selected:hover{background:#dadada}
+    .ms-DetailsRow-cell{display:inline-block;position:relative;box-sizing:border-box;padding:10px 0;margin:0 8px;min-height:36px;vertical-align:top;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ms-DetailsRow-cell.is-multiline{white-space:normal;word-break:break-word;text-overflow:clip}
+    .ms-DetailsRow-fields{display:inline-block}
+    .ms-DetailsRow-check{display:inline-block;cursor:default;padding:8px;box-sizing:border-box;vertical-align:top;background:0 0;border:none}
+    .ms-Fabric .ms-DetailsRow-check::-moz-focus-inner{border:0}
+    .ms-Fabric .ms-DetailsRow-check{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-DetailsRow-check:focus:before{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    .ms-DetailsRow-check{opacity:0}
+    .ms-DetailsRow.is-check-visible .ms-DetailsRow-check,.ms-DetailsRow.is-selected .ms-DetailsRow-check,.ms-DetailsRow:hover .ms-DetailsRow-check{opacity:1}
+    .aFileTypeIconRenderer{height:36px;line-height:36px;vertical-align:top}
+    .FileTypeIconRenderer>img{width:16px;height:16px;vertical-align:middle}
+    .ms-DetailsRow-cellMeasurer .ms-DetailsRow-cell{overflow:visible;white-space:nowrap}
+    .ms-DetailsRow-checkSpacer{display:inline-block;height:20px;width:20px}
+  </style>
+  
+  ##
+  const DEFAULT_DROPPING_CSS_CLASS = 'is-dropping';
+  
+  var item = data.item;
+  var itemIndex = data.itemIndex;
+  var columns = data.columns;
+  var selectionMode = data.selectionMode;
+  var selection = data.selection;
+  selection._scopes.push(tmplScope);
+  
+  var onRenderItemColumn = data.onRenderItemColumn;
+  
+  var dragDropEvents = data.dragDropEvents;
+  
+  var viewport = data.viewport;
+  var checkboxVisibility = data.checkboxVisibility;
+  var getRowAriaLabel = data.getRowAriaLabel;
+  var checkButtonAriaLabel = data.checkButtonAriaLabel;
+
+  var selectionState = data.selectionState || {
+    isSelected: false,
+    anySelected: false
+  }
+  tmplScope.selectionState = selectionState;
+
+  var _getSelectionState = function() {
+    return {
+      isSelected: selection.isIndexSelected(itemIndex),
+      anySelected: selection.getSelectedCount() > 0
+    };
+  }
+  var state = {
+    selectionState: _getSelectionState(),
+    columnMeasureInfo: null,
+    isDropping: false,
+    //groupNestingDepth: props.groupNestingDepth
+  };
+
+  var _hasSetFocus = false;
+
+  //var _events = new EventGroup(this);
+  var _droppingClassNames = '';
+  //var _updateDroppingState = this._updateDroppingState.bind(this);
+  
+  
+  var isDraggable = dragDropEvents && dragDropEvents.canDrag && dragDropEvents.canDrag(item);
+  var droppingClassName = state.isDropping ? (_droppingClassNames ? _droppingClassNames : DEFAULT_DROPPING_CSS_CLASS) : '';
+  var ariaLabel = getRowAriaLabel ? getRowAriaLabel(item) : null;
+  var canSelect = selection.canSelectItem(item);
+
+  var className = Fabric.css(
+    'ms-DetailsRow ms-u-fadeIn400',
+    droppingClassName,
+    {
+      'is-selected': selectionState.isSelected,
+      'is-check-visible': checkboxVisibility === 'always'
+    }
+  );
+
+  var prop = Fabric.prop({
+    'class': className,
+    'aria-label': ariaLabel,
+    'data-is-focusable': true,
+    'data-selection-index': itemIndex,
+    'data-item-index': itemIndex,
+    'data-is-draggable': isDraggable,
+    'data-automationid': 'DetailsRow',
+    'style': Fabric.prop({minWidth: viewport ? viewport.width : 0}),
+    'aria-selected': selectionState.isSelected,
+  });
+
+  var rowCheckEvent = data.rowCheckEvent;
+  var rowFieldsEvent = data.rowFieldsEvent;
+
+  var detailsRowCheck = null;
+  var event = data.event;
+  var extendEvent = Object.assign({
+    click: function(e, edata, tmplElem) {
+      if (selectionMode === 'single') {
+        selection.deselectionAll();
+      }
+      selection._selectedScopes.push(tmplScope);
+      selectionState.isSelected = !selectionState.isSelected;
+      tmplScope.reflash({selectionState: selectionState});
+    }
+  });
+  ##
+  &lt;div role='row' ##=prop## data-bridge-event="##:[extendEvent,event]##"&gt;
+    <div class="ms-FocusZone" data-focuszone-id="FocusZone##=tmplScope.id##">
+      ##if (selectionMode !== 'none' && checkboxVisibility !== 'hidden') {##
+      <span role="gridcell">
+        ##%detailsRowCheck = tmpl.ms.DetailsRowCheck({
+          isSelected: selectionState.isSelected,
+          anySelected: selectionState.anySelected,
+          ariaLabel: checkButtonAriaLabel,
+          canSelect: canSelect,
+          event: rowCheckEvent
+        })##
+      </span>
+      ##}##
+      ##%tmpl.ms.DetailsRowFields({
+        item: item,
+        itemIndex: itemIndex,
+        columns: columns,
+        selectionMode: selectionMode,
+        selection: selection,
+        onRenderItemColumn: onRenderItemColumn,
+        checkboxVisibility: checkboxVisibility,
+        getRowAriaLabel: getRowAriaLabel,
+        checkButtonAriaLabel: checkButtonAriaLabel,
+        event: rowFieldsEvent
+      })##
+    </div>
+  </div>
+</template>
+
+<template id="ms-DetailsRowCheck">
+  ##
+  var selected = data.isSelected || data.selected;
+  var canSelect = data.canSelect;
+  var ariaLabel = data.ariaLabel;
+  var className = Fabric.css('ms-DetailsRow-check', data.className);
+  ##
+  &lt;button class='ms-DetailsRow-check' role='button'
+    ##=Fabric.prop({
+    'class': className,
+    'aria-pressed': selected,
+    'data-selection-toggle': "true",
+    'data-automationid': 'DetailsRowCheck',
+    'aria-label': ariaLabel})##&gt;
+    ##if (canSelect) {##
+      ##%tmpl.ms.Check({isChecked: selected})##
+    ##} else {##
+      <div className='ms-DetailsRow-checkSpacer'></div>
+    ##}##
+  </button>
+</template>
+
+<template id="ms-DetailsList">
+  <style id="style-ms-DetailsList">
+    .ms-DetailsList{position:relative;font-size:12px}
+    .ms-DetailsList BUTTON{font-family:inherit;background-color:transparent}
+    .ms-DetailsList>.ms-FocusZone{display:inline-block;vertical-align:top;min-width:1px;min-height:1px}
+    .ms-DetailsList.is-horizontalConstrained{overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch}
+    .ms-DetailsList-cell{word-break:break-word}.ms-DetailsList .ms-List-cell{min-height:38px}
+  </style>
+  ##
+  const MIN_COLUMN_WIDTH = 100;
+  const CHECKBOX_WIDTH = 36;
+  const GROUP_EXPAND_WIDTH = 36;
+  const DEFAULT_INNER_PADDING = 16;
+
+  var buildColumns = function (items, canResizeColumns, onColumnClick, sortedColumnKey, isSortedDescending, groupedColumnKey, isMultiline) {
+    var columns = [];
+  
+    if (items && items.length) {
+      var firstItem = items[0];
+      var isFirstColumn = true;
+  
+      for (var propName in firstItem) {
+        if (firstItem.hasOwnProperty(propName)) {
+          columns.push({
+            key: propName,
+            name: propName,
+            fieldName: propName,
+            minWidth: MIN_COLUMN_WIDTH,
+            maxWidth: 300,
+            isCollapsable: !!columns.length,
+            isMultiline: (isMultiline === undefined) ? false : isMultiline,
+            isSorted: sortedColumnKey === propName,
+            isSortedDescending: !!isSortedDescending,
+            isRowHeader: false,
+            columnActionsMode: 'clickable',
+            isResizable: canResizeColumns,
+            onColumnClick,
+            isGrouped: groupedColumnKey === propName
+          });
+  
+          isFirstColumn = false;
+        }
+      }
+    }
+  
+    return columns;
+  }
+
+  var items = data.items || [];
+  var columns = data.columns || buildColumns(items);
+  var onRenderItemColumn = data.onRenderItemColumn;
+  var onItemInvoked = data.onItemInvoked;
+
+  var layoutMode = data.layoutMode || 'justified';
+  var selectionMode = data.selectionMode || 'multiple';
+  var constrainMode = data.constrainMode || 'horizontalConstrained';
+  var checkboxVisibility = data.checkboxVisibility || 'onHover';
+  var isHeaderVisible = data.isHeaderVisible || true;
+  
+  var selection = data.selection || {
+    count: 0,
+    _items: data.items || [],
+    _scopes: [],
+    _selectedItems: [],
+    _selectedScopes: [],
+    _isAllSelected: false,
+    _exemptedCount: 0,
+    _exemptedIndices: {},
+    _unselectableCount: 0,
+    _unselectableIndices: {},
+    canSelectItem: function(item) {
+      return true;
+    },
+    isIndexSelected: function(itemIndex) {
+
+    },
+    getSelectedCount: function() {
+      return !!(
+        (this.count > 0) &&
+        (this._isAllSelected && !this._exemptedIndices[index] && !this._unselectableIndices[index]) ||
+        (!this._isAllSelected && this._exemptedIndices[index]));
+    },
+    getSelectedCount: function() {
+      return this._isAllSelected ? (this._items.length - this._exemptedCount - this._unselectableCount) : (this._exemptedCount);
+    },
+    deselectionAll: function() {
+      var scope = selection._selectedScopes.pop();
+      while (scope != undefined) {
+        scope.reflash({selectionState: {
+          isSelected: false,
+          anySelected: false
+        }});
+        scope = selection._selectedScopes.pop();
+      }
+    }
+  };
+
+  var checkButtonAriaLabel = data.checkButtonAriaLabel;
+
+  var selectAllVisibility = 'none';
+  if (selectionMode === 'single') {
+    selectAllVisibility = 'hidden';
+  }
+  if (selectionMode === 'multiple') {
+    var isCollapsedGroupSelectVisible = groupProps && groupProps.headerProps && groupProps.headerProps.isCollapsedGroupSelectVisible;
+    if (isCollapsedGroupSelectVisible === undefined) {
+      isCollapsedGroupSelectVisible = true;
+    }
+    var isSelectAllVisible = isCollapsedGroupSelectVisible || !groups || isSomeGroupExpanded;
+    selectAllVisibility = isSelectAllVisible ? 'visible' : 'hidden';
+  }
+  
+  if (checkboxVisibility === 'hidden') {
+    selectAllVisibility = 'none';
+  }
+
+  var rowEvent = data.rowEvent;
+  var rowFieldsEvent = data.rowFieldsEvent;
+  var rowCheckEvent = data.rowCheckEvent;
+  var headerEvent = data.headerEvent;
+  var headerCheckEvent = data.headerCheckEvent;
+  ##
+  <div class="ms-DetailsList is-horizontalConstrained" data-automationid="DetailsList" data-is-scrollable="false" role="">
+    <div role="grid">
+      <div role="presentation">
+        ##%tmpl.ms.DetailsHeader({
+          columns: columns,
+          selectAllVisibility: selectAllVisibility,
+          headerCheckEvent: headerCheckEvent,
+          headerEvent: headerEvent
+        })##
+      </div>
+      <div role="presentation">
+        <div class="ms-FocusZone">
+            ##%tmpl.ms.SelectionZone({
+              selection: selection,
+              selectionMode: selectionMode,
+              onItemInvoked: onItemInvoked,
+              content:  tmpl.ms.List({items: [items], renderCell: function(item) {
+                        return tmpl.ms.DetailsRow({
+                                item: item,
+                                columns: columns,
+                                onRenderItemColumn: onRenderItemColumn,
+                                selection: selection,
+                                selectionMode: selectionMode,
+                                rowCheckEvent: rowCheckEvent,
+                                rowFieldsEvent: rowFieldsEvent,
+                                event: rowEvent
+                              });
+                      }})
+            })##
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="ms-FocusZone">
+  ##
+  var content = data.content;
+  var className = data.className;
+  var event = Object.assign({
+    
+  }, data.event);
+  ##
+  &lt;div ##=Fabric.prop({
+    class: Fabric.css('ms-FocusZone', className)
+  })##
+  data-bridge-event="##:event##"&gt;##%content##</div>
+</template>
+
+<template id="ms-Pivot">
+  <style id="style-ms-Pivot">
+    .ms-Pivot{font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;box-sizing:border-box;margin:0;padding:0;box-shadow:none;font-size:14px;font-weight:400;position:relative;color:#0078d7;white-space:nowrap}
+    .ms-Pivot-links{font-size:0;height:40px;list-style-type:none;padding:0;white-space:nowrap}
+    .ms-Pivot-link{color:#333333;display:inline-block;font-size:14px;font-weight:400;line-height:40px;padding:0 8px;text-align:center;position:relative}
+    html[dir=ltr] .ms-Pivot-link{margin-right:8px}
+    html[dir=rtl] .ms-Pivot-link{margin-left:8px}
+    .ms-Pivot-link:hover{cursor:pointer}
+    .ms-Pivot-link:focus{outline:0}
+    .ms-Pivot-link::before{background-color:transparent;bottom:0;content:'';height:2px;left:8px;position:absolute;right:8px;-webkit-transition:background-color 267ms cubic-bezier(.1,.25,.75,.9);transition:background-color 267ms cubic-bezier(.1,.25,.75,.9)}
+    .ms-Pivot-link::after{color:transparent;content:attr(title);display:block;font-weight:700;height:1px;overflow:hidden;visibility:hidden}
+    .ms-Pivot-link.is-selected{font-weight:600}
+    .ms-Pivot-link.is-selected::before{background-color:#0078d7}
+    .ms-Pivot-link.is-disabled{color:#a6a6a6}
+    .ms-Fabric.is-focusVisible .ms-Pivot-link:focus{outline:1px solid #767676}
+    .ms-Pivot-link.ms-Pivot-link--overflow{color:#666666}
+    .ms-Pivot-link.ms-Pivot-link--overflow.is-selected{color:#0078d7}
+    .ms-Pivot-link.ms-Pivot-link--overflow:focus:not(.is-selected),.ms-Pivot-link.ms-Pivot-link--overflow:hover:not(.is-selected){color:#212121}
+    .ms-Pivot-link.ms-Pivot-link--overflow:active{color:#0078d7}
+    .ms-Pivot-ellipsis{font-size:15px;position:relative;top:0}
+    .ms-Pivot-content{display:none;margin-top:20px}
+    .ms-Pivot.ms-Pivot--large .ms-Pivot-link{font-size:17px}
+    html[dir=ltr] .ms-Pivot.ms-Pivot--large .ms-Pivot-link .ms-Pivot-count{margin-left:4px}
+    html[dir=rtl] .ms-Pivot.ms-Pivot--large .ms-Pivot-link .ms-Pivot-count{margin-right:4px}
+    .ms-Pivot.ms-Pivot--large .ms-Pivot-link.ms-Pivot-link--overflow::after{font-size:17px}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link{height:40px;line-height:40px;background-color:#f4f4f4;padding:0 10px;vertical-align:top}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link::-moz-focus-inner{border:0}.ms-Pivot.ms-Pivot--tabs .ms-Pivot-link{outline:transparent;position:relative}
+    .ms-Fabric.is-focusVisible .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link:focus:after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;border:1px solid #666666}
+    html[dir=ltr] .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link{margin-right:0}
+    html[dir=rtl] .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link{margin-left:0}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link:focus:not(.is-selected):not(.ms-Pivot-link--overflow),.ms-Pivot.ms-Pivot--tabs .ms-Pivot-link:hover:not(.is-selected):not(.ms-Pivot-link--overflow){color:#000000}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link:active{color:#ffffff;background-color:#0078d7}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link.is-selected{background-color:#0078d7;color:#ffffff;font-weight:300}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link.is-selected::before{background-color:transparent;-webkit-transition:none;transition:none}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link.ms-Pivot-link--overflow:focus:not(.is-selected),.ms-Pivot.ms-Pivot--tabs .ms-Pivot-link.ms-Pivot-link--overflow:hover:not(.is-selected){background-color:#ffffff}
+    .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link.ms-Pivot-link--overflow:active{background-color:#0078d7}.ms-Fabric.is-focusVisible .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link:focus:before{height:auto;background:0 0;-webkit-transition:none;transition:none}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Pivot.ms-Pivot--tabs .ms-Pivot-link.is-selected{font-weight:600}
+    }
+  </style>
+</template>
+
+<template id="ms-Checkbox">
+  <style id="style-ms-Checkbox">
+    .ms-Checkbox{box-sizing:border-box;color:#333333;font-family:"Segoe UI WestEuropean","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;font-size:14px;font-weight:400;min-height:36px;position:relative}
+    .ms-Checkbox .ms-Label{font-size:14px;padding:0 0 0 26px;display:inline-block}
+    html[dir=rtl] .ms-Checkbox .ms-Label{padding:0 26px 0 0}
+    .ms-Checkbox-input{position:absolute;opacity:0;top:8px}
+    .ms-Checkbox-label::before{content:'';display:inline-block;border:2px solid #a6a6a6;width:20px;height:20px;font-weight:400;position:absolute;box-sizing:border-box;-webkit-transition-property:background,border,border-color;transition-property:background,border,border-color;-webkit-transition-duration:.2s;transition-duration:.2s;-webkit-transition-timing-function:cubic-bezier(.4,0,.23,1);transition-timing-function:cubic-bezier(.4,0,.23,1)}
+    .ms-Checkbox-label::after{content:"\E73E";font-family:FabricMDL2Icons;display:none;position:absolute;font-weight:900;background-color:transparent;font-size:13px;top:0;color:#ffffff;line-height:20px;width:20px;text-align:center}
+    .ms-Checkbox-label{display:inline-block;cursor:pointer;margin-top:8px;position:relative;vertical-align:top;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;min-width:20px;min-height:20px;line-height:20px}
+    .ms-Checkbox-label:hover::before{border-color:#767676}
+    .ms-Checkbox-label:hover .ms-Label{color:#000000}
+    .ms-Checkbox-label:focus::before{border-color:#767676}
+    .ms-Checkbox-label:focus.is-disabled::before{border-color:#c8c8c8}
+    .ms-Checkbox-label:focus.is-checked::before{border-color:#106ebe}
+    .ms-Checkbox-label:active::before{border-color:#767676}
+    .ms-Checkbox-label:active .ms-Label{color:#000000}
+    .ms-Checkbox-label.is-checked::before{border:10px solid #0078d7;background-color:#0078d7}
+    @media screen and (-ms-high-contrast:active),(-ms-high-contrast:black-on-white){
+      .ms-Checkbox-label.is-checked::before{display:none}
+    }
+    .ms-Checkbox-label.is-checked::after{display:block}
+    @media screen and (-ms-high-contrast:active),(-ms-high-contrast:black-on-white){
+      .ms-Checkbox-label.is-checked::after{height:16px;width:16px;line-height:16px}
+    }
+    @media screen and (-ms-high-contrast:active){
+      .ms-Checkbox-label.is-checked::after{border:2px solid #ffffff}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Checkbox-label.is-checked::after{border:2px solid #000000}
+    }
+    .ms-Checkbox-label.is-checked:focus::before,.ms-Checkbox-label.is-checked:hover::before{border-color:#106ebe}
+    .ms-Checkbox-label.is-disabled{cursor:default}
+    .ms-Checkbox-label.is-disabled:focus::before,.ms-Checkbox-label.is-disabled:hover::before{border-color:#c8c8c8}
+    .ms-Checkbox-label.is-disabled::before{background-color:#c8c8c8;border-color:#c8c8c8;color:#c8c8c8}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Checkbox-label.is-disabled::after{border:2px solid #0f0}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Checkbox-label.is-disabled::after{border:2px solid #600000}
+    }
+    @media screen and (-ms-high-contrast:active){
+      .ms-Checkbox-label.is-disabled::after{color:#0f0}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Checkbox-label.is-disabled::after{color:#600000}
+    }
+    .ms-Checkbox-label.is-disabled .ms-Label{color:#a6a6a6}
+    @media screen and (-ms-high-contrast:active){
+      .ms-Checkbox-label.is-disabled .ms-Label{color:#0f0}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .ms-Checkbox-label.is-disabled .ms-Label{color:#600000}
+    }
+    .ms-Checkbox-label.is-inFocus::before{border-color:#767676}
+    .ms-Checkbox-label.is-inFocus.is-disabled::before{border-color:#c8c8c8}
+    .ms-Checkbox-label.is-inFocus.is-checked::before{border-color:#106ebe}
+    .is-focusVisible .ms-Checkbox.is-inFocus::before{content:'';position:absolute;top:0;bottom:0;border:1px solid #666666}
+    html[dir=ltr] .is-focusVisible .ms-Checkbox.is-inFocus::before{right:0}
+    html[dir=rtl] .is-focusVisible .ms-Checkbox.is-inFocus::before{left:0}
+    html[dir=ltr] .is-focusVisible .ms-Checkbox.is-inFocus::before{left:-8px}
+    html[dir=rtl] .is-focusVisible .ms-Checkbox.is-inFocus::before{right:-8px }
+    @media screen and (-ms-high-contrast:active){
+      .is-focusVisible .ms-Checkbox.is-inFocus::before{border:1px solid #ffffff}
+    }
+    @media screen and (-ms-high-contrast:black-on-white){
+      .is-focusVisible .ms-Checkbox.is-inFocus::before{border:1px solid #000000}
+    }
+  </style>
+  ##
+  var _id = tmplScope._id;
+  
+  var inputProps = data.inputProps;
+  
+  var className = data.className;
+  var style = data.style;
+  var isFocused = data.isFocused;
+  var checked = data.checked;
+  var defaultChecked = data.defaultChecked;
+  var disabled = data.disabled;
+  
+  var label = data.label;
+  var children = data.children;
+  
+  var event = Object.assign({
+    focus: function(e, edata, tmplElem) {
+      if (inputProps && inputProps.onFocus) {
+        inputProps.onFocus(e);
+      }
+      state.isFocused = true;
+    },
+    blur: function(e, edata, tmplElem) {
+      if (inputProps && inputProps.onBlur) {
+        inputProps.onBlur(e);
+      }
+      state.isFocused = false;
+    },
+    change: function(e, edata, tmplElem) {
+      var onChange = data.onChange;
+      var isChecked = e.target.checked;
+
+      if (onChange) {
+        onChange(e, isChecked);
+      }
+
+      state.isChecked = isChecked;
+      tmplScope.reflash({checked: undefined});
+    }
+  }, data.event);
+
+  var state = tmplScope.state = tmplScope.state || {
+    isFocused: false,
+    isChecked: defaultChecked || false
+  };
+  
+  var isChecked = checked === undefined ? state.isChecked : checked;
+  ##
+  &lt;div ##=Fabric.prop({class: Fabric.css('ms-Checkbox', className, { 'is-inFocus': isFocused }), style: style})##&gt;
+    &lt;input
+      ##=Fabric.prop(inputProps)##
+      ##=Fabric.prop({
+        type: 'checkbox',
+        class: 'ms-Checkbox-input',
+        disabled: disabled,
+        id: _id,
+        name: _id,
+        'aria-checked': isChecked})##
+        data-bridge-event="##:event##"
+        ##=isChecked ? 'checked' : ''##
+        ##=defaultChecked ? 'defaultChecked' : ''##
+      /&gt;
+    ##%children##
+    &lt;label for="##=_id##"
+      ##=Fabric.prop({class: Fabric.css('ms-Checkbox-label', {
+        'is-checked': isChecked,
+        'is-disabled': disabled
+      })})##
+      &gt;
+      ##if (label) {##<span class='ms-Label'>##=label##</span>##}##
+    </label>
+  </div>
+</template>
+
+<template id="ms-SelectionZone">
+  ##
+  var content = data.content;
+  var event = Object.assign({
+  }, data.event);
+  ##
+  <div class='ms-SelectionZone' data-bridge-event="##:event##">##%content##</div>
+</template>
+
+<template id="ms-Overlay">
+  <style id="style-ms-Overlay">
+    .ms-Overlay{background-color:rgba(255,255,255,.4);position:absolute;bottom:0;left:0;right:0;top:0}
+    .ms-Overlay.ms-Overlay--none{visibility:hidden}
+    .ms-Overlay.ms-Overlay--dark{background-color:rgba(0,0,0,.4)}
+  </style>
+  ##
+  var className = data.className;
+  var isDarkThemed = data.isDarkThemed;
+  var event = data.event;
+  ##
+  <div class="ms-Overlay ##=className## ##=Fabric.css({'ms-Overlay--dark': isDarkThemed})##" data-bridge-event="##:event##"></div>
+</template>
+
+<template id="ms-Layer">
+  ##
+  var content = data.content;
+  var onLayerMounted = data.onLayerMounted;
+  var _layerHost, _projectedLayer = null;
+
+  tmplScope.afterAppendTo = function() {
+    var layerHost = _layerHost || tmpl.ms.LayerHost({}).getDefault(document.body);
+    _layerHost = layerHost;
+
+    layerHost.addLayer(content._id, content, data, function(projectedLayerScope) {
+      _projectedLayer = projectedLayerScope.element;
+
+      if (onLayerMounted) {
+        onLayerMounted();
+      }
+    });
+  }
+  
+  tmplScope.remove = function() {
+    _projectedLayer.remove();
+  }
+  ##
+  <span class='ms-Layer'></span>
+</template>
+
+<template id="ms-LayerHost">
+  <style id="style-ms-LayerHost">
+    .ms-LayerHost-overlay {
+      position: absolute;
+      visibility: hidden;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+  </style>
+  ##
+  const DEFAULT_HOST_ID = '__layerHost';
+  
+  var className = data.className;
+  var event = data.event;
+  
+  var prop = Fabric.prop(Object.assign(data.prop || {}, {
+    class: Fabric.css('ms-LayerHost', className)
+  }));
+  
+  var overlay = Fabric.htmlTag('div', {className: 'ms-LayerHost-overlay'});
+  var _layers = [];
+  
+  tmplScope.addLayer = function(id, parentElement, props, onMounted) {
+    var projectedLayer = tmpl.ms.ProjectedLayer({
+      key: id,
+      layerId: id,
+      parentElement: parentElement,
+      defaultRemoteProps: props
+    }).appendTo(overlay);
+    onMounted(projectedLayer);
+    _layers.push(projectedLayer);
+  }
+
+  tmplScope.removeLayer = function(layer) {
+    overlay.removeChild(layer);
+  }
+  
+  tmplScope.getDefault = function(layerElement) {
+    var doc = layerElement.ownerDocument;
+    var hostElement = doc.getElementById(DEFAULT_HOST_ID);
+
+    if (hostElement) {
+      return hostElement[DEFAULT_HOST_ID];
+    } else {
+      hostElement = doc.createElement('div');
+      hostElement.id = DEFAULT_HOST_ID;
+      doc.body.appendChild(hostElement);
+
+      //var defaultHost = tmpl.ms.LayerHost({});
+      //hostElement[DEFAULT_HOST_ID] = defaultHost;
+      //return defaultHost;
+
+      hostElement[DEFAULT_HOST_ID] = tmplScope;
+      hostElement.append(tmplScope.element);
+      return tmplScope;
+    }
+  }
+
+  ##
+  &lt;div ##=prop##&gt;
+    ##%tmpl.ms.Fabric({
+      content: overlay
+    })##
+  </div>
+</template>
+
+<template id="ms-ProjectedLayer">
+  <style id="style-ms-ProjectedLayer">
+    .ms-ProjectedLayer {
+      visibility: visible;
+    }
+  </style>
+  ##
+  var parentElement = data.parentElement;
+  var defaultRemoteProps = data.defaultRemoteProps;
+  tmplScope.isMounted = false;
+
+  var prop = Fabric.prop(Object.assign(data.prop || {}, {
+    class: Fabric.css('ms-ProjectedLayer', defaultRemoteProps.className)
+  }));
+  ##
+  &lt;div ##=prop##&gt;##%parentElement##</div>
+</template>
+
+<template id="ms-Fabric">
+  ##
+  var DIRECTIONAL_KEY_CODES = [
+    KeyCodes.up,
+    KeyCodes.down,
+    KeyCodes.left,
+    KeyCodes.right,
+    KeyCodes.home,
+    KeyCodes.end,
+    KeyCodes.tab,
+    KeyCodes.pageUp,
+    KeyCodes.pageDown
+  ];
+
+  var _lastIsFocusVisible = data.isFocusVisible || false;
+  var content = data.content;
+  var className = data.className;
+
+  var prop = Fabric.prop(Object.assign(data.prop || {}, {
+    class: Fabric.css('ms-Fabric ms-font-m', className, {
+      'is-focusVisible': _lastIsFocusVisible
+    })
+  }));
+  ##
+  &lt;div ##=prop## data-bridge-event="##:{
+    mouseDown: function(ev) {
+      tmplScope.reflash({isFocusVisible: false});
+    },
+    keyDown: function(ev) {
+      if (!_lastIsFocusVisible && DIRECTIONAL_KEY_CODES.indexOf(ev.which) > -1) {
+        tmplScope.reflash({isFocusVisible: true});
+      }
+    }
+  }##"&gt;##%content##</div>
+</template>
+
+
+
+<script>
+var isEdge = function() {
+  var myNav = navigator.userAgent.toLowerCase();
+  return (myNav.indexOf('edge') != -1) ? true : false;
+}
+
+if (bridge.tmplTool) {
+  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
+  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML);
+  console.log('bridge.Office-UI-Fabric.components.html');
+}
+</script>
+
+</body>

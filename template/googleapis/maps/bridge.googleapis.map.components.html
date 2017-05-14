@@ -1,0 +1,191 @@
+
+<body>
+<template id="google-map-basic">
+  <div class="##=data.class##" style="##=data.style || 'height: 100%;'##">
+    ##%data.header##
+    <div class="map" style="height:##=data.height || '100%'##" data-bridge-event="##:data.event##" data-bridge-load="##:function(target, data) {
+        var defaultLatLng = {lat: 35.5394635, lng: 139.6449921};
+        var center = data.center || data.marker && data.marker.lat && data.marker.lng ? {lat: data.marker.lat, lng: data.marker.lng} : defaultLatLng;
+        var map = tmplScope.map = new google.maps.Map(target, data.option || {
+          center: center,
+          zoom: data.zoom || 18
+        });
+
+        setTimeout(function() {
+          google.maps.event.trigger(map, 'resize');
+          map.setCenter(center);
+        }, 1000);
+
+        if (data.event) Object.keys(data.event).forEach(function(eventName) {
+          data.marker.addListener(eventName, data.event[eventName]);
+        });
+        
+        if (data.marker && data.marker.lat && data.marker.lng) {
+          var markerData = data.marker
+          var marker = new google.maps.Marker(markerData.option || {
+            map: map,
+            position: markerData,
+            draggable: markerData.draggable || false,
+          });
+          tmplScope.marker = marker;
+          
+          if (markerData.event) Object.keys(markerData.event).forEach(function(eventName) {
+            marker.addListener(eventName, markerData.event[eventName]);
+          });
+        } else {
+          var markerData = data.marker || {};
+          var marker = new google.maps.Marker(markerData.option || {
+            map: map,
+            position: center,
+            draggable: markerData.draggable || false,
+          });
+          tmplScope.marker = marker;
+          //delete tmplScope.marker;
+        }
+  
+    }##"></div>
+    ##%data.footer##
+  </div>
+</template>
+
+<template id="google-map-marker-view">
+  ##
+  var items = data.items || [];
+  var mapScope = bridge.tmpl('google-map-basic')(data);
+  var map = tmplScope.map = mapScope.map;
+  var markerArray = tmplScope.markerArray = [];
+  mapScope.marker.setMap(null);
+
+  var listLat = [];
+  var listLng = [];
+  
+  items.forEach(function(item) {
+    item.lat = parseFloat(item.lat || 0);
+    item.lng = parseFloat(item.lng || 0);
+
+    var marker = new google.maps.Marker(item.option || {
+      map: map,
+      icon: item.icon,
+      title: item.title,
+      position: {lat: item.lat, lng: item.lng},
+      draggable: item.draggable || false,
+    });
+    marker.item = item;
+    
+    listLat.push(item.lat);
+    listLng.push(item.lng);
+
+    markerArray.push(marker);
+    
+    if (item.event || data.markerEvent) Object.keys(item.event).forEach(function(eventName) {
+      marker.addListener(eventName, item.event[eventName]);
+    });
+  });
+
+  setTimeout(function() {
+    var sw = new google.maps.LatLng(Math.min.apply({}, listLat), Math.min.apply({}, listLng));
+    var ne = new google.maps.LatLng(Math.max.apply({}, listLat), Math.max.apply({}, listLng));
+    var bounds = new google.maps.LatLngBounds(sw, ne);
+    map.fitBounds(bounds);
+  }, 1000);
+  
+  ##
+  ##%mapScope.element##
+</template>
+
+<template id="google-map-geocoding-button">
+  ##%bridge.tmpl('button')({
+        label: data.label || 'geocoding',
+        map: data.map, marker: data.marker, address: data.address, typeClass: data.typeClass, icon: data.icon,
+        event: [data.event, function(e, eData, tmplElem) {
+      var map = data.map instanceof Function ? data.map.call(tmplElem, eData) : data.map;
+      var address = data.address instanceof Function ? data.address.call(tmplElem, eData) : data.address;
+      var marker = data.marker instanceof Function ? data.marker.call(tmplElem, eData) : data.marker;
+
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({'address': address, region: 'ja'}, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          google.maps.event.trigger(map, 'resize');
+          map.setCenter(results[0].geometry.location);
+          if (marker) {
+            marker.setPosition(results[0].geometry.location);
+          } else {
+            data.marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+          }
+          setTimeout(function() {
+            google.maps.event.trigger(map, 'resize');
+            map.setCenter(results[0].geometry.location);
+          }, 200);
+          
+          if (data.callback) data.callback.call(tmplElem, results[0].geometry.location, data.marker); 
+        } else {
+          alert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
+    }]
+  })##
+</template>
+
+<template id="google-map-reverse-geocoding-button">
+  ##%bridge.tmpl('button')({
+    label: data.label || 'reverse geocoding',
+    typeClass: data.typeClass,
+    icon: data.icon,
+    latLng: data.latLng,
+    $dialogArea: data.$dialogArea,
+    addressSelectEvent: data.addressSelectEvent,
+    event: [data.event, function(e, eData, button) {
+      var latLng = data.latLng instanceof Function ? data.latLng.call(button, eData) : data.latLng;
+      var geocoder = new google.maps.Geocoder;
+      geocoder.geocode({'location': latLng, region: data.region || 'ja'}, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          if (data.callback) {
+            data.callback(results);
+          } else {
+            if (results.length > 0) {
+              var resultArray = new Array();
+              var Button = bridge.tmpl('button');
+              var selectButton = data.selectButton || {};
+              
+              //selectButton.label = selectButton.label || '';
+              results.forEach(function(obj) {
+                //selectButton.description = obj.formatted_address;
+                selectButton.label = obj.formatted_address;
+                selectButton.event = function(e, eData) {
+                  data.addressSelectEvent.call(button, e, eData, obj, dialog);
+                };
+                resultArray.push(Button(selectButton));
+              });
+              
+              var dialog = bridge.tmpl('dialog')({content: resultArray});
+              
+              (button || $dialogArea).appendChild(dialog.element || dialog);
+            } else {
+              alert('No results found');
+            }
+          }
+        } else {
+          window.alert('Geocoder failed due to: ' + status);
+        }
+      });
+    }]
+  })##
+</template>
+
+</body>
+
+<script>
+var isEdge = function() {
+  var myNav = navigator.userAgent.toLowerCase();
+  return (myNav.indexOf('edge') != -1) ? true : false;
+}
+
+if (bridge.tmplTool) {
+  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
+  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML);
+  console.log('bridge.googleapis.map.components.html');
+}
+</script>

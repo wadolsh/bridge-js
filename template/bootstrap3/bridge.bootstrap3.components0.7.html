@@ -1,0 +1,222 @@
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<body>
+
+<template id="bs-Field">
+  ##if(data.type == 'hidden') {##
+    <input type="hidden" name="##=data.name##" value="##=data.value##" data-event="##:data.event##">
+  ##} else {##
+  <div class="form-group ##=data.class##">
+    <label class="##=(data.typeClass=='inline' ? 'sr-only' : data.typeClass=='horizontal' ? data.labelCol + ' control-label' : null)##" >##=data.label##</label>
+    ##if(data.typeClass=='horizontal') {##<div class="col-##=data.inputCol##">##}##
+      ##if (data.tmpl) {##
+      ##%data.tmpl(data)##
+      ##} else if (data.type == 'textarea') {##
+      <textarea class="form-control" name="##=data.name##" rows="##=(data.rows || 3)##" data-event="##:data.event##" placeholder="##=data.placeholder##">##=data.value##</textarea>
+      ##} else if (data.type == 'checkbox' || data.type == 'radio') {
+      var options = data.options;
+      options.forEach(function(option) {##
+      <div class="##=data.type + (data.inline ? '-inline' : null)## ##=data.optionClass##">
+        <label>
+          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value || option)##" ##=data.value == (option.value || option) ? 'checked' : null## &gt;##=(option.label || option)##
+        </label>
+      </div>
+      ##});
+      } else if (data.type == 'select') {##
+      <select class="form-control" name="##=data.name##">
+        ##data.options.forEach(function(option) {##
+        &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
+        ##});##
+      </select>
+      ##} else {##
+      &lt;input type="##=data.type || 'text'##" class="form-control" name="##=data.name##" value="##=data.value##" placeholder="##=data.placeholder##" ##=data.readonly ? 'readonly' : ''## ##=data.disabled ? 'disabled' : ''## data-event="##:data.event##" ##=data.type == 'search' ? 'list="' + (data.listId || 'datalist_' + data.name) + '"' : null##&gt;
+        ##if(data.type == 'search' && data.options) {##
+        <datalist id="##=data.listId || 'datalist_' + data.name##">
+          ##data.options.forEach(function(option) {##
+          &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
+          ##});##
+        </datalist>
+        ##}##
+      ##}##
+    ##if(data.typeClass=='horizontal') {##</div>##}##
+  </div>
+  ##}##
+</template>
+
+<template id="bs-Button">
+    &lt;button type="button" class="btn btn-##=data.styleClass || 'default'## ##=data.class##" "##=data.disabled ? 'disabled' : null##" data-event="##:data.event##"&gt;
+      ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon## ##=data.class##" aria-hidden="true"></span>##}##
+      ##=data.label##
+      ##if (data.description) {##<small>##=data.description##</small>##}##
+    </button>
+</template>
+
+<template id="brbs-Form">
+  <form class="##=data.typeClass##">
+  ##%data.header##
+  ##
+  var Field = bridge.tmpl('bs-Field');
+  var formData = data.formData;
+  var fieldData = data.fieldData;
+  var fieldArray = new Array();
+  if (!(formData instanceof Array)) {
+    var label = null;
+    var selected = null;
+    if (formData) Object.keys(fieldData || formData).forEach(function(key) {
+      var selected = fieldData[key];
+      if (selected instanceof Function) return;
+      selected.label = fieldData ? selected.label : key;
+      selected.name = key;
+      selected.value = formData[key];
+      selected.formData = formData;
+      fieldArray.push(selected);
+    });
+  }
+  fieldArray.forEach(function(selected, index) {
+        if (selected instanceof Function) return;
+        selected.index = index;
+        selected.class = selected.class || data.class;
+        selected.typeClass = selected.typeClass || data.typeClass;
+        selected.type = selected.type || data.type;
+        ##
+    ##%selected.element ? selected.element
+          : selected.custom ? selected.custom(selected, formData, data, tmplScope)
+                        : Field(selected)##
+  ##});##
+  ##%data.footer##
+  </form>
+</template>
+
+<template id="bs-Modal">
+  <div class="##=data.class##">
+    ##
+    var closeEvent = {click: function(e, evData, tmplElem) {
+      //tmplElem.parentElement.removeChild(tmplElem);
+      tmplElem.remove();
+    }};
+    ##
+    <div class="modal-backdrop fade in"></div>
+    <div class="modal fade in" tabindex="-1" role="dialog" style="display: block;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          
+          <div class="modal-header">
+            ##if(data.title) {##
+            <button type="button" class="close"  data-event="##:data.closeEvent||closeEvent##" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">##=data.title##</h4>
+            ##}##
+          </div>
+          
+          <div class="modal-body">
+            ##if (data.subText) {##<p>##=data.subText##</p>##}##
+            ##if (typeof data.content === 'string') {## 
+              ##=data.content##
+            ##} else {##
+              ##%data.content##
+            ##}##
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-event="##:data.closeEvent||closeEvent##">##=data.closeLabel||'Close'##</button>
+            ##if (data.okEvent) {##
+            <button type="button" class="btn btn-primary">##=data.okLabel||'OK'##</button>
+            ##}##
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div>
+</template>
+
+<template id="bs-ListGroup">
+  <ul class="list-group">
+    ## if (data.items) data.items.forEach(function(selected) {##
+    <li class="list-group-item">
+      ##if (selected.badge) {##<span class="badge" data-event="##:selected.badgeEvent::selected##">##=selected.badge##</span>##}##
+      ##if (typeof selected.content === 'string') {## 
+        ##=selected.content##
+      ##} else {##
+        ##%selected.content##
+      ##}##
+    </li>
+    ##});##
+  </ul>
+</template>
+
+<template id="bs-ButtonGroups">
+  <div class="btn-group" role="group">
+    ##if (data.items) data.items.forEach(function(item) {##
+      ##%tmpl.bs.Button(item)##
+      <!--<button type="button" class="btn btn-##=item.styleClass || 'default'## ##=data.optionClass##">##=(item.label || item)##</button>-->
+    ##})##
+  </div>
+</template>
+
+<template id="bs-FieldButtonGroups">
+  <div class="btn-group" data-toggle="buttons">
+    ##var isChekced = null;
+    if (data.options) data.options.forEach(function(option) {
+    isChekced = data.value == (option.value || option)##
+    <label class="btn btn-##=option.styleClass || 'default'## ##=isChekced ? 'active' : null## ##=data.optionClass##" data-event="##:option.event##">
+      &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value || option)##" ##=isChekced ? 'checked' : null##&gt;##=(option.label || option)##
+    </label>
+    ##})##
+  </div>
+</template>
+
+<template id="bs-Table">
+  ##
+  var thead = data.thead ? Array.isArray(data.thead[0]) ? data.thead : [data.thead] : null;
+  ##
+  &lt;table class="table ##=data.typeClass## ##=data.class##"&gt;
+    ##if (thead && thead.length > 0) {##
+    &lt;thead&gt;
+      ##thead.forEach(function(tr) {##
+      &lt;tr&gt;
+        ##tr.forEach(function(th) {##
+        &lt;th ##=th.colspan ? 'colspan='+th.colspan : ''## ##=th.rowspan ? 'rowspan='+th.rowspan : ''## class="##=th.class##" style="##=th.style##"&gt;##=th.label != undefined ? th.label : td##</th>
+        ##});##
+      </tr>
+      ##});##
+    </thead>
+    ##}
+    if (data.tbody && data.tbody.length > 0) {##
+    &lt;tbody&gt;
+      ##data.tbody.forEach(function(tr) {##
+      &lt;tr&gt;
+        ##for (var i=0, length=tr.length; i < length; i++) {
+          var td = tr[i] || '';
+        ##
+        &lt;td ##=td.colspan ? 'colspan='+td.colspan : ''## ##=td.rowspan ? 'rowspan='+td.rowspan : ''## class="##=td.class##" style="##=td.style##"&gt;##=td.label != undefined ? td.label : td##</td>
+        ##}##
+      </tr>
+      ##});##
+    </tbody>
+    ##}##
+  </table>
+</template>
+
+
+<template id="bs-Label">
+  <span class="label label-##=data.typeClass || 'default'##">##=data.label##</span>
+</template>
+
+
+</body>
+
+<script>
+var isEdge = function() {
+  var myNav = navigator.userAgent.toLowerCase();
+  return (myNav.indexOf('edge') != -1) ? true : false;
+}
+
+if (bridge.tmplTool) {
+  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
+
+  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML, templateSettings7);
+  console.log('bridge.bootstrap3.components.html');
+}
+
+</script>
+

@@ -1552,8 +1552,8 @@ var fabric = fabric || {};
   ##
   <div class="ms-Toggle ms-Toggle--##=data.typeClass## ##=data.disabled ? 'is-disabled' : ''##" data-bridge-event="##:data.event##">
     <span class="ms-Toggle-description">##=data.description##</span>
-    &lt;input type="checkbox" id="##=data.id##" class="ms-Toggle-input" data-bridge-load="##:loadEvent##" data-bridge-event="##:data.inputEvent##" ##=data.checked ? 'checked' : ''## &gt;
-    <label for="##=data.id##" class="ms-Toggle-field">
+    &lt;input type="checkbox" id="##=tmplScope._id##" class="ms-Toggle-input" data-bridge-load="##:loadEvent##" data-bridge-event="##:data.inputEvent##" ##=data.checked ? 'checked' : ''## &gt;
+    <label for="##=tmplScope._id##" class="ms-Toggle-field">
       <span class="ms-Label ms-Label--off">##=data.offLabel##</span>
       <span class="ms-Label ms-Label--on">##=data.onLabel##</span>
     </label>
@@ -1891,7 +1891,7 @@ var isEdge = function() {
 
 if (bridge.tmplTool) {
   var importDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML);
+  var element = bridge.tmplTool.addTmpls(importDoc.body);
   console.log('bridge.Office-UI-Fabric.components.html');
 }
 </script>

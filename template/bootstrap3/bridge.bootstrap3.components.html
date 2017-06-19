@@ -114,15 +114,43 @@
   ##}##
 </template>
 <template id="bs-Button">
-  &lt;button type="button" class="btn btn-##=data.styleClass || 'default'## ##=data.class##" style="##=data.style##" title="##=data.title##" ##=data.disabled ? 'disabled' : null## data-bridge-event="##:data.event##"&gt;
-    ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon## ##=data.class##" aria-hidden="true"></span>##}##
+  ##
+  var toggleCallback = data.toggleCallback;
+  var toggle = data.toggle != undefined && data.toggle != null ? data.toggle : status.isActive;
+  var event = [];
+  if (Array.isArray(data.event)) {
+    event = data.event;
+  } else {
+    event.push(data.event);
+  }
+  var toggleEvent = null;
+  if (toggle === true || toggle === false) {
+    if (status.isActive == undefined) status.isActive = toggle;
+    toggleEvent = function(e, edata, tmplElem) {
+      status.isActive = !status.isActive;
+      if (toggleCallback) toggleCallback(status.isActive);
+      tmplElem.classList[status.isActive ? 'add' : 'remove']('active');
+    }
+    event.push(toggleEvent);
+    tmplScope.isActive = function() {
+      return status.isActive;
+    }
+    tmplScope.setActive = function(active) {
+      status.isActive = active;
+      if (toggleCallback) toggleCallback(status.isActive);
+      tmplElem.classList[status.isActive ? 'add' : 'remove']('active');
+    }
+  }
+  ##
+  <!---<button type="button" class="btn btn-##=data.styleClass || 'default'## ##=data.class## ##=toggle ? 'active' : ''##" style="##=data.style##" title="##=data.title##" ##=data.disabled ? 'disabled' : null## data-bridge-event="##:event##">--->
+    ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon##" aria-hidden="true"></span>##}##
     ##%data.label##
-    ##if(data.ricon){##<span class="glyphicon glyphicon-##=data.ricon## ##=data.class##" aria-hidden="true"></span>##}##
+    ##if(data.ricon){##<span class="glyphicon glyphicon-##=data.ricon##" aria-hidden="true"></span>##}##
     ##if (data.description) {##<small>##=data.description##</small>##}##
   </button>
 </template>
 <template id="brbs-Form">
-  <form class="##=data.typeClass##">
+  <form class="##=data.class##">
   ##%data.header##
   ##
   var Field = bridge.tmpl('bs-Field');
@@ -145,7 +173,7 @@
   fieldArray.forEach(function(selected, index) {
         if (selected instanceof Function) return;
         selected.index = index;
-        selected.class = selected.class || data.class;
+        selected.class = selected.class || data.fromGroupClass;
         selected.typeClass = selected.typeClass || data.typeClass;
         selected.type = selected.type || data.type;
         ##
@@ -194,24 +222,110 @@
   </div>
 </template>
 <template id="bs-ListGroup">
-  <ul class="list-group">
-    ## if (data.items) data.items.forEach(function(selected) {##
-    <li class="list-group-item">
-      ##if (selected.badge) {##<span class="badge" data-bridge-event="##:selected.badgeEvent::selected##">##=selected.badge##</span>##}##
-      ##if (typeof selected.content === 'string') {##
-        ##=selected.content##
-      ##} else {##
-        ##%selected.content##
-      ##}##
-    </li>
-    ##});##
+  ##
+  var styleClass = data.class;
+  var contentKey = data.contentKey;
+  var content = data.content;
+  var badgeKey = data.badgeKey;
+  var badge = data.badge;
+  var active = data.active;
+  var activeEvent = null;
+
+  if (active == 'multiple' || active == 'multi') {
+  
+  } else if (active == 'single' || active === true) {
+    activeEvent = function(e) {
+      var active = ul.querySelector('li.active');
+      if (active)  active.classList.remove('active');
+      e.target.classList.add('active');
+    }
+  }
+  ##
+  <ul class="list-group ##=styleClass##" data-bridge-var="##:ul##">
+  ##if (data.items) data.items.forEach(function(selected) {##
+    ##if (selected instanceof Element) {##
+      ##%selected##
+    ##} else if (selected instanceof Function) {##
+      ##%selected()##
+    ##} else {##
+      <li class="list-group-item ##=selected.class##" data-bridge-event="##:[(selected.event || data.event), activeEvent]::selected##">
+        ##
+        var badgeTmpl = badge ? badge(selected) : selected[badgeKey];
+        if (badgeTmpl) {##<span class="badge" data-bridge-event="##:selected.badgeEvent::selected##">##%badgeTmpl##</span>##}##
+        ##if (content && content instanceof Function) {##
+          ##%content(selected)##
+        ##} else if (contentKey) {##
+          ##%selected[contentKey]##
+        ##} else {##
+          ##%selected##
+        ##}##
+      </li>
+    ##}##
+  ##});##
+  </ul>
+</template>
+<template id="bs-Badge">
+  <span class="badge" data-bridge-event="##:data.event##">##%data.label##</span>
+</template>
+<template id="bs-Tabs">
+  ##
+  var typeClass = data.typeClass || 'tabs';
+  var contentKey = data.contentKey || 'content';
+  var badgeKey = data.badgeKey || 'badge';
+  var activeEvent = data.activeEvent || function(e) {
+    var active = ul.querySelector('.active');
+    if (active) active.classList.remove('active');
+    e.target.parentElement.classList.add('active');
+  }
+  ##
+  <ul class="nav nav-##=typeClass##" data-bridge-var="##:ul##">
+  ##if (data.items) data.items.forEach(function(selected) {##
+    ##if (selected instanceof Element) {##
+      ##%selected##
+    ##} else if (selected instanceof Function) {##
+      ##%selected()##
+    ##} else {##
+      &lt;li ##=selected.class ? 'class="' + selected.class + '"' : ''## data-bridge-event="##:[(selected.event || data.event), activeEvent]::selected##"&gt;
+        ##if (typeof selected[contentKey] === 'string') {##
+          <a href="##=selected.href || '#'##">
+            ##=selected[contentKey]##
+          </a>
+        ##} else {##
+          ##%selected[contentKey]##
+        ##}##
+      </li>
+    ##}##
+  ##});##
   </ul>
 </template>
 <template id="bs-ButtonGroups">
-  <div class="btn-group" role="group">
-    ##if (data.items) data.items.forEach(function(item) {##
-      ##%tmpl.bs.Button(item)##
-      <!--<button type="button" class="btn btn-##=item.styleClass || 'default'## ##=data.optionClass##">##=(item.label || item)##</button>-->
+  <div class="btn-group btn-group-##=data.typeClass##" role="group">
+    ##
+    var activeEvent = null;
+    tmplScope.buttons = [];
+    if (data.active === true) {
+      var activeEvent = data.activeEvent || function(e, edata, tmplElem) {
+        var active = tmplScope.element.querySelector('.active');
+        if (active) active.classList.remove('active');
+        e.target.classList.add('active');
+      }
+    }
+    if (data.items) data.items.forEach(function(item) {##
+      ##
+      if (!item.event) {
+        item.event = activeEvent;
+      } else if (Array.isArray(item.event)) {
+        item.event.push(activeEvent);
+      } else {
+        item.event = [item.event, activeEvent];
+      }
+      var template = item.tmplId ? item : tmpl.bs.Button(item);
+      tmplScope.buttons.push(template);
+      var withWarp = template.element.tagName == 'BUTTON' && data.typeClass == 'justified';
+      ##
+      ##if (withWarp) {##<div class="btn-group" role="group">##}##
+      ##%template##
+      ##if (withWarp) {##</div>##}##
     ##})##
   </div>
 </template>
@@ -229,6 +343,7 @@
 <template id="bs-Table">
   ##
   var thead = data.thead ? Array.isArray(data.thead[0]) ? data.thead : [data.thead] : null;
+  if (data.items) data.tbody = data.items;
   ##
   &lt;table class="table ##=data.typeClass## ##=data.class##"&gt;
     ##if (thead && thead.length > 0) {##
@@ -245,11 +360,11 @@
     if (data.tbody && data.tbody.length > 0) {##
     &lt;tbody&gt;
       ##data.tbody.forEach(function(tr) {##
-      &lt;tr&gt;
+      &lt;tr data-bridge-event="##:tr.event || data.trEvent##"&gt;
         ##for (var i=0, length=tr.length; i < length; i++) {
           var td = tr[i] || '';
         ##
-        &lt;td ##=td.colspan ? 'colspan='+td.colspan : ''## ##=td.rowspan ? 'rowspan='+td.rowspan : ''## class="##=td.class##" style="##=td.style##"&gt;##%td.label != undefined ? td.label : td##</td>
+        &lt;td ##=td.colspan ? 'colspan='+td.colspan : ''## ##=td.rowspan ? 'rowspan='+td.rowspan : ''## class="##=td.class##" style="##=td.style##" data-bridge-event="##:td.event || data.tdEvent##"&gt;##%td.label != undefined ? td.label : td##</td>
         ##}##
       </tr>
       ##});##
@@ -258,7 +373,7 @@
   </table>
 </template>
 <template id="bs-Label">
-  <span class="label label-##=data.typeClass || 'default'##">##=data.label##</span>
+  <span class="label label-##=data.typeClass || 'default'##" data-bridge-event="##:data.event##">##=data.label##</span>
 </template>
 <template id="bs-Dropdown">
   <div class="##=data.typeClass || 'dropdown'##">
@@ -280,11 +395,85 @@
     </ul>
   </div>
 </template>
+<template id="bs-Panel">
+  <div class="panel panel-##=data.typeClass || 'default'## ##=data.class##">
+    ##if (data.header != undefined) {##<div class="panel-heading">##%data.header##</div>##}##
+    ##if (data.body != undefined) {##<div class="panel-body">##%data.body##</div>##}##
+    ##%data.content##
+    ##if (data.footer != undefined) {##<div class="panel-footer">##%data.footer##</div>##}##
+  </div>
+</template>
+<template id="bs-Navbar">
+  ##
+  var navbarToggleEvent = function(e) {
+    if (e.target !== this) return;
+    e.target.classList.toggle('collapsed');
+    collapse.classList.toggle('in');
+  }
+  ##
+  <nav class="navbar navbar-##=data.styleClass || 'default'## ##=data.class##">
+    <div class="##=data.containerClass || 'container'##">
+      ##if (data.header || data.brand) {##
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bridge-event="##:navbarToggleEvent##">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        ##%data.header##
+        ##if (data.brand) {##<a class="navbar-brand" href="##=data.brand.href || '#'##" data-bridge-event="##:data.brand.event##">##%data.brand.content || data.brand##</a>##}##
+      </div>
+      ##}##
+      <div class="collapse navbar-collapse" data-bridge-var="##:collapse##">
+        ##%data.content##
+        ##%data.items ? tmpl.bs.NavbarLi({items: data.items}) : null##
+      </div>
+    </div>
+  </nav>
+</template>
+<template id="bs-Navbar-Li">
+  ##
+  var items = data.items || [];
+  var activeEvent = data.activeEvent || function(e) {
+    var active = ul.querySelector('li.active');
+    if (active) active.classList.remove('active');
+    e.target.parentElement.classList.add('active');
+  }
+  ##
+  <ul class="nav navbar-nav" data-bridge-var="##:ul##">
+    ##items.forEach(function(item) {##
+    <li class="##=item.class##" data-bridge-event="##:[item.event, activeEvent]::item##">
+      ##if (item.label) {##
+        <a href="##=item.href || '#'##">##%item.label##</a>
+      ##} else {##
+        ##%item.content##
+      ##}##
+      
+    <li>
+    ##})##
+  </ul>
+</template>
+
+<template id="bs-FieldList">
+  <div class="bs-FieldList">
+  ##
+  var Field = tmpl.bs.Field;
+  (data.items || []).forEach(function(selected) {
+        selected.class = selected.class || data.class;
+        selected.typeClass = selected.typeClass || data.typeClass;
+        selected.input = selected.input || data.input;
+  ##
+    ##%Field(selected)##
+  ##});##
+  </div>
+</template>
+
 </body>
 <script>
 if (bridge.tmplTool) {
   var importDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML);
+  var element = bridge.tmplTool.addTmpls(importDoc.body);
   console.log('bridge.bootstrap3.components.html');
 }
 </script>

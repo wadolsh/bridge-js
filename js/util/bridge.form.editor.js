@@ -149,6 +149,11 @@
                     return element.name === name;
                 });
             },
+            clearAll: function() {
+                this.inputObjList.forEach(function(element) {
+                    element.target.value = "";
+                });
+            },
             restore: function() {
                 var startValues = this.startValues;
                 var inputObjList = this.inputObjList;

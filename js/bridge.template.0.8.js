@@ -236,7 +236,10 @@
             childElement.forEach(function(child) {
               if (!child) return;
               child = child.element || child;
-              docFragment.appendChild(child);
+              //docFragment.appendChild(child);
+              docFragment.appendChild(
+                (typeof child === 'string' || typeof child === 'number')
+                  ? document.createTextNode(child) : child);
               tmplScope.childScope.push(child.tmplScope || child);
               if (child.tmplScope) {
                 child.tmplScope.parent = child.parentNode;
@@ -463,9 +466,13 @@
     try {
       render = new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', source);
     } catch(e) {
-      console.log(tmplId, e.lineNumber, e.columnNumber, e);
-      tmplConsole({template: templateText, source: source, tmplId: tmplId, errorMsg: e});
+    	var debugErrorLine = function(source, e) {
+    	  console.log(tmplId, e.lineNumber, e.columnNumber);
+        new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', source);
+      }
+      if (debugError) tmplConsole({template: templateText, source: source, tmplId: tmplId, errorMsg: e});
       if (throwError) {
+        debugErrorLine(source, e);
         throw e;
       } else {
         return;
@@ -514,9 +521,13 @@
       try {
         html = !data ? '<template></template>' : render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope);
       } catch(e) {
+        var debugErrorLine = function(source) {
+      	  console.log('Error: ', tmplId);
+          render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope);
+        }
         if (debugError) tmplConsole({template: templateText, source: source, tmplId: tmplId, errorMsg: e});
         if (throwError) {
-          console.log(tmplId, e);
+          debugErrorLine(source, e);
           throw e;
         } else {
           return;
@@ -652,14 +663,20 @@
   }
 
   var addTmpl = tmplTool.addTmpl = function(tmplId, element, tmplSettings) {
-    element = escapeHtml.unescape(element instanceof Element ? element.innerHTML : element);
-    return template(tmplId, element, tmplSettings);
+    var templateText = element instanceof Element ? element.innerHTML : element;
+    templateText = escapeHtml.unescape(templateText.replace(/<!---|--->/gi, ''));
+    return template(tmplId, templateText, tmplSettings);
   }
 
-  var addTmpls = tmplTool.addTmpls = function(templateText, removeInnerTemplate, tmplSettings) {
+  var addTmpls = tmplTool.addTmpls = function(source, removeInnerTemplate, tmplSettings) {
     if(typeof(removeInnerTemplate) !== "boolean" && tmplSettings == undefined) tmplSettings = removeInnerTemplate;
-    var $template = document.createElement('template');
-    $template.innerHTML = templateText;
+    var $template = null;
+    if (source instanceof Element) {
+      $template = source;
+    } else {
+      var $template = document.createElement('template');
+      $template.innerHTML = source;
+    }
     var tmplNodes = ($template.content || $template).querySelectorAll('template');
 
     var node = null;

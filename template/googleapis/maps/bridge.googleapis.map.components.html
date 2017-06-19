@@ -6,10 +6,10 @@
     <div class="map" style="height:##=data.height || '100%'##" data-bridge-event="##:data.event##" data-bridge-load="##:function(target, data) {
         var defaultLatLng = {lat: 35.5394635, lng: 139.6449921};
         var center = data.center || data.marker && data.marker.lat && data.marker.lng ? {lat: data.marker.lat, lng: data.marker.lng} : defaultLatLng;
-        var map = tmplScope.map = new google.maps.Map(target, data.option || {
+        var map = tmplScope.map = new google.maps.Map(target, Object.assign({
           center: center,
           zoom: data.zoom || 18
-        });
+        }, data.option));
 
         setTimeout(function() {
           google.maps.event.trigger(map, 'resize');
@@ -94,7 +94,7 @@
 </template>
 
 <template id="google-map-geocoding-button">
-  ##%bridge.tmpl('button')({
+  ##%(data.tmpl || bridge.tmpl('button'))({
         label: data.label || 'geocoding',
         map: data.map, marker: data.marker, address: data.address, typeClass: data.typeClass, icon: data.icon,
         event: [data.event, function(e, eData, tmplElem) {
@@ -130,7 +130,7 @@
 </template>
 
 <template id="google-map-reverse-geocoding-button">
-  ##%bridge.tmpl('button')({
+  ##%(data.tmpl || bridge.tmpl('button'))({
     label: data.label || 'reverse geocoding',
     typeClass: data.typeClass,
     icon: data.icon,
@@ -185,7 +185,7 @@ var isEdge = function() {
 
 if (bridge.tmplTool) {
   var importDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var element = bridge.tmplTool.addTmpls(importDoc.body.innerHTML);
+  var element = bridge.tmplTool.addTmpls(importDoc.body);
   console.log('bridge.googleapis.map.components.html');
 }
 </script>

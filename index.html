@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Component Engine bridge-js</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.1/webcomponents-lite.js"></script>
+      <script src="js/bridge.template.0.8.js"></script>
+      <link rel="import" href="template/bridge.ui.components.html">
+      <link rel="import" href="template/bootstrap3/bridge.bootstrap3.components.html">
+      <link rel="import" href="docs/bridge.docs.components.html">
+  </head>
+  <body>
+    
+  </body>
+  <script type="text/javascript">
+    if (window.location.port) {
+      var script = document.createElement('script');
+      script.src = "js/util/bridge.loader.js";
+      script.async = '';
+      script.onload = function() {
+        bridge.loader.load(['/socket.io/socket.io.js'], function() {
+          bridge.livereload.start();
+        });
+      }
+      document.head.appendChild(script);
+    }
+  </script>
+</html>

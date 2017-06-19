@@ -1,0 +1,24 @@
+<body>
+  <template id="docs-Base">
+    <div class="doc-Base">
+      ##%tmpl.bs.Navbar({
+        class: 'navbar-fixed-top',
+        content: [
+          tmpl.bs.NavbarLi({items: [
+            {label: 'Docs'},
+            {label: 'Tutorial'}
+          ]})
+        ]
+      })##
+    </div>
+  </template>
+</body>
+<script>
+if (bridge.tmplTool) {
+  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
+  var element = bridge.tmplTool.addTmpls(importDoc.body);
+  console.log('bridge.docs.components.html');
+  document.body.appendChild(tmpl.docs.Base({}).element);
+}
+
+</script>

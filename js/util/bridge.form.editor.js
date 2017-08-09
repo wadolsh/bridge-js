@@ -47,6 +47,29 @@
         }
     };
     
+    var setValue = function (values, inputObj) {
+        if (!inputObj.multiple) {
+            values[inputObj.name] = inputObj.val();
+            return;
+        }
+        if (Array.isArray(values[inputObj.name])) {
+            var value = values[inputObj.name]
+            var v = inputObj.val();
+            var before = value[value.length - 1];
+            if (v != '' && v != undefined && v != null) {
+                if (before != '' || before != undefined || before != null) {
+                     value[value.length - 1] = v;
+                } else {
+                    value.push(v);
+                }
+            }
+        } else if (values[inputObj.name]) {
+            values[inputObj.name] = [values[inputObj.name], inputObj.val()];
+        } else {
+            values[inputObj.name] = inputObj.val();
+        }
+    }
+    
     form.diffObject = function(before, after) {
         var result = {keys: new Array(), before: {}, after: {}};
         var values = this.values;
@@ -75,7 +98,7 @@
         var inputObj = null;
         Array.prototype.forEach.call($html.querySelectorAll('input[name], textarea[name], select[name]'), function(input, ind) {
             inputConfig = config[input.name] || {};
-            if (input.type == "radio" && !input.checked) {
+            if ((input.type == "radio" || input.type == "checkbox") && !input.checked) {
                 return;
             }
             inputObj = {
@@ -84,11 +107,13 @@
                 name: input.name,
                 validateTool: inputConfig.validateTool || config.validateTool || Bridge.validateTool,
                 rule: inputConfig.rule,
+                multiple: inputConfig.multiple != undefined ? inputConfig.multiple : true,
                 
                 val: inputConfig.val || config.val || function () {
                     var target = this.target;
                     if (target.type == "checkbox") {
-                        return target.checked ? (target.value || true) : (target.value ? '' : false);
+                        //return target.checked ? (target.value || true) : (target.value ? '' : false);
+                        return target.checked ? (target.value || true) : null;
                     } else if (target.type == "radio") {
                         return target.checked ? (target.value || true) : null;
                     }
@@ -129,13 +154,7 @@
                 }
             };
             inputObjList.push(inputObj);
-            if (Array.isArray(values[inputObj.name])) {
-                values[inputObj.name].push(inputObj.val());
-            } else if (values[inputObj.name]) {
-                values[inputObj.name] = [values[inputObj.name], inputObj.val()];
-            } else {
-                values[inputObj.name] = inputObj.val();
-            }
+            setValue(values, inputObj);
         });
         
         return {
@@ -172,13 +191,7 @@
                 for (var ind=0, size=inputObjList.length; ind < size; ind++) {
                     inputObj = inputObjList[ind];
                     //values[inputObj.name] = inputObj.val();
-                    if (Array.isArray(values[inputObj.name])) {
-                        values[inputObj.name].push(inputObj.val());
-                    } else if (values[inputObj.name]) {
-                        values[inputObj.name] = [values[inputObj.name], inputObj.val()];
-                    } else {
-                        values[inputObj.name] = inputObj.val();
-                    }
+                    setValue(values, inputObj);
                 }
                 Object.keys(values).forEach(function(key) {
                     var names = key.split('.');

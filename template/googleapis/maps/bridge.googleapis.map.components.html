@@ -42,7 +42,7 @@
           tmplScope.marker = marker;
           //delete tmplScope.marker;
         }
-  
+
     }##"></div>
     ##%data.footer##
   </div>
@@ -96,7 +96,13 @@
 <template id="google-map-geocoding-button">
   ##%(data.tmpl || bridge.tmpl('button'))({
         label: data.label || 'geocoding',
-        map: data.map, marker: data.marker, address: data.address, typeClass: data.typeClass, icon: data.icon,
+        map: data.map,
+        marker: data.marker,
+        address: data.address,
+        typeClass: data.typeClass,
+        styleClass: data.styleClass,
+        class: data.class,
+        icon: data.icon,
         event: [data.event, function(e, eData, tmplElem) {
       var map = data.map instanceof Function ? data.map.call(tmplElem, eData) : data.map;
       var address = data.address instanceof Function ? data.address.call(tmplElem, eData) : data.address;
@@ -133,6 +139,8 @@
   ##%(data.tmpl || bridge.tmpl('button'))({
     label: data.label || 'reverse geocoding',
     typeClass: data.typeClass,
+    styleClass: data.styleClass,
+    class: data.class,
     icon: data.icon,
     latLng: data.latLng,
     $dialogArea: data.$dialogArea,

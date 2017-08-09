@@ -13,7 +13,18 @@
         requestFunc: null,
         completeFunc: null,
         closeFunc: null,
-        hasError: function(result, textStatus, response) {
+        statusError: function(responseText, status, response, url, option) {
+            if (status == 200) {
+                return false;
+            } else if(status == 400) {
+                alert('There was an error 400');
+            } else {
+                //alert('something else other than 200 was returned(' + xmlhttp.status + '): ' +  url + ', ' +  JSON.stringify(option));
+                console.log('!200', status, url, option);
+            }
+            return true;
+        },
+        hasError: function(result, textStatus, response, url, option) {
             return false;
         }
     }, Bridge.ConnectorSettings || {});
@@ -57,14 +68,9 @@
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == XMLHttpRequest.DONE) {
                 if (xmlhttp.status == 200) {
-                    //html.id("myDiv").innerHTML = xmlhttp.responseText;
-                    //callback.call(self, xmlhttp.responseText, url);
-                    callback(parser[getType || 'text'](xmlhttp.responseText), xmlhttp.status, xmlhttp);
-                } else if(xmlhttp.status == 400) {
-                    alert('There was an error 400');
+                    callback(parser[getType || 'text'](xmlhttp.responseText), xmlhttp.status, xmlhttp, url, option);
                 } else {
-                    //alert('something else other than 200 was returned(' + xmlhttp.status + '): ' +  url + ', ' +  JSON.stringify(option));
-console.log('!200', xmlhttp.status, url, option);
+                    callback(xmlhttp.responseText, xmlhttp.status, xmlhttp, url, option);
                 }
             }
         }
@@ -91,6 +97,7 @@ console.log('!200', xmlhttp.status, url, option);
         this.url = config.url || Bridge.ConnectorSettings.url;
         this.idName = config.idName || Bridge.ConnectorSettings.idName;
         this.baseParm = config.baseParm;
+        this.statusError = config.statusError || Bridge.ConnectorSettings.statusError;
         this.hasError = config.hasError || Bridge.ConnectorSettings.hasError;
         
         this.beforeRequestFunc = config.beforeRequestFunc || Bridge.ConnectorSettings.beforeRequestFunc;
@@ -134,12 +141,16 @@ console.log('!200', xmlhttp.status, url, option);
                 conn.beforeRequestFunc(conn, option);
             }
             
-            conn.requestFunc(url, option, function(data, textStatus, response) {
+            conn.requestFunc(url, option, function(data, textStatus, response, url, option) {
                 if (conn.completeFunc) {
                     conn.completeFunc(data, textStatus, response)
                 }
 
-                if (conn.hasError(data, textStatus, response)) {
+                if (conn.statusError(data, textStatus, response, url, option)) {
+                    return false;
+                }
+
+                if (conn.hasError(data, textStatus, response, url, option)) {
                     return false;
                 }
 

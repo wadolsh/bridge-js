@@ -89,12 +89,12 @@
       options.forEach(function(option) {##
       <div class="##=data.type + (data.inline ? '-inline' : null)## ##=data.optionClass##">
         <label>
-          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value || option)##" ##=BS.prop(data.prop)## ##=data.value == (option.value || option) ? 'checked' : null## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label || option)##
+          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value || option)##" ##=BS.prop(data.prop)## ##=data.value == (option.value || option) ? 'checked' : null## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label == undefined ? option : option.label)##
         </label>
       </div>
       ##});
     } else if (data.type == 'select') {##
-      <select class="form-control" name="##=data.name##" data-bridge-scope-key="##:'input1'##" data-bridge-event="##:data.event##">
+      <select class="form-control" name="##=data.name##" data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##">
         ##data.options.forEach(function(option) {##
         &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
         ##});##
@@ -115,6 +115,8 @@
 </template>
 <template id="bs-Button">
   ##
+  var tag = data.href ? 'a' : 'button';
+  var type = tag == 'a' ? null : data.type ? data.type : 'button';
   var toggleCallback = data.toggleCallback;
   var toggle = data.toggle != undefined && data.toggle != null ? data.toggle : status.isActive;
   var event = [];
@@ -142,12 +144,12 @@
     }
   }
   ##
-  <!---<button type="button" class="btn btn-##=data.styleClass || 'default'## ##=data.class## ##=toggle ? 'active' : ''##" style="##=data.style##" title="##=data.title##" ##=data.disabled ? 'disabled' : null## data-bridge-event="##:event##">--->
+  <!---<##=tag## ##=data.href ? 'href="' + data.href + '"' : null## ##=type ? 'type="' + type + '"' : null## class="btn btn-##=data.styleClass || 'default'## ##=data.class## ##=toggle ? 'active' : ''##" ##=data.style ? 'style="' + data.style + '"' : null##  ##=data.title ? 'title="' + data.title + '"' : null## ##=data.disabled ? 'disabled' : null## data-bridge-event="##:event##">--->
     ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon##" aria-hidden="true"></span>##}##
     ##%data.label##
     ##if(data.ricon){##<span class="glyphicon glyphicon-##=data.ricon##" aria-hidden="true"></span>##}##
     ##if (data.description) {##<small>##=data.description##</small>##}##
-  </button>
+  <!---</##=tag##>--->
 </template>
 <template id="brbs-Form">
   <form class="##=data.class##">
@@ -256,6 +258,8 @@
           ##%content(selected)##
         ##} else if (contentKey) {##
           ##%selected[contentKey]##
+        ##} else if (selected.content) {##
+          ##%selected.content##
         ##} else {##
           ##%selected##
         ##}##
@@ -270,7 +274,7 @@
 <template id="bs-Tabs">
   ##
   var typeClass = data.typeClass || 'tabs';
-  var contentKey = data.contentKey || 'content';
+  var contentKey = data.contentKey || 'label';
   var badgeKey = data.badgeKey || 'badge';
   var activeEvent = data.activeEvent || function(e) {
     var active = ul.querySelector('.active');
@@ -278,7 +282,7 @@
     e.target.parentElement.classList.add('active');
   }
   ##
-  <ul class="nav nav-##=typeClass##" data-bridge-var="##:ul##">
+  <ul class="nav nav-##=typeClass## ##=data.class##" data-bridge-var="##:ul##">
   ##if (data.items) data.items.forEach(function(selected) {##
     ##if (selected instanceof Element) {##
       ##%selected##
@@ -345,13 +349,13 @@
   var thead = data.thead ? Array.isArray(data.thead[0]) ? data.thead : [data.thead] : null;
   if (data.items) data.tbody = data.items;
   ##
-  &lt;table class="table ##=data.typeClass## ##=data.class##"&gt;
+  &lt;table class="table table-##=data.typeClass## ##=data.class##"&gt;
     ##if (thead && thead.length > 0) {##
     &lt;thead&gt;
       ##thead.forEach(function(tr) {##
       &lt;tr&gt;
         ##tr.forEach(function(th) {##
-        &lt;th ##=th.colspan ? 'colspan='+th.colspan : ''## ##=th.rowspan ? 'rowspan='+th.rowspan : ''## class="##=th.class##" style="##=th.style##"&gt;##=th.label != undefined ? th.label : td##</th>
+        &lt;th ##=th.colspan ? 'colspan='+th.colspan : ''## ##=th.rowspan ? 'rowspan='+th.rowspan : ''## class="##=th.class##" style="##=th.style##"&gt;##%th.label != undefined ? th.label : th##</th>
         ##});##
       </tr>
       ##});##
@@ -362,7 +366,8 @@
       ##data.tbody.forEach(function(tr) {##
       &lt;tr data-bridge-event="##:tr.event || data.trEvent##"&gt;
         ##for (var i=0, length=tr.length; i < length; i++) {
-          var td = tr[i] || '';
+          var td = tr[i];
+          td = td == undefined ? '' : (typeof(td) === "boolean" ? "" + td : td);
         ##
         &lt;td ##=td.colspan ? 'colspan='+td.colspan : ''## ##=td.rowspan ? 'rowspan='+td.rowspan : ''## class="##=td.class##" style="##=td.style##" data-bridge-event="##:td.event || data.tdEvent##"&gt;##%td.label != undefined ? td.label : td##</td>
         ##}##
@@ -376,8 +381,17 @@
   <span class="label label-##=data.typeClass || 'default'##" data-bridge-event="##:data.event##">##=data.label##</span>
 </template>
 <template id="bs-Dropdown">
+  ##
+  var toggleEvent = {
+    focus: function(e) {
+      e.target.parentElement.classList.add('open');
+    }, focusout: function(e) {
+      e.target.parentElement.classList.remove('open');
+    }
+  }
+  ##
   <div class="##=data.typeClass || 'dropdown'##">
-    <button class="btn btn-##=data.buttonTypeClass || 'default'## dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <button class="btn btn-##=data.buttonTypeClass || 'default'## dropdown-toggle" type="button" data-bridge-event="##:toggleEvent##" aria-haspopup="true" aria-expanded="true">
       ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon## ##=data.class##" aria-hidden="true"></span>##}##
       ##=data.label##
       <span class="caret"></span>
@@ -389,7 +403,7 @@
       ##} else if(data.type == 'separator') {##
       <li role="separator" class="divider"></li>
       ##} else {##
-      <li class="##=item.class##"><a href="#" data-bridge-event="##:item.event##">##=item.label##</a></li>
+      <li class="##=item.class##"><!---<a ##item.href ? 'href="' + item.href + '"' : ''##  data-bridge-event="##:item.event##">##=item.label##</a>---></li>
       ##}##
     ##});##
     </ul>
@@ -413,7 +427,6 @@
   ##
   <nav class="navbar navbar-##=data.styleClass || 'default'## ##=data.class##">
     <div class="##=data.containerClass || 'container'##">
-      ##if (data.header || data.brand) {##
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bridge-event="##:navbarToggleEvent##">
           <span class="sr-only">Toggle navigation</span>
@@ -424,7 +437,6 @@
         ##%data.header##
         ##if (data.brand) {##<a class="navbar-brand" href="##=data.brand.href || '#'##" data-bridge-event="##:data.brand.event##">##%data.brand.content || data.brand##</a>##}##
       </div>
-      ##}##
       <div class="collapse navbar-collapse" data-bridge-var="##:collapse##">
         ##%data.content##
         ##%data.items ? tmpl.bs.NavbarLi({items: data.items}) : null##
@@ -450,9 +462,33 @@
         ##%item.content##
       ##}##
       
-    <li>
+    </li>
     ##})##
   </ul>
+</template>
+<template id="bs-FieldList">
+  <div class="alert ##=data.styleClass##">
+    ##if (data.closeEvent) {##<button type="button" class="close" data-dismiss="alert" aria-label="Close" data-bridge-event="##:data.closeEvent##"><span aria-hidden="true">&times;</span></button>##}##
+    ##%data.content##
+  </div>
+</template>
+<template id="bs-Breadcrumbs">
+  <ol class="breadcrumb">
+    ##(data.items || []).forEach(function(item) {##
+    <!---<li ##=item.class ? 'class="' + item.class + '"' : null## data-bridge-event="##:item.event##">##%item.href ? '<a href="' + item.href + '">' + item.label + '</a>' : item.label##</li>--->
+    ##});##
+  </ol>
+</template>
+<template id="bs-Alerts">
+  ##
+  var dismissEvent = function(e) {
+    tmplScope.remove();
+  }
+  ##
+  <div class="alert alert-##=data.styleClass ? data.styleClass : 'warning'## ##=data.dismiss ? 'alert-dismissible' : null##" role="alert">
+    ##if(data.dismiss) {##<button type="button" class="close" aria-label="Close" data-bridge-event="##:dismissEvent##"><span aria-hidden="true">&times;</span></button>##}##
+    ##%data.content##
+  </div>
 </template>
 
 <template id="bs-FieldList">
@@ -468,7 +504,6 @@
   ##});##
   </div>
 </template>
-
 </body>
 <script>
 if (bridge.tmplTool) {

@@ -226,7 +226,7 @@
         return source;
       },
       lazyExec: function(data, lazyScope, tmplScope, wrapper) {
-
+        var self = this;
         lazyScope.elementArray.forEach(function(ele, elementId) {
           var childElement = ele.element;
           var nonblocking = ele.nonblocking;
@@ -236,10 +236,9 @@
             childElement.forEach(function(child) {
               if (!child) return;
               child = child.element || child;
-              //docFragment.appendChild(child);
               docFragment.appendChild(
                 (typeof child === 'string' || typeof child === 'number')
-                  ? document.createTextNode(child) : child);
+                  ? self.element.stringToElement(child) : child);
               tmplScope.childScope.push(child.tmplScope || child);
               if (child.tmplScope) {
                 child.tmplScope.parent = child.parentNode;
@@ -254,7 +253,7 @@
             });
 
           } else if (typeof childElement === 'string' || typeof childElement === 'number') {
-            $tmplElement.parentNode.replaceChild(document.createTextNode(childElement), $tmplElement);
+            $tmplElement.parentNode.replaceChild(self.element.stringToElement(childElement), $tmplElement);
 
           } else if ((childElement && (childElement.element || childElement)) instanceof Element) {
             var doFunc = function() {
@@ -286,6 +285,24 @@
           }
 
         });
+      },
+      stringToElement: function(str) {
+        if (str && str.trim && str.trim()[0] == '<') {
+          /*
+          if (DOMParser) {
+            return (new DOMParser()).parseFromString(str, 'text/html').body;
+          } else {
+            var temp = document.createElement('template');
+            temp.innerHTML = str;
+            return temp.content;
+          }
+          */
+          var temp = document.createElement('template');
+          temp.innerHTML = str;
+          return temp.content;
+        } else {
+          return document.createTextNode(str);
+        }
       }
     },
     lazyEvaluate : {
@@ -492,6 +509,9 @@
         tmplId: tmplId,
         _id: tmplTool.genId(tmplId),
         //[statusKeyName]: {},
+        replace: function(scope) {
+          tmplScope.element.parentElement.replaceChild(scope.element || scope, tmplScope.element);
+        },
         remove: function() {
           if (tmplScope.beforeRemove) tmplScope.beforeRemove();
           if (tmplScope.element.parentElement) {

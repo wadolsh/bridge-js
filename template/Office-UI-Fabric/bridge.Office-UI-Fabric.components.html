@@ -181,6 +181,7 @@
       if (items.length > 0 && metaData.length === 0) {
         metaData.push({name: '$arrayData', label: ''});
       }
+      tmplScope.collectedMetaData = metaData;
     }
     var checkboxEvent = {click: function(e, evData, tmplElem) {
       //e.stopPropagation();
@@ -484,13 +485,24 @@
   ##
   var name = data.name;
   tmplScope.value = function() {
-    return tmplScope.element.querySelector('input[name="' + name + '"]:checked').value;
+    //return tmplScope.element.querySelector('input[name="' + name + '"]:checked').value;
+    return tmplScope.element.querySelector('input:checked').value;
+  }
+  tmplScope.values = function() {
+    var checked = tmplScope.element.querySelectorAll('input:checked');
+    var valueArray = [];
+    Array.prototype.forEach.call(checked, function(o) {
+      valueArray.push(o.value);
+    });
+    return valueArray;
   }
   ##
   <div class="ms-ChoiceFieldGroup ##=data.class##" data-bridge-event="##:data.event##">
+    ##if(data.label) {##
     <div class="ms-ChoiceFieldGroup-title">
       <label class="ms-Label ##=data.labelCalss##">##=data.label##</label>
     </div>
+    ##}##
     ##
     var ChoiceField = bridge.tmpl('ms-ChoiceField');
     (data.items || []).forEach(function(selected, index) {

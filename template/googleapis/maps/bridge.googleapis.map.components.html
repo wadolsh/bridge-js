@@ -168,7 +168,7 @@
                 resultArray.push(Button(selectButton));
               });
               
-              var dialog = bridge.tmpl('dialog')({content: resultArray});
+              var dialog = bridge.tmpl('dialog')({class: 'google-map-reverse-geocoding-dialog', content: resultArray});
               
               (button || $dialogArea).appendChild(dialog.element || dialog);
             } else {

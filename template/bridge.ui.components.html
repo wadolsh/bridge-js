@@ -603,6 +603,7 @@
 
 <template id="brui-Splitter">
   ##
+  var dragEvent = data.dragEvent;
   var direction = data.direction != 'vertical' ? 'horizontal' : 'vertical';
   var widthMargin = data.widthMargin || BridgeUi.splitterSize + 'px';
   var minSize = data.minSize || 5;
@@ -698,7 +699,7 @@
 //console.log('dragend');
       isMove = false;
     },
-    drag: function(e) {
+    drag: function(e, edata, tmplElem) {
 //console.log('drag', isMove, e.pageX);
       e = e.touches ? e.touches[0] : e;
       if (!isMove || e.pageX == 0 || isOverflowed(direction, targetNext, targetPrev, e)
@@ -723,6 +724,7 @@
         targetPrev.style.height = 'calc(' + afterTargePrevHeight + '% - ' + widthMargin + ')';
         targetNext.style.height = 'calc(' + afterTargeHeight + '% - ' + widthMargin + ')';
       }
+      if (dragEvent) dragEvent(e, edata, tmplElem);
     },
     touchstart: function(e) {
 //console.log('touchstart');
@@ -869,11 +871,11 @@
 <template id="brui-Splitter-Layout">
   <div class="brui-Splitter-Layout ##=data.class##" style="##=data.style##">
   ##
+  var dragEvent = data.dragEvent;
   var style = data.style;
   var direction = tmplScope.direction = data.direction != 'vertical' ? 'horizontal' : 'vertical';
   var items = data.items || [];
   var layoutStyle = null;
-  
   
   var splitters = tmplScope.splitters = [];
   var splitterDivs = tmplScope.splitterDivs = [];
@@ -922,7 +924,7 @@
         'height': sizeValue,
       }
     }
-    var splitter = index == 0 && !data.splitter && !contentItem.splitter ? null : tmpl.brui.Splitter(Object.assign({direction: data.direction}, contentItem.splitter, data.splitter));
+    var splitter = index == 0 && !data.splitter && !contentItem.splitter ? null : tmpl.brui.Splitter(Object.assign({direction: data.direction, dragEvent: dragEvent}, contentItem.splitter, data.splitter));
     if (splitter) splitters.push(splitter);
   ##
     ##%splitter##
@@ -1219,7 +1221,6 @@
       elem.style.paddingLeft = (maxWidth + 5) + 'px';
     });
     content.scrollLeft = now.offsetLeft - (content.offsetWidth / 2); //+ oneDayWidth;
-
   }, 0);
   ##
 </template>

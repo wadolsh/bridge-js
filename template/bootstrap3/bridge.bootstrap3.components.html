@@ -363,19 +363,23 @@
     ##}
     if (data.tbody && data.tbody.length > 0) {##
     &lt;tbody&gt;
-      ##data.tbody.forEach(function(tr) {##
-      &lt;tr data-bridge-event="##:tr.event || data.trEvent##"&gt;
-        ##for (var i=0, length=tr.length; i < length; i++) {
-          var td = tr[i];
-          td = td == undefined ? '' : (typeof(td) === "boolean" ? "" + td : td);
-        ##
-        &lt;td ##=td.colspan ? 'colspan='+td.colspan : ''## ##=td.rowspan ? 'rowspan='+td.rowspan : ''## class="##=td.class##" style="##=td.style##" data-bridge-event="##:td.event || data.tdEvent##"&gt;##%td.label != undefined ? td.label : td##</td>
-        ##}##
-      </tr>
+      ##data.tbody.forEach(function(tr, index) {##
+        ##%tmpl.bs.TableTr({tr: tr, trEvent: data.trEvent, tdEvent: data.tdEvent, parentData: data, trIndex: index})##
       ##});##
     </tbody>
     ##}##
   </table>
+</template>
+<template id="bs-Table-Tr">
+  ##var tr = data.tr;##
+  &lt;tr data-bridge-event="##:(tr.event || data.trEvent)::{sel: tr, data: data.parentData, self: this, trIndex: data.index}##"&gt;
+    ##for (var i=0, length=tr.length; i < length; i++) {
+      var td = tr[i];
+      td = td == undefined ? '' : (typeof(td) === "boolean" ? "" + td : td);
+    ##
+    &lt;td ##=td.colspan ? 'colspan='+td.colspan : ''## ##=td.rowspan ? 'rowspan='+td.rowspan : ''## class="##=td.class##" style="##=td.style##" data-bridge-event="##:(td.event || data.tdEvent)::{sel: td, data: data.parentData, trIndex: data.trIndex, tdIndex: i}##"&gt;##%td.label != undefined ? td.label : td##</td>
+    ##}##
+  </tr>
 </template>
 <template id="bs-Label">
   <span class="label label-##=data.typeClass || 'default'##" data-bridge-event="##:data.event##">##=data.label##</span>
@@ -504,6 +508,26 @@
   ##});##
   </div>
 </template>
+
+
+<template id="bs-Popover">
+  ##
+  var typeClass = data.typeClass;
+  var target = data.target;
+  var rect = target.getBoundingClientRect();
+  var top = rect.top || 0;
+  var left = rect.left || 0;
+  ##
+  <div class="popover ##=data.typeClass##" style="top: ##=top##px; left: ##=left##px; display: block;">
+    <div class="arrow"></div>
+    <h3 class="popover-title">##%data.title##</h3>
+    <div class="popover-content">
+      ##%data.content##
+    </div>
+  </div>
+</template>
+
+
 </body>
 <script>
 if (bridge.tmplTool) {

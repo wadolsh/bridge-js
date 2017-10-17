@@ -1235,6 +1235,11 @@
   </div>
 </template>
 
+<template id="brui-Input">
+  &lt;input type="##=data.type##" value="##=data.value##" ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"/&gt;
+</template>
+
+
 <template id="brui-Style">
   <style>
     ##

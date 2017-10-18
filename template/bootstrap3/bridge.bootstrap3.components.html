@@ -364,7 +364,7 @@
     if (data.tbody && data.tbody.length > 0) {##
     &lt;tbody&gt;
       ##data.tbody.forEach(function(tr, index) {##
-        ##%tmpl.bs.TableTr({tr: tr, trEvent: data.trEvent, tdEvent: data.tdEvent, parentData: data, trIndex: index})##
+        ##%tmpl.bs.TableTr({tr: tr, trEvent: data.trEvent, tdEvent: data.tdEvent, parentData: data, trIndex: index})::0##
       ##});##
     </tbody>
     ##}##
@@ -527,6 +527,81 @@
   </div>
 </template>
 
+<template id="bs-Pagination">
+  ##
+  var pageData = data;
+  var totalCount = data.totalCount;
+  var pageNum = data.pageNum;
+  var pageSize = data.pageSize;
+  var pageLength = data.pageLength;
+
+  var clickCallback = data.clickCallback;
+  var pageSizeChangeEvent = data.pageSizeChangeEvent;
+  
+  var endNum = Math.max(Math.ceil(totalCount / pageSize), 1);
+
+  var items = new Array();
+  items.push({label: 1, class: 'fixed'});
+
+  var flowLength = endNum - 2 > 0 ? Math.min(pageLength, endNum) - 2 : 0;
+  var flowLengthHalf = Math.ceil(flowLength / 2);
+
+  startNum = 1;
+  var flowStart = startNum + 1;
+  var flowSEnd = endNum - 1;
+
+  if (pageNum - flowLengthHalf < flowStart) {
+    flowSEnd = flowLength + startNum;
+  } else if (pageNum + flowLengthHalf > flowSEnd) {
+    flowStart = endNum - flowLength;
+  } else {
+    flowStart = pageNum - (flowLengthHalf - 1);
+    flowSEnd = pageNum + (flowLengthHalf - 1);
+  }
+
+  for (var i=flowStart,size=flowSEnd + 1;i < size; i++) {
+    items.push({label: i});
+  }
+  if (startNum != endNum) items.push({label: endNum, class: 'fixed'});
+  
+  var activeEvent = function(e, edata, tmplElem) {
+    //tmplElem.querySelector('.active').classList.remove('active');
+    //e.target.parentElement.classList.add('active');
+    tmplScope.reflash({pageNum: edata.item.label});
+  }
+  ##
+  <nav aria-label="Page navigation">
+    <ul class="pagination pagination-##=data.styleClass## ##=data.class##">
+      <li class="##=(pageNum == startNum) ? 'disabled' : ''##">
+        <a href="#" aria-label="Previous" data-bridge-event="##:function(e, edata, tmplElem) {
+          if (pageNum == startNum) return;
+          var active = tmplElem.querySelector('.active');
+          if (active) {
+            active.classList.remove('active');
+            active.previousElementSibling.firstChild.click();
+          }
+        }##">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      ##items.forEach(function(item, index) {##
+        <li class="##=pageNum == item.label ? 'active' : ''##"><a href="#" data-bridge-event="##:[activeEvent, clickCallback]::{data: data, item: item, index: index}##">##=item.label##</a></li>
+      ##})##
+      <li class="##=(pageNum == endNum) ? 'disabled' : ''##">
+        <a href="#" aria-label="Next" data-bridge-event="##:function(e, edata, tmplElem) {
+          if (pageNum == endNum) return;
+          var active = tmplElem.querySelector('.active');
+          if (active) {
+            active.classList.remove('active');
+            active.nextElementSibling.firstChild.click();
+          }
+        }##">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
 
 </body>
 <script>

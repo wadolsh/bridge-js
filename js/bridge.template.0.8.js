@@ -641,7 +641,12 @@
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
         var data = tmplScope.data;
-        return tmplScope.render(Object.assign(data || {}, fdata));
+        var beforeReflash = tmplScope.beforeReflash;
+        var afterReflash = tmplScope.afterReflash;
+        if (beforeReflash) tmplScope.beforeReflash();
+        var scope = tmplScope.render(Object.assign(data || {}, fdata));
+        if (afterReflash) tmplScope.afterReflash();
+        return scope;
       };
 
       return tmplScope;

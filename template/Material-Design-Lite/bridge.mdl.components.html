@@ -1,5 +1,102 @@
 <body>
+
+<template id="mdl-Badge">
+  ##
+  var tag = data.tag || 'div';
+  var icon = data.icon;
+  var overlap = data.overlap || false;
+  var label = icon ? icon : data.label;
+  var prop = data.prop;
+  var options = data.options;
+  ##
+  &lt;##=tag## class="mdl-badge ##=MDL.is(icon, 'material-icons')## ##=MDL.options('mdl-badge--', options)## ##=data.class##" data-badge="##=data.badge##" ##=MDL.prop(prop)##&gt;##%label##&lt;/##=tag##&gt;
+  ##
+  /*
+  tmplScope.afterReflash = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  */
+  ##
+</template>
+
+<template id="mdl-Button">
+  ##
+  var options = data.options;
+  var ripple = data.ripple;
+  var icon = data.icon;
+  var label = data.label;
+  var event = data.event;
+  var disabled = data.disabled;
+  ##
+  &lt;button class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
+    ##if (icon) {##<i class="material-icons">##=icon##</i>##}##
+    ##%label##
+  </button>
+  ##
+  tmplScope.beforeAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
+</template>
+
+<template id="mdl-Card">
+  ##
+  var shadow = data.shadow;
+  var title = data.title;
+  var supportingText = data.supportingText;
+  var actions = data.actions;
+  var media = data.media;
+  var menu = data.menu;
   
+  var prop = data.prop;
+  
+  ##
+  <div class="demo-card-wide mdl-card ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')## ##=data.class##">
+    ##if (title) {##
+    <div class="mdl-card__title ##=MDL.options('mdl-card--', title.options)##">
+      <h2 class="mdl-card__title-text">##%(title.content || title)##</h2>
+    </div>
+    ##}##
+    ##if (media) {##
+    <div class="mdl-card__media">
+      &lt;img src="##=media.src##" ##=MDL.prop(prop)##&gt;
+    </div>
+    ##}##
+    ##if (supportingText) {##
+    <div class="mdl-card__supporting-text ##=MDL.options('mdl-card--', supportingText.options)##">##%(supportingText.content || supportingText)##</div>
+    ##}##
+    ##if (actions) {##
+    <div class="mdl-card__actions ##=MDL.options('mdl-card--', actions.options)##">
+      ##(actions.items).forEach(function(item) {##
+      <a href="##=item.href || '#'##" class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', item.options)## ##=MDL.is(item.ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:item.event##">##%items.label##</a>
+      ##})##
+    </div>
+    ##}##
+    ##if (menu) {##
+    <div class="mdl-card__menu ##=MDL.options('mdl-card--', menu.options)##">
+      ##(menu.items).forEach(function(item) {##
+      ##%tmpl.mdl.Button(item)##
+      ##})##
+    </div>
+    ##}##
+  </div>
+  ##
+  tmplScope.afterReflash = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
+</template>
+
+<template id="mdl-Chip">
+  <span class="mdl-chip">
+    <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">A</span>
+    <span class="mdl-chip__text">Chip Text</span>
+  <a href="#" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
+</span>
+</template>
+
+<template id="mdl-Dialog">
+</template>
   
 <template id="mdl-Layout">
   ##
@@ -7,54 +104,233 @@
   var header = data.header || {};
   var drawer = data.drawer || {};
   var title = data.title;
-  var items = data.items || [];
+  var options = data.options;
+  //var items = data.items || [];
   ##
   <!-- Always shows a header, even in smaller screens. -->
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
+  <div class="mdl-layout mdl-js-layout ##=MDL.options('mdl-layout--', options)####=data.class##">
+    ##if (header.items || header.title) {##
+    <header class="mdl-layout__header ##=MDL.options('mdl-layout__header--', header.options)##">
       <div class="mdl-layout__header-row">
         <!-- Title -->
         <span class="mdl-layout-title">##%(header.title || title)##</span>
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
+        ##if (header.items) {##
+        <nav class="mdl-navigation">
+          ##(header.items).forEach(function(item) {##
+          <a class="mdl-navigation__link" href="##=item.href ? item.href : '#'##" data-bridge-event="##:item.event##">##%item.label##</a>
+          ##})##
         </nav>
+        ##}##
+        <!-- Tabs -->
+        ##if(header.tabs) {##
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+          ##(header.tabs).forEach(function(tab) {##
+          <a href="##=tab.href ? tab.href : '#'##" class="mdl-layout__tab is-active" data-bridge-event="##:tab.event##">##%tab.label##</a>
+          ##})##
+        </div>
+        ##}##
       </div>
     </header>
+    ##}##
+    ##if (drawer) {##
     <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">##%(drawer.title || title)##</span>
+      ##if(drawer.items) {##
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
+        ##(drawer.items).forEach(function(item) {##
+        <a class="mdl-navigation__link" href="##=item.href ? item.href : '#'##" data-bridge-event="##:item.event##">##%item.label##</a>
+        ##})##
       </nav>
+      ##}##
     </div>
+    ##}##
     <main class="mdl-layout__content">
       <div class="page-content">##%content##</div>
     </main>
   </div>
+  ##
+  tmplScope.afterReflash = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
-<template id="mdl-">
+<template id="mdl-Grid">
 </template>
 
-
-<template id="mdl-">
+<template id="mdl-Tabs">
+  ##
+  var tabs = data.tabs || [];
+  var _id = tmplScope._id;
+  ##
+  <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect ##=data.class##">
+    <div class="mdl-tabs__tab-bar">
+      ##tabs.forEach(function(tab, idx) {##
+      <a href="##='#' + (tab.id || _id + idx)##" class="mdl-tabs__tab ##=MDL.is(tab.active, 'is-active')##">##%tab.label##</a>
+      ##})##
+    </div>
+    ##tabs.forEach(function(tab, idx) {##
+    <div class="mdl-tabs__panel ##=MDL.is(tab.active, 'is-active')##" id="(tab.id || _id + idx)">
+      ##%tab.content##
+    </div>
+    ##})##
+  </div>
+  ##
+  tmplScope.afterReflash = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
-<template id="mdl-">
+<template id="mdl-Mega-Footer">
+  ##
+  var top = data.top;
+  var middle = data.middle;
+  var bottom = data.bottom;
+  ##
+  <footer class="mdl-mega-footer ##=data.class##">
+    ##if (top) {##
+    <div class="mdl-mega-footer__top-section">
+      ##if (top.left) {##
+      <div class="mdl-mega-footer__left-section">
+        ##%top.left##
+      </div>
+      ##}##
+      ##if (top.dropDown) {##
+        ##top.dropDown.forEach(function(item) {##
+        <div class="mdl-mega-footer__drop-down-section">
+          ##if (item.heading) {##<h1 class="mdl-mega-footer__heading">##%item.heading##</h1>##}##
+          ##%tmpl.mdl.FooterLinkList({type: 'mega', items: item.items})##
+        </div>
+        ##})##
+      ##}##
+      ##if (top.right) {##
+      <div class="mdl-mega-footer__right-section">
+        ##%top.right##
+      </div>
+      ##}##
+    </div>
+    ##}##
+    ##if (middle) {##
+    <div class="mdl-mega-footer__middle-section">
+      ##if (middle.left) {##
+      <div class="mdl-mega-footer__left-section">
+        ##%middle.left##
+      </div>
+      ##}##
+      ##if (middle.dropDown) {##
+        ##middle.dropDown.forEach(function(item) {##
+        <div class="mdl-mega-footer__drop-down-section">
+          ##if (item.heading) {##<h1 class="mdl-mega-footer__heading">##%item.heading##</h1>##}##
+          ##%tmpl.mdl.FooterLinkList({type: 'mega', items: item.items})##
+        </div>
+        ##})##
+      ##}##
+      ##if (middle.right) {##
+      <div class="mdl-mega-footer__right-section">
+        ##%middle.right##
+      </div>
+      ##}##
+    </div>
+    ##}##
+    ##if (bottom) {##
+    <div class="mdl-mega-footer__bottom-section">
+      ##if (bottom.left) {##
+      <div class="mdl-mega-footer__left-section">
+        ##%bottom.left##
+      </div>
+      ##}##
+      ##if (bottom.dropDown) {##
+        ##bottom.dropDown.forEach(function(item) {##
+        <div class="mdl-mega-footer__drop-down-section">
+          ##if (item.heading) {##<h1 class="mdl-mega-footer__heading">##%item.heading##</h1>##}##
+          ##%tmpl.mdl.FooterLinkList({type: 'mega', items: item.items})##
+        </div>
+        ##})##
+      ##}##
+      ##if (bottom.right) {##
+      <div class="mdl-mega-footer__right-section">
+        ##%bottom.right##
+      </div>
+      ##}##
+    </div>
+    ##}##
+  </footer>
+  ##
+  tmplScope.afterReflash = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
-<template id="mdl-">
+<template id="mdl-Mini-Footer">
+  ##
+  var left = data.left;
+  var right = data.right;
+  ##
+  <footer class="mdl-mini-footer ##=data.class##">
+    ##if (left) {##
+    <div class="mdl-mini-footer__left-section">
+      ##%left##
+    </div>
+    ##}##
+    ##if (right) {##
+    <div class="mdl-mini-footer__right-section">
+      ##%right##
+    </div>
+    ##}##
+  </footer>
+  ##
+  tmplScope.afterReflash = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
-<template id="mdl-">
+<template id="mdl-Logo">
+  <div class="mdl-logo ##=data.class##">##%data.label##</div>
+</template>
+
+<template id="mdl-Footer_Link-List">
+  ##
+  var type = data.type;
+  var items = data.items;
+  ##
+  <ul class="mdl-##=type##-footer__link-list ##=data.class##">
+    ##items.forEach(function(item) {##
+    <li><a href="##=item.href || '#'##">##%item.label##</a></li>
+    ##})##
+  </ul>
+</template>
+
+<template id="mdl-List">
+</template>
+
+<template id="mdl-Loading">
+</template>
+
+<template id="mdl-Menu">
+</template>
+
+<template id="mdl-Slider">
+</template>
+
+<template id="mdl-Snackbar">
+</template>
+
+<template id="mdl-Toggle">
+</template>
+
+<template id="mdl-Table">
+</template>
+
+<template id="mdl-Text-Field">
+</template>
+
+<template id="mdl-Tooltip">
 </template>
 </body>
 
@@ -63,5 +339,22 @@ if (bridge.tmplTool) {
   var importDoc = (document._currentScript || document.currentScript).ownerDocument;
   var element = bridge.tmplTool.addTmpls(importDoc.body);
   console.log('bridge.mdl.components.html');
+}
+
+window.MDL = {
+  prop: function(props) {
+    if (!props) return '';
+    var propStrArray = [];
+    Object.keys(props).forEach(function(key) {
+      if (props[key]) propStrArray.push(key + '="' + props[key] + '"');
+    });
+    return propStrArray.join(' ');
+  },
+  is: function(value, returnValue) {
+    return value ? returnValue : '';
+  },
+  options: function(prefix, options) {
+    return options ? prefix + options.join(' ' + prefix) : '';
+  }
 }
 </script>

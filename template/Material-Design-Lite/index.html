@@ -10,10 +10,283 @@
       <link rel="import" href="bridge.mdl.components.html">
   </head>
   <body>
-    
+    <template id="brui-Div">
+      &lt;div  ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"&gt;
+      ##if (typeof data.content === 'string') {## 
+        ##=data.content##
+      ##} else {##
+        ##%data.content##
+      ##}##
+      </div>
+    </template>
+    <template id="mdl-Doc">
+      <style id="style-mdl-Doc">
+        .mdl-Doc {
+          padding: 20px;
+        }
+        .mdl-Doc .mdl-card {
+          margin-top: 20px;
+          width: 100%;
+          min-height: 100px;
+        }
+        .mdl-Doc .mdl-card__title {
+          background-color: rgba(129, 212, 250, 0.5);
+        }
+        .mdl-Doc .mdl-card__title-text > * {
+          margin: 20px;
+        }
+      </style>
+      ##
+      var examples = data.examples || [];
+      var link = data.link;
+      ##
+      <div class="mdl-Doc">
+        <a href="##=link##" target="_blank">##=link##</a>
+        ##
+        examples.forEach(function(e1) {
+          var funcs = [];
+          var funcStrings = [];
+          e1.forEach(function(e2) {
+            funcs.push(new Function('return ' + e2 + ';')());
+            funcStrings.push(tmpl.brui.Div({content: e2}));
+          })##
+          
+          ##%tmpl.mdl.Card({
+            shadow: 2,
+            title: {content: funcs, options: ['border']},
+            supportingText: funcStrings,
+          })##
+          
+        ##})##
+      </div>
+    </template>
   </body>
   <script type="text/javascript">
-    var layout = tmpl.mdl.Layout({});
+    bridge.tmplTool.addTmpls(document.body.innerHTML);
+    document.body.innerHTML = '';
+
+    var layout = tmpl.mdl.Layout({
+      options: ['fixed-drawer'],
+      header: {
+        show: true,
+        title: 'Component for Material Design Lite'
+      },
+      drawer: {
+        items: [
+          {label: 'Badges', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#badges-section',
+              examples: [
+                ["tmpl.mdl.Badge({badge: 1, icon: 'account_box', options: ['overlap']})",
+                "tmpl.mdl.Badge({badge: '♥', icon: 'account_box', options: ['overlap']})",],
+                ["tmpl.mdl.Badge({badge: '1', label: 'Inbox', options: ['overlap']})",
+                "tmpl.mdl.Badge({badge: '■', label: 'Inbox', options: ['overlap']})"]
+              ]
+            });
+            layout.reflash({header: {title: 'Badges'}, content: doc});
+          }},
+          {label: 'Buttons', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#buttons-section',
+              examples: [
+                ["tmpl.mdl.Button({icon: 'add', options: ['colored', 'fab']})",
+                "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['colored', 'fab']})"],
+                
+                ["tmpl.mdl.Button({icon: 'add', options: ['fab']})",
+                "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['fab']})",
+                "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['fab'], disabled: true})"],
+                
+                ["tmpl.mdl.Button({label: 'Button', options: ['raised']})",
+                "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised']})",
+                "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised'], disabled: true})"],
+                
+                ["tmpl.mdl.Button({label: 'Button', options: ['raised', 'colored']})",
+                "tmpl.mdl.Button({label: 'Button', options: ['raised', 'accent']})",
+                "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised', 'accent']})"],
+                
+                ["tmpl.mdl.Button({label: 'Button'})",
+                "tmpl.mdl.Button({label: 'Button', ripple: true})",
+                "tmpl.mdl.Button({label: 'Button', disabled: true})"],
+                
+                ["tmpl.mdl.Button({label: 'Button', options: ['primary']})",
+                "tmpl.mdl.Button({label: 'Button', options: ['accent']})"],
+                
+                ["tmpl.mdl.Button({icon: 'mood', options: ['icon']})",
+                "tmpl.mdl.Button({icon: 'mood', options: ['icon', 'colored']})"],
+                
+                ["tmpl.mdl.Button({icon: 'add', options: ['fab', 'mini-fab']})",
+                "tmpl.mdl.Button({icon: 'add', options: ['fab', 'mini-fab', 'colored']})"],
+              ]
+            });
+            layout.reflash({header: {title: 'Buttons'}, content: doc});
+          }},
+          {label: 'Cards', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#cards-section',
+              examples: [
+                ["tmpl.mdl.Card({})"],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Cards'}, content: doc});
+            
+          }},
+          {label: 'Chips', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#chips-section',
+              examples: [
+                ["tmpl.mdl.Chip({})"],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Chips'}, content: doc});
+            
+          }},
+          {label: 'Dialogs', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#dialog-section',
+              examples: [
+                ["tmpl.mdl.Dialog({})"],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Dialogs'}, content: doc});
+            
+          }},
+          {label: 'Layout', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#layout-section',
+              examples: [
+                ["tmpl.mdl.Layout({})"],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Layout'}, content: doc});
+            
+          }},
+          {label: 'Tabs', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#layout-section/tabs',
+              examples: [
+                ["tmpl.mdl.Tabs({})"],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Tabs'}, content: doc});
+          }},
+          {label: 'Mega-Footer', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#layout-section/footer',
+              examples: [
+                ["tmpl.mdl.MegaFooter({})"],
+              ]
+            });
+            layout.reflash({header: {title: 'Mega-Footer'}, content: doc});
+          }},
+          {label: 'Mini-Footer', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#layout-section/footer',
+              examples: [
+                ["tmpl.mdl.MiniFooter({})"],
+              ]
+            });
+            layout.reflash({header: {title: 'Mini-Footer'}, content: doc});
+          }},
+          
+          
+          {label: 'Lists', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#lists-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Lists'}, content: doc});
+          }},
+          {label: 'Loading', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#loading-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Loading'}, content: doc});
+          }},
+          {label: 'Menus', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#menus-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Menus'}, content: doc});
+          }},
+          {label: 'Sliders', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#sliders-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Sliders'}, content: doc});
+          }},
+          {label: 'Snackbar', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#snackbar-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Snackbar'}, content: doc});
+          }},
+          {label: 'Toggles', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#toggles-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Toggles'}, content: doc});
+          }},
+          {label: 'Tables', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#tables-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Tables'}, content: doc});
+          }},
+          {label: 'Text Fields', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#textfields-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Text Fields'}, content: doc});
+          }},
+          {label: 'Tooltips', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#tooltips-section',
+              examples: [
+                [],
+                [],
+              ]
+            });
+            layout.reflash({header: {title: 'Tooltips'}, content: doc});
+          }}
+        ]
+      }
+    });
     document.body.appendChild(layout.element);
   </script>
 </html>

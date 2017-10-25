@@ -21,17 +21,19 @@
 
 <template id="mdl-Button">
   ##
+  var href = data.href;
+  var type = href ? 'a' : 'button';
   var options = data.options;
-  var ripple = data.ripple;
+  var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
   var icon = data.icon;
   var label = data.label;
   var event = data.event;
   var disabled = data.disabled;
   ##
-  &lt;button class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
+  &lt;##=type## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
     ##if (icon) {##<i class="material-icons">##=icon##</i>##}##
     ##%label##
-  </button>
+  &lt;/##=type##&gt;
   ##
   tmplScope.beforeAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
@@ -47,14 +49,12 @@
   var actions = data.actions;
   var media = data.media;
   var menu = data.menu;
-  
   var prop = data.prop;
-  
   ##
-  <div class="demo-card-wide mdl-card ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')## ##=data.class##">
+  <div class="mdl-card ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')## ##=data.class##">
     ##if (title) {##
     <div class="mdl-card__title ##=MDL.options('mdl-card--', title.options)##">
-      <h2 class="mdl-card__title-text">##%(title.content || title)##</h2>
+      &lt;##=title.type || 'h2'## class="##=title.class || title.class == '' ? title.class : 'mdl-card__title-text'##"&gt;##%(title.content || title)##&lt;/##=title.type || 'h2'##&gt;
     </div>
     ##}##
     ##if (media) {##
@@ -63,39 +63,99 @@
     </div>
     ##}##
     ##if (supportingText) {##
-    <div class="mdl-card__supporting-text ##=MDL.options('mdl-card--', supportingText.options)##">##%(supportingText.content || supportingText)##</div>
+    <div class="mdl-card__supporting-text ##=MDL.options('mdl-card--', supportingText.options)##">
+      ##%(supportingText.content || supportingText)##
+    </div>
     ##}##
     ##if (actions) {##
     <div class="mdl-card__actions ##=MDL.options('mdl-card--', actions.options)##">
-      ##(actions.items).forEach(function(item) {##
-      <a href="##=item.href || '#'##" class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', item.options)## ##=MDL.is(item.ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:item.event##">##%items.label##</a>
-      ##})##
+      ##(actions.items).forEach(function(item) {
+        if (item.element || typeof item === 'string' || item instanceof String) {##
+      ##%item##
+      ##} else {##
+      ##%tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item))##
+      ##}
+      })##
     </div>
     ##}##
     ##if (menu) {##
     <div class="mdl-card__menu ##=MDL.options('mdl-card--', menu.options)##">
       ##(menu.items).forEach(function(item) {##
-      ##%tmpl.mdl.Button(item)##
+      ##%item.element || typeof item === 'string' || item instanceof String ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple, options: ['icon']}, item))##
       ##})##
     </div>
     ##}##
   </div>
   ##
-  tmplScope.afterReflash = function() {
+  tmplScope.beforeAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
 
 <template id="mdl-Chip">
-  <span class="mdl-chip">
-    <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">A</span>
-    <span class="mdl-chip__text">Chip Text</span>
-  <a href="#" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
-</span>
+  ##
+  var type = data.type || 'span';
+  var options = data.options;
+  var event = data.event;
+  var img = data.img;
+  var contact = data.contact;
+  var contactClass = data.contactClass;
+  var action = data.action;
+  var label = data.label;
+  ##
+  &lt;##=type## class="mdl-chip ##=MDL.options('mdl-chip--', options)##" data-bridge-event="##:event##"&gt;
+    ##if(img) {##<img class="mdl-chip__contact" src="##=img##"></img>##}##
+    ##if(contact) {##<span class="mdl-chip__contact ##=contactClass##">##%contact##</span>##}##
+    <span class="mdl-chip__text">##%label##</span>
+    ##if(action) {##<button type="button" class="mdl-chip__action" data-bridge-event="##:action.event##"><i class="material-icons">##=action.icon##</i></button>##}##
+  &lt;/##=type##&gt;
 </template>
 
 <template id="mdl-Dialog">
+  ##
+  var title = data.title;
+  var content = data.content;
+  var actions = data.actions || {};
+  
+  tmplScope.showModal = function() {
+    tmplScope.element.showModal();
+  }
+  tmplScope.close = function() {
+    tmplScope.element.close();
+  }
+  ##
+  <dialog class="mdl-dialog">
+    ##if (title) {##&lt;##=title.type || 'h4'## class="mdl-dialog__title"&gt;##%title.label || title##&lt;/##=title.type || 'h4'##&gt;##}##
+    ##if (content) {##
+    <div class="mdl-dialog__content">
+      ##%content##
+    </div>
+    ##}##
+    <div class="mdl-dialog__actions ##=MDL.options('mdl-dialog__actions--', actions.options)##">
+      ##if (actions.items) {
+        actions.items.forEach(function(item) {##
+        ##%item.element || typeof item === 'string' || item instanceof String ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item))##
+        ##})
+      } else {##
+      ##if (actions.agree) {##<button type="button" class="mdl-button" data-bridge-event="##:actions.agree.event##">##%actions.agree.label || actions.agree || 'Agree'##</button>##}##
+      ##if (actions.disagree) {##
+      <button type="button" class="mdl-button close" data-bridge-event="##:actions.disagree.event || function() {
+        tmplScope.close();
+      }##">##%actions.disagree.label || actions.disagree || 'Disagree'##</button>
+      ##} else {##
+      <button type="button" class="mdl-button close" data-bridge-event="##:function() {
+        tmplScope.close();
+      }##">Close</button>
+      ##}##
+      ##}##
+    </div>
+  </dialog>
+  ##
+  tmplScope.beforeAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
   
 <template id="mdl-Layout">
@@ -106,9 +166,11 @@
   var title = data.title;
   var options = data.options;
   //var items = data.items || [];
+  
+  var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
   ##
   <!-- Always shows a header, even in smaller screens. -->
-  <div class="mdl-layout mdl-js-layout ##=MDL.options('mdl-layout--', options)####=data.class##">
+  <div class="mdl-layout mdl-js-layout ##=MDL.options('mdl-layout--', options)## ##=data.class##">
     ##if (header.items || header.title) {##
     <header class="mdl-layout__header ##=MDL.options('mdl-layout__header--', header.options)##">
       <div class="mdl-layout__header-row">
@@ -126,7 +188,7 @@
         ##}##
         <!-- Tabs -->
         ##if(header.tabs) {##
-        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+        <div class="mdl-layout__tab-bar ##=MDL.is(ripple, 'mdl-js-ripple-effect')##">
           ##(header.tabs).forEach(function(tab) {##
           <a href="##=tab.href ? tab.href : '#'##" class="mdl-layout__tab is-active" data-bridge-event="##:tab.event##">##%tab.label##</a>
           ##})##
@@ -165,8 +227,9 @@
   ##
   var tabs = data.tabs || [];
   var _id = tmplScope._id;
+  var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
   ##
-  <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect ##=data.class##">
+  <div class="mdl-tabs mdl-js-tabs ##=MDL.is(ripple, 'mdl-js-ripple-effect')## ##=data.class##">
     <div class="mdl-tabs__tab-bar">
       ##tabs.forEach(function(tab, idx) {##
       <a href="##='#' + (tab.id || _id + idx)##" class="mdl-tabs__tab ##=MDL.is(tab.active, 'is-active')##">##%tab.label##</a>
@@ -179,7 +242,7 @@
     ##})##
   </div>
   ##
-  tmplScope.afterReflash = function() {
+  tmplScope.beforeAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -260,7 +323,7 @@
     ##}##
   </footer>
   ##
-  tmplScope.afterReflash = function() {
+  tmplScope.beforeAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -284,7 +347,7 @@
     ##}##
   </footer>
   ##
-  tmplScope.afterReflash = function() {
+  tmplScope.beforeAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -325,6 +388,46 @@
 </template>
 
 <template id="mdl-Table">
+  ##
+  var options = data.options;
+  var shadow = data.shadow;
+  var thead = data.thead;
+  var tbody = data.tbody;
+  var items = tbody ? tbody.items ? tbody.items : tbody : data.items;
+  ##
+  &lt;table class="mdl-data-table mdl-js-data-table ##=MDL.options('mdl-data-table--', options)## ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')##"&gt;
+    ##if (thead) {##
+    &lt;thead&gt;
+      &lt;tr&gt;
+        ##thead.forEach(function(th) {
+          var label = th.label || th;
+        ##
+        &lt;td class="##=MDL.options('mdl-data-table__cell--', th.options)## ##=MDL.options('mdl-data-table__header--', th.options)##"&gt;##=label##&lt;/td&gt;
+        ##})##
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    ##}##
+    ##if (items) {##
+    &lt;tbody&gt;
+      ##items.forEach(function(tr) {##
+      &lt;tr&gt;
+        ##tr.forEach(function(td) {
+          var label = td.label || td;
+          // ##=MDL.is(typeof label === 'string' || label instanceof String, 'mdl-data-table__cell--non-numeric')## 
+        ##
+        &lt;td class="##=MDL.options('mdl-data-table__cell--', td.options)##"&gt;##=label##&lt;/td&gt;
+        ##})##
+      &lt;/tr&gt;
+      ##})##
+    &lt;/tbody&gt;
+    ##}##
+  &lt;/table&gt;
+  ##
+  //tmplScope.beforeAppendTo = function() {
+  tmplScope.afterReflash = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 <template id="mdl-Text-Field">
@@ -342,6 +445,7 @@ if (bridge.tmplTool) {
 }
 
 window.MDL = {
+  ripple: true,
   prop: function(props) {
     if (!props) return '';
     var propStrArray = [];

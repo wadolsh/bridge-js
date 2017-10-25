@@ -287,7 +287,8 @@
         });
       },
       stringToElement: function(str) {
-        if (str && str.trim && str.trim()[0] == '<') {
+        //if (str && str.trim && str.trim()[0] == '<') {
+        if (str && str[0] == '<' ) {
           /*
           if (DOMParser) {
             return (new DOMParser()).parseFromString(str, 'text/html').body;
@@ -298,7 +299,7 @@
           }
           */
           var temp = document.createElement('template');
-          temp.innerHTML = str;
+          temp.innerHTML = str.replace('<>', '');
           return temp.content;
         } else {
           return document.createTextNode(str);

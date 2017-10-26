@@ -3,7 +3,9 @@
   <head>
       <title>Component Engine bridge-js</title>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.1/webcomponents-lite.js"></script>
+      <script src="../webcomponentsjs/0.7.12/webcomponents-lite.min.js"></script>
+      <!--<script src="../webcomponentsjs/0.7.12/webcomponents-lite.min.js"></script>-->
+      <!--<script src="webcomponentsjs/1.0.17/webcomponents-lite.js"></script>-->
       <script src="js/bridge.template.0.8.js"></script>
       <link rel="import" href="template/bridge.ui.components.html">
       <link rel="import" href="template/bootstrap3/bridge.bootstrap3.components.html">
@@ -24,5 +26,7 @@
       }
       document.head.appendChild(script);
     }
+    
+    document.body.appendChild(tmpl.docs.Base({}).element);
   </script>
 </html>

@@ -435,14 +435,9 @@
 
 <template id="mdl-Tooltip">
 </template>
-</body>
+
 
 <script>
-if (bridge.tmplTool) {
-  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var element = bridge.tmplTool.addTmpls(importDoc.body);
-  console.log('bridge.mdl.components.html');
-}
 
 window.MDL = {
   ripple: true,
@@ -461,4 +456,18 @@ window.MDL = {
     return options ? prefix + options.join(' ' + prefix) : '';
   }
 }
+
+
+if (bridge.tmplTool) {
+  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
+  var element = bridge.tmplTool.addTmpls(importDoc.body);
+  console.log('bridge.mdl.components.html');
+  console.log(1, importDoc.body);
+}
+
 </script>
+
+
+
+</body>
+

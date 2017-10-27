@@ -35,7 +35,7 @@
     ##%label##
   &lt;/##=type##&gt;
   ##
-  tmplScope.beforeAppendTo = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -70,7 +70,7 @@
     ##if (actions) {##
     <div class="mdl-card__actions ##=MDL.options('mdl-card--', actions.options)##">
       ##(actions.items).forEach(function(item) {
-        if (item.element || typeof item === 'string' || item instanceof String) {##
+        if (MDL.isAppandAble(item)) {##
       ##%item##
       ##} else {##
       ##%tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item))##
@@ -81,13 +81,13 @@
     ##if (menu) {##
     <div class="mdl-card__menu ##=MDL.options('mdl-card--', menu.options)##">
       ##(menu.items).forEach(function(item) {##
-      ##%item.element || typeof item === 'string' || item instanceof String ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple, options: ['icon']}, item))##
+      ##%MDL.isAppandAble(item) ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple, options: ['icon']}, item))##
       ##})##
     </div>
     ##}##
   </div>
   ##
-  tmplScope.beforeAppendTo = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -135,7 +135,7 @@
     <div class="mdl-dialog__actions ##=MDL.options('mdl-dialog__actions--', actions.options)##">
       ##if (actions.items) {
         actions.items.forEach(function(item) {##
-        ##%item.element || typeof item === 'string' || item instanceof String ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item))##
+        ##%MDL.isAppandAble(item) ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item))##
         ##})
       } else {##
       ##if (actions.agree) {##<button type="button" class="mdl-button" data-bridge-event="##:actions.agree.event##">##%actions.agree.label || actions.agree || 'Agree'##</button>##}##
@@ -152,7 +152,7 @@
     </div>
   </dialog>
   ##
-  tmplScope.beforeAppendTo = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -162,8 +162,9 @@
   ##
   var content = data.content;
   var header = data.header || {};
+  var tabs = data.tabs;
   var drawer = data.drawer || {};
-  var title = data.title;
+  //var title = data.title;
   var options = data.options;
   //var items = data.items || [];
   
@@ -171,54 +172,72 @@
   ##
   <!-- Always shows a header, even in smaller screens. -->
   <div class="mdl-layout mdl-js-layout ##=MDL.options('mdl-layout--', options)## ##=data.class##">
-    ##if (header.items || header.title) {##
+    ##if (header) {##
     <header class="mdl-layout__header ##=MDL.options('mdl-layout__header--', header.options)##">
+      ##(header.items ? header.items : [header]).forEach(function(h) {##
       <div class="mdl-layout__header-row">
         <!-- Title -->
-        <span class="mdl-layout-title">##%(header.title || title)##</span>
+        ##if (h.title) {##<span class="mdl-layout-title">##%(h.title)##</span>##}##
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
-        ##if (header.items) {##
-        <nav class="mdl-navigation">
-          ##(header.items).forEach(function(item) {##
-          <a class="mdl-navigation__link" href="##=item.href ? item.href : '#'##" data-bridge-event="##:item.event##">##%item.label##</a>
-          ##})##
-        </nav>
-        ##}##
-        <!-- Tabs -->
-        ##if(header.tabs) {##
-        <div class="mdl-layout__tab-bar ##=MDL.is(ripple, 'mdl-js-ripple-effect')##">
-          ##(header.tabs).forEach(function(tab) {##
-          <a href="##=tab.href ? tab.href : '#'##" class="mdl-layout__tab is-active" data-bridge-event="##:tab.event##">##%tab.label##</a>
-          ##})##
-        </div>
-        ##}##
+        ##if (h.navigation) {## ##%tmpl.mdl.Navigation({items: h.navigation})## ##}##
+        ##%h.items##
       </div>
+      ##})##
+      <!-- Tabs -->
+      ##if(tabs) {##
+      <div class="mdl-layout__tab-bar ##=MDL.is(ripple, 'mdl-js-ripple-effect')##">
+        ##(tabs).forEach(function(tab) {##
+        <a href="##=tab.id ? '#' + tab.id : '#'##" class="mdl-layout__tab ##=MDL.is(tab.active, 'is-active')##" data-bridge-event="##:tab.event##">##%tab.label##</a>
+        ##})##
+      </div>
+      ##}##
     </header>
     ##}##
     ##if (drawer) {##
     <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">##%(drawer.title || title)##</span>
-      ##if(drawer.items) {##
-      <nav class="mdl-navigation">
-        ##(drawer.items).forEach(function(item) {##
-        <a class="mdl-navigation__link" href="##=item.href ? item.href : '#'##" data-bridge-event="##:item.event##">##%item.label##</a>
-        ##})##
-      </nav>
-      ##}##
+      ##if (drawer.title) {##<span class="mdl-layout-title">##%(drawer.title)##</span>##}##
+      ##if (drawer.navigation) {## ##%tmpl.mdl.Navigation({items: drawer.navigation})## ##}##
+      ##%drawer.items##
     </div>
     ##}##
     <main class="mdl-layout__content">
-      <div class="page-content">##%content##</div>
+      ##if (content) {##<div class="page-content">##%content##</div>##}##
+      ##if(tabs) {##
+      ##(tabs).forEach(function(tab) {##
+      <section class="mdl-layout__tab-panel ##=MDL.is(tab.active, 'is-active')##" id="##=tab.id##">
+        <div class="page-content">##%tab.content##</div>
+      </section>
+      ##})##
+      ##}##
     </main>
   </div>
   ##
-  tmplScope.afterReflash = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
+
+
+<template id="mdl-Navigation">
+  ##
+  var items = data.items || [];
+  ##
+  <nav class="mdl-navigation">
+    ##items.forEach(function(item) {##
+      ##if (MDL.isElement(item)) {##
+    ##%item##
+      ##} else {##
+    <a class="mdl-navigation__link" href="##=item.href ? item.href : '#'##" data-bridge-event="##:item.event##">##=item.label || item##</a>
+      ##}##
+    ##})##
+  </nav>
+</template>
+
+
+
 
 <template id="mdl-Grid">
 </template>
@@ -242,7 +261,7 @@
     ##})##
   </div>
   ##
-  tmplScope.beforeAppendTo = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -323,7 +342,7 @@
     ##}##
   </footer>
   ##
-  tmplScope.beforeAppendTo = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -347,7 +366,7 @@
     ##}##
   </footer>
   ##
-  tmplScope.beforeAppendTo = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -370,6 +389,53 @@
 </template>
 
 <template id="mdl-List">
+  ##
+  var items = data.items || [];
+  var itemStyles = ['', '', 'mdl-list__item--two-line', 'mdl-list__item--three-line'];
+  var action = data.action;
+  ##
+  <ul class="mdl-list ##=data.class##">
+    ##items.forEach(function(item) {##
+    <li class="mdl-list__item ##=itemStyles[item.lineCount] || ''##">
+      ##if (MDL.isElement(item)) {##
+      ##%item##
+      ##} else {##
+      <span class="mdl-list__item-primary-content">
+        ##if (item.icon) {##<i class="material-icons mdl-list__item-##=item.iconStyle ? item.iconStyle : 'icon'##">##=item.icon##</i>##}##
+        ##if (!item.title && !item.body) {##
+        ##%item##
+        ##} else if (item.lineCount == 3) {##
+        <span>##=item.title##</span>
+        <span class="mdl-list__item-text-body">##=item.body##</span>
+        ##} else if (item.lineCount == 2 || (item.title && item.body)) {##
+        <span>##=item.title##</span>
+        <span class="mdl-list__item-sub-title">##=item.body##</span>
+        ##} else {##
+        <span>##=item.title##</span>
+        ##}##
+      </span>
+      ##if (action) {##
+      ##if (MDL.isElement(action)) {##
+      <span class="mdl-list__item-secondary-action">
+        ##%action##
+      </span>
+      ##} else {##
+      <span class="mdl-list__item-secondary-content">
+        ##if (action.info) {##<span class="mdl-list__item-secondary-info">##%action.info##</span>##}##
+        <a class="mdl-list__item-secondary-action" href="##=action.href ? action.href : '#'##" data-bridge-event="##:action.event##"><i class="material-icons">##=action.icon##</i></a>
+      </span>
+      ##}##
+      ##}##
+      
+      ##}##
+    </li>
+    ##})##
+  </ul>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 <template id="mdl-Loading">
@@ -385,6 +451,7 @@
 </template>
 
 <template id="mdl-Toggle">
+
 </template>
 
 <template id="mdl-Table">
@@ -402,7 +469,7 @@
         ##thead.forEach(function(th) {
           var label = th.label || th;
         ##
-        &lt;td class="##=MDL.options('mdl-data-table__cell--', th.options)## ##=MDL.options('mdl-data-table__header--', th.options)##"&gt;##=label##&lt;/td&gt;
+        &lt;th class="##=MDL.options('mdl-data-table__cell--', th.options)## ##=MDL.options('mdl-data-table__header--', th.options)##"&gt;##=label##&lt;/th&gt;
         ##})##
       &lt;/tr&gt;
     &lt;/thead&gt;
@@ -423,8 +490,7 @@
     ##}##
   &lt;/table&gt;
   ##
-  //tmplScope.beforeAppendTo = function() {
-  tmplScope.afterReflash = function() {
+  tmplScope.afterAppendTo = function() {
     componentHandler.upgradeElement(tmplScope.element);
   }
   ##
@@ -454,6 +520,15 @@ window.MDL = {
   },
   options: function(prefix, options) {
     return options ? prefix + options.join(' ' + prefix) : '';
+  },
+  isElement: function(item) {
+    return item instanceof Element || item.element;
+  },
+  isString: function(item) {
+    return typeof item === 'string' || item instanceof String;
+  },
+  isAppandAble: function(item) {
+    return MDL.isElement(item) || MDL.isAppandAble(item);
   }
 }
 

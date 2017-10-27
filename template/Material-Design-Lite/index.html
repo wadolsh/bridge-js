@@ -2,6 +2,7 @@
 <html>
   <head>
       <title>Component for Material Design Lite</title>
+      <link rel="icon" sizes="192x192" href="https://getmdl.io/assets/android-desktop.png">
       <link href='https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en' rel='stylesheet' type='text/css'>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
@@ -38,12 +39,13 @@
         .mdl-Doc .mdl-card__title-text > * {
           margin: 20px;
         }
+
       </style>
       ##
       var examples = data.examples || [];
       var link = data.link;
       ##
-      <div class="mdl-Doc">
+      <div class="mdl-Doc ##=data.class##">
         <a href="##=link##" target="_blank">##=link##</a>
         ##
         examples.forEach(function(e1) {
@@ -51,11 +53,11 @@
           var funcStrings = [];
           e1.forEach(function(e2) {
             funcs.push(new Function((e2.code || '') + '; return ' + (e2.element || e2) + ';')());
-            if (e2.class) {
-              funcStrings.push(tmpl.brui.Div({content: '<pre><code>' + e2.class + '</code></pre>'}));
+            if (e2.style) {
+              funcStrings.push(tmpl.brui.Div({content: '<pre><code>' + e2.style + '</code></pre>'}));
           ##
           <style>
-          ##=e2.class##
+          ##=e2.style##
           </style>
           ##
             }
@@ -83,7 +85,7 @@
         title: 'Component for Material Design Lite'
       },
       drawer: {
-        items: [
+        navigation: [
           {label: 'Badges', href:'#Badges', event: function() {
             var doc = tmpl.mdl.Doc({
               link: 'https://getmdl.io/components/index.html#badges-section',
@@ -135,7 +137,7 @@
             var doc = tmpl.mdl.Doc({
               link: 'https://getmdl.io/components/index.html#cards-section',
               examples: [
-                [{class: `
+                [{style: `
                   .demo-card-wide.mdl-card {
                     width: 512px;
                   }
@@ -160,7 +162,7 @@
                     menu: {items: [{icon: 'share'}]}
                   })`}],
 
-                [{class: `
+                [{style: `
                   .demo-card-square.mdl-card {
                     width: 320px;
                     height: 320px;
@@ -182,7 +184,7 @@
                       items: [{href: '#', label: 'View Updates', ripple: true, options: ['colored']}]}
                   })`}],
 
-                [{class: `
+                [{style: `
                   .demo-card-image.mdl-card {
                     width: 256px;
                     height: 256px;
@@ -208,7 +210,7 @@
                       items: ['<span class="demo-card-image__filename">Image.jpg</span>']}
                   })`},
                   
-                  {class: `
+                  {style: `
                   .demo-card-event.mdl-card {
                     width: 256px;
                     height: 256px;
@@ -311,9 +313,215 @@
           {label: 'Layout', href:'#Layout', event: function() {
             var doc = tmpl.mdl.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section',
+              class: 'demo-layout__transparent',
               examples: [
-                ["tmpl.mdl.Layout({})"],
-                [],
+                [{element: `tmpl.mdl.Layout({})`}],
+                [{
+                 style: `
+                  .mdl-layout__container {
+                    overflow: scroll;
+                  }
+                  .mdl-Doc .page-content {
+                      background: white;
+                      height: 100px;
+                  }
+                      
+                  .mdl-Doc.demo-layout__transparent .mdl-card__title-text {
+                    margin: 0px,
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                                0 3px 1px -2px rgba(0, 0, 0, 0.2),
+                                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+                    width: 100%;
+                    position: relative;
+                    height: 300px;
+                  }
+                  
+                  .demo-layout-transparent {
+                    background: url('https://getmdl.io/assets/demos/transparent.jpg') center / cover;
+                  }
+                  .demo-layout-transparent .mdl-layout__header,
+                  .demo-layout-transparent .mdl-layout__drawer-button {
+                    /* This background is dark, so we set text to white. Use 87% black instead if
+                       your background is light. */
+                    color: white;
+                  }
+                `, element: `tmpl.mdl.Layout({
+                              class: 'demo-layout-transparent',
+                              header: {
+                                options: ['transparent'],
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              drawer: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              }
+                });`}],
+                [`tmpl.mdl.Layout({
+                              options: ['fixed-drawer'],
+                              drawer: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              content: ' '
+                });`],
+                [`tmpl.mdl.Layout({
+                              options: ['fixed-header'],
+                              header: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              drawer: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              content: ' '
+                });`],
+                [`tmpl.mdl.Layout({
+                              options: ['fixed-drawer', 'fixed-header'],
+                              header: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              drawer: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              content: ' '
+                });`],
+                [{style: `
+                  .demo-layout__scrolling-header .page-content {
+                      height: 600px;
+                      background: white;
+                  }
+                  `,
+                  element: `tmpl.mdl.Layout({
+                              class: 'demo-layout__scrolling-header',
+                              header: {
+                                title: 'Title',
+                                options: ['scroll'],
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              drawer: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              content: ' '
+                });`}],
+                [{style: `
+                  .demo-layout-waterfall .mdl-layout__header-row .mdl-navigation__link:last-of-type  {
+                    padding-right: 0;
+                  }
+                  .demo-layout-waterfall .page-content {
+                      height: 600px;
+                      background: white;
+                  }
+                  `,
+                  element: `tmpl.mdl.Layout({
+                              class: 'demo-layout-waterfall',
+                              header: {
+                                options: ['waterfall'],
+                                items: [
+                                  {title: 'Title'},
+                                  {navigation: [
+                                      {label: 'Link'},
+                                      {label: 'Link'},
+                                      {label: 'Link'},
+                                      {label: 'Link'}
+                                    ]
+                                  }
+                              ]},
+                              drawer: {
+                                title: 'Title',
+                                navigation: [
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'},
+                                  {label: 'Link'}
+                                ]
+                              },
+                              content: ' '
+                });`}],
+                [{element: `tmpl.mdl.Layout({
+                              class: '',
+                              options: ['fixed-header'],
+                              header: {
+                                items: [
+                                  {title: 'Title'}
+                              ]},
+                              tabs: [
+                                {label: 'Tab 1', id: 'scroll-tab-1', content: 'tab 1', active: true},
+                                {label: 'Tab 2', id: 'scroll-tab-2', content: 'tab 2'},
+                                {label: 'Tab 3', id: 'scroll-tab-3', content: 'tab 3'},
+                                {label: 'Tab 4', id: 'scroll-tab-4', content: 'tab 4'},
+                                {label: 'Tab 5', id: 'scroll-tab-5', content: 'tab 5'},
+                                {label: 'Tab 6', id: 'scroll-tab-6', content: 'tab 6'}
+                              ],
+                              drawer: {
+                                title: 'Title'
+                              }
+                });`}],
+                [{element: `tmpl.mdl.Layout({
+                              class: '',
+                              options: ['fixed-header', 'fixed-tabs'],
+                              header: {
+                                items: [
+                                  {title: 'Title'}
+                              ]},
+                              tabs: [
+                                {label: 'Tab 1', id: 'scroll-tab-1', content: 'tab 1', active: true},
+                                {label: 'Tab 2', id: 'scroll-tab-2', content: 'tab 2'},
+                                {label: 'Tab 3', id: 'scroll-tab-3', content: 'tab 3'}
+                              ],
+                              drawer: {
+                                title: 'Title'
+                              }
+                });`}]
               ]
             });
             layout.reflash({header: {title: 'Layout'}, content: doc});
@@ -353,8 +561,20 @@
             var doc = tmpl.mdl.Doc({
               link: 'https://getmdl.io/components/index.html#lists-section',
               examples: [
-                [],
-                [],
+                [{style: `
+                .demo-list-item {
+                  width: 300px;
+                }
+                `, element: "tmpl.mdl.List({class: 'demo-list-item', items: ['Bryan Cranston', 'Aaron Paul', 'Bob Odenkirk']})"}],
+                
+                [{style: `
+                .demo-list-icon {
+                  width: 300px;
+                }
+                `, element: `tmpl.mdl.List({class: 'demo-list-icon',
+                              items: [{title: 'Bryan Cranston', icon:'person'}, 
+                                      {title: 'Aaron Paul', icon:'person'}, 
+                                      {title: 'Bob Odenkirk', icon:'person'}]})`}],
               ]
             });
             layout.reflash({header: {title: 'Lists'}, content: doc});
@@ -403,7 +623,7 @@
             var doc = tmpl.mdl.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section',
               examples: [
-                [],
+                ["tmpl.mdl.Toggle({})"],
                 [],
               ]
             });
@@ -420,6 +640,20 @@
                       {label: 'Material', options: ['non-numeric']},
                       'Quantity',
                       'Unit price'
+                    ],
+                    tbody: [
+                      [{label: 'Acrylic (Transparent)', options: ['non-numeric']}, '25', '$2.90'],
+                      [{label: 'Plywood (Birch)', options: ['non-numeric']}, '50', '$1.25'],
+                      [{label: 'Laminate (Gold on Blue)', options: ['non-numeric']}, '10', '$2.35'],
+                    ]
+                })`],
+                [`tmpl.mdl.Table({
+                    shadow: 2,
+                    options: ['selectable'],
+                    thead: [
+                      {label: 'Material', options: ['non-numeric']},
+                      {label: 'Quantity', options: ['sorted-ascending']},
+                      {label: 'Unit price', options: ['sorted-descending']},
                     ],
                     tbody: [
                       [{label: 'Acrylic (Transparent)', options: ['non-numeric']}, '25', '$2.90'],

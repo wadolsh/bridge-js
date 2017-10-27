@@ -8,8 +8,8 @@
       <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
       <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
       <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-      <!--<script src="../../../webcomponentsjs/0.7.12/webcomponents-lite.min.js"></script>-->
-      <script src="../../webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
+      <script src="../../../webcomponentsjs/0.7.12/webcomponents-lite.min.js"></script>
+      <!--<script src="../../webcomponentsjs/1.0.17/webcomponents-lite.js"></script>-->
       <script src="../../js/bridge.template.0.8.js"></script>
       <link rel="import" href="bridge.mdl.components.html">
   </head>
@@ -78,7 +78,7 @@
     bridge.tmplTool.addTmpls(document.body.innerHTML);
     document.body.innerHTML = '';
     
-    var layout = tmpl.mdl.Layout({
+    var data = {
       options: ['fixed-drawer'],
       header: {
         show: true,
@@ -687,18 +687,23 @@
           }}
         ]
       }
-    });
+    };
     
-    
-    window.onhashchange = function() {
-      var hashArray = location.hash.replace('#', '').split('/');
-      if (!hashArray[0]) return;
+    var layout = null;
+    window.addEventListener('WebComponentsReady', function(e) {
+      layout = tmpl.mdl.Layout(data);
+      document.body.appendChild(layout.element);
       
-      document.querySelector("a[href='" + location.hash + "']").click();
-    }
-    document.body.appendChild(layout.element);
-    setTimeout(function() {
-      window.onhashchange();
-    }, 0);
+      window.onhashchange = function() {
+        var hashArray = location.hash.replace('#', '').split('/');
+        if (!hashArray[0]) return;
+        
+        document.querySelector("a[href='" + location.hash + "']").click();
+      }
+      
+      setTimeout(function() {
+        window.onhashchange();
+      }, 0);
+    });
   </script>
 </html>

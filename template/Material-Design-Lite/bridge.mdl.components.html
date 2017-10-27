@@ -503,6 +503,10 @@
 </template>
 
 
+
+
+</body>
+
 <script>
 
 window.MDL = {
@@ -528,7 +532,7 @@ window.MDL = {
     return typeof item === 'string' || item instanceof String;
   },
   isAppandAble: function(item) {
-    return MDL.isElement(item) || MDL.isAppandAble(item);
+    return MDL.isElement(item) || MDL.isString(item);
   }
 }
 
@@ -537,12 +541,7 @@ if (bridge.tmplTool) {
   var importDoc = (document._currentScript || document.currentScript).ownerDocument;
   var element = bridge.tmplTool.addTmpls(importDoc.body);
   console.log('bridge.mdl.components.html');
-  console.log(1, importDoc.body);
+  console.log(3, importDoc.body);
 }
 
 </script>
-
-
-
-</body>
-

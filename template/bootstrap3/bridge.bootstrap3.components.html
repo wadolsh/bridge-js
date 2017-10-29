@@ -616,8 +616,10 @@
 </body>
 <script>
 if (bridge.tmplTool) {
-  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var element = bridge.tmplTool.addTmpls(importDoc.body);
+  var HTMLImports = HTMLImports;
+  bridge.tmplTool.addTmpls(
+      HTMLImports && HTMLImports.importForElement ? HTMLImports.importForElement(document.currentScript)
+                  : (document._currentScript || document.currentScript).ownerDocument.body);
   console.log('bridge.bootstrap3.components.html');
 }
 </script>

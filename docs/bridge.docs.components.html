@@ -17,8 +17,9 @@
   
 <script>
 if (bridge.tmplTool) {
-  var importDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var element = bridge.tmplTool.addTmpls(importDoc.body);
+  bridge.tmplTool.addTmpls(
+      HTMLImports.importForElement ? HTMLImports.importForElement(document.currentScript)
+                  : (document._currentScript || document.currentScript).ownerDocument.body);
   console.log('bridge.docs.components.html');
 }
 </script>

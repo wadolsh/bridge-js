@@ -8,7 +8,7 @@
       <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
       <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
       <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
       <script src="../../js/bridge.template.0.8.js"></script>
       <link rel="import" href="bridge.mdl.components.html">
   </head>
@@ -74,15 +74,13 @@
     </template>
   </body>
   <script type="text/javascript">
-    bridge.tmplTool.addTmpls(document.body.innerHTML);
-    document.body.innerHTML = '';
-    
     var data = {
       options: ['fixed-drawer'],
       header: {
         show: true,
         title: 'Component for Material Design Lite'
       },
+      //content: ' ',
       drawer: {
         navigation: [
           {label: 'Badges', href:'#Badges', event: function() {
@@ -690,8 +688,12 @@
     
     var layout = null;
     window.addEventListener('WebComponentsReady', function(e) {
+      bridge.tmplTool.addTmpls(document.body.innerHTML);
+      document.body.innerHTML = '';
+      
       layout = tmpl.mdl.Layout(data);
       document.body.appendChild(layout.element);
+      componentHandler.upgradeElement(layout.element);
       
       window.onhashchange = function() {
         var hashArray = location.hash.replace('#', '').split('/');

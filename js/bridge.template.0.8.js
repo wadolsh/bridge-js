@@ -697,7 +697,8 @@
   var addTmpls = tmplTool.addTmpls = function(source, removeInnerTemplate, tmplSettings) {
     if(typeof(removeInnerTemplate) !== "boolean" && tmplSettings == undefined) tmplSettings = removeInnerTemplate;
     var $template = null;
-    if (source instanceof Element) {
+    //if (source instanceof Element) {
+    if (source.querySelectorAll) {
       $template = source;
     } else {
       var $template = document.createElement('template');

@@ -571,7 +571,58 @@
                 `, element: `tmpl.mdl.List({class: 'demo-list-icon',
                               items: [{title: 'Bryan Cranston', icon:'person'}, 
                                       {title: 'Aaron Paul', icon:'person'}, 
-                                      {title: 'Bob Odenkirk', icon:'person'}]})`}],
+                                      {title: 'Bob Odenkirk', icon:'person'}]})`}],                
+                [{style: `
+                .demo-list-action {
+                  width: 300px;
+                }
+                `, element: `tmpl.mdl.List({class: 'demo-list-action',
+                              iconStyle: 'avatar',
+                              items: [{title: 'Bryan Cranston', icon:'person', action: {icon: 'star'}}, 
+                                      {title: 'Aaron Paul', icon:'person', action: {icon: 'star'}}, 
+                                      {title: 'Bob Odenkirk', icon:'person', action: {icon: 'star'}}]})`}],                
+                [{style: `
+                .demo-list-control {
+                  width: 300px;
+                }
+                
+                .demo-list-radio {
+                  display: inline;
+                }
+                `, element: `tmpl.mdl.List({class: 'demo-list-control',
+                              iconStyle: 'avatar',
+                              items: [{title: 'Bryan Cranston', icon:'person', action: {icon: 'star'}}, 
+                                      {title: 'Aaron Paul', icon:'person', action: {icon: 'star'}}, 
+                                      {title: 'Bob Odenkirk', icon:'person', action: {icon: 'star'}}]})`}],                
+                [{style: `
+                .demo-list-two {
+                  width: 300px;
+                }
+                `, element: `tmpl.mdl.List({class: 'demo-list-two',
+                              iconStyle: 'avatar',
+                              lineCount: 2,
+                              items: [{title: 'Bryan Cranston', icon:'person', body: '62 Episodes', action: {icon: 'star', info: 'Actor'}}, 
+                                      {title: 'Aaron Paul', icon:'person', body: '62 Episodes', action: {icon: 'star'}}, 
+                                      {title: 'Bob Odenkirk', icon:'person', body: '62 Episodes', action: {icon: 'star'}}]})`}],                
+                [{style: `
+                .demo-list-three {
+                  width: 650px;
+                }
+                `, element: `tmpl.mdl.List({class: 'demo-list-three',
+                              iconStyle: 'avatar',
+                              lineCount: 3,
+                              items: [{title: 'Bryan Cranston', icon:'person', 
+                                        body: \`Bryan Cranston played the role of Walter in Breaking Bad. He is also known
+                                              for playing Hal in Malcom in the Middle.\`,
+                                        action: {icon: 'star', info: 'Actor'}}, 
+                                      {title: 'Aaron Paul', icon:'person', 
+                                        body: \`Aaron Paul played the role of Jesse in Breaking Bad. He also featured in
+                                              the "Need For Speed" Movie.\`,
+                                        action: {icon: 'star'}}, 
+                                      {title: 'Bob Odenkirk', icon:'person',
+                                        body: \`Bob Odinkrik played the role of Saul in Breaking Bad. Due to public fondness for the
+                                              character, Bob stars in his own show now, called "Better Call Saul".\`,
+                                        action: {icon: 'star'}}]})`}],
               ]
             });
             layout.reflash({header: {title: 'Lists'}, content: doc});
@@ -666,8 +717,14 @@
             var doc = tmpl.mdl.Doc({
               link: 'https://getmdl.io/components/index.html#textfields-section',
               examples: [
-                [],
-                [],
+                ["tmpl.mdl.TextField({label: 'Text...'})",
+                 "tmpl.mdl.TextField({label: 'Number...', pattern: '-?[0-9]*(\.[0-9]+)?', errorMsg: 'Input is not a number!'})"],
+                 
+                ["tmpl.mdl.TextField({label: 'Text...', options: ['floating-label']})", 
+                 "tmpl.mdl.TextField({label: 'Number...', options: ['floating-label'], pattern: '-?[0-9]*(\.[0-9]+)?', errorMsg: 'Input is not a number!'})"],
+                 
+                ["tmpl.mdl.TextField({label: 'Text lines...', rows:3})", 
+                 "tmpl.mdl.TextField({label: 'Expandable Input', options: ['expandable'], icon: 'search'})"],
               ]
             });
             layout.reflash({header: {title: 'Text Fields'}, content: doc});
@@ -676,7 +733,7 @@
             var doc = tmpl.mdl.Doc({
               link: 'https://getmdl.io/components/index.html#tooltips-section',
               examples: [
-                [],
+                ["tmpl.mdl.Tooltip({})"],
                 [],
               ]
             });

@@ -391,29 +391,33 @@
   ##
   var items = data.items || [];
   var itemStyles = ['', '', 'mdl-list__item--two-line', 'mdl-list__item--three-line'];
-  var action = data.action;
+  var iconStyle = data.iconStyle || 'icon';
   ##
   <ul class="mdl-list ##=data.class##">
-    ##items.forEach(function(item) {##
-    <li class="mdl-list__item ##=itemStyles[item.lineCount] || ''##">
+    ##items.forEach(function(item) {
+        var lineCount = item.lineCount || data.lineCount;
+    ##
+    <li class="mdl-list__item ##=itemStyles[lineCount] || ''##">
       ##if (MDL.isElement(item)) {##
       ##%item##
       ##} else {##
       <span class="mdl-list__item-primary-content">
-        ##if (item.icon) {##<i class="material-icons mdl-list__item-##=item.iconStyle ? item.iconStyle : 'icon'##">##=item.icon##</i>##}##
+        ##if (item.icon) {##<i class="material-icons mdl-list__item-##=item.iconStyle || iconStyle##">##=item.icon##</i>##}##
         ##if (!item.title && !item.body) {##
         ##%item##
-        ##} else if (item.lineCount == 3) {##
+        ##} else if (lineCount == 3) {##
         <span>##=item.title##</span>
         <span class="mdl-list__item-text-body">##=item.body##</span>
-        ##} else if (item.lineCount == 2 || (item.title && item.body)) {##
+        ##} else if (lineCount == 2 || (item.title && item.body)) {##
         <span>##=item.title##</span>
         <span class="mdl-list__item-sub-title">##=item.body##</span>
         ##} else {##
         <span>##=item.title##</span>
         ##}##
       </span>
-      ##if (action) {##
+      ##if (item.action) {
+        var action = item.action;
+      ##
       ##if (MDL.isElement(action)) {##
       <span class="mdl-list__item-secondary-action">
         ##%action##
@@ -449,9 +453,52 @@
 <template id="mdl-Snackbar">
 </template>
 
-<template id="mdl-Toggle">
 
+
+<template id="mdl-Toggle">
+  ##
+  var type = data.type;
+  var inputType = data.inputType || data.type;
+  var label = data.label;
+  var name = data.name;
+  var value = data.value;
+  var checked = data.checked;
+  var _id = data.id || tmplScope._id;
+  var event = data.event;
+  
+  tmplScope.input = function() {
+    return input;
+  }
+  tmplScope.value = function() {
+    return input.value;
+  }
+  tmplScope.checked = function() {
+    return input.checked;
+  }
+  ##
+  <label class="mdl-##=type## mdl-js-##=type## mdl-js-ripple-effect" for="##=_id##">
+    &lt;input type="##=inputType##" id="##=_id##" ##=name ? 'name="' + name + '"' : ''## class="mdl-checkbox__input" value="##=value##" ##=checked ? 'checked' : ''## data-bridge-var="##:input##" data-bridge-event="##:event##"&gt;
+    <span class="mdl-##=type##__label">##=label##</span>
+  </label>
 </template>
+
+
+<template id="mdl-Checkbox">
+  ##%tmpl.Toggle(Object.assign(data, {type: 'checkbox'}))##
+</template>
+
+<template id="mdl-Radio">
+  ##%tmpl.Toggle(Object.assign(data, {type: 'radio'}))##
+</template>
+
+<template id="mdl-IconToggle">
+  ##%tmpl.Toggle(Object.assign(data, {type: 'icon-toggle', inputType: 'checkbox'}))##
+</template>
+
+<template id="mdl-Switch">
+  ##%tmpl.Toggle(Object.assign(data, {type: 'switch', inputType: 'checkbox'}))##
+</template>
+
 
 <template id="mdl-Table">
   ##
@@ -496,9 +543,52 @@
 </template>
 
 <template id="mdl-Text-Field">
+  ##
+  var value = data.value;
+  var icon = data.icon;
+  var options = data.options;
+  var label = data.label;
+  var patternProp = data.pattern ? ('pattern="' + data.pattern + '"') : '';
+  var errorMsg = data.errorMsg;
+  var rows = data.rows;
+  var _id = data.id || tmplScope._id;
+  var event = data.event;
+  ##
+  <div class="mdl-textfield mdl-js-textfield ##=MDL.options('mdl-textfield--', options)##">
+    ##if ((options || []).indexOf('expandable') > -1) {##
+      ##if (icon) {##
+        ##if (MDL.isElement(icon)) {##
+    ##%icon##
+        ##} else {##
+    <label class="mdl-button mdl-js-button mdl-button--icon" for="##=_id##">
+      <i class="material-icons">##=icon##</i>
+    </label>
+        ##}##
+      ##}##
+    <div class="mdl-textfield__expandable-holder">
+      &lt;input class="mdl-textfield__input" type="text" id="##=_id##" value="##=value##" ##=patternProp## data-bridge-event="##:event##"&gt;
+      <label class="mdl-textfield__label" for="##=_id##">##=label##</label>
+    </div>
+    ##} else {##
+      ##if (rows && rows > 1) {##
+    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" ##=patternProp## data-bridge-event="##:event##"&gt;##=value##&lt;/textarea&gt;
+      ##} else {##
+    &lt;input class="mdl-textfield__input" type="text" ##=patternProp## id="##=_id##" value="##=value##" data-bridge-event="##:event##"&gt;
+      ##}##
+    ##if (label) {##<label class="mdl-textfield__label" for="##=_id##">##=label##</label>##}##
+    ##if (errorMsg) {##<span class="mdl-textfield__error">##%errorMsg##</span>##}##
+    
+    ##}##
+  </div>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 <template id="mdl-Tooltip">
+
 </template>
 
 </body>

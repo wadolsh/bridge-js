@@ -459,7 +459,9 @@
   ##
   var type = data.type;
   var inputType = data.inputType || data.type;
+  var inputClass = 'mdl-' + type + '__' + (data.inputClass || 'input');
   var label = data.label;
+  var icon = data.icon;
   var name = data.name;
   var value = data.value;
   var checked = data.checked;
@@ -477,26 +479,32 @@
   }
   ##
   <label class="mdl-##=type## mdl-js-##=type## mdl-js-ripple-effect" for="##=_id##">
-    &lt;input type="##=inputType##" id="##=_id##" ##=name ? 'name="' + name + '"' : ''## class="mdl-checkbox__input" value="##=value##" ##=checked ? 'checked' : ''## data-bridge-var="##:input##" data-bridge-event="##:event##"&gt;
+    &lt;input type="##=inputType##" id="##=_id##" ##=name ? 'name="' + name + '"' : ''## class="##=inputClass##" value="##=value##" ##=checked ? 'checked' : ''## data-bridge-var="##:input##" data-bridge-event="##:event##"&gt;
+    ##if (icon) {##<i class="mdl-icon-toggle__label material-icons">##=icon##</i>##}##
     <span class="mdl-##=type##__label">##=label##</span>
   </label>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 
 <template id="mdl-Checkbox">
-  ##%tmpl.Toggle(Object.assign(data, {type: 'checkbox'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'checkbox'}))##
 </template>
 
 <template id="mdl-Radio">
-  ##%tmpl.Toggle(Object.assign(data, {type: 'radio'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'radio', inputClass: 'button'}))##
 </template>
 
 <template id="mdl-IconToggle">
-  ##%tmpl.Toggle(Object.assign(data, {type: 'icon-toggle', inputType: 'checkbox'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'icon-toggle', inputType: 'checkbox'}))##
 </template>
 
 <template id="mdl-Switch">
-  ##%tmpl.Toggle(Object.assign(data, {type: 'switch', inputType: 'checkbox'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'switch', inputType: 'checkbox'}))##
 </template>
 
 

@@ -75,7 +75,7 @@
   </body>
   <script type="text/javascript">
     var data = {
-      options: ['fixed-drawer'],
+      options: ['fixed-drawer', 'fixed-header'],
       header: {
         show: true,
         title: 'Component for Material Design Lite'
@@ -322,7 +322,10 @@
                       background: white;
                       height: 100px;
                   }
-                      
+                  .mdl-card__title-text {
+                    min-height: 300px;
+                  }
+                  
                   .mdl-Doc.demo-layout__transparent .mdl-card__title-text {
                     margin: 0px,
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -342,8 +345,10 @@
                        your background is light. */
                     color: white;
                   }
+                  
                 `, element: `tmpl.mdl.Layout({
                               class: 'demo-layout-transparent',
+                              //content: ' ',
                               header: {
                                 options: ['transparent'],
                                 title: 'Title',
@@ -667,15 +672,45 @@
             });
             layout.reflash({header: {title: 'Snackbar'}, content: doc});
           }},
-          {label: 'Toggles', href:'#Toggles', event: function() {
+          {label: 'Checkbox', href:'#Checkbox', event: function() {
             var doc = tmpl.mdl.Doc({
-              link: 'https://getmdl.io/components/index.html#toggles-section',
+              link: 'https://getmdl.io/components/index.html#toggles-section/checkbox',
               examples: [
-                ["tmpl.mdl.Toggle({})"],
-                [],
+                ["tmpl.mdl.Checkbox({label: 'Checkbox', checked: true})",
+                 "tmpl.mdl.Checkbox({label: 'Checkbox'})"],
               ]
             });
-            layout.reflash({header: {title: 'Toggles'}, content: doc});
+            layout.reflash({header: {title: 'Checkbox'}, content: doc});
+          }},
+          {label: 'Radio', href:'#Radio', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#toggles-section/radio',
+              examples: [
+                ["tmpl.mdl.Radio({label: 'First', name: 'options', checked: true})",
+                 "tmpl.mdl.Radio({label: 'Second', name: 'options'})"],
+              ]
+            });
+            layout.reflash({header: {title: 'Radio'}, content: doc});
+          }},
+          {label: 'Icon-Toggle', href:'#Icon-Toggle', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#toggles-section/icon-toggle',
+              examples: [
+                ["tmpl.mdl.IconToggle({icon: 'format_bold', checked: true})",
+                 "tmpl.mdl.IconToggle({icon: 'format_italic'})"],
+              ]
+            });
+            layout.reflash({header: {title: 'Icon-Toggle'}, content: doc});
+          }},
+          {label: 'Switch', href:'#Switch', event: function() {
+            var doc = tmpl.mdl.Doc({
+              link: 'https://getmdl.io/components/index.html#toggles-section/switch',
+              examples: [
+                ["tmpl.mdl.Switch({label: '', checked: true})",
+                 "tmpl.mdl.Switch({label: ''})"],
+              ]
+            });
+            layout.reflash({header: {title: 'Switch'}, content: doc});
           }},
           {label: 'Tables', href:'#Tables', event: function() {
             var doc = tmpl.mdl.Doc({

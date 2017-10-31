@@ -250,8 +250,8 @@
             $tmplElement.parentNode.replaceChild(docFragment, $tmplElement);
             childElement.forEach(function(child) {
               if (child && (child.tmplScope || child).afterAppendTo) setTimeout(function() {
-                  (child.tmplScope || child).afterAppendTo();
-                });
+                (child.tmplScope || child).afterAppendTo();
+              });
             });
 
           } else if (typeof childElement === 'string' || typeof childElement === 'number') {

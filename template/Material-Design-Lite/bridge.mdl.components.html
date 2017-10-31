@@ -20,6 +20,7 @@
 
 <template id="mdl-Button">
   ##
+  var idProp = data.id ? 'id="' + data.id + '"' : null;
   var href = data.href;
   var type = href ? 'a' : 'button';
   var options = data.options;
@@ -29,7 +30,7 @@
   var event = data.event;
   var disabled = data.disabled;
   ##
-  &lt;##=type## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
+  &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
     ##if (icon) {##<i class="material-icons">##=icon##</i>##}##
     ##%label##
   &lt;/##=type##&gt;
@@ -494,22 +495,20 @@
   ##
   var _id = data.id || tmplScope._id;
   var options = data.options;
+  var items = data.items || [];
+  var button = tmpl.mdl.Button(data.button || {icon: data.icon || 'more_vert', event: data.event, id: _id, options: ['icon']});
   ##
-  <div>
-    <button id="##=_id##" class="mdl-button mdl-js-button mdl-button--icon" data-bridge-var="##:button##">
-      <i class="material-icons">more_vert</i>
-    </button>    
-  
+  <div class="##=data.class##">
+    ##%button##
     <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect ##=MDL.options('mdl-menu--', options)##" for="##=_id##" data-bridge-var="##:ul##">
-      <li class="mdl-menu__item">Some Action</li>
-      <li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>
-      <li disabled class="mdl-menu__item">Disabled Action</li>
-      <li class="mdl-menu__item">Yet Another Action</li>
+      ##items.forEach(function(item) {##
+      &lt;li class="mdl-menu__item ##=MDL.options('mdl-menu__item--', item.options)##" data-bridge-event="##:item.event##" ##=item.disabled ? 'disabled' : ''##&gt;##%item.label || item##</li>
+      ##});##
     </ul>
   </div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(button);
+    componentHandler.upgradeElement(button.element);
     componentHandler.upgradeElement(ul);
   }
   ##

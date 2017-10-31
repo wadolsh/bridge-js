@@ -22,20 +22,20 @@
       ##}##
       </div>
     </template>
-    <template id="mdl-Doc">
-      <style id="style-mdl-Doc">
-        .mdl-Doc {
+    <template id="mdldoc-Doc">
+      <style id="style-mdldoc-Doc">
+        .mdldoc-Doc {
           padding: 20px;
         }
-        .mdl-Doc .mdl-card {
+        .mdldoc-Doc .mdl-card {
           margin-top: 20px;
           width: 100%;
           min-height: 100px;
         }
-        .mdl-Doc>.mdl-card > .mdl-card__title {
+        .mdldoc-Doc>.mdl-card > .mdl-card__title {
           background-color: #fafafa;
         }
-        .mdl-Doc .mdl-card__title-text > * {
+        .mdldoc-Doc .mdl-card__title-text > * {
           margin: 20px;
         }
 
@@ -44,7 +44,7 @@
       var examples = data.examples || [];
       var link = data.link;
       ##
-      <div class="mdl-Doc ##=data.class##">
+      <div class="mdldoc-Doc ##=data.class##">
         <a href="##=link##" target="_blank">##=link##</a>
         ##
         examples.forEach(function(e1) {
@@ -72,6 +72,16 @@
         ##})##
       </div>
     </template>
+
+    <template id="mdldoc-Menu-Container">
+      <div class="##=data.class##">
+        <div class="container mdl-shadow--2dp">
+          ##if (data.top) {##<div class="bar">##%data.top##</div>##}##
+          <div class="background"></div>
+          ##if (data.bottom) {##<div class="bar">##%data.bottom##</div>##}##
+        </div>
+      </div>
+    </template>
   </body>
   <script type="text/javascript">
     var data = {
@@ -84,7 +94,7 @@
       drawer: {
         navigation: [
           {label: 'Badges', href:'#Badges', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#badges-section',
               examples: [
                 ["tmpl.mdl.Badge({badge: 1, icon: 'account_box', options: ['overlap']})",
@@ -97,7 +107,7 @@
             layout.reflashTitle('Badges');
           }},
           {label: 'Buttons', href:'#Buttons', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#buttons-section',
               examples: [
                 ["tmpl.mdl.Button({icon: 'add', options: ['colored', 'fab']})",
@@ -133,7 +143,7 @@
             layout.reflashTitle('Buttons');
           }},
           {label: 'Cards', href:'#Cards', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#cards-section',
               examples: [
                 [{style: 
@@ -150,16 +160,17 @@
 }
                   `,
                   element: 
-`tmpl.mdl.Card({class: 'demo-card-wide',
-              shadow: 2,
-              title: 'Welcome',
-              supportingText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-                               + 'Mauris sagittis pellentesque lacus eleifend lacinia...',
-              actions: {
-                options: ['border'],
-                items: [{href: '#', label: 'Get Started', ripple: true, options: ['colored']}]},
-              menu: {items: [{icon: 'share'}]}
-            })`
+`tmpl.mdl.Card({
+    class: 'demo-card-wide',
+    shadow: 2,
+    title: 'Welcome',
+    supportingText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                     + 'Mauris sagittis pellentesque lacus eleifend lacinia...',
+    actions: {
+      options: ['border'],
+      items: [{href: '#', label: 'Get Started', ripple: true, options: ['colored']}]},
+    menu: {items: [{icon: 'share'}]}
+})`
                 }],
 
                 [{style: 
@@ -174,14 +185,17 @@
 }
                   `,
                   element: 
-`tmpl.mdl.Card({class: 'demo-card-square',
-              shadow: 2,
-              title: {content: 'Update', options: ['expand']},
-              supportingText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-                               + 'Aenan convallis.',
-              actions: {
-                options: ['border'],
-                items: [{href: '#', label: 'View Updates', ripple: true, options: ['colored']}]} })`
+`tmpl.mdl.Card({
+    class: 'demo-card-square',
+    shadow: 2,
+    title: {content: 'Update', options: ['expand']},
+    supportingText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                     + 'Aenan convallis.',
+    actions: {
+      options: ['border'],
+      items: [{href: '#', label: 'View Updates', ripple: true, options: ['colored']}]
+    }
+})`
                 }],
 
                 [{style: 
@@ -201,12 +215,15 @@
   font-weight: 500;
 }`              
                 , element: 
-`tmpl.mdl.Card({class: 'demo-card-image',
-              shadow: 2,
-              title: {options: ['expand']},
-              actions: {
-                options: ['border'],
-                items: ['<span class="demo-card-image__filename">Image.jpg</span>']} })`
+`tmpl.mdl.Card({
+    class: 'demo-card-image',
+    shadow: 2,
+    title: {options: ['expand']},
+    actions: {
+      options: ['border'],
+      items: ['<span class="demo-card-image__filename">Image.jpg</span>']
+    }
+})`
                   },
                   {style: 
 `.demo-card-event.mdl-card {
@@ -237,19 +254,24 @@
   color: #fff;
 }`
                   , element: 
-`tmpl.mdl.Card({class: 'demo-card-event',
-              shadow: 2,
-              title: {type: 'h4',
-                      class: '',
-                      options: ['expand'],
-                      content: '<>Featured event:<br>May 24, 2016<br>7-11pm'},
-              actions: {
-                options: ['border'],
-                items: [
-                  {href: '#', label: 'Add to Calendar', ripple: true, options: ['colored']},
-                  '<div class="mdl-layout-spacer"></div>',
-                  '<i class="material-icons">event</i>'
-                ]} })`
+`tmpl.mdl.Card({
+    class: 'demo-card-event',
+    shadow: 2,
+    title: {
+      type: 'h4',
+      class: '',
+      options: ['expand'],
+      content: '<>Featured event:<br>May 24, 2016<br>7-11pm'
+    },
+    actions: {
+      options: ['border'],
+      items: [
+        {href: '#', label: 'Add to Calendar', ripple: true, options: ['colored']},
+        '<div class="mdl-layout-spacer"></div>',
+        '<i class="material-icons">event</i>'
+      ]
+    }
+})`
                   }],
               ]
             });
@@ -257,7 +279,7 @@
             layout.reflashTitle('Cards');
           }},
           {label: 'Chips', href:'#Chips', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#chips-section',
               examples: [
                 ["tmpl.mdl.Chip({label: 'Basic Chip'})",
@@ -273,15 +295,17 @@
             
           }},
           {label: 'Dialogs', href:'#Dialogs', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#dialog-section',
               examples: [
                 [{code: 
-`var dialog = tmpl.mdl.Dialog({title: 'Allow data collection?',
-                            content: '<p>Allowing us to collect data will let us get you the information you want faster.</p>',
-                            actions: {
-                              agree: {label: 'Agree'}
-                            }});
+`var dialog = tmpl.mdl.Dialog({
+    title: 'Allow data collection?',
+    content: '<p>Allowing us to collect data will let us get you the information you want faster.</p>',
+    actions: {
+      agree: {label: 'Agree'}
+    }
+});
 document.body.appendChild(dialog.element);`,
                   element: 
 `tmpl.mdl.Button({label: 'Show Dialog', options: ['raised'], event: function() {
@@ -289,12 +313,14 @@ document.body.appendChild(dialog.element);`,
 }});`,
                 }],
                 [{code: 
-`var dialog = tmpl.mdl.Dialog({title: 'Allow data collection?',
-                            content: '<p>Allow this site to collect usage data to improve your experience?</p>',
-                            actions: {
-                              options: ['full-width'],
-                              agree: {label: 'Agree'}
-                            }});
+`var dialog = tmpl.mdl.Dialog({
+    title: 'Allow data collection?',
+    content: '<p>Allow this site to collect usage data to improve your experience?</p>',
+    actions: {
+      options: ['full-width'],
+      agree: {label: 'Agree'}
+    }
+});
 document.body.appendChild(dialog.element);`,
                   element: 
 `tmpl.mdl.Button({label: 'Show Dialog', options: ['raised'], event: function() {
@@ -308,7 +334,7 @@ document.body.appendChild(dialog.element);`,
             
           }},
           {label: 'Layout', href:'#Layout', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section',
               class: 'demo-layout__transparent',
               examples: [
@@ -345,84 +371,91 @@ document.body.appendChild(dialog.element);`,
   color: white;
 }`
                 , element: 
-`tmpl.mdl.Layout({class: 'demo-layout-transparent',
-                //content: ' ',
-                header: {
-                  options: ['transparent'],
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                drawer: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                }});`
+`tmpl.mdl.Layout({
+    class: 'demo-layout-transparent',
+    header: {
+      options: ['transparent'],
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    drawer: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    }
+});`
                 }],
                 [
-`tmpl.mdl.Layout({options: ['fixed-drawer'],
-                drawer: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                content: ' '});`
+`tmpl.mdl.Layout({
+    options: ['fixed-drawer'],
+    drawer: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    content: ' '
+});`
                 ],
                 [
-`tmpl.mdl.Layout({options: ['fixed-header'],
-                header: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                drawer: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                content: ' '});`
+`tmpl.mdl.Layout({
+    options: ['fixed-header'],
+    header: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    drawer: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    content: ' '
+});`
                 ],
                 [
-`tmpl.mdl.Layout({options: ['fixed-drawer', 'fixed-header'],
-                header: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                drawer: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                content: ' '});`
+`tmpl.mdl.Layout({
+    options: ['fixed-drawer', 'fixed-header'],
+    header: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    drawer: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    content: ' '
+});`
                 ],
                 [{style: 
 `.demo-layout__scrolling-header .page-content {
@@ -431,27 +464,29 @@ document.body.appendChild(dialog.element);`,
 }
                   `,
                   element: 
-`tmpl.mdl.Layout({class: 'demo-layout__scrolling-header',
-                header: {
-                  title: 'Title',
-                  options: ['scroll'],
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                drawer: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                content: ' '});`
+`tmpl.mdl.Layout({
+    class: 'demo-layout__scrolling-header',
+    header: {
+      title: 'Title',
+      options: ['scroll'],
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    drawer: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    content: ' '
+});`
                 }],
                 [{style: 
 `.demo-layout-waterfall .mdl-layout__header-row .mdl-navigation__link:last-of-type  {
@@ -463,65 +498,71 @@ document.body.appendChild(dialog.element);`,
 }
                   `,
                   element: 
-`tmpl.mdl.Layout({class: 'demo-layout-waterfall',
-                header: {
-                  options: ['waterfall'],
-                  items: [
-                    {title: 'Title'},
-                    {navigation: [
-                        {label: 'Link'},
-                        {label: 'Link'},
-                        {label: 'Link'},
-                        {label: 'Link'}
-                      ]
-                    }
-                ]},
-                drawer: {
-                  title: 'Title',
-                  navigation: [
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'},
-                    {label: 'Link'}
-                  ]
-                },
-                content: ' '});`
+`tmpl.mdl.Layout({
+    class: 'demo-layout-waterfall',
+    header: {
+      options: ['waterfall'],
+      items: [
+        {title: 'Title'},
+        {navigation: [
+            {label: 'Link'},
+            {label: 'Link'},
+            {label: 'Link'},
+            {label: 'Link'}
+          ]
+        }
+    ]},
+    drawer: {
+      title: 'Title',
+      navigation: [
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'},
+        {label: 'Link'}
+      ]
+    },
+    content: ' '
+});`
                 }],
                 [{element: 
-`tmpl.mdl.Layout({class: '',
-                options: ['fixed-header'],
-                header: {
-                  items: [
-                    {title: 'Title'}
-                ]},
-                tabs: [
-                  {label: 'Tab 1', id: 'scroll-tab-1', content: 'tab 1', active: true},
-                  {label: 'Tab 2', id: 'scroll-tab-2', content: 'tab 2'},
-                  {label: 'Tab 3', id: 'scroll-tab-3', content: 'tab 3'},
-                  {label: 'Tab 4', id: 'scroll-tab-4', content: 'tab 4'},
-                  {label: 'Tab 5', id: 'scroll-tab-5', content: 'tab 5'},
-                  {label: 'Tab 6', id: 'scroll-tab-6', content: 'tab 6'}
-                ],
-                drawer: {
-                  title: 'Title'
-                }});`
+`tmpl.mdl.Layout({
+    class: '',
+    options: ['fixed-header'],
+    header: {
+      items: [
+        {title: 'Title'}
+    ]},
+    tabs: [
+      {label: 'Tab 1', id: 'scroll-tab-1', content: 'tab 1', active: true},
+      {label: 'Tab 2', id: 'scroll-tab-2', content: 'tab 2'},
+      {label: 'Tab 3', id: 'scroll-tab-3', content: 'tab 3'},
+      {label: 'Tab 4', id: 'scroll-tab-4', content: 'tab 4'},
+      {label: 'Tab 5', id: 'scroll-tab-5', content: 'tab 5'},
+      {label: 'Tab 6', id: 'scroll-tab-6', content: 'tab 6'}
+    ],
+    drawer: {
+      title: 'Title'
+    }
+});`
                 }],
                 [{element: 
-`tmpl.mdl.Layout({class: '',
-                options: ['fixed-header', 'fixed-tabs'],
-                header: {
-                  items: [
-                    {title: 'Title'}
-                ]},
-                tabs: [
-                  {label: 'Tab 1', id: 'scroll-tab-1', content: 'tab 1', active: true},
-                  {label: 'Tab 2', id: 'scroll-tab-2', content: 'tab 2'},
-                  {label: 'Tab 3', id: 'scroll-tab-3', content: 'tab 3'}
-                ],
-                drawer: {
-                  title: 'Title'
-                }});
-                `}]
+`tmpl.mdl.Layout({
+    class: '',
+    options: ['fixed-header', 'fixed-tabs'],
+    header: {
+      items: [
+        {title: 'Title'}
+    ]},
+    tabs: [
+      {label: 'Tab 1', id: 'scroll-tab-1', content: 'tab 1', active: true},
+      {label: 'Tab 2', id: 'scroll-tab-2', content: 'tab 2'},
+      {label: 'Tab 3', id: 'scroll-tab-3', content: 'tab 3'}
+    ],
+    drawer: {
+      title: 'Title'
+    }
+});`
+                }]
               ]
             });
             layout.reflashContent(doc.element);
@@ -529,7 +570,7 @@ document.body.appendChild(dialog.element);`,
             
           }},
           {label: 'Tabs', href:'#Tabs', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section/tabs',
               examples: [
                 ["tmpl.mdl.Tabs({})"],
@@ -540,7 +581,7 @@ document.body.appendChild(dialog.element);`,
             layout.reflashTitle('Tabs');
           }},
           {label: 'Mega-Footer', href:'#Mega-Footer', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section/footer',
               examples: [
                 ["tmpl.mdl.MegaFooter({})"],
@@ -550,7 +591,7 @@ document.body.appendChild(dialog.element);`,
             layout.reflashTitle('Mega-Footer');
           }},
           {label: 'Mini-Footer', href:'#Mini-Footer', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section/footer',
               examples: [
                 ["tmpl.mdl.MiniFooter({})"],
@@ -562,7 +603,7 @@ document.body.appendChild(dialog.element);`,
           
           
           {label: 'Lists', href:'#Lists', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#lists-section',
               examples: [
                 [{style: 
@@ -576,10 +617,14 @@ document.body.appendChild(dialog.element);`,
   width: 300px;
 }`
                 , element: 
-`tmpl.mdl.List({class: 'demo-list-icon',
-              items: [{title: 'Bryan Cranston', icon:'person'}, 
-                      {title: 'Aaron Paul', icon:'person'}, 
-                      {title: 'Bob Odenkirk', icon:'person'}]})`
+`tmpl.mdl.List({
+    class: 'demo-list-icon',
+    items: [
+      {title: 'Bryan Cranston', icon:'person'}, 
+      {title: 'Aaron Paul', icon:'person'}, 
+      {title: 'Bob Odenkirk', icon:'person'}
+    ]
+})`
                   
                 }],                
                 [{style: 
@@ -587,11 +632,15 @@ document.body.appendChild(dialog.element);`,
   width: 300px;
 }`
                 , element: 
-`tmpl.mdl.List({class: 'demo-list-action',
-              iconStyle: 'avatar',
-              items: [{title: 'Bryan Cranston', icon:'person', action: {icon: 'star'}}, 
-                      {title: 'Aaron Paul', icon:'person', action: {icon: 'star'}}, 
-                      {title: 'Bob Odenkirk', icon:'person', action: {icon: 'star'}}]})`
+`tmpl.mdl.List({
+    class: 'demo-list-action',
+    iconStyle: 'avatar',
+    items: [
+      {title: 'Bryan Cranston', icon:'person', action: {icon: 'star'}}, 
+      {title: 'Aaron Paul', icon:'person', action: {icon: 'star'}}, 
+      {title: 'Bob Odenkirk', icon:'person', action: {icon: 'star'}}
+    ]
+})`
                 }],                
                 [{style: 
 `.demo-list-control {
@@ -602,44 +651,56 @@ document.body.appendChild(dialog.element);`,
   display: inline;
 }`
                 , element: 
-`tmpl.mdl.List({class: 'demo-list-control',
-              iconStyle: 'avatar',
-              items: [{title: 'Bryan Cranston', icon:'person', action: {icon: 'star'}}, 
-                      {title: 'Aaron Paul', icon:'person', action: {icon: 'star'}}, 
-                      {title: 'Bob Odenkirk', icon:'person', action: {icon: 'star'}}]})`
+`tmpl.mdl.List({
+    class: 'demo-list-control',
+    iconStyle: 'avatar',
+    items: [
+      {title: 'Bryan Cranston', icon:'person', action: {icon: 'star'}}, 
+      {title: 'Aaron Paul', icon:'person', action: {icon: 'star'}}, 
+      {title: 'Bob Odenkirk', icon:'person', action: {icon: 'star'}}
+    ]
+})`
                 }],                
                 [{style: 
 `.demo-list-two {
   width: 300px;
 }`
                 , element: 
-`tmpl.mdl.List({class: 'demo-list-two',
-              iconStyle: 'avatar',
-              lineCount: 2,
-              items: [{title: 'Bryan Cranston', icon:'person', body: '62 Episodes', action: {icon: 'star', info: 'Actor'}}, 
-                      {title: 'Aaron Paul', icon:'person', body: '62 Episodes', action: {icon: 'star'}}, 
-                      {title: 'Bob Odenkirk', icon:'person', body: '62 Episodes', action: {icon: 'star'}}]})`
+`tmpl.mdl.List({
+    class: 'demo-list-two',
+    iconStyle: 'avatar',
+    lineCount: 2,
+    items: [
+      {title: 'Bryan Cranston', icon:'person', body: '62 Episodes', action: {icon: 'star', info: 'Actor'}}, 
+      {title: 'Aaron Paul', icon:'person', body: '62 Episodes', action: {icon: 'star'}}, 
+      {title: 'Bob Odenkirk', icon:'person', body: '62 Episodes', action: {icon: 'star'}}
+    ]
+})`
                 }],                
                 [{style: 
 `.demo-list-three {
   width: 650px;
 }`
                 , element: 
-`tmpl.mdl.List({class: 'demo-list-three',
-              iconStyle: 'avatar',
-              lineCount: 3,
-              items: [{title: 'Bryan Cranston', icon:'person', 
-                        body: \`Bryan Cranston played the role of Walter in Breaking Bad. He is also known
-                              for playing Hal in Malcom in the Middle.\`,
-                        action: {icon: 'star', info: 'Actor'}}, 
-                      {title: 'Aaron Paul', icon:'person', 
-                        body: \`Aaron Paul played the role of Jesse in Breaking Bad. He also featured in
-                              the "Need For Speed" Movie.\`,
-                        action: {icon: 'star'}}, 
-                      {title: 'Bob Odenkirk', icon:'person',
-                        body: \`Bob Odinkrik played the role of Saul in Breaking Bad. Due to public fondness for the
-                              character, Bob stars in his own show now, called "Better Call Saul".\`,
-                        action: {icon: 'star'}}]})`
+`tmpl.mdl.List({
+  class: 'demo-list-three',
+  iconStyle: 'avatar',
+  lineCount: 3,
+  items: [
+    {title: 'Bryan Cranston', icon:'person', 
+      body: \`Bryan Cranston played the role of Walter in Breaking Bad. He is also known
+              for playing Hal in Malcom in the Middle.\`,
+      action: {icon: 'star', info: 'Actor'}}, 
+    {title: 'Aaron Paul', icon:'person', 
+      body: \`Aaron Paul played the role of Jesse in Breaking Bad. He also featured in
+              the "Need For Speed" Movie.\`,
+      action: {icon: 'star'}}, 
+    {title: 'Bob Odenkirk', icon:'person',
+      body: \`Bob Odinkrik played the role of Saul in Breaking Bad. Due to public fondness for the
+              character, Bob stars in his own show now, called "Better Call Saul".\`,
+      action: {icon: 'star'}}
+  ]
+})`
                 }],
               ]
             });
@@ -647,14 +708,14 @@ document.body.appendChild(dialog.element);`,
             layout.reflashTitle('Lists');
           }},
           {label: 'Progress', href:'#Progress', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#loading-section/progress',
               examples: [
                 [{code: 
 `var progress = tmpl.mdl.Progress({style: 'width:250px;'});
 setTimeout(function() {
   progress.setProgress(44);
-}, 0);`,
+}, 100);`,
                  element: "progress"}],
 
                 ["tmpl.mdl.Progress({options: ['indeterminate']})"],
@@ -664,7 +725,7 @@ setTimeout(function() {
 setTimeout(function() {
   progress.setProgress(33);
   progress.setBuffer(87);
-}, 0);`,
+}, 100);`,
                  element: "progress"}],
               ]
             });
@@ -672,7 +733,7 @@ setTimeout(function() {
             layout.reflashTitle('Progress');
           }},
           {label: 'Spinner', href:'#Spinner', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#loading-section/spinner',
               examples: [
                 ["tmpl.mdl.Spinner({})",
@@ -691,18 +752,181 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Spinner');
           }},
           {label: 'Menus', href:'#Menus', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#menus-section',
               examples: [
-                ["tmpl.mdl.Menu({id: 'demo-menu-lower-left', options: ['bottom-left']})"],
-                ["tmpl.mdl.Menu({id: 'demo-menu-lower-right', options: ['bottom-right']})"],
+                [{style:
+`
+.demo-menu.demo-menu__lower-left .container {
+  /*position: relative;*/
+  width: 200px;
+}
+.demo-menu.demo-menu__lower-left .background {
+  background: white;
+  height: 148px;
+  width: 100%;
+}
+.demo-menu.demo-menu__lower-left .bar {
+  box-sizing: border-box;
+  background: #3F51B5;
+  color: white;
+  width: 100%;
+  padding: 16px;
+}
+`
+                , element: 
+`tmpl.mdldoc.MenuContainer({
+    class: 'demo-menu demo-menu__lower-left',
+    top: 
+      tmpl.mdl.Menu({
+          id: 'demo-menu-lower-left',
+          options: ['bottom-left'],
+          items: [
+            'Some Action',
+            {label: 'Another Action', options: ['full-bleed-divider']},
+            {label: 'Disabled Action', disabled: true},
+            {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+              alert('event!');
+            }}
+          ]
+      })
+})`
+                }],
+                [{style: 
+`
+.demo-menu.demo-menu__lower-right .container {
+  /*position: relative;*/
+  width: 200px;
+}
+.demo-menu.demo-menu__lower-right .background {
+  background: white;
+  height: 148px;
+  width: 100%;
+}
+.demo-menu.demo-menu__lower-right .bar {
+  box-sizing: border-box;
+  position: relative;
+  background: #3F51B5;
+  color: white;
+  height: 64px;
+  width: 100%;
+  padding: 16px;
+}
+.demo-menu.demo-menu__lower-right .wrapper {
+  box-sizing: border-box;
+  position: absolute;
+  right: 16px;
+}
+`
+                , element: 
+`tmpl.mdldoc.MenuContainer({
+    class: 'demo-menu demo-menu__lower-right',
+    top: 
+      tmpl.mdl.Menu({
+          class: 'wrapper',
+          id: 'demo-menu-lower-right',
+          options: ['bottom-right'],
+          items: [
+            'Some Action',
+            {label: 'Another Action'},
+            {label: 'Disabled Action', disabled: true},
+            {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+              alert('event!');
+            }}
+          ]
+      })
+})`
+                }],
+                [{style: 
+`
+.demo-menu.demo-menu__top-left .container {
+  position: relative;
+  width: 200px;
+}
+.demo-menu.demo-menu__top-left .background {
+  background: white;
+  height: 148px;
+  width: 100%;
+}
+.demo-menu.demo-menu__top-left .bar {
+  box-sizing: border-box;
+  background: #3F51B5;
+  color: white;
+  width: 100%;
+  padding: 16px;
+}
+`
+                , element: 
+`tmpl.mdldoc.MenuContainer({
+    class: 'demo-menu demo-menu__top-left',
+    bottom: 
+      tmpl.mdl.Menu({
+          class: 'wrapper',
+          id: 'demo-menu-top-left',
+          options: ['top-left'],
+          items: [
+            'Some Action',
+            {label: 'Another Action'},
+            {label: 'Disabled Action', disabled: true},
+            {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+              alert('event!');
+            }}
+          ]
+      })
+})`
+                }],
+                [{style: 
+`
+.demo-menu.demo-menu__top-right .container {
+  position: relative;
+  width: 200px;
+}
+.demo-menu.demo-menu__top-right .background {
+  background: white;
+  height: 148px;
+  width: 100%;
+}
+.demo-menu.demo-menu__top-right .bar {
+  box-sizing: border-box;
+  position: relative;
+  background: #3F51B5;
+  color: white;
+  height: 64px;
+  width: 100%;
+  padding: 16px;
+}
+.demo-menu.demo-menu__top-right .wrapper {
+  box-sizing: border-box;
+  position: absolute;
+  right: 16px;
+}
+`
+                , element: 
+`tmpl.mdldoc.MenuContainer({
+    class: 'demo-menu demo-menu__lower-right',
+    bottom: 
+      tmpl.mdl.Menu({
+          class: 'wrapper',
+          id: 'demo-menu-top-right',
+          options: ['top-right'],
+          items: [
+            'Some Action',
+            {label: 'Another Action'},
+            {label: 'Disabled Action', disabled: true},
+            {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+              alert('event!');
+            }}
+          ]
+      })
+})`
+                }]
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Menus');
           }},
           {label: 'Sliders', href:'#Sliders', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#sliders-section',
               examples: [
                 [],
@@ -713,7 +937,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Sliders');
           }},
           {label: 'Snackbar', href:'#Snackbar', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#snackbar-section',
               examples: [
                 [],
@@ -724,7 +948,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Snackbar');
           }},
           {label: 'Checkbox', href:'#Checkbox', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/checkbox',
               examples: [
                 ["tmpl.mdl.Checkbox({label: 'Checkbox', checked: true})",
@@ -735,7 +959,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Checkbox');
           }},
           {label: 'Radio', href:'#Radio', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/radio',
               examples: [
                 ["tmpl.mdl.Radio({label: 'First', name: 'options', checked: true})",
@@ -746,7 +970,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Radio');
           }},
           {label: 'Icon-Toggle', href:'#Icon-Toggle', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/icon-toggle',
               examples: [
                 ["tmpl.mdl.IconToggle({icon: 'format_bold', checked: true})",
@@ -757,7 +981,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Icon-Toggle');
           }},
           {label: 'Switch', href:'#Switch', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/switch',
               examples: [
                 ["tmpl.mdl.Switch({label: '', checked: true})",
@@ -768,7 +992,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Switch');
           }},
           {label: 'Tables', href:'#Tables', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#tables-section',
               examples: [
                 [
@@ -809,7 +1033,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Tables');
           }},
           {label: 'Text-Fields', href:'#Text-Fields', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#textfields-section',
               examples: [
                 ["tmpl.mdl.TextField({label: 'Text...'})",
@@ -826,7 +1050,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             layout.reflashTitle('Text-Fields');
           }},
           {label: 'Tooltips', href:'#Tooltips', event: function() {
-            var doc = tmpl.mdl.Doc({
+            var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#tooltips-section',
               examples: [
                 ["tmpl.mdl.Tooltip({})"],

@@ -168,15 +168,24 @@
   //var items = data.items || [];
   
   var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
+  
+  tmplScope.reflashContent = function(element) {
+    while (contentArea.firstChild) contentArea.removeChild(contentArea.firstChild);
+    contentArea.appendChild(element);
+  }
   ##
   <!-- Always shows a header, even in smaller screens. -->
   <div class="mdl-layout mdl-js-layout ##=MDL.options('mdl-layout--', options)## ##=data.class##">
     ##if (header) {##
     <header class="mdl-layout__header ##=MDL.options('mdl-layout__header--', header.options)##">
-      ##(header.items ? header.items : [header]).forEach(function(h) {##
+      ##(header.items ? header.items : [header]).forEach(function(h) {
+      tmplScope.reflashTitle = function(title) {
+        if (titleArea) titleArea.innerHTML = title;
+      }
+      ##
       <div class="mdl-layout__header-row">
         <!-- Title -->
-        ##if (h.title) {##<span class="mdl-layout-title">##%(h.title)##</span>##}##
+        ##if (h.title) {##<span class="mdl-layout-title" data-bridge-var="##:titleArea##">##%(h.title)##</span>##}##
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
@@ -202,7 +211,7 @@
     </div>
     ##}##
     <main class="mdl-layout__content">
-      ##if (content) {##<div class="page-content">##%content##</div>##}##
+      <div class="page-content" data-bridge-var="##:contentArea##">##%content##</div>
       ##if(tabs) {##
       ##(tabs).forEach(function(tab) {##
       <section class="mdl-layout__tab-panel ##=MDL.is(tab.active, 'is-active')##" id="##=tab.id##">
@@ -441,10 +450,69 @@
   ##
 </template>
 
-<template id="mdl-Loading">
+<template id="mdl-Progress">
+  ##
+  var options = data.options;
+  var styleProp = data.style ? 'style="' + data.style + '"' : '';
+  
+  tmplScope.setProgress = function(val) {
+    tmplScope.element.MaterialProgress.setProgress(val);
+  }
+  tmplScope.setBuffer = function(val) {
+    tmplScope.element.MaterialProgress.setBuffer(val);
+  }
+  ##
+  &lt;div class="mdl-progress mdl-js-progress ##=MDL.options('mdl-progress--', options)## ##=data.class##" ##=styleProp##&gt;</div>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
+</template>
+
+<template id="mdl-Spinner">
+  ##
+  var options = data.options;
+  var active = data.active == undefined ? true : data.active;
+  
+  tmplScope.active = function() {
+    return tmplScope.element.classList.contains('is-active');
+  }
+  tmplScope.setActive = function(val) {
+    tmplScope.element.classList[val ? 'add' : 'remove']('is-active');
+  }
+  ##
+  <div class="mdl-spinner mdl-js-spinner ##=MDL.options('mdl-spinner--', options)## ##=MDL.is(active, 'is-active')## ##=data.class##"></div>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 <template id="mdl-Menu">
+  ##
+  var _id = data.id || tmplScope._id;
+  var options = data.options;
+  ##
+  <div>
+    <button id="##=_id##" class="mdl-button mdl-js-button mdl-button--icon" data-bridge-var="##:button##">
+      <i class="material-icons">more_vert</i>
+    </button>    
+  
+    <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect ##=MDL.options('mdl-menu--', options)##" for="##=_id##" data-bridge-var="##:ul##">
+      <li class="mdl-menu__item">Some Action</li>
+      <li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>
+      <li disabled class="mdl-menu__item">Disabled Action</li>
+      <li class="mdl-menu__item">Yet Another Action</li>
+    </ul>
+  </div>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(button);
+    componentHandler.upgradeElement(ul);
+  }
+  ##
 </template>
 
 <template id="mdl-Slider">

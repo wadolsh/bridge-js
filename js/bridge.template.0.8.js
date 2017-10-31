@@ -249,7 +249,9 @@
 
             $tmplElement.parentNode.replaceChild(docFragment, $tmplElement);
             childElement.forEach(function(child) {
-              if (child && (child.tmplScope || child).afterAppendTo) (child.tmplScope || child).afterAppendTo();
+              if (child && (child.tmplScope || child).afterAppendTo) setTimeout(function() {
+                  (child.tmplScope || child).afterAppendTo();
+                });
             });
 
           } else if (typeof childElement === 'string' || typeof childElement === 'number') {
@@ -267,8 +269,9 @@
               var childScope = (childElement.tmplScope || childElement);
               if (childScope.beforeAppendTo) childScope.beforeAppendTo();
               var replacedNode = parentNode.replaceChild(childElement, $tmplElement);
-              setTimeout(function() {
-                if (childScope.afterAppendTo) childScope.afterAppendTo();
+              
+              if (childScope.afterAppendTo) setTimeout(function() {
+                childScope.afterAppendTo();
               });
               tmplScope.childScope.push(childElement.tmplScope);
               if (childElement.tmplScope) {

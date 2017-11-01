@@ -515,9 +515,48 @@
 </template>
 
 <template id="mdl-Slider">
+  ##
+  var min = data.min || 0;
+  var max = data.max || 100;
+  var value = data.value || 0;
+  var event = data.event;
+  
+  tmplScope.value = function(val) {
+    tmplScope.element.value = val;
+    return tmplScope.element.value;
+  }
+  tmplScope.min = function(val) {
+    tmplScope.element.min = val;
+    return tmplScope.element.min;
+  }
+  tmplScope.max = function(val) {
+    tmplScope.element.max = val;
+    return tmplScope.element.max;
+  }
+  ##
+  <input class="mdl-slider mdl-js-slider" type="range" min="##=min##" max="##=max##" value="##=value##" data-bridge-event="##:event##">
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 <template id="mdl-Snackbar">
+  ##
+  tmplScope.showSnackbar = function(obj) {
+    tmplScope.element.MaterialSnackbar.showSnackbar(obj);
+  }
+  ##
+  <div class="mdl-js-snackbar mdl-snackbar">
+    <div class="mdl-snackbar__text"></div>
+    <button class="mdl-snackbar__action" type="button"></button>
+  </div>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 
@@ -663,7 +702,17 @@
 </template>
 
 <template id="mdl-Tooltip">
-
+  ##
+  var options = data.options;
+  var forProp = data.for;
+  var content = data.content;
+  ##
+  <div class="mdl-tooltip ##=MDL.options('mdl-tooltip--', options)##" for="##=forProp##">##%content##</div>
+  ##
+  tmplScope.afterAppendTo = function() {
+    componentHandler.upgradeElement(tmplScope.element);
+  }
+  ##
 </template>
 
 </body>

@@ -13,8 +13,11 @@
       <link rel="import" href="bridge.mdl.components.html">
   </head>
   <body>
-    <template id="brui-Div">
-      &lt;div  ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"&gt;
+    <template id="mdldoc-Div">
+      ##
+      var _id = data.id || tmplScope._id;
+      ##
+      &lt;div id="##=_id##" ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"&gt;
       ##if (typeof data.content === 'string') {## 
         ##=data.content##
       ##} else {##
@@ -31,12 +34,14 @@
           margin-top: 20px;
           width: 100%;
           min-height: 100px;
+          position: initial;
         }
         .mdldoc-Doc>.mdl-card > .mdl-card__title {
           background-color: #fafafa;
         }
-        .mdldoc-Doc .mdl-card__title-text > * {
-          margin: 20px;
+        
+        .mdldoc-Doc:not(.Snackbar, .Tooltips) .mdl-card__title-text > * {
+          margin: 60px;
         }
 
       </style>
@@ -53,20 +58,20 @@
           e1.forEach(function(e2) {
             funcs = funcs.concat(new Function((e2.code || '') + '; return ' + (e2.element || e2) + ';')());
             if (e2.style) {
-              funcStrings.push(tmpl.brui.Div({content: '<pre><code>' + e2.style + '</code></pre>'}));
+              funcStrings.push(tmpl.mdldoc.Div({content: '<pre><code>' + e2.style + '</code></pre>'}));
           ##
           <style>
           ##=e2.style##
           </style>
           ##
             }
-            if (e2.code) funcStrings.push(tmpl.brui.Div({content: '<pre>' + (e2.code) + '</pre>'}));
-            funcStrings.push(tmpl.brui.Div({content: '<pre>' + (e2.element || e2) + '</pre>'}));
+            if (e2.code) funcStrings.push(tmpl.mdldoc.Div({content: '<pre>' + (e2.code) + '</pre>'}));
+            funcStrings.push(tmpl.mdldoc.Div({content: '<pre>' + (e2.element || e2) + '</pre>'}));
           })##
           
           ##%tmpl.mdl.Card({
             shadow: 2,
-            title: {content: funcs, options: ['border']},
+            title: {type:'div', content: funcs, options: ['border']},
             supportingText: funcStrings,
           })##
         ##})##
@@ -758,7 +763,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
                 [{style:
 `
 .demo-menu.demo-menu__lower-left .container {
-  /*position: relative;*/
+  position: relative;
   width: 200px;
 }
 .demo-menu.demo-menu__lower-left .background {
@@ -795,7 +800,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
                 [{style: 
 `
 .demo-menu.demo-menu__lower-right .container {
-  /*position: relative;*/
+  position: relative;
   width: 200px;
 }
 .demo-menu.demo-menu__lower-right .background {
@@ -929,8 +934,15 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#sliders-section',
               examples: [
-                [],
-                [],
+                ["tmpl.mdl.Slider({min: 0, max: 100, value: 0})",
+                 "tmpl.mdl.Slider({min: 0, max: 100, value: 25})"],
+                [{code: 
+`var slider = tmpl.mdl.Slider({min: 0, max: 100, value: 0});
+slider.min(10);
+slider.max(80);
+slider.value(20);
+`
+                  , element: "slider"}],
               ]
             });
             layout.reflashContent(doc.element);
@@ -938,10 +950,37 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
           }},
           {label: 'Snackbar', href:'#Snackbar', event: function() {
             var doc = tmpl.mdldoc.Doc({
+              class: 'Snackbar',
               link: 'https://getmdl.io/components/index.html#snackbar-section',
               examples: [
-                [],
-                [],
+                [{code: 
+`
+var snackbarContainer = tmpl.mdl.Snackbar({});
+var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], event: function() {
+  showSnackbarButton.element.style.backgroundColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+  var data = {
+    message: 'Button color changed.',
+    timeout: 2000,
+    actionHandler: function() {
+      alert('Undo!');
+    },
+    actionText: 'Undo'
+  };
+  snackbarContainer.showSnackbar(data);
+console.log('--');
+}});
+`
+                  , element: "[snackbarContainer, showSnackbarButton]"}],
+                [{code: 
+`
+var counter = 0;
+var snackbarContainer = tmpl.mdl.Snackbar({});
+var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], event: function() {
+  var data = {message: 'Example Message # ' + ++counter};
+  snackbarContainer.showSnackbar(data);
+}});
+`
+                  , element: "[snackbarContainer, showSnackbarButton]"}]
               ]
             });
             layout.reflashContent(doc.element);
@@ -1051,10 +1090,35 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
           }},
           {label: 'Tooltips', href:'#Tooltips', event: function() {
             var doc = tmpl.mdldoc.Doc({
+              class: 'Tooltips',
               link: 'https://getmdl.io/components/index.html#tooltips-section',
               examples: [
-                ["tmpl.mdl.Tooltip({})"],
-                [],
+                [{code:
+`
+var div = tmpl.mdldoc.Div({id: 'tt1', class: 'icon material-icons', content: 'add'});
+var tip = tmpl.mdl.Tooltip({for: 'tt1', content: 'Follow'});
+`
+                  , element: "[div, tip]"},
+                {code:
+`
+var div = tmpl.mdldoc.Div({id: 'tt2', class: 'icon material-icons', content: 'print'});
+var tip = tmpl.mdl.Tooltip({for: 'tt2', content: 'Print', options: ['large']});
+`
+                  , element: "[div, tip]"}
+                ],
+                [{code:
+`
+var div = tmpl.mdldoc.Div({id: 'tt3', class: 'icon material-icons', content: 'cloud_upload'});
+var tip = tmpl.mdl.Tooltip({for: 'tt3', content: '<>Upload <strong>file.zip</strong>'});
+`
+                  , element: "[div, tip]"},
+                {code:
+`
+var div = tmpl.mdldoc.Div({id: 'tt4', class: 'icon material-icons', content: 'share'});
+var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via social media'});
+`
+                  , element: "[div, tip]"}
+                ]
               ]
             });
             layout.reflashContent(doc.element);

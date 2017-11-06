@@ -224,7 +224,9 @@
   </div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    setTimeout(function() {
+      componentHandler.upgradeElement(tmplScope.element);
+    }, 1000);
   }
   ##
 </template>
@@ -253,18 +255,18 @@
 
 <template id="mdl-Tabs">
   ##
-  var tabs = data.tabs || [];
+  var items = data.items || [];
   var _id = tmplScope._id;
   var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
   ##
   <div class="mdl-tabs mdl-js-tabs ##=MDL.is(ripple, 'mdl-js-ripple-effect')## ##=data.class##">
     <div class="mdl-tabs__tab-bar">
-      ##tabs.forEach(function(tab, idx) {##
+      ##items.forEach(function(tab, idx) {##
       <a href="##='#' + (tab.id || _id + idx)##" class="mdl-tabs__tab ##=MDL.is(tab.active, 'is-active')##">##%tab.label##</a>
       ##})##
     </div>
-    ##tabs.forEach(function(tab, idx) {##
-    <div class="mdl-tabs__panel ##=MDL.is(tab.active, 'is-active')##" id="(tab.id || _id + idx)">
+    ##items.forEach(function(tab, idx) {##
+    <div class="mdl-tabs__panel ##=MDL.is(tab.active, 'is-active')##" id="##=(tab.id || _id + idx)##">
       ##%tab.content##
     </div>
     ##})##
@@ -285,6 +287,7 @@
   <footer class="mdl-mega-footer ##=data.class##">
     ##if (top) {##
     <div class="mdl-mega-footer__top-section">
+      ##%top.self##
       ##if (top.left) {##
       <div class="mdl-mega-footer__left-section">
         ##%top.left##
@@ -307,6 +310,7 @@
     ##}##
     ##if (middle) {##
     <div class="mdl-mega-footer__middle-section">
+      ##%middle.self##
       ##if (middle.left) {##
       <div class="mdl-mega-footer__left-section">
         ##%middle.left##
@@ -329,6 +333,7 @@
     ##}##
     ##if (bottom) {##
     <div class="mdl-mega-footer__bottom-section">
+      ##%bottom.self##
       ##if (bottom.left) {##
       <div class="mdl-mega-footer__left-section">
         ##%bottom.left##
@@ -359,10 +364,12 @@
 
 <template id="mdl-Mini-Footer">
   ##
+  var self = data.self;
   var left = data.left;
   var right = data.right;
   ##
   <footer class="mdl-mini-footer ##=data.class##">
+    ##%self##
     ##if (left) {##
     <div class="mdl-mini-footer__left-section">
       ##%left##
@@ -385,7 +392,7 @@
   <div class="mdl-logo ##=data.class##">##%data.label##</div>
 </template>
 
-<template id="mdl-Footer_Link-List">
+<template id="mdl-Footer-Link-List">
   ##
   var type = data.type;
   var items = data.items;
@@ -493,23 +500,18 @@
 
 <template id="mdl-Menu">
   ##
-  var _id = data.id || tmplScope._id;
+  var forValue = data.for;
   var options = data.options;
   var items = data.items || [];
-  var button = tmpl.mdl.Button(data.button || {icon: data.icon || 'more_vert', event: data.event, id: _id, options: ['icon']});
   ##
-  <div class="##=data.class##">
-    ##%button##
-    <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect ##=MDL.options('mdl-menu--', options)##" for="##=_id##" data-bridge-var="##:ul##">
-      ##items.forEach(function(item) {##
-      &lt;li class="mdl-menu__item ##=MDL.options('mdl-menu__item--', item.options)##" data-bridge-event="##:item.event##" ##=item.disabled ? 'disabled' : ''##&gt;##%item.label || item##</li>
-      ##});##
-    </ul>
-  </div>
+  <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect ##=MDL.options('mdl-menu--', options)##" for="##=forValue##">
+    ##items.forEach(function(item) {##
+    &lt;li class="mdl-menu__item ##=MDL.options('mdl-menu__item--', item.options)##" data-bridge-event="##:item.event##" ##=item.disabled ? 'disabled' : ''##&gt;##%item.label || item##</li>
+    ##});##
+  </ul>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(button.element);
-    componentHandler.upgradeElement(ul);
+    componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>

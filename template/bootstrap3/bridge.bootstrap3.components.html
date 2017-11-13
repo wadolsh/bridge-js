@@ -263,8 +263,8 @@
           ##%content(selected)##
         ##} else if (contentKey) {##
           ##%selected[contentKey]##
-        ##} else if (selected.content) {##
-          ##%selected.content##
+        ##} else if (selected.content || selected.label) {##
+          ##%selected.content || selected.label##
         ##} else {##
           ##%selected##
         ##}##

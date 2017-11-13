@@ -74,6 +74,11 @@
   ##
 </template>
 <template id="bs-Field">
+  ##
+  tmplScope.value = function() {
+    return tmplScope.input.value;
+  }
+  ##
   ##if(data.type == 'hidden') {##
     <input type="hidden" name="##=data.name##" value="##=data.value##">
   ##} else {##
@@ -215,7 +220,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-bridge-event="##:data.closeEvent||closeEvent##">##=data.closeLabel||'Close'##</button>
             ##if (data.okEvent) {##
-            <button type="button" class="btn btn-primary">##=data.okLabel||'OK'##</button>
+            <button type="button" class="btn btn-primary" data-bridge-event="##:data.okEvent##">##=data.okLabel||'OK'##</button>
             ##}##
           </div>
         </div><!-- /.modal-content -->
@@ -355,7 +360,7 @@
       ##thead.forEach(function(tr) {##
       &lt;tr&gt;
         ##tr.forEach(function(th) {##
-        &lt;th ##=th.colspan ? 'colspan='+th.colspan : ''## ##=th.rowspan ? 'rowspan='+th.rowspan : ''## class="##=th.class##" style="##=th.style##"&gt;##%th.label != undefined ? th.label : th##</th>
+        &lt;th ##=th.colspan ? 'colspan='+th.colspan : ''## ##=th.rowspan ? 'rowspan='+th.rowspan : ''## class="##=th.class##" style="##=th.style##" data-bridge-event="##:th.event##"&gt;##%th.label != undefined ? th.label : th##</th>
         ##});##
       </tr>
       ##});##

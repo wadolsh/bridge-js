@@ -75,7 +75,10 @@
 </template>
 <template id="bs-Field">
   ##
-  tmplScope.value = function() {
+  tmplScope.value = function(val) {
+    if (val != undefined) {
+      tmplScope.input.value = val;
+    }
     return tmplScope.input.value;
   }
   ##

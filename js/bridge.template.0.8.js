@@ -718,6 +718,49 @@
     return $template;
   }
 
+  var addTmplByUrl = tmplTool.addTmplByUrl = function(url, callback) {
+    if (Array.isArray(url)) {
+      var arraySize = url.length;
+      url.forEach(function(u) {
+        requestFunc(u, null, function(source) {
+          addTmpls(source);
+          arraySize--;
+          if (arraySize == 0 && callback) callback();
+        });
+      });
+    } else {
+      requestFunc(url, null, function(source) {
+        if (callback) addTmpls(source);
+      });
+    }
+  }
+
+  var requestFunc = function(url, option, callback) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+        if (xmlhttp.status == 200) {
+          callback(xmlhttp.responseText, xmlhttp.status, xmlhttp);
+        } else if(xmlhttp.status == 400) {
+          alert('There was an error 400');
+        } else {
+          console.log('!200', xmlhttp.status, url, option);
+        }
+      }
+    }
+
+    if (option) {
+      xmlhttp.open(option.method || 'GET', url, true);
+      if (option.headers) Object.keys(option.headers).forEach(function(key) {
+        xmlhttp.setRequestHeader(key, option.headers[key]);
+      });
+      xmlhttp.send(option.body);
+    } else {
+      xmlhttp.open('GET', url, true);
+      xmlhttp.send();
+    }
+  };
+
   root.i18n = {};
   tmplTool.addI18n = function(fullKey, i18nObj) {
     var langKeyNames = fullKey.split('.');

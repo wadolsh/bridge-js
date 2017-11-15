@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-      <title>Component Engine bridge-js</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
-      <script src="js/bridge.template.0.8.js"></script>
-      <link rel="import" href="template/bridge.ui.components.html">
-      <link rel="import" href="template/bootstrap3/bridge.bootstrap3.components.html">
-      <link rel="import" href="docs/bridge.docs.components.html">
+    <title>Component Engine bridge-js</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
+    <script src="js/bridge.template.0.8.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
+    <link rel="import" href="template/bridge.ui.components.html">
+    <link rel="import" href="template/bootstrap3/bridge.bootstrap3.components.html">
+    <link rel="import" href="docs/bridge.docs.components.html">-->
   </head>
   <body>
     
   </body>
   <script type="text/javascript">
-    if (window.location.port) {
+    if (window.location.port == 8182) {
       var script = document.createElement('script');
       script.src = "js/util/bridge.loader.js";
       script.async = '';
@@ -24,8 +25,20 @@
       }
       document.head.appendChild(script);
     }
-    window.addEventListener('WebComponentsReady', function(e) {
-      document.body.appendChild(tmpl.docs.Base({}).element);
+
+    bridge.tmplTool.addTmplByUrl([
+        'template/bridge.ui.components.html',
+        'template/bootstrap3/bridge.bootstrap3.components.html',
+        'docs/bridge.docs.components.html',
+      ], function() {
+        document.body.appendChild(tmpl.docs.Base({}).element);
+        
+        window.onload = function() {
+          var hashArray = location.hash.replace('#', '').split('/');
+          if (!hashArray[0]) return;
+          document.querySelector("a[href='" + location.hash + "']").click();
+        }
+        
     });
   </script>
 </html>

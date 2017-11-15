@@ -1,17 +1,93 @@
 <body>
-  <template id="docs-Base">
-    <div class="doc-Base">
-      ##%tmpl.bs.Navbar({
-        class: 'navbar-fixed-top',
-        content: [
-          tmpl.bs.NavbarLi({items: [
-            {label: 'Docs'},
-            {label: 'Tutorial'}
-          ]})
-        ]
-      })##
-    </div>
-  </template>
+<template id="docs-Base">
+  <style id="style-docs-Base">
+    .docs-Base .main {
+      padding-top: 50px;
+    }
+  </style>
+  ##!
+  bridge.tmplTool.addI18ns({
+    'docsBase.lable.Docs': {
+      en: 'Docs',
+      ko: '문서',
+      ja: '説明'
+    },
+    'docsBase.lable.Tutorial': {
+      en: 'Tutorial',
+      ko: '따라하기',
+      ja: 'チュートリアル'
+    }
+  });
+  ##
+  ##
+  var lable = i18n.docsBase.lable;
+  
+  var langSelect = function(lang) {
+    return function() {
+      document.documentElement.lang = lang;
+      console.log(tmplScope);
+      tmplScope.reflash();
+      /*
+      setTimeout(function() {
+        navbar.element.querySelector('#'+navbar._id+'builder').click();
+      }, 10);
+      */
+    };
+  }
+  ##
+  <div class="docs-Base">
+    ##%tmpl.bs.Navbar({
+      class: 'navbar-fixed-top',
+      content: [
+        tmpl.bs.NavbarLi({
+          items: [
+            {label: lable.Docs(), href: "#Docs", event: function() {
+            console.log(main);
+              tmpl.docs.Docs({}, main);
+            }},
+            {label: lable.Tutorial(), href: "#Tutorial", event: function() {
+              tmpl.docs.Tutorial({}, main);
+            }}
+          ]
+        }),
+        tmpl.bs.NavbarLi({
+          class: 'navbar-right',
+          items: [
+            tmpl.bs.NavbarLiDropdown({
+              label: 'LANG',
+              items: [
+                {label: 'EN', event: langSelect('en')},
+                {label: 'KO', event: langSelect('ko')},
+                {label: 'JA', event: langSelect('ja')}
+              ]
+            })
+          ]
+        })
+      ]
+    })##
+    <div class="main" data-bridge-var="##:main##"></div>
+  </div>
+</template>
+
+<template id="docs-Docs">
+  <style id="style-docs-Docs">
+    
+  </style>
+  <div class="docs-Docs">
+    Docs
+  </div>
+</template>
+
+
+<template id="docs-Tutorial">
+  <style id="style-docs-Tutorial">
+    
+  </style>
+  <div class="docs-Tutorial">
+    Tutorial
+  </div>
+</template>
+
 </body>
 
   

@@ -394,32 +394,35 @@
 </template>
 <template id="bs-Dropdown">
   ##
+  var forNavBar = data.navbar;
   var toggleEvent = {
     focus: function(e) {
       e.target.parentElement.classList.add('open');
     }, focusout: function(e) {
-      e.target.parentElement.classList.remove('open');
+      setTimeout(function() {
+        e.target.parentElement.classList.remove('open');
+      }, 1000);
     }
   }
   ##
-  <div class="##=data.typeClass || 'dropdown'##">
-    <button class="btn btn-##=data.buttonTypeClass || 'default'## dropdown-toggle" type="button" data-bridge-event="##:toggleEvent##" aria-haspopup="true" aria-expanded="true">
+  <!---<##=forNavBar ? 'li' : 'div'## class="##=data.typeClass || 'dropdown'##">--->
+    <!---<##=forNavBar ? 'a' : 'button'## class="##=forNavBar ? 'dropdown-toggle' : 'btn btn-' + (data.buttonTypeClass || 'default') + ' dropdown-toggle'##" ##=forNavBar ? 'href="javascript:void(0);"' : 'type="button"'## data-bridge-event="##:toggleEvent##" aria-haspopup="true" aria-expanded="true">--->
       ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon## ##=data.class##" aria-hidden="true"></span>##}##
       ##=data.label##
       <span class="caret"></span>
-    </button>
+    <!---</##=forNavBar ? 'a' : 'button'##>--->
     <ul class="dropdown-menu">
     ##(data.items || []).forEach(function(item) {##
       ##if (data.type == 'header') {##
-      <li class="dropdown-header">##=item.label##</li>
+      <li class="dropdown-header" data-bridge-event="##:item.event##">##=item.label##</li>
       ##} else if(data.type == 'separator') {##
       <li role="separator" class="divider"></li>
       ##} else {##
-      <li class="##=item.class##"><!---<a ##item.href ? 'href="' + item.href + '"' : ''##  data-bridge-event="##:item.event##">##=item.label##</a>---></li>
+      <li class="##=item.class##"><!---<a ##=item.href ? 'href="' + item.href + '"' : 'href="javascript:void(0);"'## data-bridge-event="##:[item.event, ]##">##=item.label##</a>---></li>
       ##}##
     ##});##
     </ul>
-  </div>
+  <!---</##=forNavBar ? 'li' : 'div'##>--->
 </template>
 <template id="bs-Panel">
   <div class="panel panel-##=data.typeClass || 'default'## ##=data.class##">
@@ -465,18 +468,27 @@
     e.target.parentElement.classList.add('active');
   }
   ##
-  <ul class="nav navbar-nav" data-bridge-var="##:ul##">
-    ##items.forEach(function(item) {##
+  <ul class="nav navbar-nav ##=data.class##" data-bridge-var="##:ul##">
+    ##items.forEach(function(item) {
+      if (item.element) {##
+    ##%item##
+    ##} else {##
     <li class="##=item.class##" data-bridge-event="##:[item.event, activeEvent]::item##">
       ##if (item.label) {##
         <a href="##=item.href || '#'##">##%item.label##</a>
       ##} else {##
         ##%item.content##
       ##}##
-      
     </li>
-    ##})##
+    ##}
+    })##
   </ul>
+</template>
+<template id="bs-Navbar-Li-Dropdown">
+  ##
+  data.navbar = true;
+  ##
+  ##%tmpl.bs.Dropdown(data)##
 </template>
 <template id="bs-FieldList">
   <div class="alert ##=data.styleClass##">

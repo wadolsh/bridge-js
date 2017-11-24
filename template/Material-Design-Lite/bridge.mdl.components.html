@@ -102,19 +102,15 @@
     ##}##
     ##if (actions) {##
     <div class="mdl-card__actions ##=MDL.options('mdl-card--', actions.options)##">
-      ##(actions.items).forEach(function(item) {
-        if (MDL.isAppandAble(item)) {##
-      ##%item##
-      ##} else {##
-      ##%tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item))##
-      ##}
-      })##
+      ##(actions.items).forEach(function(item) {##
+      ##%((!item || MDL.isAppandAble(item)) ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item)))##
+      ##})##
     </div>
     ##}##
     ##if (menu) {##
     <div class="mdl-card__menu ##=MDL.options('mdl-card--', menu.options)##">
       ##(menu.items).forEach(function(item) {##
-      ##%MDL.isAppandAble(item) ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple, options: ['icon']}, item))##
+      ##%(!item || MDL.isAppandAble(item)) ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple, options: ['icon']}, item))##
       ##})##
     </div>
     ##}##
@@ -693,6 +689,8 @@
 
 <template id="mdl-Text-Field">
   ##
+  var type = data.type || 'text';
+  var name = data.name;
   var value = data.value;
   var icon = data.icon;
   var options = data.options;
@@ -715,14 +713,14 @@
         ##}##
       ##}##
     <div class="mdl-textfield__expandable-holder">
-      &lt;input class="mdl-textfield__input" type="text" id="##=_id##" value="##=value##" ##=patternProp## data-bridge-event="##:event##"&gt;
+      &lt;input class="mdl-textfield__input" type="##=type##" id="##=_id##" name="##=name##" value="##=value##" ##=patternProp## data-bridge-event="##:event##"&gt;
       <label class="mdl-textfield__label" for="##=_id##">##=label##</label>
     </div>
     ##} else {##
       ##if (rows && rows > 1) {##
-    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" ##=patternProp## data-bridge-event="##:event##"&gt;##=value##&lt;/textarea&gt;
+    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##"&gt;##=value##&lt;/textarea&gt;
       ##} else {##
-    &lt;input class="mdl-textfield__input" type="text" ##=patternProp## id="##=_id##" value="##=value##" data-bridge-event="##:event##"&gt;
+    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##"&gt;
       ##}##
     ##if (label) {##<label class="mdl-textfield__label" for="##=_id##">##=label##</label>##}##
     ##if (errorMsg) {##<span class="mdl-textfield__error">##%errorMsg##</span>##}##

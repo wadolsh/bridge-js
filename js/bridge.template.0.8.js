@@ -624,7 +624,8 @@
         var afterRemove = tmplScope.afterRemove;
         if (tmplScope.wrapperElement) {
           if (beforeRemove) tmplScope.beforeRemove();
-          tmplScope = tmpl(fdata, tmplScope.wrapperElement, null, null, tmplScope);
+          //tmplScope = tmpl(fdata, tmplScope.wrapperElement, null, null, tmplScope);
+          tmplScope = tmpl(fdata, tmplScope.wrapperElement, null, tmplScope);
           if (afterRemove) tmplScope.afterRemove();
           return tmplScope;
         } else {

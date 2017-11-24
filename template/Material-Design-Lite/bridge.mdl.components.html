@@ -1,4 +1,34 @@
 <body>
+<template id="FabricFunction" data-bridge-load-script="true">
+  ##
+  window.MDL = {
+    ripple: true,
+    prop: function(props) {
+      if (!props) return '';
+      var propStrArray = [];
+      Object.keys(props).forEach(function(key) {
+        if (props[key]) propStrArray.push(key + '="' + props[key] + '"');
+      });
+      return propStrArray.join(' ');
+    },
+    is: function(value, returnValue) {
+      return value ? returnValue : '';
+    },
+    options: function(prefix, options) {
+      return options ? prefix + options.join(' ' + prefix) : '';
+    },
+    isElement: function(item) {
+      return item instanceof Element || item.element;
+    },
+    isString: function(item) {
+      return typeof item === 'string' || item instanceof String;
+    },
+    isAppandAble: function(item) {
+      return MDL.isElement(item) || MDL.isString(item);
+    }
+  }
+  ##
+</template>
 <template id="mdl-Badge">
   ##
   var tag = data.tag || 'div';
@@ -720,33 +750,6 @@
 </body>
 
 <script>
-window.MDL = {
-  ripple: true,
-  prop: function(props) {
-    if (!props) return '';
-    var propStrArray = [];
-    Object.keys(props).forEach(function(key) {
-      if (props[key]) propStrArray.push(key + '="' + props[key] + '"');
-    });
-    return propStrArray.join(' ');
-  },
-  is: function(value, returnValue) {
-    return value ? returnValue : '';
-  },
-  options: function(prefix, options) {
-    return options ? prefix + options.join(' ' + prefix) : '';
-  },
-  isElement: function(item) {
-    return item instanceof Element || item.element;
-  },
-  isString: function(item) {
-    return typeof item === 'string' || item instanceof String;
-  },
-  isAppandAble: function(item) {
-    return MDL.isElement(item) || MDL.isString(item);
-  }
-}
-
 
 if (bridge.tmplTool) {
   var HTMLImports = HTMLImports;

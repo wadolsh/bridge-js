@@ -700,11 +700,11 @@
   var addTmpls = tmplTool.addTmpls = function(source, removeInnerTemplate, tmplSettings) {
     if(typeof(removeInnerTemplate) !== "boolean" && tmplSettings == undefined) tmplSettings = removeInnerTemplate;
     var $template = null;
-    //if (source instanceof Element) {
+
     if (source.querySelectorAll) {
       $template = source;
     } else {
-      var $template = document.createElement('template');
+      $template = document.createElement('template');
       $template.innerHTML = source;
     }
     var tmplNodes = ($template.content || $template).querySelectorAll('template');
@@ -718,19 +718,60 @@
     return $template;
   }
 
-  var addTmplByUrl = tmplTool.addTmplByUrl = function(url, callback) {
-    if (Array.isArray(url)) {
-      var arraySize = url.length;
-      url.forEach(function(u) {
-        requestFunc(u, null, function(source) {
-          addTmpls(source);
+  var addTmplByUrl = tmplTool.addTmplByUrl = function(importData, option, callback) {
+    if (!callback && typeof option === 'function') {
+      callback = option;
+      option = {};
+    }
+    
+    option = Object.assign({loadScript: true, loadLink: true}, option);
+    
+    var importDataParser = function(obj) {
+      if (typeof obj === 'string') {
+        return {url: obj, option: option};
+      } else {
+        obj.option = Object.assign({}, option, obj.option);
+        return obj;
+      }
+    }
+    
+    var appendToHead = function(elements) {
+      if (elements && elements.length > 0) {
+        Array.prototype.forEach.call(elements, function(element) {
+          document.head.appendChild(element);
+        });
+      }
+    }
+    var importFunc = function(source, option) {
+      var template = document.createElement('template');
+      template.innerHTML = source;
+      addTmpls(template);
+      var content = (template.content || template);
+      if (option.loadLink) {
+        var links = content.querySelectorAll('link');
+        appendToHead(links);
+      }
+      if (option.loadScript) {
+        var scripts = content.querySelectorAll('script');
+        appendToHead(scripts);
+      }
+    }
+    
+    if (Array.isArray(importData)) {
+      var arraySize = importData.length;
+      importData.forEach(function(data) {
+        data = importDataParser(data);
+        requestFunc(data.url, null, function(source) {
+          importFunc(source, data.option);
           arraySize--;
           if (arraySize == 0 && callback) callback();
         });
       });
     } else {
-      requestFunc(url, null, function(source) {
-        if (callback) addTmpls(source);
+      importData = importDataParser(importData);
+      requestFunc(importData, null, function(source) {
+        importFunc(source, importData.option);
+        if (callback) callback();
       });
     }
   }
@@ -792,6 +833,27 @@
     count++;
     return tmplId + count;
   }
+
+  var tag = function(tagName, attrs) {
+      attrs = attrs || [];
+      var element = this.element(tagName);
+      Object.keys(attrs).forEach(function(key) {
+          //element.setAttribute(key, attrs[key]);
+          element[key] = attrs[key];
+      });
+      return element;
+  };
+
+  addTmpl('br-Tag', `##%tag(data[0], data[1])##`);
+  addTmpl('br-Div',
+          `&lt;div  ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"&gt;
+          ##if (typeof data.content === 'string') {## 
+            ##=data.content##
+          ##} else {##
+            ##%data.content##
+          ##}##`);
+
+  addTmpl('br-Input', `&lt;input type="##=data.type##" value="##=data.value##" ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"/&gt;`);
 
   var tmplConsoleCount = 0;
   var tmplConsole = function(data) {

@@ -33,12 +33,13 @@
       ], function() {
         document.body.appendChild(tmpl.docs.Base({}).element);
         
-        window.onload = function() {
-          var hashArray = location.hash.replace('#', '').split('/');
-          if (!hashArray[0]) return;
-          document.querySelector("a[href='" + location.hash + "']").click();
-        }
-        
+      /*
+      window.onload = function() {
+        var hashArray = location.hash.replace('#', '').split('/');
+        var hash = !hashArray[0] ? 'Docs' : location.hash;
+        document.querySelector("a[href='" + hash + "']").click();
+      }
+      */
     });
   </script>
 </html>

@@ -18,12 +18,15 @@
       return options ? prefix + options.join(' ' + prefix) : '';
     },
     isElement: function(item) {
+      if (!item) return false;
       return item instanceof Element || item.element;
     },
     isString: function(item) {
+      if (!item && item !== '') return false;
       return typeof item === 'string' || item instanceof String;
     },
     isAppandAble: function(item) {
+      if (!item) return false;
       return MDL.isElement(item) || MDL.isString(item);
     }
   }

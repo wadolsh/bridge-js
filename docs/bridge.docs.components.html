@@ -45,7 +45,7 @@
   ###
   setTimeout(function() {
     var hashArray = location.hash.replace('#', '').split('/');
-    var hash = !hashArray[0] ? 'Docs' : location.hash;
+    var hash = !hashArray[0] ? '#Docs' : location.hash;
     document.querySelector("a[href='" + hash + "']").click();
   }, 0);
   ##

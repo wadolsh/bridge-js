@@ -845,16 +845,16 @@
       return element;
   };
 
-  addTmpl('br-Tag', `##%tag(data[0], data[1])##`);
+  addTmpl('br-Tag', '##%tag(data[0], data[1])##');
   addTmpl('br-Div',
-          `&lt;div  ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"&gt;
-          ##if (typeof data.content === 'string') {## 
-            ##=data.content##
-          ##} else {##
-            ##%data.content##
-          ##}##`);
+          '&lt;div  ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"&gt;'
+          + '##if (typeof data.content === "string") {##'
+          + '##=data.content##'
+          + '##} else {##'
+          + '  ##%data.content##'
+          + '##}##');
 
-  addTmpl('br-Input', `&lt;input type="##=data.type##" value="##=data.value##" ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"/&gt;`);
+  addTmpl('br-Input', '&lt;input type="##=data.type##" value="##=data.value##" ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"/&gt;');
 
   var tmplConsoleCount = 0;
   var tmplConsole = function(data) {

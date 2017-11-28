@@ -3,6 +3,36 @@
  * Code released under the MIT license
  */
 (function() {'use strict';
+
+  // Polyfill
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill
+  if (typeof Object.assign != 'function') {
+    // Must be writable: true, enumerable: false, configurable: true
+    Object.defineProperty(Object, "assign", {
+      value: function assign(target, varArgs) { // .length of function is 2
+        'use strict';
+        if (target == null) { // TypeError if undefined or null
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
+        var to = Object(target);
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+          if (nextSource != null) { // Skip over if undefined or null
+            for (var nextKey in nextSource) {
+              // Avoid bugs when hasOwnProperty is shadowed
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+        return to;
+      },
+      writable: true,
+      configurable: true
+    });
+  }
+
   var root = this;
   var Bridge = root.bridge = root.bridge || {};
   var tmplTool = Bridge.tmplTool = Bridge.tmplTool || {};
@@ -54,7 +84,7 @@
       exec: function(style) {
         var dumy = document.createElement('template');
         dumy.innerHTML = style;
-        var styleNode = dumy.content.querySelector('style');
+        var styleNode = (dumy.content || dumy).querySelector('style');
         var oldStyleNode = document.getElementById(styleNode.id);
         if (oldStyleNode) oldStyleNode.parentNode.removeChild(oldStyleNode);
         document.head.appendChild(styleNode);
@@ -197,11 +227,6 @@
           } else if (eventType == 'triggerKey') {
             return;
           }
-          /*
-          if (eventType == 'triggerKey') {
-            return;
-          }
-          */
 
           $elementTrigger.addEventListener(eventType, function(event){
             var parentElement = $targetElement || $childTarget.parentElement;
@@ -290,17 +315,7 @@
         });
       },
       stringToElement: function(str) {
-        //if (str && str.trim && str.trim()[0] == '<') {
         if (str && str[0] == '<' ) {
-          /*
-          if (DOMParser) {
-            return (new DOMParser()).parseFromString(str, 'text/html').body;
-          } else {
-            var temp = document.createElement('template');
-            temp.innerHTML = str;
-            return temp.content;
-          }
-          */
           var temp = document.createElement('template');
           temp.innerHTML = str.replace('<>', '');
           return temp.content;
@@ -317,9 +332,7 @@
         return source;
       },
       lazyExec: function(data, lazyScope, tmplScope, wrapper) {
-        //var $childTarget = wrapper.firstElementChild || wrapper.firstChild;
         var $childTarget = this.firstElementChild(wrapper);
-        //var $targetElement = wrapper.childElementCount == 1 ? $childTarget : null;
         var $targetElement = this.childElementCount(wrapper) == 1 ? $childTarget : null;
         lazyScope.lazyEvaluateArray.forEach(function(selectedFunc, idx) {
           selectedFunc.call($targetElement || $childTarget.parentElement, data);
@@ -378,7 +391,7 @@
       return unescapeMap;
     }();
 
-    // underscore.js
+    // from underscore.js
     var createEscaper = function(map) {
       var escaper = function(match) {
         return map[match];
@@ -465,8 +478,6 @@
   }
 
   // JavaScript micro-templating, similar to John Resig's implementation.
-  // Underscore templating handles arbitrary delimiters, preserves whitespace,
-  // and correctly escapes quotes within interpolated code.
   var template = Bridge.template = function(tmplId, templateText, tmplSettings) {
     var settings = Bridge.templateSettings;
     var matcher = defaultMatcher;
@@ -491,7 +502,6 @@
     	  console.log(tmplId, e.lineNumber, e.columnNumber);
         new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', source);
       }
-      if (debugError) tmplConsole({template: templateText, source: source, tmplId: tmplId, errorMsg: e});
       if (throwError) {
         debugErrorLine(source, e);
         throw e;
@@ -549,7 +559,6 @@
       	  console.log('Error: ', tmplId);
           render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope);
         }
-        if (debugError) tmplConsole({template: templateText, source: source, tmplId: tmplId, errorMsg: e});
         if (throwError) {
           debugErrorLine(source, e);
           throw e;
@@ -593,7 +602,7 @@
       }
 
       tmplScope.element = $returnTarget;
-      $returnTarget.tmplScope = tmplScope;
+      //$returnTarget.tmplScope = tmplScope;
 
       // style to shadow
       var style = $returnTarget.querySelector('style[scoped], style[shadow]');
@@ -855,64 +864,5 @@
           + '##}##');
 
   addTmpl('br-Input', '&lt;input type="##=data.type##" value="##=data.value##" ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"/&gt;');
-
-  var tmplConsoleCount = 0;
-  var tmplConsole = function(data) {
-    if (typeof data == "string") {
-      var cache = cachedTmpl.get(data);
-      data = {template: cache.templateText, source: cache.source, tmplId: data, count: tmplConsoleCount++};
-    } else {
-      data.count = tmplConsoleCount++;
-    }
-    var TmplCodeConsole = Bridge.tmpl('tmpl-code-console');
-    if (!TmplCodeConsole) {
-      var appendScript = function (pathToScript) {
-        var js = document.createElement("script");
-        js.type = "text/javascript";
-        js.src = pathToScript;
-        js.async = false;
-        document.head.appendChild(js);
-      }
-      appendScript("//cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js");
-      var consolHtml =
-        '<div class="tmpl-code-console">'
-          + '<div id="tmpl-code-console-wrapper">'
-            + '<style>'
-              + '#tmpl-code-console##=data.count## {'
-                + 'position:absolute; top:10px; left:100px; height: 400px;'
-              + '}'
-              + '#tmpl-code-console-wrapper##=data.count## {'
-                + 'background-color:white; border: 1px solid #000;'
-              + '}'
-              + '#tmpl-code-template##=data.count## {'
-                + 'width:700px; height: 300px;'
-              + '}'
-              + '#tmpl-code-source##=data.count## {'
-                + 'width:700px; height: 300px;'
-              + '}'
-            + '</style>'
-            + '<div class="header">tmplId: ##=data.tmplId##  Error: ##=data.errorMsg##</div>'
-            + '<div id="tmpl-code-template##=data.count##">##=data.template##</div>'
-            + '<div id="tmpl-code-source##=data.count##">##=data.source##</div>'
-            + '###setTimeout(function() {'
-            + 'var tmplCodeTemplate = ace.edit("tmpl-code-template" + data.count);'
-            + 'tmplCodeTemplate.setTheme("ace/theme/chrome");'
-            + 'tmplCodeTemplate.getSession().setMode("ace/mode/javascript");'
-            + 'var tmplCodeSource = ace.edit("tmpl-code-source" + data.count);'
-            + 'tmplCodeSource.setTheme("ace/theme/monokai");'
-            + 'tmplCodeSource.getSession().setMode("ace/mode/javascript");'
-            + '}, 0)##'
-            + '<button type="button" data-bridge-event="##:function(e, edata, tmplElem) {tmplElem.remove();}##">Close</button>'
-          +'</div>'
-        +'</div>';
-
-      addTmpl('tmpl-code-console', consolHtml);
-      TmplCodeConsole = Bridge.tmpl('tmpl-code-console');
-    }
-    setTimeout(function() {
-      var consoleElem = TmplCodeConsole(data);
-      document.body.appendChild(consoleElem.element);
-    }, 1000);
-  }
 
 }).call(this);

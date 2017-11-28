@@ -916,16 +916,18 @@
 
     if (direction == 'horizontal') {
       layoutStyle = {
-        'float': 'left',
         'width':  sizeValue,
+        'float': 'left',
       }
     } else {
       layoutStyle = {
         'height': sizeValue,
       }
     }
+
     var splitter = index == 0 && !data.splitter && !contentItem.splitter ? null : tmpl.brui.Splitter(Object.assign({direction: data.direction, dragEvent: dragEvent}, contentItem.splitter, data.splitter));
     if (splitter) splitters.push(splitter);
+    var style = BridgeUi.toStyle(layoutStyle) + " ";
   ##
     ##%splitter##
     <div class="brui-Splitter-item ##=contentItem.class##" style="##=BridgeUi.toStyle(layoutStyle)## ##=contentItem.style##" data-bridge-load="##:setSplitterDiv::index##">
@@ -1062,6 +1064,81 @@
   </div>
 </template>
 <template id="brui-GanttChart">
+  <style id="style-brui-GanttChart">
+    .brui-GanttChart .brui-GanttChart-contetnt {
+      overflow: auto;
+      white-space: nowrap;
+
+      /*position: absolute;*/
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+    }
+    .brui-GanttChart .cell > div {
+      display: inline-block;
+      text-align: center;
+      font-size: 12pt;
+      border: 1px solid #EAEAEA;
+      border-left-width: 0px;
+      height: 24px;
+      vertical-align: top;
+    }
+    .brui-GanttChart .cell > .year {
+      line-height: 24px;
+    }
+    .brui-GanttChart .cell > .day {
+      
+    }
+    .brui-GanttChart .cell > .date {
+      position: relative;
+    }
+    .brui-GanttChart .cell > .saturday {
+      background-color: #C7E0F4;
+    }
+    .brui-GanttChart .cell > .sunday {
+      background-color: #fde7e9;
+    }
+    .brui-GanttChart .cell > .now {
+      /*border: 1px solid #0078d7;*/
+      margin-left: -1px;
+      background: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(234,234,234,0.8) 3px, rgba(234,234,234,0.8) 5px);
+    }
+    .brui-GanttChart .cell > .sunday.now {
+      background: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(253,231,233,0.8) 3px, rgba(253,231,233,0.8) 5px);
+    }
+    .brui-GanttChart .cell > .saturday.now {
+      background: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(199,224,244,0.8) 3px, rgba(199,224,244,0.8) 5px);
+    }
+    .brui-GanttChart .label {
+      /*width: 100px;*/
+      text-align: left;
+      font-size: 12pt;
+      border: 1px solid #EAEAEA;
+      border-left-width: 0px;
+      padding-left: 5px;
+      position: absolute;
+      background-color: #f4f4f4;
+      z-index: 2;
+    }
+    .brui-GanttChart .chart-header .label {
+      height: 50px;
+    }
+    
+    .brui-GanttChart .line {
+      position: absolute;
+      height: 10px;
+      background-color: red;
+      font-size: 10px;
+      color: white;
+      z-index: 1;
+      font-family: sans-serif;
+    }
+    
+    .brui-GanttChart .brui-GanttChart-Content-Line {
+      /*position: relative;*/
+    }
+  </style>
   ##
   var items = data.items || [];
   var itemKey = data.itemKey || {};
@@ -1104,84 +1181,7 @@
   var nowTime = nowDate.getTime();
   ##
   <div class="brui-GanttChart">
-    <style id="style-brui-GanttChart">
-      .brui-GanttChart .brui-GanttChart-contetnt {
-        overflow: auto;
-        white-space: nowrap;
-
-        /*position: absolute;*/
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-      }
-      .brui-GanttChart .cell > div {
-        display: inline-block;
-        text-align: center;
-        font-size: 12pt;
-        border: 1px solid #EAEAEA;
-        border-left-width: 0px;
-        height: 24px;
-        vertical-align: top;
-      }
-      .brui-GanttChart .cell > .year {
-        line-height: 24px;
-      }
-      .brui-GanttChart .cell > .day {
-        
-      }
-      .brui-GanttChart .cell > .date {
-        position: relative;
-      }
-      .brui-GanttChart .cell > .saturday {
-        background-color: #C7E0F4;
-      }
-      .brui-GanttChart .cell > .sunday {
-        background-color: #fde7e9;
-      }
-      .brui-GanttChart .cell > .now {
-        /*border: 1px solid #0078d7;*/
-        margin-left: -1px;
-        background: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(234,234,234,0.8) 3px, rgba(234,234,234,0.8) 5px);
-      }
-      .brui-GanttChart .cell > .sunday.now {
-        background: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(253,231,233,0.8) 3px, rgba(253,231,233,0.8) 5px);
-      }
-      .brui-GanttChart .cell > .saturday.now {
-        background: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(199,224,244,0.8) 3px, rgba(199,224,244,0.8) 5px);
-      }
-      .brui-GanttChart .label {
-        /*width: 100px;*/
-        text-align: left;
-        font-size: 12pt;
-        border: 1px solid #EAEAEA;
-        border-left-width: 0px;
-        padding-left: 5px;
-        position: absolute;
-        background-color: #f4f4f4;
-        z-index: 2;
-      }
-      .brui-GanttChart .chart-header .label {
-        height: 50px;
-      }
-      
-      .brui-GanttChart .line {
-        position: absolute;
-        height: 10px;
-        background-color: red;
-        font-size: 10px;
-        color: white;
-        z-index: 1;
-        font-family: sans-serif;
-      }
-      
-      .brui-GanttChart .brui-GanttChart-Content-Line {
-        /*position: relative;*/
-      }
-    </style>
-    <div class="brui-GanttChart brui-GanttChart-header">
-
-    </div>
+    <div class="brui-GanttChart brui-GanttChart-header"></div>
     <div class="brui-GanttChart brui-GanttChart-contetnt">
       <div class="chart-wrapper">
         <div class="chart-header" style="font-size: 0px;">
@@ -1213,7 +1213,8 @@
     var widhtArray =Array.prototype.map.call(labels, function(elem){
       return elem.offsetWidth;
     });
-    var maxWidth = Math.max(...widhtArray);
+    //var maxWidth = Math.max(...widhtArray);
+    var maxWidth = Math.max(null, widhtArray);
     Array.prototype.forEach.call(labels, function(elem){
       elem.style.width = maxWidth + 'px';
     });

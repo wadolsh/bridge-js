@@ -8,9 +8,9 @@
       <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
       <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
       <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
+      <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>-->
       <script src="../../js/bridge.template.0.8.js"></script>
-      <link rel="import" href="bridge.mdl.components.html">
+      <!--<link rel="import" href="bridge.mdl.components.html">-->
   </head>
   <body>
     <template id="mdldoc-Div">
@@ -1252,7 +1252,9 @@ var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via so
     };
     
     var layout = null;
-    window.addEventListener('WebComponentsReady', function(e) {
+    bridge.tmplTool.addTmplByUrl([
+        'bridge.mdl.components.html'
+    ], function() {
       bridge.tmplTool.addTmpls(document.body.innerHTML);
       document.body.innerHTML = '';
       

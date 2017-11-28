@@ -198,11 +198,6 @@
   //var items = data.items || [];
   
   var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
-  
-  tmplScope.reflashContent = function(element) {
-    while (contentArea.firstChild) contentArea.removeChild(contentArea.firstChild);
-    contentArea.appendChild(element);
-  }
   ##
   <!-- Always shows a header, even in smaller screens. -->
   <div class="mdl-layout mdl-js-layout ##=MDL.options('mdl-layout--', options)## ##=data.class##">
@@ -241,7 +236,6 @@
     </div>
     ##}##
     <main class="mdl-layout__content">
-      <div class="page-content" data-bridge-var="##:contentArea##">##%content##</div>
       ##if(tabs) {##
       ##(tabs).forEach(function(tab) {##
       <section class="mdl-layout__tab-panel ##=MDL.is(tab.active, 'is-active')##" id="##=tab.id##">
@@ -249,17 +243,24 @@
       </section>
       ##})##
       ##}##
+      <div class="page-content" data-bridge-var="##:contentArea##">##%content##</div>
     </main>
   </div>
   ##
-  tmplScope.afterAppendTo = function() {
+  tmplScope.upgradeElement = function() {
     setTimeout(function() {
       componentHandler.upgradeElement(tmplScope.element);
-    }, 1000);
+    });
+  }
+  tmplScope.afterAppendTo = function() {
+    tmplScope.upgradeElement();
+  }
+  tmplScope.reflashContent = function(scope) {
+    while (contentArea.firstChild) contentArea.removeChild(contentArea.firstChild);
+    contentArea.appendChild(scope.element || scope);
   }
   ##
 </template>
-
 
 <template id="mdl-Navigation">
   ##
@@ -660,7 +661,7 @@
         ##thead.forEach(function(th) {
           var label = th.label || th;
         ##
-        &lt;th class="##=MDL.options('mdl-data-table__cell--', th.options)## ##=MDL.options('mdl-data-table__header--', th.options)##"&gt;##=label##&lt;/th&gt;
+        &lt;th class="##=MDL.options('mdl-data-table__cell--', th.options)## ##=MDL.options('mdl-data-table__header--', th.options)##"&gt;##%label##&lt;/th&gt;
         ##})##
       &lt;/tr&gt;
     &lt;/thead&gt;

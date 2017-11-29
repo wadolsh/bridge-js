@@ -33,6 +33,24 @@
     });
   }
 
+  // from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
+  (function (arr) {
+    arr.forEach(function (item) {
+      if (item.hasOwnProperty('remove')) {
+        return;
+      }
+      Object.defineProperty(item, 'remove', {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: function remove() {
+          if (this.parentNode !== null)
+            this.parentNode.removeChild(this);
+        }
+      });
+    });
+  })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
+
   var root = this;
   var Bridge = root.bridge = root.bridge || {};
   var tmplTool = Bridge.tmplTool = Bridge.tmplTool || {};
@@ -43,6 +61,7 @@
   if (!cachedTmpl.has('anonymous')) {
     cachedTmpl.set('anonymous', {elements: new Set()})
   }
+  var isSupportTemplateTag = 'content' in document.createElement('template');
 
   root.tmpl = {};
 
@@ -546,8 +565,8 @@
       tmplScope[dataKeyName] = data;
       if (tmplScope[statusKeyName] == undefined) tmplScope[statusKeyName] = {};
       var hasParent = wrapperElement ? true : false;
-      var $temp = document.createElement('template');
-      var $returnTarget = null;
+      var temp = document.createElement('template');
+      var returnTarget = null;
 
       if (showTime) console.time("render:" + tmplId);
 
@@ -568,8 +587,16 @@
       }
       if (showTime) console.timeEnd("render:" + tmplId);
 
-      $temp.innerHTML = html;
-      var docFragment = $temp.content || $temp;
+      temp.innerHTML = html;
+      var docFragment = temp.content || temp;
+      if (docFragment.tagName == 'TEMPLATE') {
+        // for IE11
+        var children = docFragment.children;
+        docFragment = document.createDocumentFragment();
+        Array.prototype.forEach.call(children, function(child) {
+          docFragment.appendChild(child);
+        });
+      }
       var lazyExec = matcher.lazyExec;
       if (data) matcher.lazyExecKeys.forEach(function (key){
         if (lazyScope[key].length == 0) return;
@@ -584,10 +611,10 @@
       }
 
       if (childElementCount(docFragment) == 1) {
-        $returnTarget = firstElementChild(docFragment);
+        returnTarget = firstElementChild(docFragment);
         if (hasParent) {
           if (tmplScope.beforeAppendTo) tmplScope.beforeAppendTo();
-          wrapperElement.appendChild($returnTarget);
+          wrapperElement.appendChild(returnTarget);
           if (tmplScope.afterAppendTo) tmplScope.afterAppendTo();
         }
       } else {
@@ -595,19 +622,19 @@
           if (tmplScope.beforeAppendTo) tmplScope.beforeAppendTo();
           wrapperElement.appendChild(docFragment);
           if (tmplScope.afterAppendTo) tmplScope.afterAppendTo();
-          $returnTarget = wrapperElement;
+          returnTarget = wrapperElement;
         } else {
-          $returnTarget = docFragment;
+          returnTarget = docFragment;
         }
       }
 
-      tmplScope.element = $returnTarget;
-      //$returnTarget.tmplScope = tmplScope;
+      tmplScope.element = returnTarget;
+      //returnTarget.tmplScope = tmplScope;
 
       // style to shadow
-      var style = $returnTarget.querySelector('style[scoped], style[shadow]');
-      if (style && $returnTarget.createShadowRoot) {
-        var shadow = $returnTarget.createShadowRoot();
+      var style = returnTarget.querySelector('style[scoped], style[shadow]');
+      if (style && returnTarget.createShadowRoot) {
+        var shadow = returnTarget.createShadowRoot();
         document.head.appendChild(style);
         var styles = '';
         var sheet = style.sheet;
@@ -625,7 +652,7 @@
         callback.call(wrapperElement, tmplScope);
       }
 
-      $returnTarget.render = docFragment.render = tmplScope.render = function(fdata) {
+      returnTarget.render = docFragment.render = tmplScope.render = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
         var tmpl = bridge.tmpl(tmplScope.tmplId);
@@ -651,7 +678,7 @@
         }
       };
 
-      $returnTarget.reflash = docFragment.reflash = tmplScope.reflash = function(fdata) {
+      returnTarget.reflash = docFragment.reflash = tmplScope.reflash = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
         var data = tmplScope.data;
@@ -701,6 +728,19 @@
     return tmplFunc ? tmplFunc.tmpl : null;
   }
 
+  var safeTemplate = function(source) {
+    if (source.querySelectorAll) {
+      return source;
+    } else if (isSupportTemplateTag) {
+      var template = document.createElement('template');
+      template.innerHTML = source;
+    } else {
+      var template = document.createElement('template');
+      template.innerHTML = source.replace(/<template/g, '<script type="template"').replace(/<\/template>/g, '</script>');
+    }
+    return template;
+  }
+
   var addTmpl = tmplTool.addTmpl = function(tmplId, element, tmplSettings) {
     var templateText = element instanceof Element ? element.innerHTML : element;
     templateText = escapeHtml.unescape(templateText.replace(/<!---|--->/gi, ''));
@@ -709,15 +749,17 @@
 
   var addTmpls = tmplTool.addTmpls = function(source, removeInnerTemplate, tmplSettings) {
     if(typeof(removeInnerTemplate) !== "boolean" && tmplSettings == undefined) tmplSettings = removeInnerTemplate;
-    var $template = null;
-
+/*
+    var template = null;
     if (source.querySelectorAll) {
-      $template = source;
+      template = source;
     } else {
-      $template = document.createElement('template');
-      $template.innerHTML = source;
+      template = document.createElement('template');
+      template.innerHTML = source;
     }
-    var tmplNodes = ($template.content || $template).querySelectorAll('template');
+*/
+    var template = safeTemplate(source);
+    var tmplNodes = (template.content || template).querySelectorAll(isSupportTemplateTag ? 'template' : 'script[type="template"]');
 
     var node = null;
     for (var i=0, size=tmplNodes.length; i < size; i++) {
@@ -725,7 +767,7 @@
       node.dataset.bridgeLoadScript ? addTmpl(node.id, node, tmplSettings)({}) : addTmpl(node.id, node, tmplSettings);
       if (removeInnerTemplate) node.parentNode.removeChild(node);
     }
-    return $template;
+    return template;
   }
 
   var addTmplByUrl = tmplTool.addTmplByUrl = function(importData, option, callback) {
@@ -753,8 +795,9 @@
       }
     }
     var importFunc = function(source, option) {
-      var template = document.createElement('template');
-      template.innerHTML = source;
+      //var template = document.createElement('template');
+      //template.innerHTML = source;
+      var template = safeTemplate(source);
       addTmpls(template);
       var content = (template.content || template);
       if (option.loadLink) {

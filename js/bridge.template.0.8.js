@@ -749,17 +749,8 @@
 
   var addTmpls = tmplTool.addTmpls = function(source, removeInnerTemplate, tmplSettings) {
     if(typeof(removeInnerTemplate) !== "boolean" && tmplSettings == undefined) tmplSettings = removeInnerTemplate;
-/*
-    var template = null;
-    if (source.querySelectorAll) {
-      template = source;
-    } else {
-      template = document.createElement('template');
-      template.innerHTML = source;
-    }
-*/
     var template = safeTemplate(source);
-    var tmplNodes = (template.content || template).querySelectorAll(isSupportTemplateTag ? 'template' : 'script[type="template"]');
+    var tmplNodes = (template.content || template).querySelectorAll('template,script[type="template"]');
 
     var node = null;
     for (var i=0, size=tmplNodes.length; i < size; i++) {
@@ -795,8 +786,6 @@
       }
     }
     var importFunc = function(source, option) {
-      //var template = document.createElement('template');
-      //template.innerHTML = source;
       var template = safeTemplate(source);
       addTmpls(template);
       var content = (template.content || template);

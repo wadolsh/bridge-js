@@ -280,13 +280,16 @@
   
   BridgeUi.WindowFunc = {
     maxZindex : function() {
+      var zindex = 101;
       var nodes = document.querySelectorAll('.brui-Window, .brui-Window-Wrapper');
-      var zIndexs = Array.prototype.map.call(nodes, function(node) {
-        return node.style.zIndex ? parseInt(node.style.zIndex) : 0;
+      nodes = [].slice.call(nodes);
+      nodes.sort(function(a, b) {
+        return parseInt(a.style.zIndex) - parseInt(b.style.zIndex);
       });
-      zIndexs.push(100);
-      var maxZindex = Math.max.apply(null, zIndexs);
-      return maxZindex;
+      nodes.forEach(function(node) {
+        node.style.zIndex = zindex++;
+      });
+      return zindex;
     }
   }
   

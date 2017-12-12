@@ -28,32 +28,8 @@
             return false;
         }
     }, Bridge.ConnectorSettings || {});
-    
-    // underscore.js
-    // An internal function for creating assigner functions.
-    /*
-    var createAssigner = function(keysFunc, undefinedOnly) {
-        return function(obj) {
-          var length = arguments.length;
-          if (length < 2 || obj == null) return obj;
-          for (var index = 1; index < length; index++) {
-            var source = arguments[index];
-            if (!source) continue; 
-            var keys = keysFunc(source),
-                l = keys.length;
-            for (var i = 0; i < l; i++) {
-              var key = keys[i];
-              if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
-            }
-          }
-          return obj;
-        };
-    };
-    */
-    
-    // underscore.js
-    // Extend a given object with all the properties in passed-in object(s).
-    var extend = Object.assign; // || createAssigner(Object.keys);
+
+    var extend = Object.assign;
     
     var parser = {
         text: function(str) {
@@ -288,12 +264,13 @@
             });
             return this;
         },
-        reqUpdateOperator : function (key, id, data) {
+        reqUpdateOperator : function (key, query, operator) {
             this.combine({
                 "key" : key,
                 "method" : "reqUpdateOperator",
-                "data" : this.addId({}, id),
-                "operator" : data
+                "data" : {},
+                "query" : query,
+                "operator" : operator
             });
             return this;
         },

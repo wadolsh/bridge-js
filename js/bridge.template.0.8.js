@@ -876,9 +876,9 @@
     return tmplId + count;
   }
 
-  var tag = function(tagName, attrs) {
+  var tag = tmplTool.tag = function(tagName, attrs) {
       attrs = attrs || [];
-      var element = this.element(tagName);
+      var element = document.createElement(tagName);
       Object.keys(attrs).forEach(function(key) {
           //element.setAttribute(key, attrs[key]);
           element[key] = attrs[key];
@@ -886,7 +886,7 @@
       return element;
   };
 
-  addTmpl('br-Tag', '##%tag(data[0], data[1])##');
+  addTmpl('br-Tag', '##%bridge.tmplTool.tag(data[0], data[1])##');
   addTmpl('br-Div',
           '&lt;div  ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"&gt;'
           + '##if (typeof data.content === "string") {##'

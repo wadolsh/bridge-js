@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <title>Component Engine bridge-js</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.min.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <script src="js/bridge.template.0.8.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
-    <link rel="import" href="template/bridge.ui.components.html">
-    <link rel="import" href="template/bootstrap3/bridge.bootstrap3.components.html">
-    <link rel="import" href="docs/bridge.docs.components.html">-->
   </head>
   <body>
 
@@ -25,11 +23,13 @@
       }
       document.head.appendChild(script);
     }
-
+    
+    var lang = document.documentElement.lang;
     bridge.tmplTool.addTmplByUrl([
         'template/bridge.ui.components.html',
         'template/bootstrap3/bridge.bootstrap3.components.html',
-        'docs/bridge.docs.components.html',
+        'docs/bridge.ta.components.html',
+        'docs/bridge.docs.' + lang + '.components.html',
       ], function() {
         document.body.appendChild(tmpl.docs.Base({}).element);
         

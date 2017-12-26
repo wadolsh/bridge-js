@@ -1,0 +1,224 @@
+<body>
+<template id="docs-Base">
+  <style id="style-docs-Base">
+    html, body, .docs-Base {
+      height: 100%;
+    }
+    .docs-Base .main {
+      position: absolute;
+      top: 50px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  </style>
+  ##
+  var langSelect = function(lang) {
+    return function() {
+      document.documentElement.lang = lang;
+      console.log(tmplScope);
+      tmplScope.reflash();
+      /*
+      setTimeout(function() {
+        navbar.element.querySelector('#'+navbar._id+'builder').click();
+      }, 10);
+      */
+    };
+  }
+  ##
+  ###
+  setTimeout(function() {
+    var hashArray = location.hash.replace('#', '').split('/');
+    var hash = !hashArray[0] ? '#Docs' : location.hash;
+    document.querySelector("a[href='" + hash + "']").click();
+  }, 0);
+  ##
+  <div class="docs-Base">
+    ##%tmpl.bs.Navbar({
+      class: 'navbar-fixed-top',
+      content: [
+        tmpl.bs.NavbarLi({
+          items: [
+            {label: '문서', href: "#Docs", event: function() {
+            console.log(main);
+              tmpl.docs.Docs({}, main);
+            }},
+            {label: '따라하기', href: "#Tutorial", event: function() {
+              tmpl.docs.Tutorial({}, main);
+            }}
+          ]
+        }),
+        tmpl.bs.NavbarLi({
+          class: 'navbar-right',
+          items: [
+            tmpl.bs.NavbarLiDropdown({
+              label: 'LANG',
+              items: [
+                {label: 'EN', event: langSelect('en')},
+                {label: 'KO', event: langSelect('ko')},
+                {label: 'JA', event: langSelect('ja')}
+              ]
+            })
+          ]
+        })
+      ]
+    })##
+    <div class="main" data-bridge-var="##:main##"></div>
+  </div>
+</template>
+
+<template id="docs-Docs">
+  <style id="style-docs-Docs">
+    .docs-Docs, .docs-Docs .row, .docs-Docs .sidemenu {
+      height: 100%;
+    }
+    .docs-Docs .row {
+      margin-right: 0px;
+      margin-left: 0px;
+    }
+    .docs-Docs .sidemenu {
+      border-right: 1px #ddd solid;
+      padding-right: 0px;
+      padding-left: 0px;
+    }
+    .docs-Docs .sidemenu .list-group-item {
+      border: 0px;
+      cursor: pointer;
+    }
+  </style>
+  ##
+  var contentArea = function() {
+    return docsMain;
+  }
+  var docItems = [
+    {label: '템플릿 엔진', tmpl: tmpl.docs.DocsTemplate({contentArea: contentArea})}
+  ];
+  var selectEvent = function(e) {
+    e.target.parentElement.querySelector('.active').classList.remove('active');
+    e.target.classList.add('active');
+  }
+  ##
+  <div class="docs-Docs">
+    <div class="row">
+      <div class="col-xs-3 sidemenu">
+        ##docItems.forEach(function(item) {##
+          <h3>##=item.label##</h3>
+          ##%tmpl.bs.ListGroup({active: true, items: item.tmpl.getSidemenu()})##
+        ##});##
+      </div>
+      <div class="col-xs-9" data-bridge-var="##:docsMain##"></div>
+    </div>
+  </div>
+</template>
+
+<template id="docs-Docs-Template">
+  <style id="style-docs-Docs-Template">
+    .docs-Docs-Template > pre {
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+  </style>
+  ##
+  var contentArea = data.contentArea;
+  var index = data.index;
+  
+  tmplScope.getSidemenu = function() {
+    return [
+      {label: '소개', index: 'intro'},
+      {label: '시작하기', index: 'Getting started'},
+      {label: '템플릿 작성', index: 'template_build'},
+      {label: '인스턴스', index: 'use_instance'}
+    ].map(function(item) {
+      return Object.assign(item, {event: function() {
+        var area = contentArea();
+        while (area.firstChild) area.removeChild(area.firstChild);
+        tmplScope.reflash({index: item.index});
+        area.appendChild(tmplScope.element);
+      }})
+    });
+  }
+  ##
+  <div class="docs-Docs-Template">
+    ##if (index == 'intro') {##
+    
+    bridge template engine 의 개발 배경
+    <br>
+    bridge template engine 은 web componet 의 형식을 빌려와서 javascript로 쉽게 제어하기 위해서 제작 되었습니다.
+    <br>
+    bridge template engine 은 다음과 같은 목표를 가지고 제작 되었었습니다.
+    <ul>
+      <li>Single page application 작성을 지원함</li>
+      <li>재상용 가능한 컴포넌트 작성을 지원함</li>
+      <li>하나의 템플릿 안에 style, html, javascript 로직을 통합 함으로써 적은 노력으로 컴포넌트를 제작 할 수 있도록 함</li>
+      <li>Html Tag 안에 Event Handler 를 설정 가능도록 함</li>
+      <li>컴포넌트 끼로 조합 할 수 있도록 지원함으로써 블록을 조립하듯이 ui를 제작 할 수 있도록 지원함</li>
+      <li>two-way data binding 을 의도적으로 배제하여, 가능한 제작자가 작성하고 예상한 결과를 표현 할 수 있도록 함</li>
+    </ul>
+
+    bridge template engine 은 
+    John Resig 씨가 발표한 JavaScript Micro-Templating
+    (https://johnresig.com/blog/javascript-micro-templating/)
+    에 기반으로 제작 되었으며,
+    <br>
+    다음과 같은 훌륭한 frameworek 들을 경험하면서 개인적으로 느낀 개선점을 반영 하여 제작 되었습니다.
+    <ul>
+      <li>backbone.js View (http://backbonejs.org/#View) 에서 느낀
+      template의 결과물인 html 과 event 유연한 연동의 가능했으면 한 부분을 개선 하고자 함</li>
+      <li>angular v1 (https://angularjs.org/)에서 느낀 좀 더 간편한 컴포넌트 제작이 가능했으면 한 점을 반영 하고자 함</li>
+      <li>polymer (https://www.polymer-project.org/) 에서 느낀 동적인 요소를 부여하기 힘든 부분을 반영 하고자 함</li>
+    </ul>
+    
+    
+    ##} else if (index == 'Getting started') {##
+    
+    <h1>설치</h1>
+    아래와 같이 bridge.template.js js를 추가해주세요.
+    <pre class="prettyprint lang-html"><script src="js/bridge.template.js"></script></pre>
+    이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.
+    이제 다음과 같은 템플릿 파일을 만들어 
+    <pre class="prettyprint lang-js">
+      bridge.tmplTool.addTmpl('do-Simple', '<div>##=data.label##</div>');
+    </pre>
+    이제 do.Simple라는 템플릿을 컴포넌트로 사용할 있는 준비가 되었습니다.
+    컨포넌트의 생성과 화면 배치는 다음과 같이 이루어 집니다.
+<pre class="prettyprint lang-js">
+var simple = tmpl.do.Simple({label: 'Div Simple'});
+document.body.appendChild(simple.element);</pre>
+    
+    ##%tmpl.ta.TestArea({})##
+    
+    ##}##
+  </div>
+  ###
+  setTimeout(function() {
+    var codes = tmplScope.element.querySelectorAll('.prettyprint');
+    Array.prototype.forEach.call(codes, function(code) {
+      code.innerText = code.innerHTML.replace(/^[ \n]*/g, '');
+    });
+    PR.prettyPrint();
+  });
+  ##
+</template>
+
+
+<template id="docs-Tutorial">
+  <style id="style-docs-Tutorial">
+    
+  </style>
+  <div class="docs-Tutorial">
+    Tutorial
+  </div>
+</template>
+
+</body>
+
+  
+<script>
+if (bridge.tmplTool) {
+  bridge.tmplTool.addTmpls(
+      HTMLImports.importForElement ? HTMLImports.importForElement(document.currentScript)
+                  : (document._currentScript || document.currentScript).ownerDocument.body);
+  console.log('bridge.docs.components.html');
+}
+</script>

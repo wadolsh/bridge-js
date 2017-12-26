@@ -306,7 +306,7 @@
     <div class="ms-Dialog-main" style="##=data.style## ##=data.width ? 'width:' + data.width : null##">
       <button class="ms-Dialog-button ms-Dialog-button--close" data-bridge-event="##:closeEvent##"><i class="ms-Icon ms-Icon--x"></i></button>
       <div class="ms-Dialog-header">
-        ##if (data.title) {##<p class="ms-Dialog-title">##=data.title##</p>##}##
+        ##if (data.title) {##<p class="ms-Dialog-title">##%data.title##</p>##}##
       </div>
       <div class="ms-Dialog-inner">
         <div class="ms-Dialog-content" data-bridge-event="##:data.contentEvent##">

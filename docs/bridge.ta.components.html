@@ -1,0 +1,163 @@
+<body>
+<template id="ta-TestArea">
+  <style id="style-ta-TestArea">
+    .ta-TestArea {
+      height: 325px;
+      border: 1px solid #ccc;
+    }
+    .ta-TestArea .control {
+      height: 23px;
+      border-top: 1px solid #ccc;
+      background-color: #f7f7f7;
+    }
+    .ta-TestArea .control .btn {
+      border-radius: 0px;
+      border: 1px solid #f7f7f7;
+    }
+    .ta-TestArea .brui-Splitter-Layout {
+      height: calc(100% - 23px);
+    }
+  </style>
+  ##
+  var codeMirrorArea = tmpl.br.Div({});
+  var renderingArea = tmpl.ta.RenderingArea({});
+  ##
+  <div class="ta-TestArea">
+    ##%tmpl.brui.SplitterLayout({
+      direction: '',
+      items: [codeMirrorArea, renderingArea]
+    })##
+    <div class="control">
+      ##%tmpl.bs.Button({label: 'RUN', styleClass: 'xs', event: function() {
+        
+      }})##
+    </div>
+  </div>
+  ###
+  setTimeout(function() {
+    var codeMirror = CodeMirror(codeMirrorArea.element, {
+      value: "//formats, datas, bankData, networkType\nconsole.log('formats:', formats, 'datas:', datas);\ndatas.forEach(function(data) {\n\n});\n",
+      lineNumbers: true,
+      mode:  "javascript"
+    });
+  });
+  ##
+</template>
+
+<template id="ta-Rendering-Area">
+  <style id="style-ta-Rendering-Area">
+    .ta-Rendering-Area, .ta-Rendering-Area {
+      height: 100%;
+    }
+    .ta-Rendering-Area iframe {
+      border: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  ##
+  var imports = data.imports || [];
+  var code = data.code;
+  var dataStr = data.data;
+  var loadCount = 0;
+  var hasImport = false;
+  var importOptionTags = {
+    css: function(item) {
+      return tmpl.br.Tag(['link', {href: item.text, rel: "stylesheet", type: "text/css"}]);
+    },
+    js: function(item) {
+      loadCount++;
+      return tmpl.br.Tag(['script', {src: item.text, onload: function () {
+        loadCount--;
+        if (loadCount == 0) {
+          execScript(code, dataStr);
+        }
+      }}]);
+    },
+    import: function(item) {
+      hasImport = true;
+      loadCount++;
+      return tmpl.br.Tag(['link', {href: item.text, rel: "import", onload: function () {
+        loadCount--;
+        if (loadCount == 0) {
+          execScript(code, dataStr);
+        }
+      }}]);
+    },
+    tmpl: function(item) {
+      hasImport = true;
+      loadCount++;
+      return tmpl.br.Tag(['link', {href: '/tmpls?template_group_id=' + item.text, rel: "import", onload: function () {
+        loadCount--;
+        if (loadCount == 0) {
+          setTimeout(function() {
+            execScript(code, dataStr);
+          });
+        }
+      }}]);
+    }
+  }
+
+  var createImportElement = function(item) {
+    var tag = importOptionTags[item.type];
+    return tag ? tag(item) : null;
+  }
+
+  var execScript = function(code, dataStr) {
+    var head = iframeDocument.head;
+    var body = iframeDocument.body;
+  
+    var codeTag = tmpl.br.Tag(['template', {id: 'code-Template'}], code);
+    body.appendChild(codeTag.element);
+
+    var scriptCode = 'var data = ' + (dataStr || '{}') + ';\n';
+    scriptCode += (function() {/*
+      if (window.bridge && bridge.tmplTool) {
+        bridge.tmplTool.addTmpls(document.body);
+        var scope = tmpl.code.Template(data);
+        document.body.appendChild(scope.element);
+      } else {
+        var template = document.getElementById('code-Template');
+        var clone = document.importNode(template.content, true);
+        document.body.appendChild(clone);
+      }
+    */}).toString().match(/\/\*([^]*)\*\//)[1];
+    
+    var oldRunSctipt = iframeDocument.getElementById('runScript');
+    if (oldRunSctipt) head.removeChild(oldRunSctipt);
+    var scriptTag = tmpl.br.Tag(['script', {id: 'runScript'}], scriptCode);
+    head.appendChild(scriptTag.element);
+  }
+
+  var iframeDocument = null;
+  tmplScope.reflashCode = function(item) {
+    if (!iframeDocument) return;
+    var body = iframeDocument.body;
+    while (body.firstChild) {
+      body.removeChild(body.firstChild);
+    }
+    code = data.code = item.code;
+    dataStr = data.data = item.data;
+    execScript(code, dataStr);
+  }
+  ##
+  <div class="ta-Rendering-Area">
+    <iframe data-bridge-load="##:function(target) {
+    setTimeout(function() {
+      if (target.contentDocument || target.contentWindow) {
+        iframeDocument = target.contentDocument || target.contentWindow.document;
+        var baseTag = tmpl.br.Tag(['base', {href: location.origin}]);
+        iframeDocument.head.appendChild(baseTag.element);
+
+        imports.forEach(function(obj) {
+          var tag = createImportElement(obj);
+          if (tag) iframeDocument.head.appendChild(tag);
+        });
+      }
+    });
+
+    }##" sandbox="allow-same-origin allow-scripts allow-modals"></iframe>
+  </div>
+</template>
+
+</body>

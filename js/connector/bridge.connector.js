@@ -37,17 +37,25 @@
     },
     json: function(str) {
       return JSON.parse(str);
+    },
+    blob: function(blob) {
+      return blob;
     }
   };
   var requestFunc = function(url, option, callback, getType) {
     var xmlhttp = new XMLHttpRequest();
+    if (getType == 'blob') {
+      xmlhttp.responseType = "blob";
+    }
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-        if (xmlhttp.status == 200) {
-          callback(parser[getType || 'text'](xmlhttp.responseText), xmlhttp.status, xmlhttp, url, option);
-        } else {
-          callback(xmlhttp.responseText, xmlhttp.status, xmlhttp, url, option);
-        }
+    //xmlhttp.addEventListener('loadend', function(){
+      if (xmlhttp.status == 200) {
+        callback(parser[getType || 'text'](xmlhttp.response), xmlhttp.status, xmlhttp, url, option);
+      } else {
+        callback(xmlhttp.responseText, xmlhttp.status, xmlhttp, url, option);
+      }
+    //});
       }
     }
 
@@ -97,7 +105,80 @@
     hasError : function() {
       return false;  
     },
-    request : function(callBack) {
+    download: function(method, data, callBack) {
+      var conn = this;
+      var url = this.url;
+      conn.combine({
+        "method" : method,
+        "data" : data
+      });
+      var option = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({req : this.queueData})
+      };
+
+      if (conn.beforeRequestFunc) {
+        conn.beforeRequestFunc(conn, option);
+      }
+      conn.requestFunc(url, option, function(data, textStatus, response, url, option) {
+        if (conn.completeFunc) {
+          conn.completeFunc(data, textStatus, response)
+        }
+        if (conn.statusError(data, textStatus, response, url, option)) {
+          return false;
+        }
+        if (conn.hasError(data, textStatus, response, url, option)) {
+          return false;
+        }
+        callBack(data, textStatus, response);
+
+        if (conn.closeFunc) {
+          conn.closeFunc(data, textStatus, url);
+        }
+      }, 'blob');
+      this.reset();
+    },
+    upload: function(method, data, callBack) {
+      var conn = this;
+      var url = this.url;
+      conn.combine({
+        "key" : method,
+        "method" : method,
+        "data" : data
+      });
+      var option = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({req : this.queueData})
+      };
+
+      if (conn.beforeRequestFunc) {
+        conn.beforeRequestFunc(conn, option);
+      }
+      conn.requestFunc(url, option, function(data, textStatus, response, url, option) {
+        if (conn.completeFunc) {
+          conn.completeFunc(data, textStatus, response)
+        }
+        if (conn.statusError(data, textStatus, response, url, option)) {
+          return false;
+        }
+        if (conn.hasError(data, textStatus, response, url, option)) {
+          return false;
+        }
+        callBack(data, textStatus, response);
+
+        if (conn.closeFunc) {
+          conn.closeFunc(data, textStatus, url);
+        }
+      }, 'json');
+      this.reset();
+    },
+    request: function(callBack, getType) {
       var conn = this;
       // (url, callback, getType, option)
       var url = this.url;
@@ -129,7 +210,7 @@
         if (conn.closeFunc) {
           conn.closeFunc(data, textStatus, url);
         }
-      }, 'json');
+      }, getType || 'json');
       /*
       $.post(this.url, {req : this.queueData}, function (data, textStatus, jqXHR) {
 

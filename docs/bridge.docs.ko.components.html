@@ -81,9 +81,19 @@
       padding-right: 0px;
       padding-left: 0px;
     }
+    .docs-Docs .mainArea {
+      overflow: auto;
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+    }
     .docs-Docs .sidemenu .list-group-item {
       border: 0px;
       cursor: pointer;
+    }
+    pre, .ta-TestArea {
+      margin: 0 0 20px;
     }
   </style>
   ##
@@ -106,7 +116,7 @@
           ##%tmpl.bs.ListGroup({active: true, items: item.tmpl.getSidemenu()})##
         ##});##
       </div>
-      <div class="col-xs-9" data-bridge-var="##:docsMain##"></div>
+      <div class="col-xs-9 mainArea" data-bridge-var="##:docsMain##"></div>
     </div>
   </div>
 </template>
@@ -171,30 +181,63 @@
     
     
     ##} else if (index == 'Getting started') {##
-    
     <h1>설치</h1>
-    아래와 같이 bridge.template.js js를 추가해주세요.
-    <pre class="prettyprint lang-html"><script src="js/bridge.template.js"></script></pre>
-    이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.
-    이제 다음과 같은 템플릿 파일을 만들어 
-    <pre class="prettyprint lang-js">
-      bridge.tmplTool.addTmpl('do-Simple', '<div>##=data.label##</div>');
-    </pre>
-    이제 do.Simple라는 템플릿을 컴포넌트로 사용할 있는 준비가 되었습니다.
+    아래와 같이 bridge.template.js javascript를 추가해주세요.
+    ##%tmpl.docs.CodeTemplate001({})##
+
+    이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.<br/>
+    이제 다음과 같은 템플릿 파일을 만들어 봅시다.
+    ##%tmpl.docs.CodeTemplate002({})##
+
+    이제 do.Simple라는 템플릿을 컴포넌트로 사용할 있는 준비가 되었습니다.<br/>
     컨포넌트의 생성과 화면 배치는 다음과 같이 이루어 집니다.
-<pre class="prettyprint lang-js">
-var simple = tmpl.do.Simple({label: 'Div Simple'});
-document.body.appendChild(simple.element);</pre>
+    ##%tmpl.docs.CodeTemplate003({})##
+
+    또는 다음과 같이 사용 할 수도 있습니다.
+    ##%tmpl.docs.CodeTemplate004({})##
+
+    {label: 'Div Sample1'} 로 넘겨준 데이터는 템플릿 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
+    아래에서 데모로 코드의 동작을 확인해 보십시오.
+    ##%tmpl.docs.CodeTemplate005({})##
     
-    ##%tmpl.ta.TestArea({})##
+    컴포넌트 생성시 javascript Object 가 리턴 되어 집니다.<br/>
+    이 object는 템플릿작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.
+    ##%tmpl.docs.CodeTemplate006({})##
+
+    bridge.tmplTool.addTmpl() 을 사용 하여 일일이 템플릿을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
+    bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 지원 하고 있습니다.<br/>
+    이때에는 bridge.tmplTool.addTmpls() 를 통해 템플릿을 등록 합니다.
+    ##%tmpl.docs.CodeTemplate00701({})##
     
+    template Tag 의 id 에 지정한 이름으로 콤포넌트 생성 할 수 있게 됩니다.</br>
+    동일한 id 로 다른 template 을 로딩 하게 되는 경우는 기존 template 를 대체하게 됩니다.</br>
+    template Tag 안에 정의도니 style 는 template 해석 할 때에 document 의 head 에 추가 됩니다.</br>
+    style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에, 
+    style Tag 의 id 는 "style-{tempalte의 id}" 로 지정할 것을 권합니다.</br>
+    </br>
+    아래에서 데모에서 template 구조와 동작을 확인 해 보시기 바랍니다.
+    ##%tmpl.docs.CodeTemplate00702({})##
+    
+    좀더 실제적인 사용예를 살펴 보겠습니다.<br/>
+    먼저 반복 사용되는 UI쪽만을 분리한 template 파일을 만들면 여러 프로젝트에서 재 활용 할 수 있을 것입니다.<br/>
+    여기서는 Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) 를 bridge.template 로 사용 할 수 있게 만든 bridge.mdl.components.html 를 사용 하겠습니다.<br/>
+    <br/>
+    index.html, demo.components.html 로 <br/>
+    
+    
+    ##%tmpl.docs.CodeTemplate008({})##
     ##}##
+    
+    
+    
+    
   </div>
   ###
   setTimeout(function() {
-    var codes = tmplScope.element.querySelectorAll('.prettyprint');
+    var codes = tmplScope.element.querySelectorAll('.prettyprint:not(.escaped)');
     Array.prototype.forEach.call(codes, function(code) {
-      code.innerText = code.innerHTML.replace(/^[ \n]*/g, '');
+      code.innerText = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
+      //code.innerText = code.innerHTML;
     });
     PR.prettyPrint();
   });

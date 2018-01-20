@@ -1,0 +1,169 @@
+<body>
+<template id="docs-Code-Template-001">
+  <pre class="prettyprint lang-html">
+    <script src="js/bridge.template.js"></script>
+  </pre>
+</template>
+
+<template id="docs-Code-Template-002">
+  <pre class="prettyprint lang-js">
+    bridge.tmplTool.addTmpl('do-Simple', '<div>#\#=data.label#\#</div>');
+  </pre>
+</template>
+
+<template id="docs-Code-Template-003">
+  <pre class="prettyprint lang-js">
+// do-Simple-Sample → tmpl.do.SimpleSample()
+var sample = tmpl.do.SimpleSample({label: 'Div Simple'});
+document.body.appendChild(sample.element);
+  </pre>
+</template>
+
+<template id="docs-Code-Template-004">
+  <pre class="prettyprint lang-js">
+// do-Simple-Sample → bridge.tmpl('do-Simple-Sample')()
+var sample = bridge.tmpl('do-Simple-Sample')({label: 'Div Simple'});
+document.body.appendChild(sample.element);
+  </pre>
+</template>
+
+<template id="docs-Code-Template-005">
+  ##var code = `bridge.tmplTool.addTmpl('do-Simple-Sample', '<div>#\#=data.label#\#</div>');
+var sample1 = tmpl.do.SimpleSample({label: 'Div Sample1'});
+document.body.appendChild(sample1.element);
+
+var sample2 = bridge.tmpl('do-Simple-Sample')({label: 'Div Sample2'});
+document.body.appendChild(sample2.element);`
+  ##
+  ##%tmpl.ta.TestArea({
+    imports: [{type: 'js', text: 'js/bridge.template.js'}],
+    code: code 
+  })##
+</template>
+
+<template id="docs-Code-Template-006">
+  <pre class="prettyprint lang-js">
+var sample = tmpl.do.Sample({label: 'Div Sample'});
+sample → {
+  appendTo: function,
+  data: {label: "Div Sample"},
+  element: Element
+  reflash: function,
+  remove: function,
+  render: function,
+  replace: function,
+  status: {},
+  tmplId: "do-Sample"
+  _id: "do-Sample1"
+}
+  </pre>
+</template>
+
+<template id="docs-Code-Template-007-01">
+##
+var code = `var templateString = \`
+  <template id="do-Simple-One">
+    <div class="do-Simple-One">
+      #\#=data.label#\#
+    </div>
+  </template>
+
+  <template id="do-Simple-Two">
+    <style id="style-do-Simple-Two">
+      .do-Simple-Two {
+      	background-color: yellow;
+      }
+    </style>
+    <div class="do-Simple-Two">
+      #\#=data.label#\#
+    </div>
+  </template>
+
+  <template id="do-Simple-Three">
+    <style id="style-do-Simple-Three">
+      .do-Simple-Three {
+      	background-color: red;
+      }
+      .do-Simple-Three, .do-Simple-Three div {
+        border: 1px solid black;
+        padding: 10px;
+      }
+    </style>
+    <div class="do-Simple-Three">
+      #\#%tmpl.do.SimpleOne({label: data.labelOne})#\#
+      #\#%tmpl.do.SimpleTwo({label: data.labelTwo})#\#
+      #\#=data.labelThree#\#
+    </div>
+  </template>
+\`;
+bridge.tmplTool.addTmpls(templateString);
+
+var sample = tmpl.do.SimpleThree(
+  {labelOne: 'Div Sample One',
+  labelTwo: 'Div Sample Two',
+  labelThree: 'Div Sample Three'});
+document.body.appendChild(sample.element);
+`;
+tmplScope.getCode = function() {
+  return code;
+}
+##
+  <pre class="prettyprint lang-js lang-html lang-css">
+  ##=code##
+  </pre>
+</template>
+
+<template id="docs-Code-Template-007-02">
+  ##%tmpl.ta.TestArea({
+    imports: [{type: 'js', text: 'js/bridge.template.js'}],
+    code: tmpl.docs.CodeTemplate00701({}).getCode()
+  })##
+</template>
+
+<template id="docs-Code-Template-008">
+<!--
+  ##
+  var indexFile = `<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>Sample Code</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="js/bridge.template.js"></script>
+  </head>
+  <body></body>
+  <script type="text/javascript">
+    bridge.tmplTool.addTmplByUrl([
+        'template/Material-Design-Lite/bridge.mdl.components.html',
+        'myCode.components.html'
+      ], function() {
+        document.body.appendChild(tmpl.myCode.Base({}).element);
+    });
+  </script>
+</html>`;
+
+  function htmlEscape(s) {
+    return (String(s).replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;"));
+  }
+  ##
+-->
+  <pre class="prettyprint escaped lang-html" data-bridge-var="##:pre##">##-indexFile##</pre>
+</template>
+
+<template id="docs-Code-Template-009">
+  
+</template>
+
+<template id="docs-Code-Template-010">
+  
+</template>
+
+<template id="docs-Code-Template-011">
+  
+</template>
+
+</body>

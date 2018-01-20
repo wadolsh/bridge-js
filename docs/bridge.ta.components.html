@@ -2,8 +2,9 @@
 <template id="ta-TestArea">
   <style id="style-ta-TestArea">
     .ta-TestArea {
-      height: 325px;
+      height: 345px;
       border: 1px solid #ccc;
+      margin: 0 0 10px;
     }
     .ta-TestArea .control {
       height: 23px;
@@ -14,31 +15,45 @@
       border-radius: 0px;
       border: 1px solid #f7f7f7;
     }
+    .ta-TestArea .splitter-title {
+      background-color: #f7f7f7;
+      border-bottom: 1px solid #ccc;
+      height: 20px;
+      padding-left: 5px;
+    }
     .ta-TestArea .brui-Splitter-Layout {
       height: calc(100% - 23px);
     }
   </style>
   ##
+  var imports = data.imports;
+  var code = data.code;
+  
   var codeMirrorArea = tmpl.br.Div({});
-  var renderingArea = tmpl.ta.RenderingArea({});
+  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code});
+  var codeMirror = null;
   ##
   <div class="ta-TestArea">
     ##%tmpl.brui.SplitterLayout({
       direction: '',
-      items: [codeMirrorArea, renderingArea]
+      items: [[tmpl.br.Div({class: 'splitter-title', content: 'Code'}), codeMirrorArea], [tmpl.br.Div({class: 'splitter-title', content: 'Result'}), renderingArea]]
     })##
     <div class="control">
-      ##%tmpl.bs.Button({label: 'RUN', styleClass: 'xs', event: function() {
-        
+      ##%tmpl.bs.Button({label: 'RESET', styleClass: 'xs', event: function() {
+        codeMirror.setValue(code);
+        //renderingArea.reflashCode({code: codeMirror.getValue()});
       }})##
     </div>
   </div>
   ###
   setTimeout(function() {
-    var codeMirror = CodeMirror(codeMirrorArea.element, {
-      value: "//formats, datas, bankData, networkType\nconsole.log('formats:', formats, 'datas:', datas);\ndatas.forEach(function(data) {\n\n});\n",
+    codeMirror = CodeMirror(codeMirrorArea.element, {
+      value: code,
       lineNumbers: true,
-      mode:  "javascript"
+      mode: "javascript"
+    })
+    codeMirror.on('change',function(cMirror) {
+      renderingArea.reflashCode({code: cMirror.getValue()});
     });
   });
   ##
@@ -58,7 +73,6 @@
   ##
   var imports = data.imports || [];
   var code = data.code;
-  var dataStr = data.data;
   var loadCount = 0;
   var hasImport = false;
   var importOptionTags = {
@@ -70,7 +84,7 @@
       return tmpl.br.Tag(['script', {src: item.text, onload: function () {
         loadCount--;
         if (loadCount == 0) {
-          execScript(code, dataStr);
+          execScript(code);
         }
       }}]);
     },
@@ -80,7 +94,7 @@
       return tmpl.br.Tag(['link', {href: item.text, rel: "import", onload: function () {
         loadCount--;
         if (loadCount == 0) {
-          execScript(code, dataStr);
+          execScript(code);
         }
       }}]);
     },
@@ -91,7 +105,7 @@
         loadCount--;
         if (loadCount == 0) {
           setTimeout(function() {
-            execScript(code, dataStr);
+            execScript(code);
           });
         }
       }}]);
@@ -103,30 +117,20 @@
     return tag ? tag(item) : null;
   }
 
-  var execScript = function(code, dataStr) {
+  var execScript = function(code) {
+    if (!code) return;
     var head = iframeDocument.head;
     var body = iframeDocument.body;
-  
-    var codeTag = tmpl.br.Tag(['template', {id: 'code-Template'}], code);
-    body.appendChild(codeTag.element);
 
-    var scriptCode = 'var data = ' + (dataStr || '{}') + ';\n';
-    scriptCode += (function() {/*
-      if (window.bridge && bridge.tmplTool) {
-        bridge.tmplTool.addTmpls(document.body);
-        var scope = tmpl.code.Template(data);
-        document.body.appendChild(scope.element);
-      } else {
-        var template = document.getElementById('code-Template');
-        var clone = document.importNode(template.content, true);
-        document.body.appendChild(clone);
-      }
-    */}).toString().match(/\/\*([^]*)\*\//)[1];
-    
     var oldRunSctipt = iframeDocument.getElementById('runScript');
     if (oldRunSctipt) head.removeChild(oldRunSctipt);
-    var scriptTag = tmpl.br.Tag(['script', {id: 'runScript'}], scriptCode);
-    head.appendChild(scriptTag.element);
+    try {
+      var scriptTag = tmpl.br.Tag(['script', {id: 'runScript', innerHTML: 'try {var codeLine = (function() {/* ' + code + ' */}).toString().match(/\\/\\*([^]*)\\*\\//)[1]; Function(codeLine)(); } catch(e) { document.body.innerHTML= e; console.error(e); }'}]);
+      head.appendChild(scriptTag.element);
+    } catch(e) {
+      body.innerHTML = e;
+      console.error(e);
+    }
   }
 
   var iframeDocument = null;
@@ -137,8 +141,7 @@
       body.removeChild(body.firstChild);
     }
     code = data.code = item.code;
-    dataStr = data.data = item.data;
-    execScript(code, dataStr);
+    execScript(code);
   }
   ##
   <div class="ta-Rendering-Area">
@@ -146,12 +149,12 @@
     setTimeout(function() {
       if (target.contentDocument || target.contentWindow) {
         iframeDocument = target.contentDocument || target.contentWindow.document;
-        var baseTag = tmpl.br.Tag(['base', {href: location.origin}]);
+        var baseTag = tmpl.br.Tag(['base', {href: location.origin + location.pathname}]);
         iframeDocument.head.appendChild(baseTag.element);
 
         imports.forEach(function(obj) {
           var tag = createImportElement(obj);
-          if (tag) iframeDocument.head.appendChild(tag);
+          if (tag) iframeDocument.head.appendChild(tag.element);
         });
       }
     });

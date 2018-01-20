@@ -35,7 +35,6 @@ console.log('!200', xmlhttp.status, url, option);
         }
       }
     }
-
     if (option) {
       xmlhttp.open(option.method || 'GET', url, true);
       if (option.headers) Object.keys(option.headers).forEach(function(key) {
@@ -154,14 +153,19 @@ console.log('!200', xmlhttp.status, url, option);
     socket.on('livereload', function (data) {
 console.log('livereload', data);
       if (data.path) {
+        var path = data.path;
+        if (path && path[0] != '/') {
+          path = '/' + path;
+        }
         if (data.path.indexOf('components.html') > -1) {
-          requestFunc(data.path, null, function(text) {
-console.log('addTmpls: ' + data.path);
+
+          requestFunc(path, null, function(text) {
+console.log('addTmpls: ' + path);
 
             var $template = document.createElement('template');
             $template.innerHTML = text;
             var $templateContent = ($template.content || $template);
-            var importedTarget = document.querySelector('link[rel="import"][href="' + data.path + '"]');
+            var importedTarget = document.querySelector('link[rel="import"][href="' + path + '"]');
             if (importedTarget) {
               var importedContent = importedTarget.import;
 
@@ -210,11 +214,11 @@ console.log('Changed template : ', ele.id);
               reflashNodeList[i].reflash();
             }
           });
-        } else if (data.path.indexOf('.js') > -1) {
-            loader.js(data.path);
-        } else if (data.path.indexOf('.css') > -1) {
-            loader.css(data.path);
-        } else if (data.path.indexOf('.html') > -1) {
+        } else if (path.indexOf('.js') > -1) {
+            loader.js(path);
+        } else if (path.indexOf('.css') > -1) {
+            loader.css(path);
+        } else if (path.indexOf('.html') > -1) {
             window.location.reload();
         }
       }

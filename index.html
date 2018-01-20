@@ -4,13 +4,13 @@
     <title>Component Engine bridge-js</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.min.js"></script>
-    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-    <script src="js/bridge.template.0.8.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/mode/javascript/javascript.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/google/code-prettify/master/loader/prettify.css"/>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/src/run_prettify.js?lang=css&amp;skin=desert"></script>
+    <script src="js/bridge.template.js"></script>
   </head>
-  <body>
-
-  </body>
+  <body></body>
   <script type="text/javascript">
     if (window.location.port == 8182) {
       var script = document.createElement('script');
@@ -29,10 +29,10 @@
         'template/bridge.ui.components.html',
         'template/bootstrap3/bridge.bootstrap3.components.html',
         'docs/bridge.ta.components.html',
+        'docs/bridge.docs.code.components.html',
         'docs/bridge.docs.' + lang + '.components.html',
       ], function() {
         document.body.appendChild(tmpl.docs.Base({}).element);
-        
       /*
       window.onload = function() {
         var hashArray = location.hash.replace('#', '').split('/');

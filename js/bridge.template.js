@@ -109,7 +109,15 @@
         document.head.appendChild(styleNode);
       }
     },
-    preEvaluate  : {
+    
+    commentArea : {
+      pattern: /#\\#([\s\S]+?)#\\#/g,
+      exec: function(commentArea) {
+        return "'+\n'##" + commentArea + "##'+\n'";
+      }
+    },
+    
+    preEvaluate : {
       pattern: /##!([\s\S]+?)##/g,
       exec: function(preEvaluate) {
         new Function(preEvaluate)();
@@ -119,7 +127,7 @@
     interpolate : {
       pattern: /##=([\s\S]+?)##/g,
       exec: function(interpolate) {
-        return  "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+        return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
       }
     },
     scopeKey: {
@@ -370,7 +378,7 @@
     escape    : {
       pattern: /##-([\s\S]+?)##/g,
       exec: function(escape) {
-        return "'+\n((__t=(" + escape + "))==null?'':escapeHtml.escape(__t))+\n'";
+        return "'+\n((__t=(" + escape + "))==null?'':bridge.tmplTool.escapeHtml.escape(__t))+\n'";
       },
     },
     evaluate  : {
@@ -629,7 +637,7 @@
       }
 
       tmplScope.element = returnTarget;
-      //returnTarget.tmplScope = tmplScope;
+      returnTarget.tmplScope = tmplScope;
 
       // style to shadow
       var style = returnTarget.querySelector('style[scoped], style[shadow]');
@@ -700,7 +708,7 @@
         tmpl: tmpl,
         source: escapeHtml.escape(tmpl.source),
         templateText: escapeHtml.escape(templateText),
-        elements: new Array()
+        //elements: new Array()
       };
       cachedTmpl.set(tmplId, tmplMeta);
       var tmplIdNames = tmplId.split('-');

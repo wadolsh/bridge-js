@@ -356,7 +356,7 @@
   </div>
   ##
   setTimeout(function() {
-    var codes = tmplScope.element.querySelectorAll('.prettyprint:not(.escaped)');
+    var codes = tmplScope.element.querySelectorAll('.prettyprint:not(.escaped):not(.prettyprinted)');
     console.log(codes.length);
     Array.prototype.forEach.call(codes, function(code) {
       code.innerText = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');

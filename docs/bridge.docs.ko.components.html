@@ -355,9 +355,7 @@
     
   </div>
   ###
-  console.log('aaa');
   var codes = this.querySelectorAll('.prettyprint:not(.escaped)');
-  console.log(codes.length);
   Array.prototype.forEach.call(codes, function(code) {
     code.innerText = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
   });

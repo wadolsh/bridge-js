@@ -1,0 +1,47 @@
+<template id="doc20102-tmpl01">
+  <style id="style-doc20102-tmpl01">
+    .doc20102-tmpl01:before {
+       content: "Sample 1: "
+    }
+    .doc20102-tmpl01 li {
+      cursor: pointer;
+    }
+  </style>
+  ##
+  var clickHandler = function(event, tmplData, tmplElem, tmplScope) {
+    alert(tmplData[0]);
+  };
+  ##
+  <ul class="doc20102-tmpl01">
+    ##[1, 2, 3].forEach(function(value) {##
+    <li data-bridge-event="##:clickHandler::[value, data]##">Click ##=value##</li>
+    ##});##
+  </ul>
+</template>
+
+<template id="doc20102-tmpl02">
+  <style id="style-doc20102-tmpl02">
+    .doc20102-tmpl02:before {
+       content: "Sample 2: "
+    }
+  </style>
+  ##
+  var counter = 0;
+  var colors = ['#FFA07A', '#FFFFE0', '#7CFC00', '#00FFFF', '#00BFFF'];
+  var clickHandler = function(event, index, tmplElem, tmplScope) {
+    counter++;
+    event.target.innerHTML = data.label + index + ' ' + counter;
+    var tagName = event.target.tagName;
+  }
+  var mouseoverHandler = {mouseover: function(e, index) {
+    var colorIndex = (counter + index) % 5;
+    e.target.style.backgroundColor = colors[colorIndex];
+  }};
+  ##
+  <div class="doc20102-tmpl02">
+    ##[1, 2, 3].forEach(function(value) {##
+    <button type="button" data-bridge-event="##:clickHandler::value:::mouseoverHandler::value##">##=data.label##</button>
+    ##});##
+  </div>
+</template>
+

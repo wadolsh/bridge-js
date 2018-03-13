@@ -1,0 +1,59 @@
+<template id="doc104-tmpl01">
+  <style id="style-doc104-tmpl01">
+    .doc104-tmpl01:before {
+       content: "Sample 1: "
+    }
+  </style>
+  <ul class="doc104-tmpl01">
+    ##[1, 2, 3].forEach(function(value) {##
+      <li>##=value##</li>
+    ##});##
+  </ul>
+</template>
+
+<template id="doc104-tmpl02">
+  <style id="style-doc104-tmpl02">
+    .doc104-tmpl02:before {
+      content: "Sample 2: "
+    }
+  </style>
+  <ul class="doc104-tmpl02">
+    ##
+    var valuse = data.values || [];
+    ##
+    ##valuse.forEach(function(value) {##
+      <li>##=value##</li>
+    ##});##
+  </ul>
+</template>
+
+<template id="doc104-tmpl03">
+  <style id="style-doc104-tmpl03">
+    .doc104-tmpl03:before {
+      content: "Sample 3: "
+    }
+  </style>
+  ##
+  var str = '**' + data.label + '**';
+  ##
+  <div class="doc104-tmpl03">##=str##</div>
+</template>
+
+<template id="doc104-tmpl04">
+  <style id="style-doc104-tmpl04">
+    .doc104-tmpl04:before {
+      content: "Sample 4: "
+    }
+  </style>
+    ##
+    var isTrue = data.isTrue;
+    ##
+    <div class="doc104-tmpl04">
+    ##if(isTrue) {##
+      TRUE
+    ##} else {##
+      FALSE
+    ##}##
+  </div>
+</template>
+

@@ -1,0 +1,66 @@
+<template id="doc20101-tmpl01">
+  <style id="style-doc20101-tmpl01">
+    .doc20101-tmpl01:before {
+       content: "Sample 1: "
+    }
+    .doc20101-tmpl01 li {
+      cursor: pointer;
+    }
+  </style>
+  <ul class="doc20101-tmpl01">
+    ##[1, 2, 3].forEach(function(value) {##
+      <li data-bridge-event="##:function(event, tmplData, tmplElem, tmplScope) {
+        alert(value);
+      }##">Click ##=value##</li>
+    ##});##
+  </ul>
+</template>
+
+<template id="doc20101-tmpl02">
+  <style id="style-doc20101-tmpl02">
+    .doc20101-tmpl02:before {
+       content: "Sample 2: "
+    }
+  </style>
+  ##
+  var counter = 0;
+  ##
+  <div class="doc20101-tmpl02">
+    <button type="button" data-bridge-event="##:function(event, tmplData, tmplElem, tmplScope) {
+      counter++;
+      event.target.innerHTML = data.label + counter;
+      var tagName = event.target.tagName;
+      alert(tagName + ': ' + JSON.stringify(tmplData) + '\ntmplElem className: ' + tmplElem.className);
+    }##">##=data.label##</button>
+  </div>
+</template>
+
+<template id="doc20101-tmpl03">
+  <style id="style-doc20101-tmpl03">
+    .doc20101-tmpl03:before {
+       content: "Sample 3: "
+    }
+  </style>
+  ##
+  var clickCounter = 0;
+  var overCounter = 0;
+  var reflash = function(target) {
+    target.innerHTML = data.label + ' ' + clickCounter + ' ' + overCounter;
+  }
+  var eventHandler = {
+    click: function(e, tmplData, tmplElem, tmplScope) {
+      clickCounter++;
+      reflash(e.target);
+    },
+    mouseover: function(e, tmplData, tmplElem, tmplScope) {
+      overCounter++;
+      reflash(e.target);
+    }
+  }
+  ##
+  <div class="doc20101-tmpl03">
+    <button type="button" data-bridge-event="##:eventHandler##">##=data.label## ##=clickCounter## ##=overCounter##</button>
+  </div>
+</template>
+
+

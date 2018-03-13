@@ -1,0 +1,22 @@
+<template id="doc101-tmpl01">
+  <div>##='Sample 1'##</div>
+</template>
+
+<template id="doc101-tmpl02">
+  <div>**##=data.label##**</div>
+</template>
+
+<template id="doc101-tmpl03">
+  <div>##=data.label ? data.label : 'EMPTY'##</div>
+</template>
+
+<template id="doc101-tmpl04">
+  <div style="background-color: ##=data.bgColor || 'gray'##;">##=data.label##</div>
+</template>
+
+<template id="doc101-tmpl05">
+  ##
+  var tag = data.tag || 'div';
+  ##
+  &lt;##=tag##&gt;##=data.label##&lt;/##=tag##&gt;
+</template>

@@ -29,7 +29,7 @@
   ###
   setTimeout(function() {
     var hashArray = location.hash.replace('#', '').split('/');
-    var hash = !hashArray[0] ? '#Docs' : location.hash;
+    var hash = !hashArray[0] ? '#Docs' : '#' + hashArray[0];
     document.querySelector("a[href='" + hash + "']").click();
   }, 0);
   ##
@@ -40,7 +40,6 @@
         tmpl.bs.NavbarLi({
           items: [
             {label: '문서', href: "#Docs", event: function() {
-            console.log(main);
               tmpl.docs.Docs({}, main);
             }},
             {label: '따라하기', href: "#Tutorial", event: function() {
@@ -92,6 +91,9 @@
       border: 0px;
       cursor: pointer;
     }
+    .docs-Docs .sidemenu .list-group-item.active .list-group-item {
+      color: black;
+    }
     pre, .ta-TestArea {
       margin: 0 0 20px;
     }
@@ -128,68 +130,78 @@
       border-radius: 4px;
       border: 1px solid #ccc;
     }
+    .docs-Docs-Template h1,
+    .docs-Docs-Template h2,
+    .docs-Docs-Template h3 {
+      padding-top: 10px;
+    }
   </style>
   ##
   var contentArea = data.contentArea;
   var index = data.index;
-  
+  var selectedIndex = null;
   tmplScope.getSidemenu = function() {
     return [
-      {label: '소개', index: 'intro'},
-      {label: '시작하기', index: 'Getting started'},
-      {label: '템플릿 작성', index: 'template_build'},
-      {label: '인스턴스', index: 'use_instance'}
+      {label: '소개', index: 'Intro', hash: '#Docs/Intro'},
+      
+      {label: '시작하기', index: 'GettingStarted', hash: '#Docs/GettingStarted'},
+      {label: '　설치', index: 'GettingStarted', hash: '#Docs/GettingStarted/Install'},
+      {label: '　Template 등록', index: 'GettingStarted', hash: '#Docs/GettingStarted/AddTmpl'},
+      {label: '　Component 생성', index: 'GettingStarted', hash: '#Docs/GettingStarted/Tmpl'},
+      {label: '　실제적인 사용예', index: 'GettingStarted', hash: '#Docs/GettingStarted/Example'},
+      
+      {label: '템플릿 작성', index: 'Template', hash: '#Docs/Template'},
+      {label: '　표현', index: 'Template', hash: '#Docs/Template/Expression'},
+      {label: '　Element 참조', index: 'Template', hash: '#Docs/Template/Element'},
+      {label: '　TmplScope', index: 'Template', hash: '#Docs/Template/TmplScope'},
+      
+      {label: '컴포넌트 생성', index: 'Component', hash: '#Docs/Component'},
+      
+      {label: '컴포넌트 사용', hash: '#Docs/Component/Component'},
     ].map(function(item) {
-      return Object.assign(item, {event: function() {
-        var area = contentArea();
-        while (area.firstChild) area.removeChild(area.firstChild);
-        tmplScope.reflash({index: item.index});
-        area.appendChild(tmplScope.element);
+      return Object.assign(item, {event: function(e) {
+        if (item.index != selectedIndex) {
+          var area = contentArea();
+          while (area.firstChild) area.removeChild(area.firstChild);
+          tmplScope.reflash({index: item.index});
+          area.appendChild(tmplScope.element);
+          selectedIndex = item.index;
+        }
+        setTimeout(function() {
+          location.hash = '';
+          location.hash = item.hash;
+        }, 200);
       }})
     });
   }
   ##
   <div class="docs-Docs-Template">
-    ##if (index == 'intro') {##
-    
-    bridge template engine 의 개발 배경
-    <br>
-    bridge template engine 은 web componet 의 형식을 빌려와서 javascript로 쉽게 제어하기 위해서 제작 되었습니다.
-    <br>
-    bridge template engine 은 다음과 같은 목표를 가지고 제작 되었었습니다.
+  ##if (index == 'Intro') {##
+    <h1 id="Docs/Intro">소개</h1>
+    bridge.template 은 web 기반 프론트엔드를 쉽게 제작하기 위해서 만즐어 졌습니다.<br/>
+    bridge.template 은 다음과 같은 목표를 가지고 제작 되었었습니다.
     <ul>
       <li>Single page application 작성을 지원함</li>
-      <li>재상용 가능한 컴포넌트 작성을 지원함</li>
+      <li>재사용 가능한 컴포넌트 작성을 지원함</li>
       <li>하나의 템플릿 안에 style, html, javascript 로직을 통합 함으로써 적은 노력으로 컴포넌트를 제작 할 수 있도록 함</li>
       <li>Html Tag 안에 Event Handler 를 설정 가능도록 함</li>
-      <li>컴포넌트 끼로 조합 할 수 있도록 지원함으로써 블록을 조립하듯이 ui를 제작 할 수 있도록 지원함</li>
-      <li>two-way data binding 을 의도적으로 배제하여, 가능한 제작자가 작성하고 예상한 결과를 표현 할 수 있도록 함</li>
+      <li>컴포넌트 끼리 조합 할 수 있도록 함으로써 블록을 조립하듯이 ui를 제작 할 수 있도록 지원함</li>
     </ul>
 
-    bridge template engine 은 
-    John Resig 씨가 발표한 JavaScript Micro-Templating
-    (https://johnresig.com/blog/javascript-micro-templating/)
-    에 기반으로 제작 되었으며,
-    <br>
-    다음과 같은 훌륭한 frameworek 들을 경험하면서 개인적으로 느낀 개선점을 반영 하여 제작 되었습니다.
-    <ul>
-      <li>backbone.js View (http://backbonejs.org/#View) 에서 느낀
-      template의 결과물인 html 과 event 유연한 연동의 가능했으면 한 부분을 개선 하고자 함</li>
-      <li>angular v1 (https://angularjs.org/)에서 느낀 좀 더 간편한 컴포넌트 제작이 가능했으면 한 점을 반영 하고자 함</li>
-      <li>polymer (https://www.polymer-project.org/) 에서 느낀 동적인 요소를 부여하기 힘든 부분을 반영 하고자 함</li>
-    </ul>
-    
-    
-    ##} else if (index == 'Getting started') {##
-    <h1>설치</h1>
+  ##} else if (index == 'GettingStarted') {##
+    <h1 id="Docs/GettingStarted">시작하기</h1>
+    <h2 id="Docs/GettingStarted/Install">설치</h2>
     아래와 같이 bridge.template.js javascript를 추가해주세요.
     ##%tmpl.docs.CodeTemplate001({})##
 
     이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.<br/>
+    
+    <h2 id="Docs/GettingStarted/AddTmpl">Template 등록</h2>
     이제 다음과 같은 템플릿 파일을 만들어 봅시다.
     ##%tmpl.docs.CodeTemplate002({})##
-
     이제 do.Simple라는 템플릿을 컴포넌트로 사용할 있는 준비가 되었습니다.<br/>
+    
+    <h2 id="Docs/GettingStarted/Tmpl">Component 생성</h2>
     컨포넌트의 생성과 화면 배치는 다음과 같이 이루어 집니다.
     ##%tmpl.docs.CodeTemplate003({})##
 
@@ -215,20 +227,130 @@
     style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에, 
     style Tag 의 id 는 "style-{tempalte의 id}" 로 지정할 것을 권합니다.</br>
     </br>
-    아래에서 데모에서 template 구조와 동작을 확인 해 보시기 바랍니다.
+    아래에서 데모에서 template 구조와 동작을 확인해 보시기 바랍니다.
     ##%tmpl.docs.CodeTemplate00702({})##
     
+    <h2 id="Docs/GettingStarted/Example">실제적인 사용예</h2>
     좀더 실제적인 사용예를 살펴 보겠습니다.<br/>
     먼저 반복 사용되는 UI쪽만을 분리한 template 파일을 만들면 여러 프로젝트에서 재 활용 할 수 있을 것입니다.<br/>
     여기서는 Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) 를 bridge.template 로 사용 할 수 있게 만든 bridge.mdl.components.html 를 사용 하겠습니다.<br/>
+    
+    ※ bridge.template 으로 구성된 Material Design Lite 에 관해서는 
+    <a href="template/Material-Design-Lite/" target="_blank">이곳의 링크</a>를 참고해 주십시오.<br/>
+    
     <br/>
-    index.html, demo.components.html 로 <br/>
+    bridge.tmplTool.addTmplByUrl()은 Array 로 지정된 템플릿 파일을 다운 로드 해서 로딩 한 다음 callback을 실행 합니다.<br/>
+
+    <br/>
+    <h4>index.html</h4>
+    ##%tmpl.docs.CodeTemplate00801({})##
+    
+    <h4>docs.CodeTemplate00802.components.html</h4>
+    ##%tmpl.docs.CodeTemplate00802({})##
+
+    데모 화면을 통해 "Content1" 과 "Content2" 를 클릭 해서 Event 발생을 확인해 보시기 바랍니다.<br/>
+    Content1 에서는 input 에 값을 넣고 Button 를 클릭해서 입력값의 표시를 확인 해 보시기 바랍니다.
+    ##%tmpl.docs.CodeTemplate00803({})##
+
+  ##} else if(index == 'Template') {##
+    
+    <h1 id="Docs/Template">템플릿 문법</h1>
+      <h3 id="Docs/Template/Expression">콘텐츠 표현</h3>
+        <h4>[ #\#= #\# ]</h4>
+        문자열을 표현합니다.
+        <br>
+        HTML 태그와도 자유롭게 사용 될 수 있으나 브라우저에 따라서 "<", ">" 를 escape 해야 정상 작됭 되기도 합니다.
+        ##%tmpl.docs.CodeTemplate101({})##
+
+        <br>
+        <h4>[ #\#- #\# ]</h4>
+        escape 처리를 한 문자열을 표현 합니다.
+        <br>
+        escape 처리는 `bridge.tmplTool.escapeHtml.escape(); 를 사용합니다.
+        <br>
+        HTML Tag 등을 화면에 출력할 필요가 있을 때 사용 합니다.
+        ##%tmpl.docs.CodeTemplate102({})##
+        
+        <br>
+        <h4>[ #\#% #\# ]</h4>
+        다른 컨포넌트를 참조 합니다.
+        <br>
+        bridge 의 컴포넌트와 HTML Element, 문자열을 배치 할 수 있습니다.
+        <br>
+        Array 로 복수의 참조를 배치하면 Array 에 정의된 순서대로대상 화면에 배치하게 됩니다.
+        ##%tmpl.docs.CodeTemplate10301({})##
+        
+        [::false / 지연시간(millisecond)] 를 추가 함으로서 동기 / 비동기 렌더링을 설정 할 수 있습니다.
+        <br>
+        옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.
+        <br>
+        javascript 는 기본적으로 싱글 스레드로 작동함으로써 대량의 HTML Element를 화면에 추가 하게 되면 DOM 렌더링이 끝난 후에 화면 에 보여 지게 되며, 
+        또한 화면 로딩이 끝날때까지 유저는 다른 조작을 할 수 없게 됩니다.
+        <br>
+        #\#% #\#로 HTML Element를 추가 할 때 [::지연시간] 을 지정하게 되면 자동으로 setTimeout 에의한 비동기 렌더링을 실행 하게 됩니다.
+        <br>
+        비동기 로딩을 할 때의 장점은 대량의 HTML Element 를 화면에 추가로 인해 화면의 렌더링이 멈추는 현상을 방지 할 수 있습니다.
+        <br><br>
+        아래의 예제는 비동기 실행의 예제입니다. { ::i*100 } 로 딜레이 시간을 지정하고 있습니다.
+        <br>
+        RUN 버튼을 누르면 비동기로 HTML Element 가 추가 되는 것을 확인해 볼 수 있습니다.
+        ##%tmpl.docs.CodeTemplate10302({})##
+
+        <br>
+        <h4>[ #\# #\# ]</h4>
+        javascript 를 평가 합니다.
+        <br>
+        #\# #\# 안에 작성된 코드는 javascript 로서 평가 됩니다.
+        <br>
+        와 같이 javascript 표현중 HTML TAG 의 사용 할 수 있습니다.
+        ##%tmpl.docs.CodeTemplate10401({})##
+        ##%tmpl.docs.CodeTemplate10402({})##
+        
+        <br>
+        <h4>[ #\## #\# ]</h4>
+        HTML 렌더링이 끝난 후에 javascript 를 평가 합니다.
+        <br>
+        #\# #\# 에서 javascript 가 실행 중일때는 HTML Tag 를 문자열로 작성중임으로 HTML Element 로써 접근 할 수 없습니다.
+        <br>
+        그에 반해 #\## #\# 는 #\# #\# 의 평가가 끝나고 HTML Tag 문자열이 HTML Element 로 변환된 후에 실행 됨으로서 Element에 대한 접근이 가능 합니다.
+        <br>
+        this 를 사용 하여 해당 HTML Element 에 접근 할 수 있습니다.
+
+        ##%tmpl.docs.CodeTemplate105({})##
+
+        <br>
+        <h4>[ #\#! #\# ]</h4>
+        템플릿을 로딩 할 때 필요한 작업을 실행 합니다.
+        <br>
+        ##! ## 표현은 템플릿 로딩시 1회 실행 되며, 이후 컴포넌트 생성시에는 실행 되지 않습니다.
+        <br>
+        단 1회 실행이 필요한 초기화 작업 등에 사용합니다.
+        <br>
+        
+        ##%tmpl.docs.CodeTemplate106({})##
+
+      <h3 id="Docs/Template/Element">Element 참조</h3>
+        <h4>< data-bridge-event="#\#: #\#" ></h4>
+        
+        ##%tmpl.docs.CodeTemplate20101({})##
+        ##%tmpl.docs.CodeTemplate20102({})##
+        
+        <h4>< data-bridge-load="#\#: #\#" ></h4>
+        <h4>< data-bridge-scope-key="#\#: #\#" ></h4>
+        <h4>< data-bridge-var="#\#: #\#" ></h4>
+      
+      <h3 id="Docs/Template/TmplScope">TmplScope<h2>
+      
+    <h1>컴포넌트 사용</h1>
+
     
     
-    ##%tmpl.docs.CodeTemplate008({})##
-    ##}##
-    
-    
+  ##} else if(index == 'Create Component') {##
+  
+  
+  
+  
+  ##}##
     
     
   </div>
@@ -237,7 +359,6 @@
     var codes = tmplScope.element.querySelectorAll('.prettyprint:not(.escaped)');
     Array.prototype.forEach.call(codes, function(code) {
       code.innerText = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
-      //code.innerText = code.innerHTML;
     });
     PR.prettyPrint();
   });

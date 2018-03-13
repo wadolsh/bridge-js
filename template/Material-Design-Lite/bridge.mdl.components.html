@@ -222,7 +222,7 @@
       ##if(tabs) {##
       <div class="mdl-layout__tab-bar ##=MDL.is(ripple, 'mdl-js-ripple-effect')##">
         ##(tabs).forEach(function(tab) {##
-        <a href="##=tab.id ? '#' + tab.id : '#'##" class="mdl-layout__tab ##=MDL.is(tab.active, 'is-active')##" data-bridge-event="##:tab.event##">##%tab.label##</a>
+        <a href="##=tab.id ? '#' + tab.id : 'javascript:void(0)'##" class="mdl-layout__tab ##=MDL.is(tab.active, 'is-active')##" data-bridge-event="##:tab.event##">##%tab.label##</a>
         ##})##
       </div>
       ##}##
@@ -271,7 +271,7 @@
       ##if (MDL.isElement(item)) {##
     ##%item##
       ##} else {##
-    <a class="mdl-navigation__link" href="##=item.href ? item.href : '#'##" data-bridge-event="##:item.event##">##=item.label || item##</a>
+    <a class="mdl-navigation__link" href="##=item.href ? item.href : 'javascript:void(0)'##" data-bridge-event="##:item.event##">##=item.label || item##</a>
       ##}##
     ##})##
   </nav>
@@ -292,7 +292,7 @@
   <div class="mdl-tabs mdl-js-tabs ##=MDL.is(ripple, 'mdl-js-ripple-effect')## ##=data.class##">
     <div class="mdl-tabs__tab-bar">
       ##items.forEach(function(tab, idx) {##
-      <a href="##='#' + (tab.id || _id + idx)##" class="mdl-tabs__tab ##=MDL.is(tab.active, 'is-active')##">##%tab.label##</a>
+      <a href="##=(tab.id || _id + idx) ? '#' + (tab.id || _id + idx) : 'javascript:void(0)'##" class="mdl-tabs__tab ##=MDL.is(tab.active, 'is-active')##">##%tab.label##</a>
       ##})##
     </div>
     ##items.forEach(function(tab, idx) {##
@@ -719,9 +719,9 @@
     </div>
     ##} else {##
       ##if (rows && rows > 1) {##
-    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##"&gt;##=value##&lt;/textarea&gt;
+    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##"&gt;##=value##&lt;/textarea&gt;
       ##} else {##
-    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##"&gt;
+    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##"&gt;
       ##}##
     ##if (label) {##<label class="mdl-textfield__label" for="##=_id##">##=label##</label>##}##
     ##if (errorMsg) {##<span class="mdl-textfield__error">##%errorMsg##</span>##}##

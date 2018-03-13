@@ -299,9 +299,7 @@
     ##} else {##
       &lt;li ##=selected.class ? 'class="' + selected.class + '"' : ''## data-bridge-event="##:[(selected.event || data.event), activeEvent]::selected##"&gt;
         ##if (typeof selected[contentKey] === 'string') {##
-          <a href="##=selected.href || '#'##">
-            ##=selected[contentKey]##
-          </a>
+          <a href="##=selected.href || '#'##">##=selected[contentKey]##</a>
         ##} else {##
           ##%selected[contentKey]##
         ##}##

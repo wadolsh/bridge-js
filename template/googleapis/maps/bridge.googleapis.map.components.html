@@ -28,7 +28,6 @@
             draggable: markerData.draggable || false,
           });
           tmplScope.marker = marker;
-          
           if (markerData.event) Object.keys(markerData.event).forEach(function(eventName) {
             marker.addListener(eventName, markerData.event[eventName]);
           });
@@ -38,6 +37,9 @@
             map: map,
             position: center,
             draggable: markerData.draggable || false,
+          });
+          if (markerData.event) Object.keys(markerData.event).forEach(function(eventName) {
+            marker.addListener(eventName, markerData.event[eventName]);
           });
           tmplScope.marker = marker;
           //delete tmplScope.marker;

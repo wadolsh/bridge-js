@@ -291,7 +291,7 @@
               docFragment.appendChild(
                 (typeof child === 'string' || typeof child === 'number')
                   ? self.element.stringToElement(child) : child);
-              tmplScope.childScope.push(child.tmplScope || child);
+              //tmplScope.childScope.push(child.tmplScope || child);
               if (child.tmplScope) {
                 child.tmplScope.parent = child.parentNode;
                 child.tmplScope.parentScope = tmplScope;
@@ -325,7 +325,7 @@
               if (childScope.afterAppendTo) setTimeout(function() {
                 childScope.afterAppendTo();
               });
-              tmplScope.childScope.push(childElement.tmplScope);
+              //tmplScope.childScope.push(childElement.tmplScope);
               if (childElement.tmplScope) {
                 var childScope = childElement.tmplScope;
                 if (node1) {
@@ -333,7 +333,7 @@
                 }
                 childScope.parentScope = tmplScope;
               }
-            }
+            };
             nonblocking == undefined || nonblocking === false ? doFunc() : setTimeout(doFunc, nonblocking);
           } else {
             $tmplElement.parentNode.removeChild($tmplElement);
@@ -512,6 +512,9 @@
       settings = Object.assign({}, Bridge.templateSettings, tmplSettings);
       matcher = matcherFunc(settings);
     }
+    //templateText = templateText.replace(/(\/\*[^*]*\*\/)|(\/\/[^*]*|(?<=\>)[ \n]+|[ \n]+(?=\<)|^[ \n]+|[ ]*[\n]+[ ]*)/g, '');
+    //templateText = templateText.replace(/(\/\*[\s\S]*\*\/)|(\/\/[^*]*|(?<=\>)[ \n]+|[ \n]+(?=\<)|^[ \n]+|[ ]*[\n]+[ ]*)/g, '');
+    //templateText = templateText.replace(/([}\)])/g, '$1\n');
 
     var source = "__p+='";
     source += templateParser(tmplId, templateText, matcher);
@@ -569,7 +572,7 @@
           return tmplScope;
         }
       };
-      tmplScope.childScope = [];
+      //tmplScope.childScope = [];
       tmplScope[dataKeyName] = data;
       if (tmplScope[statusKeyName] == undefined) tmplScope[statusKeyName] = {};
       var hasParent = wrapperElement ? true : false;
@@ -596,6 +599,7 @@
       if (showTime) console.timeEnd("render:" + tmplId);
 
       temp.innerHTML = html;
+
       var docFragment = temp.content || temp;
       if (docFragment.tagName == 'TEMPLATE') {
         // for IE11
@@ -660,9 +664,11 @@
         callback.call(wrapperElement, tmplScope);
       }
 
-      returnTarget.render = docFragment.render = tmplScope.render = function(fdata) {
+      //returnTarget.render = docFragment.render = tmplScope.render = function(fdata) {
+      tmplScope.render = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
+        tmplScope.element = null;
         var tmpl = bridge.tmpl(tmplScope.tmplId);
         var beforeRemove = tmplScope.beforeRemove;
         var afterRemove = tmplScope.afterRemove;
@@ -679,6 +685,8 @@
             if (beforeRemove) tmplScope.beforeRemove();
             if (tmplScope.beforeAppendTo) tmplScope.beforeAppendTo();
             var replacedNode = target.parentElement.replaceChild(newElement, target);
+            while (target.firstChild) { target.removeChild(target.firstChild); }
+            target == null;
             if (tmplScope.afterAppendTo) tmplScope.afterAppendTo();
             if (afterRemove) tmplScope.afterRemove();
           }
@@ -686,7 +694,8 @@
         }
       };
 
-      returnTarget.reflash = docFragment.reflash = tmplScope.reflash = function(fdata) {
+      //returnTarget.reflash = docFragment.reflash = tmplScope.reflash = function(fdata) {
+      tmplScope.reflash = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
         var data = tmplScope.data;

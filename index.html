@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/mode/javascript/javascript.min.js"></script>
     <link rel="stylesheet" href="https://cdn.rawgit.com/google/code-prettify/master/loader/prettify.css"/>
-    <script src="https://cdn.rawgit.com/google/code-prettify/master/src/run_prettify.js?lang=css&amp;skin=desert"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=desert"></script>
     <script src="js/bridge.template.js"></script>
   </head>
   <body></body>
@@ -41,5 +41,58 @@
       }
       */
     });
+
+    var parser = {
+      text: function(str) {
+        return str;
+      },
+      json: function(str) {
+        return JSON.parse(str);
+      },
+      xml: function(str) {
+        return (new DOMParser()).parseFromString(str,"text/xml");
+      }
+    };
+    var requestFunc = function(url, getType, callback, option) {
+      //memberObj.log(('URL : ' + url) + (option.body ? ' , BODY : ' + option.body : ''), '');
+      var sidebar = document.querySelector('.sidebar');
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+          if (xmlhttp.status == 200) {
+            callback(parser[getType || 'text'](xmlhttp.responseText), xmlhttp.status, xmlhttp);
+          } else {
+            //memberObj.stopReflash();
+            alert('Request Error.\n\nURL: ' + url + '\nSTATUS: ' + xmlhttp.status);
+            console.log('!200', xmlhttp.status, url, option);
+          }
+          if (sidebar) sidebar.classList.remove('send');
+          //memberObj.log(xmlhttp.responseText, 'info');
+        }
+      }
+
+      if (option) {
+        xmlhttp.open(option.method || 'POST', url, true);
+        xmlhttp.timeout = 60000;
+        if (option.headers) Object.keys(option.headers).forEach(function(key) {
+          xmlhttp.setRequestHeader(key, option.headers[key]);
+        });
+        xmlhttp.send(option.body);
+      } else {
+        xmlhttp.open(method || 'POST', url, true);
+        xmlhttp.timeout = 60000;
+        xmlhttp.send();
+      }
+      if (sidebar) sidebar.classList.add('send');
+    };
+    requestPost = function(url, body, callback) {
+      requestFunc(url, 'json', callback, {method: 'POST', body: JSON.stringify(body)});
+    }
+    requestGetJson = function(url, callback) {
+      requestFunc(url, 'json', callback, {method: 'GET'});
+    }
+    requestGetText = function(url, callback) {
+      requestFunc(url, 'text', callback, {method: 'GET'});
+    }
   </script>
 </html>

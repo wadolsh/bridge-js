@@ -211,7 +211,7 @@ console.log('Changed template : ', ele.id);
               return false;
             });
             for (var i=0, size=reflashNodeList.length; i < size; i++) {
-              reflashNodeList[i].reflash();
+              reflashNodeList[i].tmplScope.reflash();
             }
           });
         } else if (path.indexOf('.js') > -1) {

@@ -6,6 +6,9 @@
       border: 1px solid #ccc;
       margin: 0 0 10px;
     }
+    .ta-TestArea.template {
+      height: 670px;
+    }
     .ta-TestArea .control {
       height: 23px;
       border-top: 1px solid #ccc;
@@ -21,27 +24,46 @@
       height: 20px;
       padding-left: 5px;
     }
-    .ta-TestArea .brui-Splitter-Layout {
+    .ta-TestArea .brui-Splitter-Layout.code, .ta-TestArea .brui-Splitter-Layout.template {
       height: calc(100% - 23px);
+    }
+    .ta-TestArea.template .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
+      height: calc(100% - 0px);
     }
   </style>
   ##
   var imports = data.imports;
+  var template = data.template;
+  var hasTemplate = !!template;
   var code = data.code;
-  
+  var type = data.type;
+
   var codeMirrorArea = tmpl.br.Div({});
-  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code});
+  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code, type: type, template: template});
   var codeMirror = null;
+  
+  var codeSpliteArea = tmpl.brui.SplitterLayout({
+    class: 'code',
+    direction: '',
+    items: [[tmpl.br.Div({class: 'splitter-title', content: 'Run Code'}), codeMirrorArea], [tmpl.br.Div({class: 'splitter-title', content: 'Result'}), renderingArea]]
+  });
+  
+  var templateCodeMirrorArea = tmpl.br.Div({});
+  var templateSpliteArea = !hasTemplate ? null : tmpl.brui.SplitterLayout({
+    class: 'template',
+    direction: 'vertical',
+    items: [[tmpl.br.Div({class: 'splitter-title', content: 'Template'}), templateCodeMirrorArea], codeSpliteArea]
+  });
   ##
-  <div class="ta-TestArea">
-    ##%tmpl.brui.SplitterLayout({
-      direction: '',
-      items: [[tmpl.br.Div({class: 'splitter-title', content: 'Code'}), codeMirrorArea], [tmpl.br.Div({class: 'splitter-title', content: 'Result'}), renderingArea]]
-    })##
+  <div class="ta-TestArea ##=hasTemplate ? 'template' : ''##">
+    ##%templateSpliteArea || codeSpliteArea##
     <div class="control">
       ##%tmpl.bs.Button({label: 'RESET', styleClass: 'xs', event: function() {
         codeMirror.setValue(code);
         //renderingArea.reflashCode({code: codeMirror.getValue()});
+      }})##
+      ##%tmpl.bs.Button({label: 'RUN', styleClass: 'xs', event: function() {
+        renderingArea.reflashCode({code: codeMirror.getValue()});
       }})##
     </div>
   </div>
@@ -53,8 +75,19 @@
       mode: "javascript"
     })
     codeMirror.on('change',function(cMirror) {
-      renderingArea.reflashCode({code: cMirror.getValue()});
+      renderingArea.reflashCode({code: cMirror.getValue(), type: type});
     });
+
+    if (hasTemplate) {
+      templateCodeMirror = CodeMirror(templateCodeMirrorArea.element, {
+        value: template,
+        lineNumbers: true,
+        mode: "javascript"
+      })
+      templateCodeMirror.on('change',function(cMirror) {
+        renderingArea.reflashTemplate({template: cMirror.getValue(), type: type});
+      });
+    }
   });
   ##
 </template>
@@ -67,14 +100,17 @@
     .ta-Rendering-Area iframe {
       border: 0;
       width: 100%;
-      height: 100%;
+      height: calc(100% - 21px);
     }
   </style>
   ##
   var imports = data.imports || [];
+  var template = data.template;
   var code = data.code;
+  var type = data.type;
   var loadCount = 0;
   var hasImport = false;
+
   var importOptionTags = {
     css: function(item) {
       return tmpl.br.Tag(['link', {href: item.text, rel: "stylesheet", type: "text/css"}]);
@@ -121,19 +157,56 @@
     if (!code) return;
     var head = iframeDocument.head;
     var body = iframeDocument.body;
-
-    var oldRunSctipt = iframeDocument.getElementById('runScript');
-    if (oldRunSctipt) head.removeChild(oldRunSctipt);
-    try {
-      var scriptTag = tmpl.br.Tag(['script', {id: 'runScript', innerHTML: 'try {var codeLine = (function() {/* ' + code + ' */}).toString().match(/\\/\\*([^]*)\\*\\//)[1]; Function(codeLine)(); } catch(e) { document.body.innerHTML= e; console.error(e); }'}]);
-      head.appendChild(scriptTag.element);
-    } catch(e) {
-      body.innerHTML = e;
-      console.error(e);
+    
+    if (template && type == 'codeIsTemplate') {
+      var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
+      if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
+      
+      var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: 'var loadTemplate = function (tmplData) {bridge.tmplTool.addTmpl(tmplData.key, tmplData.code); };'}]);
+      head.appendChild(templateScript.element);
+      var scriptArray = [];
+      template.forEach(function(tmplData) {
+        iframeWindow.loadTemplate(tmplData);
+        scriptArray.push('bridge.tmplTool.addTmpl("' + tmplData.key + '", "' + tmplData.code + '");');
+      });
+      //var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: scriptArray.join('\n')}]);
+      //head.appendChild(templateScript.element);
+      
+    } else if (template && type == 'codeIsTemplateFile') {
+      var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
+      if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
+      
+      var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: 'var loadTemplate = function (templateString) {bridge.tmplTool.addTmpls(templateString); };'}]);
+      head.appendChild(templateScript.element);
+      iframeWindow.loadTemplate(template);
+    }
+    /*
+    if (type == 'codeIsTemplate') {
+      var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
+      if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
+      
+      var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: 'var loadTemplateFile = function (templateString) {bridge.tmplTool.addTmpls(templateString); };'}]);
+      head.appendChild(templateScript.element);
+      iframeWindow.loadTemplate(template);
+    }
+    */
+    
+    if (type == 'codeIsPage') {
+      iframeDocument.write(code);
+    } else {
+      var oldRunSctipt = iframeDocument.getElementById('runScript');
+      if (oldRunSctipt) head.removeChild(oldRunSctipt);
+      try {
+        var runScript = tmpl.br.Tag(['script', {id: 'runScript', innerHTML: 'try { var codeLine = (function() {/* ' + code + ' */}).toString().match(/\\/\\*([^]*)\\*\\//)[1]; Function(codeLine)();} catch(e) { document.body.innerHTML= e; console.error(e); }'}]);
+        head.appendChild(runScript.element);
+      } catch(e) {
+        body.innerHTML = e;
+        console.error(e);
+      }
     }
   }
 
-  var iframeDocument = null;
+  var iframeDocument, iframeWindow = null;
   tmplScope.reflashCode = function(item) {
     if (!iframeDocument) return;
     var body = iframeDocument.body;
@@ -142,11 +215,22 @@
     }
     code = data.code = item.code;
     execScript(code);
-  }
+  };
+  
+  tmplScope.reflashTemplate = function(item) {
+    if (!iframeDocument) return;
+    var body = iframeDocument.body;
+    while (body.firstChild) {
+      body.removeChild(body.firstChild);
+    }
+    template = data.template = item.template;
+    execScript(code);
+  };
   ##
   <div class="ta-Rendering-Area">
     <iframe data-bridge-load="##:function(target) {
     setTimeout(function() {
+      iframeWindow = target.contentWindow;
       if (target.contentDocument || target.contentWindow) {
         iframeDocument = target.contentDocument || target.contentWindow.document;
         var baseTag = tmpl.br.Tag(['base', {href: location.origin + location.pathname}]);

@@ -358,10 +358,10 @@
   setTimeout(function() {
     var codes = tmplScope.element.querySelectorAll('.prettyprint:not(.escaped)');
     Array.prototype.forEach.call(codes, function(code) {
-      code.innerText = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
+      //code.innerText = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
     });
     //PR.prettyPrint();
-  });
+  }, 100);
   ##
 </template>
 

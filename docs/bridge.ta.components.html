@@ -161,35 +161,15 @@
     if (template && type == 'codeIsTemplate') {
       var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
       if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
-      
-      var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: 'var loadTemplate = function (tmplData) {bridge.tmplTool.addTmpl(tmplData.key, tmplData.code); };'}]);
-      head.appendChild(templateScript.element);
-      var scriptArray = [];
       template.forEach(function(tmplData) {
-        iframeWindow.loadTemplate(tmplData);
-        scriptArray.push('bridge.tmplTool.addTmpl("' + tmplData.key + '", "' + tmplData.code + '");');
+        iframeWindow.bridge.tmplTool.addTmpl(tmplData.key, tmplData.code);
       });
-      //var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: scriptArray.join('\n')}]);
-      //head.appendChild(templateScript.element);
       
     } else if (template && type == 'codeIsTemplateFile') {
       var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
       if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
-      
-      var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: 'var loadTemplate = function (templateString) {bridge.tmplTool.addTmpls(templateString); };'}]);
-      head.appendChild(templateScript.element);
-      iframeWindow.loadTemplate(template);
+      iframeWindow.bridge.tmplTool.addTmpls(template);
     }
-    /*
-    if (type == 'codeIsTemplate') {
-      var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
-      if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
-      
-      var templateScript = tmpl.br.Tag(['script', {id: 'templateScript', innerHTML: 'var loadTemplateFile = function (templateString) {bridge.tmplTool.addTmpls(templateString); };'}]);
-      head.appendChild(templateScript.element);
-      iframeWindow.loadTemplate(template);
-    }
-    */
     
     if (type == 'codeIsPage') {
       iframeDocument.write(code);

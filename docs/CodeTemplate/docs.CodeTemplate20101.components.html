@@ -10,7 +10,7 @@
   <ul class="doc20101-tmpl01">
     ##[1, 2, 3].forEach(function(value) {##
       <li data-bridge-event="##:function(event, tmplData, tmplElem, tmplScope) {
-        alert(value);
+        console.log(value);
       }##">Click ##=value##</li>
     ##});##
   </ul>
@@ -30,7 +30,8 @@
       counter++;
       event.target.innerHTML = data.label + counter;
       var tagName = event.target.tagName;
-      alert(tagName + ': ' + JSON.stringify(tmplData) + '\ntmplElem className: ' + tmplElem.className);
+      console.log(tagName + ': ' + JSON.stringify(tmplData));
+      console.log('tmplElem className: ' + tmplElem.className);
     }##">##=data.label##</button>
   </div>
 </template>

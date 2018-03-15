@@ -877,7 +877,7 @@
   ##
   var dragEvent = data.dragEvent;
   var style = data.style;
-  var direction = tmplScope.direction = data.direction != 'vertical' ? 'horizontal' : 'vertical';
+  var direction = tmplScope.direction = data.direction != 'vertical' && data.direction != 'v' ? 'horizontal' : 'vertical';
   var items = data.items || [];
   var layoutStyle = null;
   

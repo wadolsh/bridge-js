@@ -20,7 +20,8 @@
         navigation: [
           {label: 'Content1', event: function(e) {
             var button = tmpl.mdl.Button({label: buttonLabel, options: ['raised', 'accent'], event: function(e) {
-              alert('Click Button1.\n' + myCodeContent1.inputValue());
+              console.log('Click Button1.');
+              console.log(myCodeContent1.inputValue());
             }});
             var myCodeContent1 = tmpl.myCode.Content1({});
             layout.reflash({content: [
@@ -53,7 +54,7 @@
     var input1 = tmpl.mdl.TextField({label: 'Text...'});
     var input2 = tmpl.mdl.TextField({label: 'Number...', pattern: '-?[0-9]*(.[0-9]+)?', errorMsg: 'Input is not a number!'});
     tmplScope.inputValue = function() {
-      return '  input: ' + input1.input.value + '\n  input: ' + input2.input.value;
+      return '  input Text: ' + input1.input.value + '\n  input Number: ' + input2.input.value;
     };
     ##
     ##%input1##

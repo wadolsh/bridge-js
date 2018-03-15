@@ -6,17 +6,26 @@
       border: 1px solid #ccc;
       margin: 0 0 10px;
     }
-    .ta-TestArea.template {
-      height: 670px;
+    .ta-TestArea.console {
+      height: 545px;
     }
-    .ta-TestArea .control {
-      height: 23px;
+    .ta-TestArea.template {
+      height: 667px;
+    }
+    .ta-TestArea.template.console {
+      height: 867px;
+    }
+    .ta-TestArea .controlArea {
+      height: 22px;
       border-top: 1px solid #ccc;
       background-color: #f7f7f7;
     }
-    .ta-TestArea .control .btn {
+    .ta-TestArea .controlArea .btn {
       border-radius: 0px;
       border: 1px solid #f7f7f7;
+    }
+    .ta-TestArea .controlArea .btn.right {
+      float: right;
     }
     .ta-TestArea .splitter-title {
       background-color: #f7f7f7;
@@ -24,12 +33,23 @@
       height: 20px;
       padding-left: 5px;
     }
-    .ta-TestArea .brui-Splitter-Layout.code, .ta-TestArea .brui-Splitter-Layout.template {
-      height: calc(100% - 23px);
+    .ta-TestArea .brui-Splitter-Layout.code,
+    .ta-TestArea .brui-Splitter-Layout.template {
+      height: calc(100% - 22px);
     }
     .ta-TestArea.template .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
       height: calc(100% - 0px);
     }
+    
+    .ta-TestArea.console .brui-Splitter-Layout.code,
+    .ta-TestArea.console .brui-Splitter-Layout.template {
+      height: calc(100% - 222px);
+    }
+    /*
+    .ta-TestArea.template.console .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
+      height: calc(100% - 200px);
+    }
+    */
   </style>
   ##
   var imports = data.imports;
@@ -37,11 +57,13 @@
   var hasTemplate = !!template;
   var code = data.code;
   var type = data.type;
+  var showConsole = data.showConsole || false;
+  var autoReflash = true;
 
+  var consoleArea = tmpl.ta.ConsoleArea({show: showConsole});
   var codeMirrorArea = tmpl.br.Div({});
-  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code, type: type, template: template});
+  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code, type: type, template: template, console: consoleArea.console});
   var codeMirror = null;
-  
   var codeSpliteArea = tmpl.brui.SplitterLayout({
     class: 'code',
     direction: '',
@@ -54,18 +76,29 @@
     direction: 'vertical',
     items: [[tmpl.br.Div({class: 'splitter-title', content: 'Template'}), templateCodeMirrorArea], codeSpliteArea]
   });
+
   ##
-  <div class="ta-TestArea ##=hasTemplate ? 'template' : ''##">
+  <div class="ta-TestArea ##=hasTemplate ? 'template' : ''## ##=showConsole ? 'console' : ''##">
     ##%templateSpliteArea || codeSpliteArea##
-    <div class="control">
-      ##%tmpl.bs.Button({label: 'RESET', styleClass: 'xs', event: function() {
-        codeMirror.setValue(code);
-        //renderingArea.reflashCode({code: codeMirror.getValue()});
+    <div class="controlArea">
+      ##%tmpl.bs.Button({label: 'AUTO REFLASH', icon: 'refresh', styleClass: 'xs ' + (autoReflash ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+        autoReflash = !autoReflash;
+        tmplElem.classList[autoReflash ? 'add' : 'remove']('btn-success');
       }})##
-      ##%tmpl.bs.Button({label: 'RUN', styleClass: 'xs', event: function() {
+      ##%tmpl.bs.Button({label: 'CODE RESET', icon: 'repeat', styleClass: 'xs', event: function() {
+        codeMirror.setValue(code);
+      }})##
+      ##%tmpl.bs.Button({label: 'RUN', icon: 'play', styleClass: 'xs', event: function() {
         renderingArea.reflashCode({code: codeMirror.getValue()});
       }})##
+      ##%tmpl.bs.Button({label: 'CONSOLE', icon: '', styleClass: 'xs right ' + (showConsole ? 'btn-info' : ''), event: function(e, edata, tmplElem) {
+        showConsole = !showConsole;
+        consoleArea.show(showConsole);
+        tmplScope.element.classList[showConsole ? 'add' : 'remove']('console');
+        tmplElem.classList[showConsole ? 'add' : 'remove']('btn-info');
+      }})##
     </div>
+    ##%consoleArea##
   </div>
   ###
   setTimeout(function() {
@@ -75,7 +108,7 @@
       mode: "javascript"
     })
     codeMirror.on('change',function(cMirror) {
-      renderingArea.reflashCode({code: cMirror.getValue(), type: type});
+      if (autoReflash) renderingArea.reflashCode({code: cMirror.getValue(), type: type});
     });
 
     if (hasTemplate) {
@@ -85,7 +118,7 @@
         mode: "javascript"
       })
       templateCodeMirror.on('change',function(cMirror) {
-        renderingArea.reflashTemplate({template: cMirror.getValue(), type: type});
+        if (autoReflash) renderingArea.reflashResult({template: cMirror.getValue(), type: type});
       });
     }
   });
@@ -95,7 +128,7 @@
 <template id="ta-Rendering-Area">
   <style id="style-ta-Rendering-Area">
     .ta-Rendering-Area, .ta-Rendering-Area {
-      height: 100%;
+      height: calc(100% - 22px);
     }
     .ta-Rendering-Area iframe {
       border: 0;
@@ -108,6 +141,7 @@
   var template = data.template;
   var code = data.code;
   var type = data.type;
+  var customConsole = data.console;
   var loadCount = 0;
   var hasImport = false;
 
@@ -196,8 +230,8 @@
     code = data.code = item.code;
     execScript(code);
   };
-  
-  tmplScope.reflashTemplate = function(item) {
+
+  tmplScope.reflashResult = function(item) {
     if (!iframeDocument) return;
     var body = iframeDocument.body;
     while (body.firstChild) {
@@ -206,16 +240,23 @@
     template = data.template = item.template;
     execScript(code);
   };
+
   ##
   <div class="ta-Rendering-Area">
     <iframe data-bridge-load="##:function(target) {
     setTimeout(function() {
-      iframeWindow = target.contentWindow;
+      iframeWindow = tmplScope.window = target.contentWindow;
+
+      if (customConsole) {
+        for (var key in customConsole) {
+          iframeWindow.console[key] = customConsole[key];
+        }
+      }
+
       if (target.contentDocument || target.contentWindow) {
         iframeDocument = target.contentDocument || target.contentWindow.document;
         var baseTag = tmpl.br.Tag(['base', {href: location.origin + location.pathname}]);
         iframeDocument.head.appendChild(baseTag.element);
-
         imports.forEach(function(obj) {
           var tag = createImportElement(obj);
           if (tag) iframeDocument.head.appendChild(tag.element);
@@ -225,6 +266,44 @@
 
     }##" sandbox="allow-same-origin allow-scripts allow-modals"></iframe>
   </div>
+</template>
+
+<template id="ta-Console-Area">
+  <style id="style-ta-Console-Area">
+    .ta-Console-Area {
+      overflow-y: auto;
+      border-top: 1px solid #ccc;
+      background-color: #f7f7f7;
+      height: 199px;
+      margin-top: 1px;
+    }
+  </style>
+  ##
+  var show = !!data.show ? true : false;
+  tmplScope.clear = function() {
+  }
+  
+  tmplScope.console = {
+    log: function() {
+      for (var i = 0; i < arguments.length; i++) {
+        var htmlString = null;
+        if (typeof arguments[i] == 'object') {
+          htmlString = (JSON && JSON.stringify ? JSON.stringify(arguments[i], undefined, 2) : arguments[i]);
+        } else {
+          htmlString = arguments[i];
+        }
+        var div = document.createElement('div');
+        div.innerHTML = htmlString.trim ? htmlString.trim() : htmlString;
+        area.appendChild(div);
+      }
+    }
+  }
+  
+  tmplScope.show = function(value) {
+    tmplScope.element.style.display = value ? '' : 'none';
+  }
+  ##
+  <div class="ta-Console-Area" style="##=show ? '' : 'display: none;'##" data-bridge-var="##:area##"></div>
 </template>
 
 </body>

@@ -167,7 +167,8 @@ tmplScope.getCode = function() {
   ##%tmpl.ta.TestArea({
     imports: [{type: 'js', text: 'js/bridge.template.js'}],
     code: tmpl.docs.CodeTemplate00801({}).getCode(),
-    type: 'codeIsPage'
+    type: 'codeIsPage',
+    showConsole: true
   })##
 </template>
 
@@ -393,7 +394,8 @@ var sample2 = tmpl.doc20101.tmpl02({label: 'Sample Button'});
 document.body.appendChild(sample2.element);
 var sample3 = tmpl.doc20101.tmpl03({label: 'Sample Button'});
 document.body.appendChild(sample3.element);`,
-      type: 'codeIsTemplateFile'
+      type: 'codeIsTemplateFile',
+      showConsole: true
     });
     continer.appendChild(testArea.element);
   });
@@ -415,7 +417,8 @@ document.body.appendChild(sample3.element);`,
 document.body.appendChild(sample1.element);
 var sample2 = tmpl.doc20102.tmpl02({label: 'Sample Button'});
 document.body.appendChild(sample2.element);`,
-      type: 'codeIsTemplateFile'
+      type: 'codeIsTemplateFile',
+      showConsole: true
     });
     continer.appendChild(testArea.element);
   });

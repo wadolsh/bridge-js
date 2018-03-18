@@ -151,7 +151,6 @@
   var imports = data.imports || [];
   var template = data.template;
   var code = data.code;
-  var consoleCode = null;
   var type = data.type;
   var loadCount = 0;
   var hasImport = false;
@@ -252,13 +251,6 @@
     template = data.template = item.template;
     execScript(code);
   };
-
-  tmplScope.consoleCode = function(c) {
-    if (!iframeDocument) return;
-    clearBody();
-    consoleCode = c;
-    execScript(code);
-  }
   ##
   <div class="ta-Rendering-Area">
     <iframe data-bridge-load="##:function(target) {
@@ -347,10 +339,23 @@
         var target = arguments[i];
         if (target == undefined) {
           htmlString = undefined;
+        } else if (target instanceof Function) {
+          htmlString = target.toString(); //.split("\n  ").join("\n");
         } else if (target.outerHTML) {
           htmlString = bridge.tmplTool.escapeHtml.escape(target.outerHTML);
         } else if (typeof target == 'object') {
-          htmlString = (JSON && JSON.stringify ? JSON.stringify(target, undefined, 2) : target);
+          var seen = [];
+          var replacer = function(key, value) {
+            if (value != null && typeof value == "object") {
+              if (seen.indexOf(value) >= 0) {
+                return;
+              }
+              seen.push(value);
+            }
+            return value;
+          };
+        
+          htmlString = (JSON && JSON.stringify ? JSON.stringify(target, replacer, 2) : target);
         } else {
           htmlString = target;
         }
@@ -406,7 +411,7 @@
         */
         try {
           var result = targetWindow.eval(command);
-        } catch(e) {
+        } catch(error) {
           targetWindow.console.error(error);
         }
         targetWindow.console.log(result);

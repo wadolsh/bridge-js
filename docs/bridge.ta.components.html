@@ -40,7 +40,6 @@
     .ta-TestArea.template .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
       height: calc(100% - 0px);
     }
-    
     .ta-TestArea.console .brui-Splitter-Layout.code,
     .ta-TestArea.console .brui-Splitter-Layout.template {
       height: calc(100% - 223px);
@@ -50,6 +49,16 @@
       height: calc(100% - 200px);
     }
     */
+    .ta-TestArea .codeMirrorArea {
+      position: absolute;
+      top: 20px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .ta-TestArea .CodeMirror {
+      height: 100%;
+    }
   </style>
   ##
   var imports = data.imports;
@@ -60,7 +69,7 @@
   var showConsole = data.showConsole || false;
   var autoReflash = true;
 
-  var codeMirrorArea = tmpl.br.Div({});
+  var codeMirrorArea = tmpl.br.Div({class: 'codeMirrorArea'});
   var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code, type: type, template: template});
   var consoleArea = tmpl.ta.ConsoleArea({show: showConsole});
 
@@ -71,7 +80,7 @@
     items: [[tmpl.br.Div({class: 'splitter-title', content: 'Run Code'}), codeMirrorArea], [tmpl.br.Div({class: 'splitter-title', content: 'Result'}), renderingArea]]
   });
   
-  var templateCodeMirrorArea = tmpl.br.Div({});
+  var templateCodeMirrorArea = tmpl.br.Div({class: 'codeMirrorArea'});
   var templateSpliteArea = !hasTemplate ? null : tmpl.brui.SplitterLayout({
     class: 'template',
     direction: 'vertical',
@@ -135,7 +144,7 @@
     .ta-Rendering-Area iframe {
       border: 0;
       width: 100%;
-      height: calc(100% - 21px);
+      height: calc(100% - 0px);
     }
   </style>
   ##
@@ -336,7 +345,9 @@
       console.log.apply(null, arguments);
       for (var i = 0; i < arguments.length; i++) {
         var target = arguments[i];
-        if (target.outerHTML) {
+        if (target == undefined) {
+          htmlString = undefined;
+        } else if (target.outerHTML) {
           htmlString = bridge.tmplTool.escapeHtml.escape(target.outerHTML);
         } else if (typeof target == 'object') {
           htmlString = (JSON && JSON.stringify ? JSON.stringify(target, undefined, 2) : target);
@@ -345,7 +356,7 @@
         }
 
         var ele = document.createElement('pre');
-        ele.innerHTML = '> ' + (htmlString.trim ? htmlString.trim() : htmlString);
+        ele.innerHTML = '> ' + (htmlString && htmlString.trim ? htmlString.trim() : htmlString);
         area.appendChild(ele);
         if (autoScroll) area.scrollTo(0, area.scrollHeight);
       }

@@ -15,16 +15,16 @@
     .ta-TestArea.template.console {
       height: 867px;
     }
-    .ta-TestArea .controlArea {
+    .ta-TestArea > .controlArea {
       height: 22px;
       border-top: 1px solid #ccc;
       background-color: #f7f7f7;
     }
-    .ta-TestArea .controlArea .btn {
+    .ta-TestArea > .controlArea .btn {
       border-radius: 0px;
       border: 1px solid #f7f7f7;
     }
-    .ta-TestArea .controlArea .btn.right {
+    .ta-TestArea > .controlArea .btn.right {
       float: right;
     }
     .ta-TestArea .splitter-title {
@@ -35,7 +35,7 @@
     }
     .ta-TestArea .brui-Splitter-Layout.code,
     .ta-TestArea .brui-Splitter-Layout.template {
-      height: calc(100% - 22px);
+      height: calc(100% - 23px);
     }
     .ta-TestArea.template .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
       height: calc(100% - 0px);
@@ -43,7 +43,7 @@
     
     .ta-TestArea.console .brui-Splitter-Layout.code,
     .ta-TestArea.console .brui-Splitter-Layout.template {
-      height: calc(100% - 222px);
+      height: calc(100% - 223px);
     }
     /*
     .ta-TestArea.template.console .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
@@ -60,9 +60,10 @@
   var showConsole = data.showConsole || false;
   var autoReflash = true;
 
-  var consoleArea = tmpl.ta.ConsoleArea({show: showConsole});
   var codeMirrorArea = tmpl.br.Div({});
-  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code, type: type, template: template, console: consoleArea.console});
+  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code, type: type, template: template});
+  var consoleArea = tmpl.ta.ConsoleArea({show: showConsole});
+
   var codeMirror = null;
   var codeSpliteArea = tmpl.brui.SplitterLayout({
     class: 'code',
@@ -121,6 +122,7 @@
         if (autoReflash) renderingArea.reflashResult({template: cMirror.getValue(), type: type});
       });
     }
+    consoleArea.setWindow(renderingArea.window);
   });
   ##
 </template>
@@ -140,8 +142,8 @@
   var imports = data.imports || [];
   var template = data.template;
   var code = data.code;
+  var consoleCode = null;
   var type = data.type;
-  var customConsole = data.console;
   var loadCount = 0;
   var hasImport = false;
 
@@ -211,7 +213,8 @@
       var oldRunSctipt = iframeDocument.getElementById('runScript');
       if (oldRunSctipt) head.removeChild(oldRunSctipt);
       try {
-        var runScript = tmpl.br.Tag(['script', {id: 'runScript', innerHTML: 'try { var codeLine = (function() {/* ' + code + ' */}).toString().match(/\\/\\*([^]*)\\*\\//)[1]; Function(codeLine)();} catch(e) { document.body.innerHTML= e; console.error(e); }'}]);
+        var codeLine = Function('return (function() {/*' + code + ' */}).toString().match(/\\/\\*([^]*)\\*\\//)[1];')();
+        var runScript = tmpl.br.Tag(['script', {id: 'runScript', innerHTML: 'try { ' + codeLine + ' } catch(e) { document.body.innerHTML= e; console.error(e); }'}]);
         head.appendChild(runScript.element);
       } catch(e) {
         body.innerHTML = e;
@@ -221,37 +224,37 @@
   }
 
   var iframeDocument, iframeWindow = null;
-  tmplScope.reflashCode = function(item) {
-    if (!iframeDocument) return;
+  var clearBody = function() {
     var body = iframeDocument.body;
     while (body.firstChild) {
       body.removeChild(body.firstChild);
     }
+  }
+  tmplScope.reflashCode = function(item) {
+    if (!iframeDocument) return;
+    clearBody();
     code = data.code = item.code;
     execScript(code);
   };
 
   tmplScope.reflashResult = function(item) {
     if (!iframeDocument) return;
-    var body = iframeDocument.body;
-    while (body.firstChild) {
-      body.removeChild(body.firstChild);
-    }
+    clearBody();
     template = data.template = item.template;
     execScript(code);
   };
 
+  tmplScope.consoleCode = function(c) {
+    if (!iframeDocument) return;
+    clearBody();
+    consoleCode = c;
+    execScript(code);
+  }
   ##
   <div class="ta-Rendering-Area">
     <iframe data-bridge-load="##:function(target) {
     setTimeout(function() {
       iframeWindow = tmplScope.window = target.contentWindow;
-
-      if (customConsole) {
-        for (var key in customConsole) {
-          iframeWindow.console[key] = customConsole[key];
-        }
-      }
 
       if (target.contentDocument || target.contentWindow) {
         iframeDocument = target.contentDocument || target.contentWindow.document;
@@ -271,39 +274,142 @@
 <template id="ta-Console-Area">
   <style id="style-ta-Console-Area">
     .ta-Console-Area {
-      overflow-y: auto;
       border-top: 1px solid #ccc;
       background-color: #f7f7f7;
-      height: 199px;
-      margin-top: 1px;
+      height: 200px;
+      clear: both;
+    }
+    .ta-Console-Area > .logArea {
+      overflow-y: auto;
+      height: calc(100% - 23px);
+    }
+    .ta-Console-Area > .logArea > p {
+      margin: 0 0 4px;
+    }
+    .ta-Console-Area > .logArea > pre {
+      font-size: 10px;
+      border-width: 0px;
+      margin: 0 0 10px;
+      padding: 4px;
+    }
+    .ta-Console-Area > .logArea > .error {
+      color: red;
+    }
+    .ta-Console-Area > .controlArea {
+      height: 23px;
+    }
+    .ta-Console-Area > .controlArea .btn {
+      border-radius: 0px;
+      border: 1px solid #f7f7f7;
+    }
+    .ta-Console-Area > .controlArea .left {
+      float: left;
+    }
+    .ta-Console-Area > .controlArea .right {
+      float: right;
+    }
+    .ta-Console-Area > .controlArea .form-group {
+      margin-bottom: 0px;
+      width: calc(100% - 150px);
+      display: inline-block;
+      margin-left: 1px;
+    }
+    .ta-Console-Area > .controlArea .input-sm {
+      height: 20px;
+      padding: 2px 4px;
+      font-size: 10px;
+      line-height: 1;
+      border-radius: 0px;
     }
   </style>
   ##
+  var targetWindow = data.window;
   var show = !!data.show ? true : false;
+  var autoScroll = data.autoScroll === false ? false : true;
+
   tmplScope.clear = function() {
+    while (area.firstChild) { area.removeChild(area.firstChild); }
   }
-  
+
   tmplScope.console = {
     log: function() {
+      console.log.apply(null, arguments);
       for (var i = 0; i < arguments.length; i++) {
-        var htmlString = null;
-        if (typeof arguments[i] == 'object') {
-          htmlString = (JSON && JSON.stringify ? JSON.stringify(arguments[i], undefined, 2) : arguments[i]);
+        var target = arguments[i];
+        if (target.outerHTML) {
+          htmlString = bridge.tmplTool.escapeHtml.escape(target.outerHTML);
+        } else if (typeof target == 'object') {
+          htmlString = (JSON && JSON.stringify ? JSON.stringify(target, undefined, 2) : target);
         } else {
-          htmlString = arguments[i];
+          htmlString = target;
         }
-        var div = document.createElement('div');
-        div.innerHTML = htmlString.trim ? htmlString.trim() : htmlString;
-        area.appendChild(div);
+
+        var ele = document.createElement('pre');
+        ele.innerHTML = '> ' + (htmlString.trim ? htmlString.trim() : htmlString);
+        area.appendChild(ele);
+        if (autoScroll) area.scrollTo(0, area.scrollHeight);
       }
+    },
+    error: function(error) {
+      var ele = document.createElement('pre');
+      ele.classList.add('error');
+      ele.innerHTML = error.stack;
+      area.appendChild(ele);
+      if (autoScroll) area.scrollTo(0, area.scrollHeight);
     }
   }
-  
+
   tmplScope.show = function(value) {
     tmplScope.element.style.display = value ? '' : 'none';
   }
+  
+  var consoleBackup = null;
+  tmplScope.setWindow = function(target) {
+    if (target) {
+      var backup = {};
+      for (var key in tmplScope.console) {
+        backup[key] = target.console[key];
+        target.console[key] = tmplScope.console[key];
+      }
+      consoleBackup = backup;
+      targetWindow = target;
+    }
+  }
+
+  tmplScope.setWindow(targetWindow);
   ##
-  <div class="ta-Console-Area" style="##=show ? '' : 'display: none;'##" data-bridge-var="##:area##"></div>
+  <div class="ta-Console-Area" style="##=show ? '' : 'display: none;'##">
+    <div class="logArea" data-bridge-var="##:area##"></div>
+    <div class="controlArea">
+      ##%tmpl.bs.Field({class: '', size: 'sm', enterKeyEvent: function(e) {
+        var command = e.target.value.trim();
+        e.target.value = '';
+        if (!command) return;
+        /*
+        var iframeDocument = targetWindow.document;
+        var script = iframeDocument.getElementById('consoleScript');
+        if (script) iframeDocument.head.removeChild(script);
+
+        var consoleScript = tmpl.br.Tag(['script', {id: 'consoleScript', innerHTML: 'try { ' + command + ' } catch(error) { console.error(error); }'}]);
+        iframeDocument.head.appendChild(consoleScript.element);
+        */
+        try {
+          var result = targetWindow.eval(command);
+        } catch(e) {
+          targetWindow.console.error(error);
+        }
+        targetWindow.console.log(result);
+        
+      }})##
+      ##%tmpl.bs.Button({label: 'AUTO SCROLL', styleClass: 'xs right '+ (autoScroll ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+        autoScroll = !autoScroll;
+        tmplElem.classList[autoScroll ? 'add' : 'remove']('btn-success');
+      }})##
+      ##%tmpl.bs.Button({label: 'CLEAR', styleClass: 'xs right', event: function() {
+        tmplScope.clear();
+      }})##
+    </div>
+  </div>
 </template>
 
 </body>

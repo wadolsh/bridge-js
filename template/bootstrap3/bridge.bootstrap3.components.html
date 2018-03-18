@@ -81,17 +81,21 @@
     }
     return tmplScope.input.value;
   }
+  var size = data.size;
+  var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
+    if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
+  }} : null;
   ##
   ##if(data.type == 'hidden') {##
     <input type="hidden" name="##=data.name##" value="##=data.value##">
   ##} else {##
   <div class="form-group ##=data.class##">
-    <label class="##=(data.typeClass=='inline' ? 'sr-only' : data.typeClass=='horizontal' ? data.labelCol + ' control-label' : null)##" >##=data.label##</label>
+    ##if (data.label) {##<label class="##=(data.typeClass=='inline' ? 'sr-only' : data.typeClass=='horizontal' ? data.labelCol + ' control-label' : null)##">##=data.label##</label>##}##
     ##if(data.typeClass=='horizontal') {##<div class="col-##=data.inputCol##">##}##
       ##if (data.tmpl) {##
       ##%data.tmpl(data)##
       ##} else if (data.type == 'textarea') {##
-      <textarea class="form-control" name="##=data.name##" rows="##=(data.rows || 3)##" data-bridge-event="##:data.event##" placeholder="##=data.placeholder##">##=data.value##</textarea>
+      <textarea class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" rows="##=(data.rows || 3)##" data-bridge-event="##:data.event##" placeholder="##=data.placeholder##">##=data.value##</textarea>
       ##} else if (data.type == 'checkbox' || data.type == 'radio') {
       var options = data.options;
       options.forEach(function(option) {##
@@ -102,13 +106,13 @@
       </div>
       ##});
     } else if (data.type == 'select') {##
-      <select class="form-control" name="##=data.name##" data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##">
+      <select class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##">
         ##data.options.forEach(function(option) {##
         &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
         ##});##
       </select>
     ##} else {##
-      &lt;input type="##=data.type || 'text'##" class="form-control" name="##=data.name##" value="##=data.value##" placeholder="##=data.placeholder##" ##=data.readonly ? 'readonly' : ''## ##=data.disabled ? 'disabled' : ''## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##" ##=data.type == 'search' ? 'list="' + (data.listId || 'datalist_' + data.name) + '"' : null##&gt;
+      &lt;input type="##=data.type || 'text'##" class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" value="##=data.value##" placeholder="##=data.placeholder##" ##=data.readonly ? 'readonly' : ''## ##=data.disabled ? 'disabled' : ''## data-bridge-scope-key="##:'input'##" data-bridge-event="##:[enterKeyEvent, data.event]##" ##=data.type == 'search' ? 'list="' + (data.listId || 'datalist_' + data.name) + '"' : null##&gt;
         ##if(data.type == 'search' && data.options) {##
         <datalist id="##=data.listId || 'datalist_' + data.name##">
           ##data.options.forEach(function(option) {##

@@ -444,8 +444,8 @@
         data.placeholder = data.label;
         delete data.label;
       }
-      var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata) {
-        if (e.keyCode == 13) data.enterKeyEvent();
+      var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
+        if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
       }} : null;
       var loadEvent = function(target, edata, tmplElem) {
         tmplElem.input = target;

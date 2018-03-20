@@ -49,16 +49,8 @@
       height: calc(100% - 200px);
     }
     */
-    .pg-TestArea .codeMirrorArea {
-      position: absolute;
-      top: 20px;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
-    .pg-TestArea .CodeMirror {
-      height: 100%;
-    }
+
+
   </style>
   ##
   var imports = data.imports;
@@ -69,24 +61,35 @@
   var showConsole = data.showConsole || false;
   var autoReflash = true;
 
-  var codeMirrorArea = tmpl.br.Div({class: 'codeMirrorArea'});
+  var runCodeArea = tmpl.pg.CodeMirrorArea({
+    value: code,
+    changeEvent: function(cMirror) {
+      if (autoReflash) renderingArea.reflashCode({code: cMirror.getValue(), type: type});
+    }
+  });
   var renderingArea = tmpl.pg.RenderingArea({imports: imports, code: code, type: type, template: template});
   var consoleArea = tmpl.pg.ConsoleArea({show: showConsole});
 
-  var codeMirror = null;
   var codeSpliteArea = tmpl.brui.SplitterLayout({
     class: 'code',
     direction: '',
-    items: [[tmpl.br.Div({class: 'splitter-title', content: 'Run Code'}), codeMirrorArea], [tmpl.br.Div({class: 'splitter-title', content: 'Result'}), renderingArea]]
+    items: [[tmpl.br.Div({class: 'splitter-title', content: 'Run Code'}), runCodeArea], [tmpl.br.Div({class: 'splitter-title', content: 'Result'}), renderingArea]]
   });
   
-  var templateCodeMirrorArea = tmpl.br.Div({class: 'codeMirrorArea'});
-  var templateSpliteArea = !hasTemplate ? null : tmpl.brui.SplitterLayout({
-    class: 'template',
-    direction: 'vertical',
-    items: [[tmpl.br.Div({class: 'splitter-title', content: 'Template'}), templateCodeMirrorArea], codeSpliteArea]
-  });
-
+  var templateSpliteArea, templateCodeArea = null;
+  if (hasTemplate) {
+    templateCodeArea = tmpl.pg.CodeMirrorArea({
+      value: template,
+      changeEvent: function(cMirror) {
+        if (autoReflash) renderingArea.reflashCode({template: cMirror.getValue(), type: type});
+      }
+    });
+    templateSpliteArea = tmpl.brui.SplitterLayout({
+      class: 'template',
+      direction: 'vertical',
+      items: [[tmpl.br.Div({class: 'splitter-title', content: 'Template'}), templateCodeArea], codeSpliteArea]
+    });
+  }
   ##
   <div class="pg-TestArea ##=hasTemplate ? 'template' : ''## ##=showConsole ? 'console' : ''##">
     ##%templateSpliteArea || codeSpliteArea##
@@ -96,10 +99,10 @@
         tmplElem.classList[autoReflash ? 'add' : 'remove']('btn-success');
       }})##
       ##%tmpl.bs.Button({label: 'CODE RESET', icon: 'repeat', styleClass: 'xs', event: function() {
-        codeMirror.setValue(code);
+        runCodeArea.codeMirror.setValue(code);
       }})##
       ##%tmpl.bs.Button({label: 'RUN', icon: 'play', styleClass: 'xs', event: function() {
-        renderingArea.reflashCode({code: codeMirror.getValue()});
+        renderingArea.reflashCode({template: templateCodeArea ? templateCodeArea.codeMirror.getValue() : null, code: runCodeArea.codeMirror.getValue()});
       }})##
       ##%tmpl.bs.Button({label: 'CONSOLE', icon: '', styleClass: 'xs right ' + (showConsole ? 'btn-info' : ''), event: function(e, edata, tmplElem) {
         showConsole = !showConsole;
@@ -110,28 +113,35 @@
     </div>
     ##%consoleArea##
   </div>
+</template>
+
+<template id="pg-CodeMirror-Area">
+  <style id="style-pg-CodeMirror-Area">
+    .pg-CodeMirror-Area .CodeMirror {
+      height: 100%;
+    }
+    .pg-CodeMirror-Area {
+      position: absolute;
+      top: 20px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  </style>
+  ##
+  var value = data.value;
+  var changeEvent = data.changeEvent;
+  ##
+  <div class="pg-CodeMirror-Area"></div>
   ###
+  var element = this;
   setTimeout(function() {
-    codeMirror = CodeMirror(codeMirrorArea.element, {
-      value: code,
+    var codeMirror = tmplScope.codeMirror = CodeMirror(element, {
+      value: value,
       lineNumbers: true,
       mode: "javascript"
-    })
-    codeMirror.on('change',function(cMirror) {
-      if (autoReflash) renderingArea.reflashCode({code: cMirror.getValue(), type: type});
     });
-
-    if (hasTemplate) {
-      templateCodeMirror = CodeMirror(templateCodeMirrorArea.element, {
-        value: template,
-        lineNumbers: true,
-        mode: "javascript"
-      })
-      templateCodeMirror.on('change',function(cMirror) {
-        if (autoReflash) renderingArea.reflashResult({template: cMirror.getValue(), type: type});
-      });
-    }
-    consoleArea.setWindow(renderingArea.window);
+    if (changeEvent) codeMirror.on('change', changeEvent);
   });
   ##
 </template>
@@ -239,17 +249,11 @@
       body.removeChild(body.firstChild);
     }
   }
-  tmplScope.reflashCode = function(item) {
+  tmplScope.reflashCode = function(newCode) {
     if (!iframeDocument) return;
     clearBody();
-    code = data.code = item.code;
-    execScript(code);
-  };
-
-  tmplScope.reflashResult = function(item) {
-    if (!iframeDocument) return;
-    clearBody();
-    template = data.template = item.template;
+    if (newCode.code) code = data.code = newCode.code;
+    if (newCode.template) template = data.template = newCode.template;
     execScript(code);
   };
   ##

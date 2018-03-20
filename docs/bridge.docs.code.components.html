@@ -1,17 +1,17 @@
 <body>
-<template id="docs-Code-Template-001">
+<template id="docs-Code-Template-001-01">
   <pre class="prettyprint lang-html">
     <script src="js/bridge.template.js"></script>
   </pre>
 </template>
 
-<template id="docs-Code-Template-002">
+<template id="docs-Code-Template-002-01">
   <pre class="prettyprint lang-js">
     bridge.tmplTool.addTmpl('do-Simple', '<div>#\#=data.label#\#</div>');
   </pre>
 </template>
 
-<template id="docs-Code-Template-003">
+<template id="docs-Code-Template-003-01">
   <pre class="prettyprint lang-js">
 // do-Simple-Sample → tmpl.do.SimpleSample()
 var sample = tmpl.do.SimpleSample({label: 'Div Simple'});
@@ -19,7 +19,7 @@ document.body.appendChild(sample.element);
   </pre>
 </template>
 
-<template id="docs-Code-Template-004">
+<template id="docs-Code-Template-004-01">
   <pre class="prettyprint lang-js">
 // do-Simple-Sample → bridge.tmpl('do-Simple-Sample')()
 var sample = bridge.tmpl('do-Simple-Sample')({label: 'Div Simple'});
@@ -27,7 +27,7 @@ document.body.appendChild(sample.element);
   </pre>
 </template>
 
-<template id="docs-Code-Template-005">
+<template id="docs-Code-Template-005-01">
   ##var code = `bridge.tmplTool.addTmpl('do-Simple-Sample', '<div>#\#=data.label#\#</div>');
 var sample1 = tmpl.do.SimpleSample({label: 'Div Sample1'});
 document.body.appendChild(sample1.element);
@@ -35,13 +35,13 @@ document.body.appendChild(sample1.element);
 var sample2 = bridge.tmpl('do-Simple-Sample')({label: 'Div Sample2'});
 document.body.appendChild(sample2.element);`
   ##
-  ##%tmpl.ta.TestArea({
+  ##%tmpl.pg.TestArea({
     imports: [{type: 'js', text: 'js/bridge.template.js'}],
     code: code 
   })##
 </template>
 
-<template id="docs-Code-Template-006">
+<template id="docs-Code-Template-006-01">
   <pre class="prettyprint lang-js">
 var sample = tmpl.do.Sample({label: 'Div Sample'});
 sample → {
@@ -114,7 +114,7 @@ tmplScope.getCode = function() {
 </template>
 
 <template id="docs-Code-Template-007-02">
-  ##%tmpl.ta.TestArea({
+  ##%tmpl.pg.TestArea({
     imports: [{type: 'js', text: 'js/bridge.template.js'}],
     code: tmpl.docs.CodeTemplate00701({}).getCode()
   })##
@@ -164,7 +164,7 @@ tmplScope.getCode = function() {
 </template>
 
 <template id="docs-Code-Template-008-03">
-  ##%tmpl.ta.TestArea({
+  ##%tmpl.pg.TestArea({
     imports: [{type: 'js', text: 'js/bridge.template.js'}],
     code: tmpl.docs.CodeTemplate00801({}).getCode(),
     type: 'codeIsPage',
@@ -172,22 +172,22 @@ tmplScope.getCode = function() {
   })##
 </template>
 
-<template id="docs-Code-Template-101">
+<template id="docs-Code-Template-101-01">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
-  requestGetText('docs/CodeTemplate/docs.CodeTemplate101.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate10101.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
-      code: `var sample1 = tmpl.doc101.tmpl01({});
-var sample2 = tmpl.doc101.tmpl02({label: 'Sample 2'});
-var sample3 = tmpl.doc101.tmpl02({});
-var sample4 = tmpl.doc101.tmpl03({});
-var sample5 = tmpl.doc101.tmpl04({label: 'Sample 5', bgColor: 'red'});
-var sample6 = tmpl.doc101.tmpl05({tag: 'button', label: 'Sample 6'});
+      code: `var sample1 = tmpl.doc10101.tmpl01({});
+var sample2 = tmpl.doc10101.tmpl02({label: 'Sample 2'});
+var sample3 = tmpl.doc10101.tmpl02({});
+var sample4 = tmpl.doc10101.tmpl03({});
+var sample5 = tmpl.doc10101.tmpl04({label: 'Sample 5', bgColor: 'red'});
+var sample6 = tmpl.doc10101.tmpl05({tag: 'button', label: 'Sample 6'});
 
 document.body.appendChild(sample1.element);
 document.body.appendChild(sample2.element);
@@ -200,25 +200,24 @@ document.body.appendChild(sample6.element);`,
     continer.appendChild(testArea.element);
   });
   ##
-  ##
 </template>
 
-<template id="docs-Code-Template-102">
+<template id="docs-Code-Template-102-01">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
-  requestGetText('docs/CodeTemplate/docs.CodeTemplate102.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate10201.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
-      code: `var sample1 = tmpl.doc102.tmpl01({});
-var sample2 = tmpl.doc102.tmpl02({label: '<div>Sample 2</div>'});
-var sample3 = tmpl.doc102.tmpl02({});
-var sample4 = tmpl.doc102.tmpl03({});
-var sample5 = tmpl.doc102.tmpl04({label: '<div>Sample 5</div>', bgColor: 'red'});
-var sample6 = tmpl.doc102.tmpl05({tag: 'button', label: '&Sample 6&'});
+      code: `var sample1 = tmpl.doc10201.tmpl01({});
+var sample2 = tmpl.doc10201.tmpl02({label: '<div>Sample 2</div>'});
+var sample3 = tmpl.doc10201.tmpl02({});
+var sample4 = tmpl.doc10201.tmpl03({});
+var sample5 = tmpl.doc10201.tmpl04({label: '<div>Sample 5</div>', bgColor: 'red'});
+var sample6 = tmpl.doc10201.tmpl05({tag: 'button', label: '&Sample 6&'});
 
 document.body.appendChild(sample1.element);
 document.body.appendChild(sample2.element);
@@ -231,18 +230,17 @@ document.body.appendChild(sample6.element);`,
     continer.appendChild(testArea.element);
   });
   ##
-  ##
 </template>
 
 
-<template id="docs-Code-Template-10301">
+<template id="docs-Code-Template-103-01">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10301.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
       code: `var sample1 = tmpl.doc10301.tmpl01({});
@@ -270,17 +268,16 @@ document.body.appendChild(sample6.element);`,
     continer.appendChild(testArea.element);
   });
   ##
-  ##
 </template>
 
-<template id="docs-Code-Template-10302">
+<template id="docs-Code-Template-103-02">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10302.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
       code: `var sample1 = tmpl.doc10302.tmpl01({});
@@ -289,7 +286,6 @@ document.body.appendChild(sample1.element);`,
     });
     continer.appendChild(testArea.element);
   });
-  ##
   ##
 </template>
 
@@ -314,14 +310,14 @@ tmplScope.getCode = function() {
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
-  requestGetText('docs/CodeTemplate/docs.CodeTemplate104.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate10401.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
-      code: `var sample1 = tmpl.doc104.tmpl01({});
-var sample2 = tmpl.doc104.tmpl02({values: [3, 4, 5, 6]});
-var sample3 = tmpl.doc104.tmpl03({label: 'Sample 3'});
-var sample4 = tmpl.doc104.tmpl04({});
+      code: `var sample1 = tmpl.doc10401.tmpl01({});
+var sample2 = tmpl.doc10401.tmpl02({values: [3, 4, 5, 6]});
+var sample3 = tmpl.doc10401.tmpl03({label: 'Sample 3'});
+var sample4 = tmpl.doc10401.tmpl04({});
 
 document.body.appendChild(sample1.element);
 document.body.appendChild(sample2.element);
@@ -332,85 +328,85 @@ document.body.appendChild(sample4.element);`,
     continer.appendChild(testArea.element);
   });
   ##
-  ##
 </template>
 
 
-<template id="docs-Code-Template-105">
+<template id="docs-Code-Template-105-01">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
-  requestGetText('docs/CodeTemplate/docs.CodeTemplate105.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate10501.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
-      code: `var sample1 = tmpl.doc105.tmpl01({});
+      code: `var sample1 = tmpl.doc10501.tmpl01({});
 document.body.appendChild(sample1.element);`,
       type: 'codeIsTemplateFile'
     });
     continer.appendChild(testArea.element);
   });
   ##
-  ##
 </template>
 
-<template id="docs-Code-Template-106">
+<template id="docs-Code-Template-106-01">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
-  requestGetText('docs/CodeTemplate/docs.CodeTemplate106.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate10601.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
-      code: `var sample1 = tmpl.doc106.tmpl01({});
+      code: `var sample1 = tmpl.doc10601.tmpl01({});
 document.body.appendChild(sample1.element);
-var sample2 = tmpl.doc106.tmpl01({});
+var sample2 = tmpl.doc10601.tmpl01({});
 document.body.appendChild(sample2.element);`,
       type: 'codeIsTemplateFile'
     });
     continer.appendChild(testArea.element);
   });
   ##
-  ##
 </template>
 
-<template id="docs-Code-Template-20101">
+<template id="docs-Code-Template-201-01">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate20101.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
       code: `var sample1 = tmpl.doc20101.tmpl01({});
 document.body.appendChild(sample1.element);
-var sample2 = tmpl.doc20101.tmpl02({label: 'Sample Button'});
+var sample2 = tmpl.doc20101.tmpl02({label: 'Button 2'});
 document.body.appendChild(sample2.element);
-var sample3 = tmpl.doc20101.tmpl03({label: 'Sample Button'});
-document.body.appendChild(sample3.element);`,
+var sample3 = tmpl.doc20101.tmpl03({label: 'Button 3'});
+document.body.appendChild(sample3.element);
+var sample4 = tmpl.doc20101.tmpl04({label: 'Button 4', event: function(e, edata, tmplElem, scope) {
+  console.log(e.target, edata);
+}});
+document.body.appendChild(sample4.element);`,
       type: 'codeIsTemplateFile',
       showConsole: true
     });
     continer.appendChild(testArea.element);
   });
   ##
-  ##
 </template>
 
-<template id="docs-Code-Template-20102">
+<template id="docs-Code-Template-201-02">
   ##
   var testArea = null;
   ##
   <div data-bridge-var="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate20102.components.html', function(text) {
-    testArea = tmpl.ta.TestArea({
+    testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
       code: `var sample1 = tmpl.doc20102.tmpl01({});
@@ -423,6 +419,65 @@ document.body.appendChild(sample2.element);`,
     continer.appendChild(testArea.element);
   });
   ##
+</template>
+
+<template id="docs-Code-Template-202-01">
+  ##
+  var testArea = null;
+  ##
+  <div data-bridge-var="##:continer##"></div>
+  ###
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate20201.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
+      imports: [{type: 'js', text: 'js/bridge.template.js'}],
+      template: text,
+      code: `var sample1 = tmpl.doc20201.tmpl01({});
+document.body.appendChild(sample1.element);`,
+      type: 'codeIsTemplateFile',
+      showConsole: true
+    });
+    continer.appendChild(testArea.element);
+  });
+  ##
+</template>
+
+<template id="docs-Code-Template-203-01">
+  ##
+  var testArea = null;
+  ##
+  <div data-bridge-var="##:continer##"></div>
+  ###
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate20301.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
+      imports: [{type: 'js', text: 'js/bridge.template.js'}],
+      template: text,
+      code: `var sample1 = tmpl.doc20301.tmpl01({});
+document.body.appendChild(sample1.element);`,
+      type: 'codeIsTemplateFile',
+      showConsole: true
+    });
+    continer.appendChild(testArea.element);
+  });
+  ##
+</template>
+
+<template id="docs-Code-Template-204-01">
+  ##
+  var testArea = null;
+  ##
+  <div data-bridge-var="##:continer##"></div>
+  ###
+  requestGetText('docs/CodeTemplate/docs.CodeTemplate20401.components.html', function(text) {
+    testArea = tmpl.pg.TestArea({
+      imports: [{type: 'js', text: 'js/bridge.template.js'}],
+      template: text,
+      code: `var sample1 = tmpl.doc20401.tmpl01({});
+document.body.appendChild(sample1.element);`,
+      type: 'codeIsTemplateFile',
+      showConsole: true
+    });
+    continer.appendChild(testArea.element);
+  });
   ##
 </template>
 </body>

@@ -135,6 +135,27 @@
     .docs-Docs-Template h3 {
       padding-top: 10px;
     }
+    .docs-Docs-Template h4 {
+      border: 1px #ddd solid;
+      display: table;
+      padding: 10px;
+      background-color: #f7f7f7;
+      text-align: center;
+    }
+    .docs-Docs-Template h5 {
+      font-weight: bold;
+    }
+    .docs-Docs-Template table.option {
+      margin: 10px;
+    }
+    .docs-Docs-Template table.option th,
+    .docs-Docs-Template table.option td {
+      border: 1px solid #ccc;
+      padding: 4px 10px;
+    }
+    .docs-Docs-Template table.option th {
+      background-color: #f7f7f7;
+    }
   </style>
   ##
   var contentArea = data.contentArea;
@@ -148,7 +169,7 @@
       {label: '　설치', index: 'GettingStarted', hash: '#Docs/GettingStarted/Install'},
       {label: '　Template 등록', index: 'GettingStarted', hash: '#Docs/GettingStarted/AddTmpl'},
       {label: '　Component 생성', index: 'GettingStarted', hash: '#Docs/GettingStarted/Tmpl'},
-      {label: '　실제적인 사용예', index: 'GettingStarted', hash: '#Docs/GettingStarted/Example'},
+      {label: '　사용예', index: 'GettingStarted', hash: '#Docs/GettingStarted/Example'},
       
       {label: '템플릿 작성', index: 'Template', hash: '#Docs/Template'},
       {label: '　표현', index: 'Template', hash: '#Docs/Template/Expression'},
@@ -192,29 +213,29 @@
     <h1 id="Docs/GettingStarted">시작하기</h1>
     <h2 id="Docs/GettingStarted/Install">설치</h2>
     아래와 같이 bridge.template.js javascript를 추가해주세요.
-    ##%tmpl.docs.CodeTemplate001({})##
+    ##%tmpl.docs.CodeTemplate00101({})##
 
     이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.<br/>
     
     <h2 id="Docs/GettingStarted/AddTmpl">Template 등록</h2>
     이제 다음과 같은 템플릿 파일을 만들어 봅시다.
-    ##%tmpl.docs.CodeTemplate002({})##
+    ##%tmpl.docs.CodeTemplate00201({})##
     이제 do.Simple라는 템플릿을 컴포넌트로 사용할 있는 준비가 되었습니다.<br/>
     
     <h2 id="Docs/GettingStarted/Tmpl">Component 생성</h2>
     컨포넌트의 생성과 화면 배치는 다음과 같이 이루어 집니다.
-    ##%tmpl.docs.CodeTemplate003({})##
+    ##%tmpl.docs.CodeTemplate00301({})##
 
     또는 다음과 같이 사용 할 수도 있습니다.
-    ##%tmpl.docs.CodeTemplate004({})##
+    ##%tmpl.docs.CodeTemplate00401({})##
 
     {label: 'Div Sample1'} 로 넘겨준 데이터는 템플릿 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
     아래에서 데모로 코드의 동작을 확인해 보십시오.
-    ##%tmpl.docs.CodeTemplate005({})##
+    ##%tmpl.docs.CodeTemplate00501({})##
     
     컴포넌트 생성시 javascript Object 가 리턴 되어 집니다.<br/>
     이 object는 템플릿작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.
-    ##%tmpl.docs.CodeTemplate006({})##
+    ##%tmpl.docs.CodeTemplate00601({})##
 
     bridge.tmplTool.addTmpl() 을 사용 하여 일일이 템플릿을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
     bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 지원 하고 있습니다.<br/>
@@ -230,7 +251,7 @@
     아래에서 데모에서 template 구조와 동작을 확인해 보시기 바랍니다.
     ##%tmpl.docs.CodeTemplate00702({})##
     
-    <h2 id="Docs/GettingStarted/Example">실제적인 사용예</h2>
+    <h2 id="Docs/GettingStarted/Example">사용예</h2>
     좀더 실제적인 사용예를 살펴 보겠습니다.<br/>
     먼저 반복 사용되는 UI쪽만을 분리한 template 파일을 만들면 여러 프로젝트에서 재 활용 할 수 있을 것입니다.<br/>
     여기서는 Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) 를 bridge.template 로 사용 할 수 있게 만든 bridge.mdl.components.html 를 사용 하겠습니다.<br/>
@@ -260,7 +281,7 @@
         문자열을 표현합니다.
         <br>
         HTML 태그와도 자유롭게 사용 될 수 있으나 브라우저에 따라서 "<", ">" 를 escape 해야 정상 작됭 되기도 합니다.
-        ##%tmpl.docs.CodeTemplate101({})##
+        ##%tmpl.docs.CodeTemplate10101({})##
 
         <br>
         <h4>[ #\#- #\# ]</h4>
@@ -269,7 +290,7 @@
         escape 처리는 `bridge.tmplTool.escapeHtml.escape(); 를 사용합니다.
         <br>
         HTML Tag 등을 화면에 출력할 필요가 있을 때 사용 합니다.
-        ##%tmpl.docs.CodeTemplate102({})##
+        ##%tmpl.docs.CodeTemplate10201({})##
         
         <br>
         <h4>[ #\#% #\# ]</h4>
@@ -280,10 +301,14 @@
         Array 로 복수의 참조를 배치하면 Array 에 정의된 순서대로대상 화면에 배치하게 됩니다.
         ##%tmpl.docs.CodeTemplate10301({})##
         
-        [::false / 지연시간(millisecond)] 를 추가 함으로서 동기 / 비동기 렌더링을 설정 할 수 있습니다.
-        <br>
-        옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.
-        <br>
+        <h5>Option</h5>
+        <table class="option">
+          <tr>
+            <th>::{false / 지연시간(millisecond)}</th>
+            <td>동기 / 비동기 렌더링을 설정 할 수 있습니다.<br>※옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.</td>
+          </tr>
+        </table>
+
         javascript 는 기본적으로 싱글 스레드로 작동함으로써 대량의 HTML Element를 화면에 추가 하게 되면 DOM 렌더링이 끝난 후에 화면 에 보여 지게 되며, 
         또한 화면 로딩이 끝날때까지 유저는 다른 조작을 할 수 없게 됩니다.
         <br>
@@ -316,7 +341,7 @@
         <br>
         this 를 사용 하여 해당 HTML Element 에 접근 할 수 있습니다.
 
-        ##%tmpl.docs.CodeTemplate105({})##
+        ##%tmpl.docs.CodeTemplate10501({})##
 
         <br>
         <h4>[ #\#! #\# ]</h4>
@@ -327,18 +352,20 @@
         단 1회 실행이 필요한 초기화 작업 등에 사용합니다.
         <br>
         
-        ##%tmpl.docs.CodeTemplate106({})##
+        ##%tmpl.docs.CodeTemplate10601({})##
 
       <h3 id="Docs/Template/Element">Element 참조</h3>
         <h4>< data-bridge-event="#\#: #\#" ></h4>
         이벤트 핸들러를 지정합니다.
         <br>
-        javascript object 로 {'event명' : function(event, tmplData, tmplElem, tmplScope) { callback 처리 }} 으로 핸들러를 지정하게 됩니다.
+        javascript object 로 {'event명' : function(event, tmplData, tmplElem, scope) { callback 처리 }} 으로 핸들러를 지정하게 됩니다.
         <br>
         지정된 이벤트 핸들러들은 addEventListener 로 HTML Element 에 추가 됩니다.
         <br>
         javascript object 가 아닌 function 으로 지정된 경우는 click 이벤트로서 추가 되게 됩니다.
-        <table>
+        <br>
+        <h5>핸들러 파라메터</h5>
+        <table class="option">
           <tr>
             <th>event</th>
             <td>Event Object</td>
@@ -352,29 +379,38 @@
             <td>콤퍼넌트의 HTML Element</td>
           </tr>
           <tr>
-            <th>tmplScope</th>
+            <th>scope</th>
             <td>콤퍼넌트의 tmplScope</td>
           </tr>
         </table>
-        Option
-        <table>
+        
+        ##%tmpl.docs.CodeTemplate20101({})##
+        <h5>Option</h5>
+        <table class="option">
           <tr>
-            <th>:::</th>
+            <th>:::{핸들러}</th>
             <td>복수의 이벤트 핸들러를 지정할 수 있습니다.</td>
           </tr>
           <tr>
-            <th>::</th>
+            <th>::{데이터}</th>
             <td>tmplData 입력 받을 데이터를 지정할 수 있습니다.</td>
           </tr>
         </table>
-        ##%tmpl.docs.CodeTemplate20101({})##
         
         Option 을 지정하는 경우의 예제
         ##%tmpl.docs.CodeTemplate20102({})##
         
         <h4>< data-bridge-load="#\#: #\#" ></h4>
+        Element 가 로딩 된 후에 해당 Element 의 참조가 필요한 경우 사용 합니다.
+        ##%tmpl.docs.CodeTemplate20201({})##
+        
         <h4>< data-bridge-scope-key="#\#: #\#" ></h4>
+        지정된 Element 를 tmplScope 에 참조합니다.
+        ##%tmpl.docs.CodeTemplate20301({})##
+        
         <h4>< data-bridge-var="#\#: #\#" ></h4>
+        지정된 Element 를 내부 변수로서 참조 합니다.
+        ##%tmpl.docs.CodeTemplate20401({})##
       
       <h3 id="Docs/Template/TmplScope">TmplScope<h2>
       

@@ -196,13 +196,17 @@
       //opacity: '0'
       'border-radius': '50%'
     },
-    '.brui-Splitter:hover .brui-SplitterIcon': {
+    //'.brui-Splitter:hover .brui-SplitterIcon': {
+    '.brui-Splitter .brui-SplitterIcon:hover': {
       opacity: '0.4',
       width: '20px',
       height: '20px'
     },
-    '.brui-Splitter:hover .brui-SplitterIcon:hover': {
-      opacity: '1'
+    //'.brui-Splitter:hover .brui-SplitterIcon:hover': {
+    '.brui-Splitter .brui-SplitterIcon:active': {
+      opacity: '1',
+      width: '20px',
+      height: '20px'
     },
     '.brui-Splitter-horizontal .brui-SplitterIcon': {
       cursor: 'e-resize',
@@ -214,7 +218,8 @@
       //background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAh0lEQVRIS+2UQQ7AIAgE8aG8zoe24UBCEbt4oJfiyQRkzeyGQcVnFM+nHwkw8yU455zD3hHiNKIWWFAKEuGtBYTI9+u70IPIxIyAhsD+dhHQQb45K+DfPQTs8F38bEzfIqp4vxWQH5UiihJzkqKUyXZgWUwj81CKdob3LoIEYAPa96jeAogQ3VFmsBlbASBkAAAAAElFTkSuQmCC) rgba(0,0,0,0.2) center no-repeat',
       'background-size': '16px'
     },
-    '.brui-Splitter-horizontal:hover .brui-SplitterIcon': {
+    //'.brui-Splitter-horizontal:hover .brui-SplitterIcon': {
+    '.brui-Splitter-horizontal .brui-SplitterIcon:hover, .brui-Splitter-horizontal .brui-SplitterIcon:active': {
       left: '-8px'
     },
     '.brui-Splitter-horizontal .brui-SplitterIcon.maxPrev': {
@@ -240,7 +245,8 @@
       //background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAgElEQVRIS9WVUQ7AIAhD9aCcjoNu8YPEsGwtH9Xpr4YHLWBv4tPF8du/AGZ2jYrdnU6MfhjBQ1IWQgFy8AoEAt6CsxAImLtM6sEAnQFAmqPBzN318EAOQBlW79dXsFWiM9r0y0RJBcgTtFWpXSTdpiGZ9D/IECTL7CMlUXV6lwJu4PtIGZKJjy4AAAAASUVORK5CYII=) rgba(0,0,0,0.2) center/80% no-repeat',
       'background-size': '16px'
     },
-    '.brui-Splitter-vertical:hover .brui-SplitterIcon': {
+    //'.brui-Splitter-vertical:hover .brui-SplitterIcon': {
+    '.brui-Splitter-vertical .brui-SplitterIcon:hover, .brui-Splitter-vertical .brui-SplitterIcon:active': {
       top: '-8px'
     },
     '.brui-Splitter-vertical .brui-SplitterIcon.maxPrev': {
@@ -661,11 +667,13 @@
   var crt = document.createElement('img');
   crt.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=";
   crt.style.visibility = "hidden";
+  var skipRendering = 0;
   var event = Object.assign({}, BridgeUi.WindowEvents, {
+/*
     mousedown : function(e) {
       //e.stopPropagation();
       //e.preventDefault();
-
+console.log('mousedown');
       e = e.touches ? e.touches[0] : e;
       targetNext = this.nextElementSibling;
       targetPrev = this.previousElementSibling;
@@ -678,44 +686,71 @@
       startPosition = {x: parseInt(e.pageX) || 0, y: parseInt(e.pageY) || 0};
 
       findFullSize();
-      
       isMove = true;
 //console.log(isMove);
     },
+*/
+/*
     mouseup: function(e) {
 //console.log('mouseup');
       isMove = false;
     },
-    mouseout: function(e) {
+*/
+/*
+    mousemove: function(e) {
+      //e.preventDefault();
+//console.log('mousemove');
+      event.drag.call(this, e);
+    },
+*/
+//    mouseout: function(e) {
 //console.log('mouseout');
 //      isMove = false;
-    },
+//    },
+
     dragstart: function(e) {
 //console.log('dragstart');
       if (e.dataTransfer && e.dataTransfer.setDragImage) {
-        
-        //var crt = e.target.cloneNode(true);
-        //crt.style.display = "none";
         e.dataTransfer.setDragImage(crt, 0, 0);
       }
+
+      e = e.touches ? e.touches[0] : e;
+      targetNext = this.parentElement.nextElementSibling;
+      targetPrev = this.parentElement.previousElementSibling;
+      //parent = targetNext.parentElement;
+      splitterSize = {x: e.target.offsetWidth, y: e.target.offsetHeight};
+      targetStartSize = {x: targetNext.offsetWidth, y: targetNext.offsetHeight};
+      targetPrevStartSize = {x: targetPrev.offsetWidth, y: targetPrev.offsetHeight};
+      
+      //clickPosition = {x: e.layerX || 0, y: e.layerY || 0};
+      startPosition = {x: parseInt(e.pageX) || 0, y: parseInt(e.pageY) || 0};
+
+      findFullSize();
+      isMove = true;
     },
+
     dragend: function(e) {
 //console.log('dragend');
       isMove = false;
     },
     drag: function(e, edata, tmplElem) {
-//console.log('drag', isMove, e.pageX);
+      skipRendering++;
+      if (skipRendering % 2 !== 0) return;
+      skipRendering = 0;
       e = e.touches ? e.touches[0] : e;
+//console.log('drag', isMove, e.screenX);
       if (!isMove || e.pageX == 0 || isOverflowed(direction, targetNext, targetPrev, e)
       ) return;
-//console.log('drag1');
+//console.log('drag1', isMove, e.pageX, e.x, e.clientX, e.screenX, e.layerX, e.offsetX );
+//console.log('drag2', isMove, e.pageY, e.y, e.clientY, e.screenY, e.layerY, e.offsetY );
+
       if (direction == 'horizontal') {
         var moveSize = e.pageX - startPosition.x;
         var afterTargePrevWidth = (targetPrevStartSize.x + moveSize) * fullPercentageWidth / fullWidth;
         var afterTargeWidth = fullPercentageWidth - afterTargePrevWidth;
         
         if (afterTargePrevWidth < minSize || afterTargeWidth < minSize) return;
-        
+
         targetPrev.style.width = 'calc(' + afterTargePrevWidth + '% - ' + widthMargin + ')';
         targetNext.style.width = 'calc(' + afterTargeWidth + '% - ' + widthMargin + ')';
       } else {
@@ -732,7 +767,10 @@
     },
     touchstart: function(e) {
 //console.log('touchstart');
-      event.mousedown.call(this, e);
+      event.dragstart.call(this, e);
+    },
+    touchend: function(e) {
+      isMove = false;
     },
     /*
     touchend: function(e) {
@@ -746,12 +784,7 @@
       //e.preventDefault();
 //console.log('touchstart');
       event.drag.call(this, e);
-    },
-    mousemove: function(e) {
-      //e.preventDefault();
-//console.log('mousemove');
-      event.drag.call(this, e);
-    },
+    }
   });
   
   
@@ -800,8 +833,7 @@
   ##
   <div style="##=data.style ? typeof item === 'object' ? BridgeUi.toStyle(data.style) : data.style : ''##"
         class="brui-Splitter brui-Splitter-##=direction## ##=data.class##"
-        draggable="true"
-        data-bridge-event="##:event##">
+        draggable="true">
     ##
     if (data.minMax) {
       var minMax = (data.minMax || {});
@@ -868,7 +900,7 @@
       }, 10);
     }}##"></span>
     ##}##
-    <span class="brui-SplitterIcon" data-bridge-scope-key="##:'resizeIcon'##"></span>
+    <span class="brui-SplitterIcon" data-bridge-scope-key="##:'resizeIcon'##" data-bridge-event="##:event##" draggable="true"></span>
   </div>
 </template>
 

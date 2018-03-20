@@ -1,62 +1,62 @@
 <body>
-<template id="ta-TestArea">
-  <style id="style-ta-TestArea">
-    .ta-TestArea {
+<template id="pg-TestArea">
+  <style id="style-pg-TestArea">
+    .pg-TestArea {
       height: 345px;
       border: 1px solid #ccc;
       margin: 0 0 10px;
     }
-    .ta-TestArea.console {
+    .pg-TestArea.console {
       height: 545px;
     }
-    .ta-TestArea.template {
+    .pg-TestArea.template {
       height: 667px;
     }
-    .ta-TestArea.template.console {
+    .pg-TestArea.template.console {
       height: 867px;
     }
-    .ta-TestArea > .controlArea {
+    .pg-TestArea > .controlArea {
       height: 22px;
       border-top: 1px solid #ccc;
       background-color: #f7f7f7;
     }
-    .ta-TestArea > .controlArea .btn {
+    .pg-TestArea > .controlArea .btn {
       border-radius: 0px;
       border: 1px solid #f7f7f7;
     }
-    .ta-TestArea > .controlArea .btn.right {
+    .pg-TestArea > .controlArea .btn.right {
       float: right;
     }
-    .ta-TestArea .splitter-title {
+    .pg-TestArea .splitter-title {
       background-color: #f7f7f7;
       border-bottom: 1px solid #ccc;
       height: 20px;
       padding-left: 5px;
     }
-    .ta-TestArea .brui-Splitter-Layout.code,
-    .ta-TestArea .brui-Splitter-Layout.template {
+    .pg-TestArea .brui-Splitter-Layout.code,
+    .pg-TestArea .brui-Splitter-Layout.template {
       height: calc(100% - 23px);
     }
-    .ta-TestArea.template .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
+    .pg-TestArea.template .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
       height: calc(100% - 0px);
     }
-    .ta-TestArea.console .brui-Splitter-Layout.code,
-    .ta-TestArea.console .brui-Splitter-Layout.template {
+    .pg-TestArea.console .brui-Splitter-Layout.code,
+    .pg-TestArea.console .brui-Splitter-Layout.template {
       height: calc(100% - 223px);
     }
     /*
-    .ta-TestArea.template.console .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
+    .pg-TestArea.template.console .brui-Splitter-Layout.template .brui-Splitter-Layout.code {
       height: calc(100% - 200px);
     }
     */
-    .ta-TestArea .codeMirrorArea {
+    .pg-TestArea .codeMirrorArea {
       position: absolute;
       top: 20px;
       bottom: 0;
       left: 0;
       right: 0;
     }
-    .ta-TestArea .CodeMirror {
+    .pg-TestArea .CodeMirror {
       height: 100%;
     }
   </style>
@@ -70,8 +70,8 @@
   var autoReflash = true;
 
   var codeMirrorArea = tmpl.br.Div({class: 'codeMirrorArea'});
-  var renderingArea = tmpl.ta.RenderingArea({imports: imports, code: code, type: type, template: template});
-  var consoleArea = tmpl.ta.ConsoleArea({show: showConsole});
+  var renderingArea = tmpl.pg.RenderingArea({imports: imports, code: code, type: type, template: template});
+  var consoleArea = tmpl.pg.ConsoleArea({show: showConsole});
 
   var codeMirror = null;
   var codeSpliteArea = tmpl.brui.SplitterLayout({
@@ -88,7 +88,7 @@
   });
 
   ##
-  <div class="ta-TestArea ##=hasTemplate ? 'template' : ''## ##=showConsole ? 'console' : ''##">
+  <div class="pg-TestArea ##=hasTemplate ? 'template' : ''## ##=showConsole ? 'console' : ''##">
     ##%templateSpliteArea || codeSpliteArea##
     <div class="controlArea">
       ##%tmpl.bs.Button({label: 'AUTO REFLASH', icon: 'refresh', styleClass: 'xs ' + (autoReflash ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
@@ -136,12 +136,13 @@
   ##
 </template>
 
-<template id="ta-Rendering-Area">
-  <style id="style-ta-Rendering-Area">
-    .ta-Rendering-Area, .ta-Rendering-Area {
+<template id="pg-Rendering-Area">
+  <style id="style-pg-Rendering-Area">
+    .pg-Rendering-Area {
       height: calc(100% - 22px);
+      padding: 10px 20px;
     }
-    .ta-Rendering-Area iframe {
+    .pg-Rendering-Area iframe {
       border: 0;
       width: 100%;
       height: calc(100% - 0px);
@@ -252,7 +253,7 @@
     execScript(code);
   };
   ##
-  <div class="ta-Rendering-Area">
+  <div class="pg-Rendering-Area">
     <iframe data-bridge-load="##:function(target) {
     setTimeout(function() {
       iframeWindow = tmplScope.window = target.contentWindow;
@@ -272,50 +273,50 @@
   </div>
 </template>
 
-<template id="ta-Console-Area">
-  <style id="style-ta-Console-Area">
-    .ta-Console-Area {
+<template id="pg-Console-Area">
+  <style id="style-pg-Console-Area">
+    .pg-Console-Area {
       border-top: 1px solid #ccc;
       background-color: #f7f7f7;
       height: 200px;
       clear: both;
     }
-    .ta-Console-Area > .logArea {
+    .pg-Console-Area > .logArea {
       overflow-y: auto;
       height: calc(100% - 23px);
     }
-    .ta-Console-Area > .logArea > p {
+    .pg-Console-Area > .logArea > p {
       margin: 0 0 4px;
     }
-    .ta-Console-Area > .logArea > pre {
+    .pg-Console-Area > .logArea > pre {
       font-size: 10px;
       border-width: 0px;
-      margin: 0 0 10px;
+      margin: 0 0 1px;
       padding: 4px;
     }
-    .ta-Console-Area > .logArea > .error {
+    .pg-Console-Area > .logArea > .error {
       color: red;
     }
-    .ta-Console-Area > .controlArea {
+    .pg-Console-Area > .controlArea {
       height: 23px;
     }
-    .ta-Console-Area > .controlArea .btn {
+    .pg-Console-Area > .controlArea .btn {
       border-radius: 0px;
       border: 1px solid #f7f7f7;
     }
-    .ta-Console-Area > .controlArea .left {
+    .pg-Console-Area > .controlArea .left {
       float: left;
     }
-    .ta-Console-Area > .controlArea .right {
+    .pg-Console-Area > .controlArea .right {
       float: right;
     }
-    .ta-Console-Area > .controlArea .form-group {
+    .pg-Console-Area > .controlArea .form-group {
       margin-bottom: 0px;
       width: calc(100% - 150px);
       display: inline-block;
       margin-left: 1px;
     }
-    .ta-Console-Area > .controlArea .input-sm {
+    .pg-Console-Area > .controlArea .input-sm {
       height: 20px;
       padding: 2px 4px;
       font-size: 10px;
@@ -394,7 +395,7 @@
 
   tmplScope.setWindow(targetWindow);
   ##
-  <div class="ta-Console-Area" style="##=show ? '' : 'display: none;'##">
+  <div class="pg-Console-Area" style="##=show ? '' : 'display: none;'##">
     <div class="logArea" data-bridge-var="##:area##"></div>
     <div class="controlArea">
       ##%tmpl.bs.Field({class: '', size: 'sm', enterKeyEvent: function(e) {

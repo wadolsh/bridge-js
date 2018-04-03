@@ -247,6 +247,7 @@
           if (eventType == 'load') {
             var parentElement = $targetElement || $childTarget.parentElement;
             eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            //eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), tmplScope.element, tmplScope);
             return;
           } else if (eventType == 'var') {
             tmplScope[eventFunc[eventType]] = $elementTrigger;
@@ -259,6 +260,7 @@
             var parentElement = $targetElement || $childTarget.parentElement;
             event.stopPropagation();
             eventFunc[eventType].call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            //eventFunc[eventType].call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), tmplScope.element, tmplScope);
           });
 
           if (triggerKey) {
@@ -905,7 +907,7 @@
 
   addTmpl('br-Tag', '##%bridge.tmplTool.tag(data[0], data[1])##');
   addTmpl('br-Div',
-          '&lt;div  ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"&gt;'
+          '&lt;div ##=data.id ? \'id="\' + (data.data === true ? tmplScope._id : data.id) + \'"\' : \'\'## ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"&gt;'
           + '##if (typeof data.content === "string") {##'
           + '##=data.content##'
           + '##} else {##'

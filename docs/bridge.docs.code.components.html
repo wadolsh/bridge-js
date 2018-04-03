@@ -1,30 +1,30 @@
 <body>
 <template id="docs-Code-Template-001-01">
-  <pre class="prettyprint lang-html">
-    <script src="js/bridge.template.js"></script>
-  </pre>
+  <pre><code class="language-html">
+      ##-'<script src="js/bridge.template.js"></script>'##
+  </code></pre>
 </template>
 
 <template id="docs-Code-Template-002-01">
-  <pre class="prettyprint lang-js">
+  <pre><code class="language-javascript">
     bridge.tmplTool.addTmpl('do-Simple', '<div>#\#=data.label#\#</div>');
   </pre>
 </template>
 
 <template id="docs-Code-Template-003-01">
-  <pre class="prettyprint lang-js">
+  <pre><code class="language-javascript">
 // do-Simple-Sample → tmpl.do.SimpleSample()
 var sample = tmpl.do.SimpleSample({label: 'Div Simple'});
 document.body.appendChild(sample.element);
-  </pre>
+  </code></pre>
 </template>
 
 <template id="docs-Code-Template-004-01">
-  <pre class="prettyprint lang-js">
+  <pre><code class="language-javascript">
 // do-Simple-Sample → bridge.tmpl('do-Simple-Sample')()
 var sample = bridge.tmpl('do-Simple-Sample')({label: 'Div Simple'});
 document.body.appendChild(sample.element);
-  </pre>
+  </code></pre>
 </template>
 
 <template id="docs-Code-Template-005-01">
@@ -42,7 +42,7 @@ document.body.appendChild(sample2.element);`
 </template>
 
 <template id="docs-Code-Template-006-01">
-  <pre class="prettyprint lang-js">
+  <pre><code class="language-javascript">
 var sample = tmpl.do.Sample({label: 'Div Sample'});
 sample → {
   appendTo: function,
@@ -56,7 +56,7 @@ sample → {
   tmplId: "do-Sample"
   _id: "do-Sample1"
 }
-  </pre>
+  </code></pre>
 </template>
 
 <template id="docs-Code-Template-007-01">
@@ -108,9 +108,9 @@ tmplScope.getCode = function() {
   return code;
 }
 ##
-  <pre class="prettyprint lang-js lang-html lang-css">
-  ##=code##
-  </pre>
+  <pre><code class="language-javascript">
+  ##-code##
+  </code></pre>
 </template>
 
 <template id="docs-Code-Template-007-02">
@@ -148,17 +148,15 @@ tmplScope.getCode = function() {
   }
   ##
 -->
-  <pre class="prettyprint escaped lang-html" data-bridge-var="##:pre##">##-code##</pre>
+  <pre><code class="language-html">##-code##</code></pre>
 </template>
 
 <template id="docs-Code-Template-008-02">
-  <pre class="" data-bridge-var="##:pre##"></pre>
+  <pre><code class="language-javascript escaped" data-bridge-var="##:code##">
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate00802.components.html', function(text) {
-    pre.innerText = text;
-    pre.classList.add('prettyprint');
-    pre.classList.add('lang-html');
-    PR.prettyPrint();
+    code.innerText = text;
+    Prism.highlightAll();
   });
   ##
 </template>
@@ -299,9 +297,9 @@ tmplScope.getCode = function() {
   return code;
 }
 ##
-  <pre class="prettyprint lang-js lang-html lang-css">
+  <code class="language-javascript">
   ##=code##
-  </pre>
+  </code></pre>
 </template>
 
 <template id="docs-Code-Template-104-02">

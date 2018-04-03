@@ -2,7 +2,7 @@
 <template id="FabricFunction" data-bridge-load-script="true">
   ##
   window.MDL = {
-    ripple: true,
+    ripple: false,
     prop: function(props) {
       if (!props) return '';
       var propStrArray = [];
@@ -133,7 +133,7 @@
   var action = data.action;
   var label = data.label;
   ##
-  &lt;##=type## class="mdl-chip ##=MDL.options('mdl-chip--', options)##" data-bridge-event="##:event##"&gt;
+  &lt;##=type## class="mdl-chip ##=MDL.options('mdl-chip--', options)## ##=data.class##" data-bridge-event="##:event##"&gt;
     ##if(img) {##<img class="mdl-chip__contact" src="##=img##"></img>##}##
     ##if(contact) {##<span class="mdl-chip__contact ##=contactClass##">##%contact##</span>##}##
     <span class="mdl-chip__text">##%label##</span>

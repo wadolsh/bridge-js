@@ -428,12 +428,12 @@
     
   </div>
   ###
-  var codes = this.querySelectorAll('.prettyprint:not(.escaped)');
+  var codes = this.querySelectorAll('code:not(.escaped)');
   Array.prototype.forEach.call(codes, function(code) {
-    code.innerText = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
+    code.innerHTML = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
   });
   setTimeout(function() {
-    PR.prettyPrint();
+    Prism.highlightAll();
   });
   ##
 </template>

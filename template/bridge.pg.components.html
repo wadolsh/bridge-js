@@ -49,8 +49,6 @@
       height: calc(100% - 200px);
     }
     */
-
-
   </style>
   ##
   var imports = data.imports;
@@ -115,6 +113,91 @@
   </div>
 </template>
 
+<template id="pg-Component-PlayGround">
+  <style id="style-pg-Component-PlayGround">
+    .pg-Component-PlayGround {
+      height: 200px;
+      border: 1px solid #ccc;
+      margin: 10px 0 10px 0;
+    }
+    .pg-Component-PlayGround .renderingArea {
+      width: 200px;
+      height: 100%;
+      float: left;
+    }
+    .pg-Component-PlayGround .renderingArea .pg-Rendering-Area {
+      height: calc(100% - 22px);
+      padding: 10px 20px;
+    }
+    .pg-Component-PlayGround .runCodeArea {
+      width: calc(100% - 201px);
+      height: 100%;
+      float: right;
+      position: relative;
+      border-left: 1px solid #ccc;
+    }
+    .pg-Component-PlayGround .runCodeArea .pg-CodeMirror-Area {
+
+    }
+    .pg-Component-PlayGround .runCodeAreaTitle {
+      background-color: #f7f7f7;
+      border-bottom: 1px solid #ccc;
+      height: 20px;
+      padding-left: 5px;
+    }
+    .pg-Component-PlayGround .runCodeAreaTitle .control {
+      float: right;
+    }
+    .pg-Component-PlayGround .runCodeAreaTitle .btn {
+      border-radius: 0px;
+      padding: 0px 4px;
+      vertical-align: top;
+      height: 19px;
+      margin-left: 10px;
+    }
+  </style>
+  ##
+  var imports = data.imports;
+  var importTmpls = data.importTmpls;
+  var code = data.code;
+  var runCode = data.runCode;
+  var type = data.type;
+  
+  var autoReflash = true;
+
+  var toRenderingCode = function() {
+    var realCode = "bridge.tmplTool.addTmplByUrl([" + 
+        "'" + importTmpls.join("', '") + "'" +
+      "], {loadScript: false, loadLink: false}, function() {" +
+        (runCode || code) +
+    "});";
+    return realCode;
+  }
+  var renderingArea = tmpl.pg.RenderingArea({imports: imports, code: toRenderingCode(), type: type});
+  var runCodeArea = tmpl.pg.CodeMirrorArea({
+    value: code,
+    changeEvent: function(cMirror) {
+      if (autoReflash) renderingArea.reflashCode({code: cMirror.getValue(), type: type});
+    }
+  });
+  ##
+  <div class="pg-Component-PlayGround">
+    <div class="renderingArea">##%renderingArea##</div>
+    <div class="runCodeArea">
+      <div class="runCodeAreaTitle">
+        <span>Code</span>
+        <div class="control">
+          ##%tmpl.bs.Button({label: 'AUTO REFLASH', icon: 'refresh', styleClass: 'xs ' + (autoReflash ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+            autoReflash = !autoReflash;
+            tmplElem.classList[autoReflash ? 'add' : 'remove']('btn-success');
+          }})##
+        </div>
+      </div>
+      ##%runCodeArea##
+    </div>
+  </div>
+</template>
+
 <template id="pg-CodeMirror-Area">
   <style id="style-pg-CodeMirror-Area">
     .pg-CodeMirror-Area .CodeMirror {
@@ -148,10 +231,6 @@
 
 <template id="pg-Rendering-Area">
   <style id="style-pg-Rendering-Area">
-    .pg-Rendering-Area {
-      height: calc(100% - 22px);
-      padding: 10px 20px;
-    }
     .pg-Rendering-Area iframe {
       border: 0;
       width: 100%;
@@ -169,6 +248,9 @@
   var importOptionTags = {
     css: function(item) {
       return tmpl.br.Tag(['link', {href: item.text, rel: "stylesheet", type: "text/css"}]);
+    },
+    css_text: function(item) {
+      return tmpl.br.Tag(['style', {innerHTML: item.text, type: "text/css"}]);
     },
     js: function(item) {
       loadCount++;

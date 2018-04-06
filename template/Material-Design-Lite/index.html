@@ -95,8 +95,8 @@
         runCode: runCode + '; componentHandler.upgradeElement(component.element);'
       })##
     </template>
-      
-      
+
+
     <template id="mdldoc-Doc">
       <style id="style-mdldoc-Doc">
         .mdldoc-Doc {
@@ -273,11 +273,6 @@
           <div class="playGroundArea" data-bridge-var="##:playGroundArea##"></div>
         </div>
       </div>
-      ###
-      setTimeout(function() {
-        Prism.highlightAll();
-      });
-      ##
     </template>
 
     <template id="mdldoc-Menu-Container">
@@ -291,6 +286,9 @@
     </template>
   </body>
   <script type="text/javascript">
+    var reflashCallback = function() {
+      Prism.highlightAll();
+    }
     var data = {
       options: ['fixed-drawer', 'fixed-header'],
       header: {
@@ -312,48 +310,51 @@
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Badges');
+            reflashCallback();
           }},
           {label: 'Buttons', href:'#Buttons', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#buttons-section',
               examples: [
-                [{lable: '', element: "tmpl.mdl.Button({icon: 'add', options: ['colored', 'fab']})"},
-                 {lable: '', element: "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['colored', 'fab']})"}],
+                [{lable: 'Colored FAB', element: "tmpl.mdl.Button({icon: 'add', options: ['colored', 'fab']})"},
+                 {lable: 'With ripple', element: "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['colored', 'fab']})"}],
                 
-                [{lable: '', element: "tmpl.mdl.Button({icon: 'add', options: ['fab']})"},
-                 {lable: '', element: "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['fab']})"},
-                 {lable: '', element: "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['fab'], disabled: true})"}],
+                [{lable: 'Plain FAB', element: "tmpl.mdl.Button({icon: 'add', options: ['fab']})"},
+                 {lable: 'With ripple', element: "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['fab']})"},
+                 {lable: 'Disabled', element: "tmpl.mdl.Button({icon: 'add', ripple: true, options: ['fab'], disabled: true})"}],
                 
-                [{lable: '', element: "tmpl.mdl.Button({label: 'Button', options: ['raised']})"},
-                 {lable: '', element: "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised']})"},
-                 {lable: '', element: "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised'], disabled: true})"}],
+                [{lable: 'Raised Button', element: "tmpl.mdl.Button({label: 'Button', options: ['raised']})"},
+                 {lable: 'With ripple', element: "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised']})"},
+                 {lable: 'Disabled', element: "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised'], disabled: true})"}],
                 
-                [{lable: '', element: "tmpl.mdl.Button({label: 'Button', options: ['raised', 'colored']})"},
-                 {lable: '', element: "tmpl.mdl.Button({label: 'Button', options: ['raised', 'accent']})"},
-                 {lable: '', element: "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised', 'accent']})"}],
+                [{lable: 'Colored button', element: "tmpl.mdl.Button({label: 'Button', options: ['raised', 'colored']})"},
+                 {lable: 'Accent colored', element: "tmpl.mdl.Button({label: 'Button', options: ['raised', 'accent']})"},
+                 {lable: 'With Ripples', element: "tmpl.mdl.Button({label: 'Button', ripple: true, options: ['raised', 'accent']})"}],
                 
-                [{lable: '', element: "tmpl.mdl.Button({label: 'Button'})"},
-                 {lable: '', element: "tmpl.mdl.Button({label: 'Button', ripple: true})"},
-                 {lable: '', element: "tmpl.mdl.Button({label: 'Button', disabled: true})"}],
+                [{lable: 'Flat button', element: "tmpl.mdl.Button({label: 'Button'})"},
+                 {lable: 'With ripple', element: "tmpl.mdl.Button({label: 'Button', ripple: true})"},
+                 {lable: 'Disabled', element: "tmpl.mdl.Button({label: 'Button', disabled: true})"}],
                 
-                [{lable: '', element: "tmpl.mdl.Button({label: 'Button', options: ['primary']})"},
-                 {lable: '', element: "tmpl.mdl.Button({label: 'Button', options: ['accent']})"}],
+                [{lable: 'Primary colored flat', element: "tmpl.mdl.Button({label: 'Button', options: ['primary']})"},
+                 {lable: 'Accent colored flat', element: "tmpl.mdl.Button({label: 'Button', options: ['accent']})"}],
                 
-                [{lable: '', element: "tmpl.mdl.Button({icon: 'mood', options: ['icon']})"},
-                 {lable: '', element: "tmpl.mdl.Button({icon: 'mood', options: ['icon', 'colored']})"}],
+                [{lable: 'Icon button', element: "tmpl.mdl.Button({icon: 'mood', options: ['icon']})"},
+                 {lable: 'Colored', element: "tmpl.mdl.Button({icon: 'mood', options: ['icon', 'colored']})"}],
                 
-                [{lable: '', element: "tmpl.mdl.Button({icon: 'add', options: ['fab', 'mini-fab']})"},
-                 {lable: '', element: "tmpl.mdl.Button({icon: 'add', options: ['fab', 'mini-fab', 'colored']})"}],
+                [{lable: 'Mini FAB', element: "tmpl.mdl.Button({icon: 'add', options: ['fab', 'mini-fab']})"},
+                 {lable: 'Colored', element: "tmpl.mdl.Button({icon: 'add', options: ['fab', 'mini-fab', 'colored']})"}],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Buttons');
+            reflashCallback();
           }},
           {label: 'Cards', href:'#Cards', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#cards-section',
               examples: [
-                [{style: 
+                [{lable: 'Wide',
+                  style: 
 `.demo-card-wide.mdl-card {
   width: 512px;
 }
@@ -380,7 +381,8 @@
 })`
                 }],
 
-                [{style: 
+                [{lable: 'Square',
+                  style: 
 `.demo-card-square.mdl-card {
   width: 320px;
   height: 320px;
@@ -405,7 +407,8 @@
 })`
                 }],
 
-                [{style: 
+                [{lable: 'Image',
+                  style: 
 `.demo-card-image.mdl-card {
   width: 256px;
   height: 256px;
@@ -432,7 +435,8 @@
     }
 })`
                   },
-                  {style: 
+                  {lable: 'Event',
+                  style: 
 `.demo-card-event.mdl-card {
   width: 256px;
   height: 256px;
@@ -484,28 +488,31 @@
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Cards');
+            reflashCallback();
           }},
           {label: 'Chips', href:'#Chips', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#chips-section',
               examples: [
-                ["tmpl.mdl.Chip({label: 'Basic Chip'})",
-                "tmpl.mdl.Chip({label: 'Deletable Chip', options: ['deletable'], action: {icon: 'cancel'}})",
-                "tmpl.mdl.Chip({label: 'Button Chip', type: 'button'})"],
+                [{lable: 'Basic Chip', element: "tmpl.mdl.Chip({label: 'Basic Chip'})"},
+                 {lable: 'Deletable Chip', element: "tmpl.mdl.Chip({label: 'Deletable Chip', options: ['deletable'], action: {icon: 'cancel'}})"},
+                 {lable: 'Button Chip', element: "tmpl.mdl.Chip({label: 'Button Chip', type: 'button'})"}],
                 
-                ["tmpl.mdl.Chip({label: 'Contact Chip', options: ['contact'], contact: 'A', contactClass: 'mdl-color--teal mdl-color-text--white'})",
-                "tmpl.mdl.Chip({label: 'Deletable Contact Chip', options: ['deletable', 'contact'], img: 'https://getmdl.io/templates/dashboard/images/user.jpg', action: {icon: 'cancel'}})"],
+                [{lable: 'Contact Chip', element: "tmpl.mdl.Chip({label: 'Contact Chip', options: ['contact'], contact: 'A', contactClass: 'mdl-color--teal mdl-color-text--white'})"},
+                 {lable: 'Deletable Contact Chip', element: "tmpl.mdl.Chip({label: 'Deletable Contact Chip', options: ['deletable', 'contact'], img: 'https://getmdl.io/templates/dashboard/images/user.jpg', action: {icon: 'cancel'}})"}],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Chips');
+            reflashCallback();
             
           }},
           {label: 'Dialogs', href:'#Dialogs', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#dialog-section',
               examples: [
-                [{code: 
+                [{lable: '',
+                code: 
 `var dialog = tmpl.mdl.Dialog({
     title: 'Allow data collection?',
     content: '<p>Allowing us to collect data will let us get you the information you want faster.</p>',
@@ -519,7 +526,8 @@ document.body.appendChild(dialog.element);`,
   dialog.showModal();
 }});`,
                 }],
-                [{code: 
+                [{lable: '',
+                code: 
 `var dialog = tmpl.mdl.Dialog({
     title: 'Allow data collection?',
     content: '<p>Allow this site to collect usage data to improve your experience?</p>',
@@ -538,6 +546,7 @@ document.body.appendChild(dialog.element);`,
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Dialogs');
+            reflashCallback();
             
           }},
           {label: 'Layout', href:'#Layout', event: function() {
@@ -546,7 +555,7 @@ document.body.appendChild(dialog.element);`,
               class: 'demo-layout__transparent',
               examples: [
                 //[{element: `tmpl.mdl.Layout({})`}],
-                [{
+                [{lable: '',
                  style: 
 `.mdl-layout__container {
   overflow: scroll;
@@ -601,7 +610,8 @@ document.body.appendChild(dialog.element);`,
     }
 });`
                 }],
-                [
+                [{lable: '',
+                 element: 
 `tmpl.mdl.Layout({
     options: ['fixed-drawer'],
     drawer: {
@@ -615,8 +625,9 @@ document.body.appendChild(dialog.element);`,
     },
     content: ' '
 });`
-                ],
-                [
+                }],
+                [{lable: '',
+                 element: 
 `tmpl.mdl.Layout({
     options: ['fixed-header'],
     header: {
@@ -639,8 +650,9 @@ document.body.appendChild(dialog.element);`,
     },
     content: ' '
 });`
-                ],
-                [
+                }],
+                [{lable: '',
+                 element: 
 `tmpl.mdl.Layout({
     options: ['fixed-drawer', 'fixed-header'],
     header: {
@@ -663,8 +675,9 @@ document.body.appendChild(dialog.element);`,
     },
     content: ' '
 });`
-                ],
-                [{style: 
+                }],
+                [{lable: '',
+                style: 
 `.demo-layout__scrolling-header .page-content {
   height: 600px;
   background: white;
@@ -695,7 +708,8 @@ document.body.appendChild(dialog.element);`,
     content: ' '
 });`
                 }],
-                [{style: 
+                [{lable: '',
+                style: 
 `.demo-layout-waterfall .mdl-layout__header-row .mdl-navigation__link:last-of-type  {
   padding-right: 0;
 }
@@ -731,7 +745,8 @@ document.body.appendChild(dialog.element);`,
     content: ' '
 });`
                 }],
-                [{element: 
+                [{lable: '',
+                element: 
 `tmpl.mdl.Layout({
     class: '',
     options: ['fixed-header'],
@@ -752,7 +767,8 @@ document.body.appendChild(dialog.element);`,
     }
 });`
                 }],
-                [{element: 
+                [{lable: '',
+                element: 
 `tmpl.mdl.Layout({
     class: '',
     options: ['fixed-header', 'fixed-tabs'],
@@ -774,13 +790,14 @@ document.body.appendChild(dialog.element);`,
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Layout');
-            
+            reflashCallback();
           }},
           {label: 'Tabs', href:'#Tabs', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section/tabs',
               examples: [
                 [{
+lable: '',
 style: `
 .mdl-tabs ul {
   list-style-type: none;
@@ -827,13 +844,16 @@ element:
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Tabs');
+            reflashCallback();
           }},
           {label: 'Mega-Footer', href:'#Mega-Footer', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section/footer',
               class: 'is-full-width',
               examples: [
-                [
+                [{
+lable: '',
+element: 
 `tmpl.br.Div({
   content: 
     tmpl.mdl.MegaFooter({
@@ -884,18 +904,21 @@ element:
     })
 });
 `
-                ],
+                }],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Mega-Footer');
+            reflashCallback();
           }},
           {label: 'Mini-Footer', href:'#Mini-Footer', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#layout-section/footer',
               class: 'is-full-width',
               examples: [
-                [
+                [{
+lable: '',
+element: 
 `tmpl.br.Div({
   content: 
     tmpl.mdl.MiniFooter({
@@ -909,11 +932,12 @@ element:
     })
 });
 `
-                ],
+                }],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Mini-Footer');
+            reflashCallback();
           }},
           
           
@@ -921,13 +945,17 @@ element:
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#lists-section',
               examples: [
-                [{style: 
+                [{
+lable: '',
+style: 
 `.demo-list-item {
   width: 300px;
 }`
                 , element: "tmpl.mdl.List({class: 'demo-list-item', items: ['Bryan Cranston', 'Aaron Paul', 'Bob Odenkirk']})"}],
                 
-                [{style: 
+                [{
+lable: '',
+style: 
 `.demo-list-icon {
   width: 300px;
 }`
@@ -942,7 +970,9 @@ element:
 })`
                   
                 }],                
-                [{style: 
+                [{
+lable: '',
+style: 
 `.demo-list-action {
   width: 300px;
 }`
@@ -957,7 +987,9 @@ element:
     ]
 })`
                 }],                
-                [{style: 
+                [{
+lable: '',
+style: 
 `.demo-list-control {
   width: 300px;
 }
@@ -976,7 +1008,10 @@ element:
     ]
 })`
                 }],                
-                [{style: 
+                [{
+                  
+lable: '',
+style: 
 `.demo-list-two {
   width: 300px;
 }`
@@ -992,7 +1027,9 @@ element:
     ]
 })`
                 }],                
-                [{style: 
+                [{
+lable: '',
+style: 
 `.demo-list-three {
   width: 650px;
 }`
@@ -1021,12 +1058,15 @@ element:
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Lists');
+            reflashCallback();
           }},
           {label: 'Progress', href:'#Progress', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#loading-section/progress',
               examples: [
-                [{code: 
+                [{
+lable: '',
+code: 
 `var progress = tmpl.mdl.Progress({style: 'width:250px;'});
 setTimeout(function() {
   progress.setProgress(44);
@@ -1035,7 +1075,9 @@ setTimeout(function() {
 
                 ["tmpl.mdl.Progress({options: ['indeterminate']})"],
 
-                [{code: 
+                [{
+lable: '',
+code: 
 `var progress = tmpl.mdl.Progress({});
 setTimeout(function() {
   progress.setProgress(33);
@@ -1046,15 +1088,18 @@ setTimeout(function() {
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Progress');
+            reflashCallback();
           }},
           {label: 'Spinner', href:'#Spinner', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#loading-section/spinner',
               examples: [
-                ["tmpl.mdl.Spinner({})",
-                 "tmpl.mdl.Spinner({options: ['single-color']})"],
+                [{lable: '', element: "tmpl.mdl.Spinner({})"},
+                 {lable: '', element: "tmpl.mdl.Spinner({options: ['single-color']})"}],
                 
-                [{code: 
+                [{
+lable: '',
+code: 
 `var spinner = tmpl.mdl.Spinner({});
 var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], event: function() {
   spinner.setActive(!spinner.active());
@@ -1065,12 +1110,15 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Spinner');
+            reflashCallback();
           }},
           {label: 'Menus', href:'#Menus', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#menus-section',
               examples: [
-                [{style:
+                [{
+lable: '',
+style:
 `.demo-menu.demo-menu__lower-left .container {
   position: relative;
   width: 200px;
@@ -1110,7 +1158,9 @@ var menu = tmpl.mdl.Menu({
     top: [button, menu]
 })`
                 }],
-                [{style: 
+                [{
+lable: '',
+style: 
 `
 .demo-menu.demo-menu__lower-right .container {
   position: relative;
@@ -1158,7 +1208,9 @@ var menu = tmpl.mdl.Menu({
     top: tmpl.br.Div({class: 'wrapper', content: [button, menu]})
 })`
                 }],
-                [{style: 
+                [{
+lable: '',
+style: 
 `
 .demo-menu.demo-menu__top-left .container {
   position: relative;
@@ -1199,7 +1251,9 @@ var menu = tmpl.mdl.Menu({
     bottom: [button, menu]
 })`
                 }],
-                [{style: 
+                [{
+lable: '',
+style: 
 `
 .demo-menu.demo-menu__top-right .container {
   position: relative;
@@ -1251,14 +1305,17 @@ var menu = tmpl.mdl.Menu({
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Menus');
+            reflashCallback();
           }},
           {label: 'Sliders', href:'#Sliders', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#sliders-section',
               examples: [
-                ["tmpl.mdl.Slider({min: 0, max: 100, value: 0})",
-                 "tmpl.mdl.Slider({min: 0, max: 100, value: 25})"],
-                [{code: 
+                [{lable: '', element: "tmpl.mdl.Slider({min: 0, max: 100, value: 0})"},
+                 {lable: '', element: "tmpl.mdl.Slider({min: 0, max: 100, value: 25})"}],
+                [{
+lable: '',
+code: 
 `var slider = tmpl.mdl.Slider({min: 0, max: 100, value: 0});
 slider.min(10);
 slider.max(80);
@@ -1269,13 +1326,16 @@ slider.value(20);
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Sliders');
+            reflashCallback();
           }},
           {label: 'Snackbar', href:'#Snackbar', event: function() {
             var doc = tmpl.mdldoc.Doc({
               class: 'Snackbar',
               link: 'https://getmdl.io/components/index.html#snackbar-section',
               examples: [
-                [{code: 
+                [{
+lable: '',                  
+code: 
 `
 var snackbarContainer = tmpl.mdl.Snackbar({});
 var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], event: function() {
@@ -1293,7 +1353,9 @@ console.log('--');
 }});
 `
                   , element: "tmpl.br.Div({content: [snackbarContainer, showSnackbarButton]})"}],
-                [{code: 
+                [{
+lable: '', 
+code: 
 `
 var counter = 0;
 var snackbarContainer = tmpl.mdl.Snackbar({});
@@ -1307,56 +1369,63 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Snackbar');
+            reflashCallback();
           }},
           {label: 'Checkbox', href:'#Checkbox', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/checkbox',
               examples: [
-                ["tmpl.mdl.Checkbox({label: 'Checkbox', checked: true})",
-                 "tmpl.mdl.Checkbox({label: 'Checkbox'})"],
+                [{lable: '', element: "tmpl.mdl.Checkbox({label: 'Checkbox', checked: true})"},
+                 {lable: '', element: "tmpl.mdl.Checkbox({label: 'Checkbox'})"}],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Checkbox');
+            reflashCallback();
           }},
           {label: 'Radio', href:'#Radio', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/radio',
               examples: [
-                ["tmpl.mdl.Radio({label: 'First', name: 'options', checked: true})",
-                 "tmpl.mdl.Radio({label: 'Second', name: 'options'})"],
+                [{lable: '', element: "tmpl.mdl.Radio({label: 'First', name: 'options', checked: true})"},
+                 {lable: '', element: "tmpl.mdl.Radio({label: 'Second', name: 'options'})"}],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Radio');
+            reflashCallback();
           }},
           {label: 'Icon-Toggle', href:'#Icon-Toggle', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/icon-toggle',
               examples: [
-                ["tmpl.mdl.IconToggle({icon: 'format_bold', checked: true})",
-                 "tmpl.mdl.IconToggle({icon: 'format_italic'})"],
+                [{lable: '', element: "tmpl.mdl.IconToggle({icon: 'format_bold', checked: true})"},
+                 {lable: '', element: "tmpl.mdl.IconToggle({icon: 'format_italic'})"}],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Icon-Toggle');
+            reflashCallback();
           }},
           {label: 'Switch', href:'#Switch', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#toggles-section/switch',
               examples: [
-                ["tmpl.mdl.Switch({label: '', checked: true})",
-                 "tmpl.mdl.Switch({label: ''})"],
+                [{lable: '', element: "tmpl.mdl.Switch({label: '', checked: true})"},
+                 {lable: '', element: "tmpl.mdl.Switch({label: ''})"}],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Switch');
+            reflashCallback();
           }},
           {label: 'Tables', href:'#Tables', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#tables-section',
               examples: [
-                [
+                [{
+lable: '',
+element: 
 `tmpl.mdl.Table({
     shadow: 2,
     options: ['selectable'],
@@ -1371,8 +1440,10 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
       [{label: 'Laminate (Gold on Blue)', options: ['non-numeric']}, '10', '$2.35'],
     ]
 })`
-                ],
-                [
+                }],
+                [{
+lable: '',
+element: 
 `tmpl.mdl.Table({
     shadow: 2,
     options: ['selectable'],
@@ -1387,54 +1458,64 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
       [{label: 'Laminate (Gold on Blue)', options: ['non-numeric']}, '10', '$2.35'],
     ]
 })`
-                ]
+                }]
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Tables');
+            reflashCallback();
           }},
           {label: 'Text-Fields', href:'#Text-Fields', event: function() {
             var doc = tmpl.mdldoc.Doc({
               link: 'https://getmdl.io/components/index.html#textfields-section',
               examples: [
-                ["tmpl.mdl.TextField({label: 'Text...'})",
-                 "tmpl.mdl.TextField({label: 'Number...', pattern: '-?[0-9]*(\.[0-9]+)?', errorMsg: 'Input is not a number!'})"],
+                [{lable: '', element: "tmpl.mdl.TextField({label: 'Text...'})"},
+                 {lable: '', element: "tmpl.mdl.TextField({label: 'Number...', pattern: '-?[0-9]*(\.[0-9]+)?', errorMsg: 'Input is not a number!'})"}],
                  
-                ["tmpl.mdl.TextField({label: 'Text...', options: ['floating-label']})", 
-                 "tmpl.mdl.TextField({label: 'Number...', options: ['floating-label'], pattern: '-?[0-9]*(\.[0-9]+)?', errorMsg: 'Input is not a number!'})"],
+                [{lable: '', element: "tmpl.mdl.TextField({label: 'Text...', options: ['floating-label']})"},
+                 {lable: '', element: "tmpl.mdl.TextField({label: 'Number...', options: ['floating-label'], pattern: '-?[0-9]*(\.[0-9]+)?', errorMsg: 'Input is not a number!'})"}],
                  
-                ["tmpl.mdl.TextField({label: 'Text lines...', rows:3})", 
-                 "tmpl.mdl.TextField({label: 'Expandable Input', options: ['expandable'], icon: 'search'})"],
+                [{lable: '', element: "tmpl.mdl.TextField({label: 'Text lines...', rows:3})"}, 
+                 {lable: '', element: "tmpl.mdl.TextField({label: 'Expandable Input', options: ['expandable'], icon: 'search'})"}],
               ]
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Text-Fields');
+            reflashCallback();
           }},
           {label: 'Tooltips', href:'#Tooltips', event: function() {
             var doc = tmpl.mdldoc.Doc({
               class: 'Tooltips',
               link: 'https://getmdl.io/components/index.html#tooltips-section',
               examples: [
-                [{code:
+                [{
+lable: '',
+code:
 `
 var div = tmpl.br.Div({id: 'tt1', class: 'icon material-icons', content: 'add'});
 var tip = tmpl.mdl.Tooltip({for: 'tt1', content: 'Follow'});
 `
                   , element: "tmpl.br.Div({content: [div, tip]})"},
-                {code:
+                {
+lable: '',
+code:
 `
 var div = tmpl.br.Div({id: 'tt2', class: 'icon material-icons', content: 'print'});
 var tip = tmpl.mdl.Tooltip({for: 'tt2', content: 'Print', options: ['large']});
 `
                   , element: "tmpl.br.Div({content: [div, tip]})"}
                 ],
-                [{code:
+                [{
+lable: '',
+code:
 `
 var div = tmpl.br.Div({id: 'tt3', class: 'icon material-icons', content: 'cloud_upload'});
 var tip = tmpl.mdl.Tooltip({for: 'tt3', content: '<>Upload <strong>file.zip</strong>'});
 `
                   , element: "tmpl.br.Div({content: [div, tip]})"},
-                {code:
+                {
+lable: '',
+code:
 `
 var div = tmpl.br.Div({id: 'tt4', class: 'icon material-icons', content: 'share'});
 var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via social media'});
@@ -1445,6 +1526,7 @@ var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via so
             });
             layout.reflashContent(doc.element);
             layout.reflashTitle('Tooltips');
+            reflashCallback();
           }}
         ]
       }

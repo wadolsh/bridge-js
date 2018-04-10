@@ -551,21 +551,27 @@
       var dataKeyName = settings.dataKeyName;
       var statusKeyName = settings.statusKeyName;
       var lazyScope = JSON.parse(matcher.lazyScopeSeed);
-      var tmplScope = tmplScope || {
+      var tmplScope = Object.assign(tmplScope || {}, {
+      //var tmplScope = tmplScope || {
         tmplId: tmplId,
-        _id: tmplTool.genId(tmplId),
+        //_id: tmplTool.genId(tmplId),
         //[statusKeyName]: {},
         replace: function(scope) {
           tmplScope.element.parentElement.replaceChild(scope.element || scope, tmplScope.element);
         },
-        remove: function() {
+        remove: function(spacer) {
           if (tmplScope.beforeRemove) tmplScope.beforeRemove();
           if (tmplScope.element.parentElement) {
-            var dumy = document.createElement('template');
-            tmplScope.element.parentElement.replaceChild(dumy, tmplScope.element);
-            tmplScope.element = dumy;
+            if (spacer) {
+              var dumy = document.createElement('template');
+              tmplScope.element.parentElement.replaceChild(dumy, tmplScope.element);
+              tmplScope.element = dumy;
+            }  else {
+              tmplScope.element.parentElement.removeChild(tmplScope.element);
+            }
           }
           if (tmplScope.afterRemove) tmplScope.afterRemove();
+          return tmplScope.element;
         },
         appendTo: function(parentElement) {
           if (tmplScope.beforeAppendTo) tmplScope.beforeAppendTo();
@@ -573,7 +579,10 @@
           if (tmplScope.afterAppendTo) tmplScope.afterAppendTo();
           return tmplScope;
         }
-      };
+      });
+      if (!tmplScope._id) {
+        tmplScope._id = tmplTool.genId(tmplId);
+      }
       //tmplScope.childScope = [];
       tmplScope[dataKeyName] = data;
       if (tmplScope[statusKeyName] == undefined) tmplScope[statusKeyName] = {};
@@ -643,7 +652,7 @@
       }
 
       tmplScope.element = returnTarget;
-      returnTarget.tmplScope = tmplScope;
+      //returnTarget.tmplScope = tmplScope;
 
       // style to shadow
       var style = returnTarget.querySelector('style[scoped], style[shadow]');
@@ -670,7 +679,8 @@
       tmplScope.render = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
-        tmplScope.element = null;
+        tmplScope.element = void 0;
+        tmplScope.data = void 0;
         var tmpl = bridge.tmpl(tmplScope.tmplId);
         var beforeRemove = tmplScope.beforeRemove;
         var afterRemove = tmplScope.afterRemove;
@@ -688,7 +698,7 @@
             if (tmplScope.beforeAppendTo) tmplScope.beforeAppendTo();
             var replacedNode = target.parentElement.replaceChild(newElement, target);
             while (target.firstChild) { target.removeChild(target.firstChild); }
-            target == null;
+            target = void 0;;
             if (tmplScope.afterAppendTo) tmplScope.afterAppendTo();
             if (afterRemove) tmplScope.afterRemove();
           }

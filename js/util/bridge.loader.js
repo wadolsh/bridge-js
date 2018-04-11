@@ -144,6 +144,9 @@ console.log('!200', xmlhttp.status, url, option);
 
   livereload.socket = null;
   livereload.start = function(url) {
+    tmplTool.loaderCallback = function(tmplScope) {
+      tmplScope.element.tmplScope = tmplScope;
+    }
     //if (!config.repository.use) return;
     if (this.socket) {
         this.stop();
@@ -227,8 +230,9 @@ console.log('Changed template : ', ele.id);
   };
 
   livereload.stop = function() {
-      this.socket.disconnect();
-      this.scoket = null;
+    delete tmplTool.loaderCallback;
+    this.socket.disconnect();
+    this.scoket = null;
   }
 
 }).call(this);

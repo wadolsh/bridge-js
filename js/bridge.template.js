@@ -654,7 +654,7 @@
       returnTarget.normalize();
       tmplScope.element = returnTarget;
       //returnTarget.tmplScope = tmplScope;
-      if (tmplTool.loaderCallback) tmplTool.loaderCallback(tmplScope);
+      if (tmplTool.liveReloadSupport) tmplTool.liveReloadSupport(tmplScope);
 
       // style to shadow
       var style = returnTarget.querySelector('style[scoped], style[shadow]');

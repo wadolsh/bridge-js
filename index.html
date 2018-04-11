@@ -29,7 +29,8 @@
       script.async = '';
       script.onload = function() {
         bridge.loader.load(['/socket.io/socket.io.js'], function() {
-          bridge.livereload.start();
+          console.log("liveReload start");
+          bridge.liveReload.start();
         });
       }
       document.head.appendChild(script);

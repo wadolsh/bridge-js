@@ -1538,7 +1538,7 @@ var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via so
       script.async = '';
       script.onload = function() {
         bridge.loader.load(['/socket.io/socket.io.js'], function() {
-          bridge.livereload.start();
+          bridge.liveReload.start();
         });
       }
       document.head.appendChild(script);

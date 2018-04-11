@@ -7,7 +7,7 @@
   var Bridge = root.bridge = root.bridge || {};
   var loader = Bridge.loader = Bridge.loader || {};
   var loadedResource = Bridge.loadedResource = {};
-  var livereload = Bridge.livereload = Bridge.livereload || {};
+  var liveReload = Bridge.liveReload = Bridge.liveReload || {};
   var tmplTool = Bridge.tmplTool;
 
   var parser = {
@@ -142,9 +142,9 @@ console.log('!200', xmlhttp.status, url, option);
     });
   }
 
-  livereload.socket = null;
-  livereload.start = function(url) {
-    tmplTool.loaderCallback = function(tmplScope) {
+  liveReload.socket = null;
+  liveReload.start = function(url) {
+    tmplTool.liveReloadSupport = function(tmplScope) {
       tmplScope.element.tmplScope = tmplScope;
     }
     //if (!config.repository.use) return;
@@ -153,8 +153,8 @@ console.log('!200', xmlhttp.status, url, option);
     }
     var socket = io(url || '//' + window.document.location.host + '/');
     this.socket = socket;
-    socket.on('livereload', function (data) {
-console.log('livereload', data);
+    socket.on('liveReload', function (data) {
+console.log('liveReload', data);
       if (data.path) {
         var path = data.path;
         if (path && path[0] != '/') {
@@ -229,8 +229,8 @@ console.log('Changed template : ', ele.id);
 
   };
 
-  livereload.stop = function() {
-    delete tmplTool.loaderCallback;
+  liveReload.stop = function() {
+    delete tmplTool.liveReloadSupport;
     this.socket.disconnect();
     this.scoket = null;
   }

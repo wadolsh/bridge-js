@@ -16,7 +16,6 @@
   var langSelect = function(lang) {
     return function() {
       document.documentElement.lang = lang;
-      console.log(tmplScope);
       tmplScope.reflash();
       /*
       setTimeout(function() {
@@ -447,12 +446,15 @@
         지정된 Element 를 내부 변수로서 참조 합니다.
         ##%tmpl.docs.CodeTemplate20401({})##
       
-      <h2 id="Docs/Template/TmplScope">TmplScope<h2>
-      
-      <h1>컴포넌트 사용</h1>
+      <h2 id="Docs/Template/Variable">내장 변수<h2>
+        <h4 id="Docs/Template/Variable/tmplScope">tmplScope</h4>
+          tmplScope 는 
+        <h4 id="Docs/Template/Variable/status">data</h4>
+        <h4 id="Docs/Template/Variable/status">status</h4>
     </div>
     
-    <div class="page" id="CreateComponent">
+    <div class="page" id="Component">
+      <h1 id="Docs/Component">컴포넌트 사용</h1>
     </div>
 
   </div>

@@ -32,7 +32,6 @@
   var langSelect = function(lang) {
     return function() {
       document.documentElement.lang = lang;
-      console.log(tmplScope);
       tmplScope.reflash();
       /*
       setTimeout(function() {

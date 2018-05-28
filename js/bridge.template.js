@@ -2,7 +2,7 @@
  * Copyright (c) 2016-present, Choi Sungho
  * Code released under the MIT license
  */
-(function() {'use strict';
+(function() {"use strict";
 
   // Polyfill
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill
@@ -55,7 +55,7 @@
   var Bridge = root.bridge = root.bridge || {};
   var tmplTool = Bridge.tmplTool = Bridge.tmplTool || {};
   var showTime = tmplTool.showTime || false;
-  var debugError = tmplTool.debugError != undefined ? tmplTool.debugError : false;
+  var debug = tmplTool.debug != undefined ? tmplTool.debug : false;
   var throwError = tmplTool.throwError != undefined ? tmplTool.throwError : true;
   var cachedTmpl = Bridge.tmplCache = Bridge.tmplCache || new Map();
   if (!cachedTmpl.has('anonymous')) {
@@ -127,6 +127,8 @@
     interpolate : {
       pattern: /##=([\s\S]+?)##/g,
       exec: function(interpolate) {
+        //interpolate = ('String(' + interpolate + ')[0] == \'@\' ? function() {return String(' + interpolate + ').slice(1);}() : interpolate');
+        interpolate = 'typeof (' + interpolate + ')==\'function\' ? (' + interpolate + ')() : (' + interpolate + ')';
         return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
       }
     },
@@ -290,9 +292,21 @@
             childElement.forEach(function(child) {
               if (!child) return;
               child = child.element || child;
-              docFragment.appendChild(
-                (typeof child === 'string' || typeof child === 'number')
-                  ? self.element.stringToElement(child) : child);
+              if (typeof child === 'string') {
+                /*
+                var interpolate = child;
+                if (interpolate[0] == '@') {
+                  interpolate = new Function('return ' + interpolate.slice(1) + ';')();
+                }
+                */
+                docFragment.appendChild(self.element.stringToElement(child));   
+              } else if (typeof child === 'number') {
+                docFragment.appendChild(self.element.stringToElement(child));
+              } else if (typeof child === 'function') {
+                docFragment.appendChild(self.element.stringToElement(child()));
+              } else {
+                docFragment.appendChild(child);
+              }
               //tmplScope.childScope.push(child.tmplScope || child);
               if (child.tmplScope) {
                 child.tmplScope.parent = child.parentNode;
@@ -307,10 +321,18 @@
                 (child.tmplScope || child).afterAppendTo();
               });
             });
-
-          } else if (typeof childElement === 'string' || typeof childElement === 'number') {
+          } else if (typeof childElement === 'string') {
+            /*
+            var interpolate = childElement;
+            if (interpolate[0] == '@') {
+              interpolate = new Function('return ' + interpolate.slice(1) + ';')();
+            }
+            */
             $tmplElement.parentNode.replaceChild(self.element.stringToElement(childElement), $tmplElement);
-
+          } else if (typeof childElement === 'number') {
+            $tmplElement.parentNode.replaceChild(self.element.stringToElement(childElement), $tmplElement);
+          } else if (typeof childElement === 'function') {
+            $tmplElement.parentNode.replaceChild(self.element.stringToElement(childElement()), $tmplElement);
           } else if ((childElement && (childElement.element || childElement)) instanceof Element) {
             var doFunc = function() {
               childElement = childElement.element || childElement;
@@ -354,7 +376,6 @@
       }
     },
     lazyEvaluate : {
-      evalFunction: false,
       pattern: /###([\s\S]+?)##/g,
       exec: function(lazyEvaluate) {
         var source = "';\nlazyScope.lazyEvaluateArray.push(function(data) {" + lazyEvaluate + "});\n__p+='";
@@ -818,7 +839,7 @@
     }
     var importFunc = function(source, option) {
       var template = safeTemplate(source);
-      addTmpls(template);
+      addTmpls(template, option.tmplSettings);
       var content = (template.content || template);
       if (option.loadLink) {
         var links = content.querySelectorAll('link');
@@ -834,11 +855,24 @@
       var arraySize = importData.length;
       importData.forEach(function(data) {
         data = importDataParser(data);
-        requestFunc(data.url, null, function(source) {
-          importFunc(source, data.option);
+        var src = data.url;
+        if (src.indexOf('.js') > -1) {
+          var script = tag('script', {'async': '', 'src': src});
+          document.head.appendChild(script);
           arraySize--;
           if (arraySize == 0 && callback) callback();
-        });
+        } else if (src.indexOf('.css') > -1) {
+          var link = tag('link', {'type': 'text/css', 'rel': 'stylesheet', 'href': src});
+          document.head.appendChild(link);
+          arraySize--;
+          if (arraySize == 0 && callback) callback();
+        } else {
+          requestFunc(data.url, null, function(source) {
+            importFunc(source, data.option);
+            arraySize--;
+            if (arraySize == 0 && callback) callback();
+          });
+        }
       });
     } else {
       importData = importDataParser(importData);
@@ -886,7 +920,7 @@
         target[key] = function(defaultText) {
           var label = i18nObj[document.documentElement.lang] || defaultText;
           if (!label) {
-            if (debugError) console.log('label key [' + fullKey + '] is empty!');
+            if (debug) console.log('label key [' + fullKey + '] is empty!');
           }
           return label;
         }

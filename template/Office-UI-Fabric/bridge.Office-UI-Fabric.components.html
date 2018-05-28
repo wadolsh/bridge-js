@@ -224,15 +224,9 @@
         for (var j=0,sizej=metaData.length; j < sizej; j++) {
           column = metaData[j];
         ##
-        &lt;td&gt;
-          ##var value = column.name == '$arrayData' ? selected : 
+        &lt;td&gt;##var value = column.name == '$arrayData' ? selected : 
             column.value instanceof Function ? column.value(column, selected) : (selected[column.name] || column.value)
-            if (value instanceof Element) {##
-              ##%value##
-          ##} else {##
-              ##=value##
-          ##}##
-        &lt;/td&gt;
+            if (value instanceof Element) {####%value####} else {####=value####}##&lt;/td&gt;
         ##}##
       &lt;/tr&gt;
       ##}##

@@ -8,7 +8,7 @@
 <template id="docs-Code-Template-002-01">
   <pre><code class="language-javascript">
     bridge.tmplTool.addTmpl('do-Simple', '<div>#\#=data.label#\#</div>');
-  </pre>
+  </code></pre>
 </template>
 
 <template id="docs-Code-Template-003-01">
@@ -478,4 +478,298 @@ document.body.appendChild(sample1.element);`,
   });
   ##
 </template>
+
+<template id="docs-Code-Template-301-01">
+  <pre><code class="language-html">
+##-'<script type="text/javascript">'##
+  bridge = {
+    tmplTool: {
+      showTime: false,
+      debug: false,
+      throwError: true
+    }
+  };
+##-'</script>'##
+##-'<script src="js/bridge.template.js"></script>'##
+  </code></pre>
+</template>
+
+<template id="docs-Code-Template-302-101">
+  <pre><code class="language-javascript">
+    bridge.tmplTool.addTmpl('do-Simple-Sample', '<div>#\#=data.label#\#</div>');
+  </code></pre>
+</template>
+
+<template id="docs-Code-Template-302-102">
+  ##var code = `bridge.tmplTool.addTmpl('do-Simple-Sample', '<div>#\#=data.label#\#</div>');
+
+var sample1 = tmpl.do.SimpleSample({label: 'Div Sample1'});
+document.body.appendChild(sample1.element);
+
+var sample2 = bridge.tmpl('do-Simple-Sample')({label: 'Div Sample2'});
+document.body.appendChild(sample2.element);`
+  ##
+  ##%tmpl.pg.TestArea({
+    imports: [{type: 'js', text: 'js/bridge.template.js'}],
+    code: code 
+  })##
+</template>
+
+<template id="docs-Code-Template-302-103">
+  <pre><code class="language-javascript">
+bridge.tmplTool.addTmpl('do-Simple-Sample', '<div>{{=data.label}}</div>', {
+  interpolate : {
+    pattern: /{{=([\s\S]+?)}}/g,
+    exec: function(interpolate) {
+      return "'+((__t=(" + interpolate + "))==null?'':__t)+'";
+    }
+  },
+});
+  </code></pre>
+</template>
+
+<template id="docs-Code-Template-302-104">
+  ##var code = `bridge.tmplTool.addTmpl('do-Simple-Sample', '<div>{{=data.label}}</div>', {
+    interpolate : {
+      pattern: /{{=([\\s\\S]+?)}}/g,
+      exec: function(interpolate) {
+        return "'+((__t=(" + interpolate + "))==null?'':__t)+'";
+      }
+    },
+  });
+
+var sample1 = tmpl.do.SimpleSample({label: 'Div Sample1'});
+document.body.appendChild(sample1.element);
+
+var sample2 = bridge.tmpl('do-Simple-Sample')({label: 'Div Sample2'});
+document.body.appendChild(sample2.element);`;
+  ##
+  ##%tmpl.pg.TestArea({
+    imports: [{type: 'js', text: 'js/bridge.template.js'}],
+    code: code 
+  })##
+</template>
+
+
+<template id="docs-Code-Template-303-101">
+##
+var code = `var templateString = \`
+  <template id="do-Simple-One">
+    <div class="do-Simple-One">
+      #\#=data.label#\#
+    </div>
+  </template>
+
+  <template id="do-Simple-Two">
+    <style id="style-do-Simple-Two">
+      .do-Simple-Two {
+      	background-color: yellow;
+      }
+    </style>
+    <div class="do-Simple-Two">
+      #\#=data.label#\#
+    </div>
+  </template>
+
+  <template id="do-Simple-Three">
+    <style id="style-do-Simple-Three">
+      .do-Simple-Three {
+      	background-color: red;
+      }
+      .do-Simple-Three, .do-Simple-Three div {
+        border: 1px solid black;
+        padding: 10px;
+      }
+    </style>
+    <div class="do-Simple-Three">
+      #\#%tmpl.do.SimpleOne({label: data.labelOne})#\#
+      #\#%tmpl.do.SimpleTwo({label: data.labelTwo})#\#
+      #\#=data.labelThree#\#
+    </div>
+  </template>
+\`;
+bridge.tmplTool.addTmpls(templateString);
+
+var sample = tmpl.do.SimpleThree(
+  {labelOne: 'Div Sample One',
+  labelTwo: 'Div Sample Two',
+  labelThree: 'Div Sample Three'});
+document.body.appendChild(sample.element);
+`;
+tmplScope.getCode = function() {
+  return code;
+}
+##
+  <pre><code class="language-javascript">
+  ##-code##
+  </code></pre>
+</template>
+<template id="docs-Code-Template-303-102">
+  ##%tmpl.pg.TestArea({
+    imports: [{type: 'js', text: 'js/bridge.template.js'}],
+    code: tmpl.docs.CodeTemplate303101({}).getCode()
+  })##
+</template>
+
+<template id="docs-Code-Template-304-101">
+<!--
+  ##
+  var code = `<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>Sample Code</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="js/bridge.template.js"></script>
+  </head>
+  <body></body>
+  <script type="text/javascript">
+    bridge.tmplTool.addTmplByUrl([
+        'template/Material-Design-Lite/bridge.mdl.components.html',
+        'docs/CodeTemplate/docs.CodeTemplate00802.components.html'
+      ], function() {
+        document.body.appendChild(tmpl.myCode.Base({titleLable: 'Title', buttonLabel: 'This Button!'}).element);
+    });
+  </script>
+</html>`;
+  tmplScope.getCode = function() {
+    return code;
+  }
+  ##
+-->
+  <pre><code class="language-html">##-code##</code></pre>
+</template>
+<template id="docs-Code-Template-304-102">
+  ##%tmpl.pg.TestArea({
+    imports: [{type: 'js', text: 'js/bridge.template.js'}],
+    code: tmpl.docs.CodeTemplate304101({}).getCode(),
+    type: 'codeIsPage',
+    showConsole: true
+  })##
+</template>
+
+<template id="docs-Code-Template-305-101">
+##
+var code = `
+document.documentElement.lang = 'en';
+
+bridge.tmplTool.addI18n('docsDocsTemplate.lable305.example1', {
+    en: 'ACCEPT',
+    ko: '승인',
+    ja: '承認'
+});
+
+var example1, example2 = null;
+
+var langSelect = function(lang) {
+  return function() {
+    document.documentElement.lang = lang;
+    example1.reflash();
+  };
+}
+
+bridge.tmplTool.addTmplByUrl([
+    '//fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en',
+    'fonts.googleapis.com/icon?family=Material+Icons',
+    '//code.getmdl.io/1.3.0/material.indigo-pink.min.css',
+    '//code.getmdl.io/1.3.0/material.min.js',
+    'template/Material-Design-Lite/bridge.mdl.components.html',
+  ], function() {
+
+  var enButton = tmpl.mdl.Button({label: 'EN', options: ['raised'], event: langSelect('en')});
+  var koButton = tmpl.mdl.Button({label: 'KO', options: ['raised'], event: langSelect('ko')});
+  var jaButton = tmpl.mdl.Button({label: 'JA', options: ['raised'], event: langSelect('ja')});
+  
+  document.body.appendChild(enButton.element);
+  document.body.appendChild(koButton.element);
+  document.body.appendChild(jaButton.element);
+  
+  example1 = tmpl.mdl.Checkbox({label: i18n.docsDocsTemplate.lable305.example1});
+  document.body.appendChild(example1.element);
+});
+`;
+
+tmplScope.getCode = function() {
+  return code;
+}
+##
+  <pre><code class="language-js">##-code##</code></pre>
+</template>
+<template id="docs-Code-Template-305-102">
+  ##%tmpl.pg.TestArea({
+    imports: [
+      {type: 'js', text: 'js/bridge.template.js'}
+    ],
+    code: tmpl.docs.CodeTemplate305101({}).getCode()
+  })##
+</template>
+
+<template id="docs-Code-Template-306-101">
+##
+var code = `
+document.documentElement.lang = 'en';
+
+bridge.tmplTool.addI18ns({
+  'docsDocsTemplate.lable306.example1': {
+    en: 'ACCEPT',
+    ko: '승인',
+    ja: '承認'
+  },
+  'docsDocsTemplate.lable306.example2': {
+    en: 'Template Engin',
+    ko: '템플릿 엔진',
+    ja: 'テンプレートエンジン'
+  }
+});
+
+var example1, example2 = null;
+
+var langSelect = function(lang) {
+  return function() {
+    document.documentElement.lang = lang;
+    example1.reflash();
+    example2.reflash();
+  };
+}
+
+bridge.tmplTool.addTmplByUrl([
+    '//fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en',
+    'fonts.googleapis.com/icon?family=Material+Icons',
+    '//code.getmdl.io/1.3.0/material.indigo-pink.min.css',
+    '//code.getmdl.io/1.3.0/material.min.js',
+    'template/Material-Design-Lite/bridge.mdl.components.html',
+  ], function() {
+
+  var enButton = tmpl.mdl.Button({label: 'EN', options: ['raised'], event: langSelect('en')});
+  var koButton = tmpl.mdl.Button({label: 'KO', options: ['raised'], event: langSelect('ko')});
+  var jaButton = tmpl.mdl.Button({label: 'JA', options: ['raised'], event: langSelect('ja')});
+  
+  document.body.appendChild(enButton.element);
+  document.body.appendChild(koButton.element);
+  document.body.appendChild(jaButton.element);
+  
+  example1 = tmpl.mdl.Button({label: i18n.docsDocsTemplate.lable306.example1, ripple: true, options: ['raised', 'accent']});
+  example2 = tmpl.mdl.TextField({label: i18n.docsDocsTemplate.lable306.example2});
+  document.body.appendChild(example1.element);
+  document.body.appendChild(example2.element);
+});
+`;
+
+tmplScope.getCode = function() {
+  return code;
+}
+##
+  <pre><code class="language-js">##-code##</code></pre>
+</template>
+<template id="docs-Code-Template-306-102">
+  ##%tmpl.pg.TestArea({
+    imports: [
+      {type: 'js', text: 'js/bridge.template.js'}
+    ],
+    code: tmpl.docs.CodeTemplate306101({}).getCode()
+  })##
+</template>
+
 </body>

@@ -257,12 +257,22 @@
     },
     js: function(item) {
       loadCount++;
-      return tmpl.br.Tag(['script', {src: item.text, onload: function () {
+      return tmpl.br.Tag(['script', {src: item.text, defer: true, onload: function () {
         loadCount--;
         if (loadCount == 0) {
           execScript(code);
         }
       }}]);
+    },
+    addTmplByUrl: function(item) {
+      loadCount++;
+      var loader = 'bridge.tmplTool.addTmplByUrl(' + item.text + ', function() {' +
+        'loadCount--;' + 
+        'if (loadCount == 0) {' + 
+        '  execScript(code);' + 
+        '}' +
+      '});';
+      return tmpl.br.Tag(['script', {innerHTML: loader}]);
     },
     import: function(item) {
       hasImport = true;

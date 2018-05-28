@@ -28,8 +28,11 @@
   ###
   setTimeout(function() {
     var hashArray = (location.hash.replace('#', '') || 'Docs/Intro').split('/');
+    if (!hashArray[1]) hashArray[1] = 'Intro';
     document.querySelector('a[href="#' + hashArray[0] + '"]').click();
-    document.getElementById('sidemenu').querySelector('.' + hashArray.join('_')).click();
+    setTimeout(function() {
+      document.getElementById('sidemenu').querySelector('.' + hashArray.join('_')).click();
+    }, 0);
   }, 0);
   ##
   <div class="docs-Base">
@@ -129,7 +132,7 @@
     return docsMain;
   }
   var docItems = [
-    {label: '템플릿 엔진', tmpl: tmpl.docs.DocsTemplate({contentArea: contentArea})}
+    {label: 'Template 엔진', tmpl: tmpl.docs.DocsTemplate({contentArea: contentArea})}
   ];
   var selectEvent = function(e) {
     e.target.parentElement.querySelector('.active').classList.remove('active');
@@ -151,12 +154,15 @@
 
 <template id="docs-Docs-Template">
   <style id="style-docs-Docs-Template">
+    /*
     .docs-Docs-Template .page {
       display: none;
     }
     .docs-Docs-Template .page.display {
       display: block;
     }
+    */
+    
     .docs-Docs-Template > pre {
       padding: 10px;
       border-radius: 4px;
@@ -168,6 +174,7 @@
       padding-top: 10px;
     }
     .docs-Docs-Template h4 {
+      margin-top: 50px;
       border: 1px #ddd solid;
       display: table;
       padding: 10px;
@@ -188,39 +195,39 @@
     .docs-Docs-Template table.option th {
       background-color: #f7f7f7;
     }
+    .docs-Docs-Template table.noborder td {
+      border: 0px;
+    }
   </style>
   ##
   var contentArea = data.contentArea;
   var index = data.index || 'Intro';
   var selectedIndex = null;
+  
+  var munuList = [];
   tmplScope.getSidemenu = function() {
-    var munuList = [];
-    var titleList = tmplScope.element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
-    Array.prototype.forEach.call(titleList, function(element) {
-      var splited = element.id.split('/');
-      munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1] + ' ' + element.tagName, index: splited[1], hash: '#' + element.id});
-    });
-
     return munuList.map(function(item) {
       return Object.assign(item, {event: function(e, edata, tmplElem) {
         if (item.index != selectedIndex) {
-
           var area = contentArea();
           while (area.firstChild) area.removeChild(area.firstChild);
           tmplScope.reflash({index: item.index});
           area.appendChild(tmplScope.element);
           selectedIndex = item.index;
 
-        /*
-          tmplScope.element.querySelector('.page.display').classList.remove('display');
-          tmplScope.element.querySelector('#' + item.index).classList.add('display');
-        */
           Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
             element.classList.remove('display');
           });
           Array.prototype.forEach.call(tmplElem.querySelectorAll('.' + item.index), function(element) {
             element.classList.add('display');
           });
+
+          var removeTargets = tmplScope.element.querySelectorAll('.page:not(#' + item.index + ')');
+          Array.prototype.forEach.call(removeTargets, function(target) {
+            target.parentElement.removeChild(target);
+          });
+
+          area.appendChild(tmplScope.element);
           selectedIndex = item.index;
         }
         setTimeout(function() {
@@ -228,7 +235,7 @@
           location.hash = item.hash;
         }, 200);
       }})
-    });
+    });;
   }
   ##
   <div class="docs-Docs-Template">
@@ -238,10 +245,10 @@
         bridge.template 은 다음과 같은 목표를 가지고 제작 되었었습니다.
         <ul>
           <li>SPA(Single Page Application) 작성을 지원</li>
-          <li>재사용 가능한 컴포넌트 작성을 지원</li>
-          <li>하나의 템플릿 안에 style, html, javascript 로직을 통합 함으로써 적은 노력으로 컴포넌트를 제작 할 수 있도록 함</li>
+          <li>재사용 가능한 Component 작성을 지원</li>
+          <li>하나의 Template 안에 style, html, javascript 로직을 통합 함으로써 적은 노력으로 Component를 제작 할 수 있도록 함</li>
           <li>Html Tag 안에 Event Handler 를 설정 가능도록 함</li>
-          <li>컴포넌트 끼리 조합 할 수 있도록 함으로써 블록을 조립하듯이 UI를 제작 할 수 있도록 지원</li>
+          <li>Component 끼리 조합 할 수 있도록 함으로써 블록을 조립하듯이 UI를 제작 할 수 있도록 지원</li>
         </ul>
     </div>
     <div class="page" id="GettingStarted">
@@ -253,9 +260,9 @@
         이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.<br/>
         
         <h2 id="Docs/GettingStarted/AddTmpl">Template 등록</h2>
-        이제 다음과 같은 템플릿 파일을 만들어 봅시다.
+        이제 다음과 같은 Template 파일을 만들어 봅시다.
         ##%tmpl.docs.CodeTemplate00201({})##
-        이제 do.Simple라는 템플릿을 컴포넌트로 사용할 있는 준비가 되었습니다.<br/>
+        이제 do.Simple라는 Template 을 Component 로 사용할 있는 준비가 되었습니다.<br/>
         
         <h2 id="Docs/GettingStarted/Tmpl">Component 생성</h2>
         컨포넌트의 생성과 화면 배치는 다음과 같이 이루어 집니다.
@@ -264,20 +271,20 @@
         또는 다음과 같이 사용 할 수도 있습니다.
         ##%tmpl.docs.CodeTemplate00401({})##
     
-        {label: 'Div Sample1'} 로 넘겨준 데이터는 템플릿 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
+        {label: 'Div Sample1'} 로 넘겨준 데이터는 Template 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
         아래에서 데모로 코드의 동작을 확인해 보십시오.
         ##%tmpl.docs.CodeTemplate00501({})##
         
-        컴포넌트 생성시 javascript Object 가 리턴 되어 집니다.<br/>
-        이 object는 템플릿작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.
+        Component 생성시 javascript Object 가 리턴 되어 집니다.<br/>
+        이 object는 Template 작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.
         ##%tmpl.docs.CodeTemplate00601({})##
     
-        bridge.tmplTool.addTmpl() 을 사용 하여 일일이 템플릿을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
-        bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 지원 하고 있습니다.<br/>
-        이때에는 bridge.tmplTool.addTmpls() 를 통해 템플릿을 등록 합니다.
+        bridge.tmplTool.addTmpl() 을 사용 하여 일일이 Template 을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
+        bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 ��원 하고 있습니다.<br/>
+        이때에는 bridge.tmplTool.addTmpls() 를 통해 Template 을 등록 합니다.
         ##%tmpl.docs.CodeTemplate00701({})##
         
-        template Tag 의 id 에 지정한 이름으로 콤포넌트 생성 할 수 있게 됩니다.</br>
+        template Tag 의 id 에 지정한 이름으로 Component 생성 할 수 있게 됩니다.</br>
         동일한 id 로 다른 template 을 로딩 하게 되는 경우는 기존 template 를 대체하게 됩니다.</br>
         template Tag 안에 정의도니 style 는 template 해석 할 때에 document 의 head 에 추가 됩니다.</br>
         style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에, 
@@ -295,7 +302,7 @@
         <a href="template/Material-Design-Lite/" target="_blank">이곳의 링크</a>를 참고해 주십시오.<br/>
         
         <br/>
-        bridge.tmplTool.addTmplByUrl()은 Array 로 지정된 템플릿 파일을 다운 로드 해서 로딩 한 다음 callback을 실행 합니다.<br/>
+        bridge.tmplTool.addTmplByUrl()은 Array 로 지정된 Template 파일을 다운 로드 해서 로딩 한 다음 callback을 실행 합니다.<br/>
     
         <br/>
         <h4>index.html</h4>
@@ -309,7 +316,7 @@
         ##%tmpl.docs.CodeTemplate00803({})##
     </div>
     <div class="page" id="Template">
-      <h1 id="Docs/Template">템플릿 문법</h1>
+      <h1 id="Docs/Template">Template 문법</h1>
       <h2 id="Docs/Template/Expression">콘텐츠 표현</h2>
         <h4 id="Docs/Template/Expression/E">[ #\#= #\# ]</h4>
         문자열을 표현합니다.
@@ -330,7 +337,7 @@
         <h4 id="Docs/Template/Expression/P">[ #\#% #\# ]</h4>
         다른 컨포넌트를 참조 합니다.
         <br>
-        bridge 의 컴포넌트와 HTML Element, 문자열을 배치 할 수 있습니다.
+        bridge 의 Component 와 HTML Element, 문자열을 배치 할 수 있습니다.
         <br>
         Array 로 복수의 참조를 배치하면 Array 에 정의된 순서대로대상 화면에 배치하게 됩니다.
         ##%tmpl.docs.CodeTemplate10301({})##
@@ -379,9 +386,9 @@
 
         <br>
         <h4 id="Docs/Template/Expression/Q">[ #\#! #\# ]</h4>
-        템플릿을 로딩 할 때 필요한 작업을 실행 합니다.
+        Template 을 로딩 할 때 필요한 작업을 실행 합니다.
         <br>
-        ##! ## 표현은 템플릿 로딩시 1회 실행 되며, 이후 컴포넌트 생성시에는 실행 되지 않습니다.
+        ##! ## 표현은 Template 로딩시 1회 실행 되며, 이후 Component 생성시에는 실행 되지 않습니다.
         <br>
         단 1회 실행이 필요한 초기화 작업 등에 사용합니다.
         <br>
@@ -400,6 +407,9 @@
         <br>
         <h5>핸들러 파라메터</h5>
         <table class="option">
+          <tr>
+            <th colspan="2">function(event, tmplData, tmplElem, scope) {}</th>
+          </tr>
           <tr>
             <th>event</th>
             <td>Event Object</td>
@@ -421,6 +431,9 @@
         ##%tmpl.docs.CodeTemplate20101({})##
         <h5>Option</h5>
         <table class="option">
+          <tr>
+            <th colspan="2">{핸들러}::{데이터}<br/>{핸들러}::{데이터}:::{핸들러}::{데이터}:::~...</th>
+          </tr>
           <tr>
             <th>:::{핸들러}</th>
             <td>복수의 이벤트 핸들러를 지정할 수 있습니다.</td>
@@ -446,26 +459,310 @@
         지정된 Element 를 내부 변수로서 참조 합니다.
         ##%tmpl.docs.CodeTemplate20401({})##
       
-      <h2 id="Docs/Template/Variable">내장 변수<h2>
-        <h4 id="Docs/Template/Variable/tmplScope">tmplScope</h4>
-          tmplScope 는 
-        <h4 id="Docs/Template/Variable/status">data</h4>
+      <h2 id="Docs/Template/Variable">내장 변수</h2>
+        <h4 id="Docs/Template/Variable/data">data</h4>
+          [dataKeyName](default: "data")<br>
+          Component 생성시 사용한 입력값을 Template 내에서 참조하기 위한 Object 입니다. <br>
+          Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br>
+          ※ tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});
+
         <h4 id="Docs/Template/Variable/status">status</h4>
+          [statusKeyName](default: "status")<br>
+          생성된 Component 를 reflash, render 하게 될 경우<br>
+          Component data 입력값에 의해서 초기화 되기 때문에 Component 내부에서 발생한 변화를 잃어 버리게 됩니다.<br>
+          내부의 변화를 status 에 보관하면 reflash, render 시에도 동일한 값을 참조 할 수 있습니다.
+          Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br>
+          ※ tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});
+
+        <h4 id="Docs/Template/Variable/tmplScope">tmplScope</h4>
+          tmplScope 는 콤퍼넌트의 모든 것을 담는 Object 입니다.
+          <table class="option">
+            <tr>
+              <th colspan="2">※ Element 화되지 전 부터 참조 가능한 대상</th>
+            </tr>
+            <tr>
+              <th>tmplId</th>
+              <td>Template 의 ID 입니다. 어떠한 템플렛 코드를 사용하여 콤퍼넌트가 생성 되었는지 알 수 있습니다.</td>
+            </tr>
+            <tr>
+              <th>_id</th>
+              <td>Component 의 ID 입니다. html 의 for 제어와 같은 유니크한 id가 필요할 경우 사용 합니다.</td>
+            </tr>
+            <tr>
+              <th>[dataKeyName]<br>(default: "data")</th>
+              <td>
+                Component 생성시의 외부 입력값인 data 를 tmplScope 에서도 참조가 가능합니다.
+              </td>
+            </tr>
+            <tr>
+              <th>[statusKeyName]<br>(default: "status")</th>
+              <td>
+                Component 생성시의 내부 입력값인 status 를 tmplScope 에서도 참조가 가능합니다.
+              </td>
+            </tr>
+            <tr>
+              <th>replace(target)</th>
+              <td>화면 표시중인 Component 를 다른 Component 로 교체 합니다.</td>
+            </tr>
+            <tr>
+              <th>remove()</th>
+              <td>해당 Component 를 화면에서 제거 합니다.</td>
+            </tr>
+            <tr>
+              <th>appendTo(parentElement)</th>
+              <td>해당 Component 를 parentElement 내에 이동하여 삽입합니다.</td>
+            </tr>
+            <tr>
+              <th>render(data)</th>
+              <td>
+                data 입력치로 Component 를 다시 렌더링 합니다. 이전의 data 를 무시 합니다.
+              </td>
+            </tr>
+            <tr>
+              <th>reflash(data)</th>
+              <td>
+                data 입력치로 Component 를 다시 렌더링 합니다.<br>
+                현재 Component 가 가진 data 와 Object.assign() 로 marge 해서 다시 렌더링 하게 됩니다.
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2">※ Element 화된 이후 부터 참조 가능한 대상 ( #\#\# #\# 에서 사용가능 )</th>
+            </tr>
+            <tr>
+              <th>element</th>
+              <td>최종 렌더링 된 HTML Element 참조 합니다.</td>
+            </tr>
+          </table>
+        <br><br>
+    </div>
+    
+    <div class="page" id="TemplateEngine">
+      <h1 id="Docs/TemplateEngine">Template Engine</h1>
+        <h2 id="Docs/TemplateEngine/Setting">Template Engine 설정</h2>
+          bridge.tmplTool 의 미리 설정한 후에 'bridge.template.js' 를 로딩함으로써 Template Engine 의 옵션을 설정 할 수 있습니다.
+          ##%tmpl.docs.CodeTemplate30101({})##
+          <br>
+          설정 가능한 옵션
+          <table class="option">
+            <tr>
+              <th colspan="2"></th>
+            </tr>
+            <tr>
+              <th>showTime</th>
+              <td>
+                (default: false)
+                true 인 경우 Template 을 변환 처리하는 시간을 Console.log() 로 출력합니다.
+              </td>
+            </tr>
+            <tr>
+              <th>debug</th>
+              <td>
+                (default: false)
+                true 인 경우 Template Engine 내의 debug 정보를 Console.log() 로 출력 합니다.
+              </td>
+            </tr>
+            <tr>
+              <th>throwError</th>
+              <td>
+                (default: true)
+                true 인 경우 Template 변환 처리를 할때 발생 하는 에러를 Console.log()에 표시 할지를 설정합니다.
+              </td>
+            </tr>
+          </table>
+          
+        <h2 id="Docs/TemplateEngine/TmplTool">bridge.tmplTool 구성</h2>
+          <h4 id="Docs/TemplateEngine/TmplTool/escapeHtml">bridge.tmplTool.escapeHtml</h4>
+          문자열의 escape, unescape 처리를 합니다.<br>
+          HTML Tag 를 처리할 때 사용 합니다.
+
+          <table class="option">
+            <tr>
+              <th colspan="2"></th>
+            </tr>
+            <tr>
+              <th>bridge.tmplTool.escapeHtml.escape(string)</th>
+              <td>
+                <table class="noborder">
+                  <tr>
+                    <td>&</td>
+                    <td>→</td>
+                    <td>##-'&'##amp;</td>
+                  </tr>
+                  <tr>
+                    <td><</td>
+                    <td>→</td>
+                    <td>##-'&'##amp;lt;</td>
+                  </tr>
+                  <tr>
+                    <td>></td>
+                    <td>→</td>
+                    <td>##-'&'##gt;</td>
+                  </tr>
+                  <tr>
+                    <td>"</td>
+                    <td>→</td>
+                    <td>##-'&'##quot;</td>
+                  </tr>
+                  <tr>
+                    <td>'</td>
+                    <td>→</td>
+                    <td>##-'&'###x27;</td>
+                  </tr>
+                  <tr>
+                    <td>`</td>
+                    <td>→</td>
+                    <td>##-'&'###x60;</td>
+                  </tr>
+                  <tr>
+                    <td>\n</td>
+                    <td>→</td>
+                    <td>##-'&'###10;</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <th>bridge.tmplTool.escapeHtml.unescape(string)</th>
+              <td>
+                <table class="noborder">
+                  <tr>
+                    <td>##-'&'##amp;</td>
+                    <td>→</td>
+                    <td>&</td>
+                  </tr>
+                  <tr>
+                    <td>##-'&'##amp;lt;</td>
+                    <td>→</td>
+                    <td><</td>
+                  </tr>
+                  <tr>
+                    <td>##-'&'##gt;</td>
+                    <td>→</td>
+                    <td>></td>
+                  </tr>
+                  <tr>
+                    <td>##-'&'##quot;</td>
+                    <td>→</td>
+                    <td>"</td>
+                  </tr>
+                  <tr>
+                    <td>##-'&'###x27;</td>
+                    <td>→</td>
+                    <td>'</td>
+                  </tr>
+                  <tr>
+                    <td>##-'&'###x60;</td>
+                    <td>→</td>
+                    <td>`</td>
+                  </tr>
+                  <tr>
+                    <td>##-'&'###10;</td>
+                    <td>→</td>
+                    <td>\n</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          
+          <h4 id="Docs/TemplateEngine/TmplTool/addTmpl">bridge.tmplTool.addTmpl(keyName, templateString, tmplSettings)</h4>
+          하나의 Template 를 특정 이름으로 컴파일 합니다.<br>
+          ##%tmpl.docs.CodeTemplate302101({})##
+          ##%tmpl.docs.CodeTemplate302102({})##
+          
+          컴파일 시의 해석 엔진을 추가 하거나 수정 하는 것으로 기능을 확장 할 수 있습니다.<br>
+          " #\#= #\# "표현을 " {{= }} "로 바꾸어 보겠습니다.
+          ##%tmpl.docs.CodeTemplate302103({})##
+          ##%tmpl.docs.CodeTemplate302104({})##
+          
+          템플렛을 작성하는 개발자는 자신 만의 컴파일 해석기를 추가 수정 함으로써 템플릿 안에서 자유로운 표현의 사용이 가능 합니다.<br>
+          템플릿 해석기의 표현들은 다음과 같이 구성되어 있습니다.
+          
+          <table class="option">
+            <tr>
+              <th colspan="2"></th>
+            </tr>
+            <tr>
+              <th>pattern: RegExp</th>
+              <td>해석기를 검치하기 위한 정규식 패턴을 지정합니다.</td>
+            </tr>
+            <tr>
+              <th>exec: function(string)</th>
+              <td>pattern 으로 검출한 문자열을 가공하여 return 하는 문자열 해석을 정의 합니다.</td>
+            </tr>
+            <tr>
+              <th>lazyExec: function(data, lazyScope, tmplScope, wrapper)</th>
+              <td>exec 의 실해 이후에 Element 의 생성시 Element 를 조작하는 처리를 정의 합니다.</td>
+            </tr>
+          </table>
+
+          <h4 id="Docs/TemplateEngine/TmplTool/addTmpls">bridge.tmplTool.addTmpls(templateString, tmplSettings)</h4>
+          Template 세트를 컴파일 합니다.<br>
+          
+          ##%tmpl.docs.CodeTemplate303101({})##
+          ##%tmpl.docs.CodeTemplate303102({})##
+
+          
+          <h4 id="Docs/TemplateEngine/TmplTool/addTmplByUrl">bridge.tmplTool.addTmplByUrl([urlArray], option, callback)</h4>
+          Template 세트를 담은 파일을 로드 하여 컴파일 합니다.
+          
+          ##%tmpl.docs.CodeTemplate304101({})##
+          ##%tmpl.docs.CodeTemplate304102({})##
+          
+          <h4 id="Docs/TemplateEngine/TmplTool/addI18n">bridge.tmplTool.addI18n(keyName, {langName: content...})</h4>
+          다국어 지원을 위한 하나의 key, value 를 추가 합니다.
+          
+          ##%tmpl.docs.CodeTemplate305101({})##
+          ##%tmpl.docs.CodeTemplate305102({})##
+          
+          <h4 id="Docs/TemplateEngine/TmplTool/addI18ns">bridge.tmplTool.addI18ns({keyName: {langName: content...}...})</h4>
+          다국어 지원을 위한 key, value 리스트를 동시에 추가 합니다.
+          
+          ##%tmpl.docs.CodeTemplate306101({})##
+          ##%tmpl.docs.CodeTemplate306102({})##
+          
+          <h4 id="Docs/TemplateEngine/TmplTool/genId">bridge.tmplTool.genId(tmplId)</h4>
+          컴퍼넌트 생성시의 _id 를 생성하는 function 입니다.<br>
+          Template의 { tmplId + 컴퍼넌트 생성순번 } 으로 _id 를 생성 합니다.
+          
+          <h4 id="Docs/TemplateEngine/TmplTool/tag">bridge.tmplTool.tag(tagName, attrs)</h4>
+          HTML Element 를 생성하는데 사용하는 util 입니다.
+          
+          
     </div>
     
     <div class="page" id="Component">
-      <h1 id="Docs/Component">컴포넌트 사용</h1>
+      <h1 id="Docs/Component">Component 사용</h1>
     </div>
 
   </div>
   ###
-  this.querySelector('#' + index).classList.add('display');
+  var element = this;
+  var genSidemenu = function() {
+    var titleList = element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+    Array.prototype.forEach.call(titleList, function(element) {
+      var splited = element.id.split('/');
+      munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1] + ' ' + element.tagName, index: splited[1], hash: '#' + element.id});
+    });
+  }
+  genSidemenu();
+
+  var removeTargets = this.querySelectorAll('.page:not(#' + index + ')');
+  Array.prototype.forEach.call(removeTargets, function(target) {
+    target.parentElement.removeChild(target);
+  });
+
   var codes = this.querySelectorAll('code:not(.escaped)');
   Array.prototype.forEach.call(codes, function(code) {
     code.innerHTML = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
   });
   setTimeout(function() {
     Prism.highlightAll();
+    setTimeout(function() {
+      var hash = location.hash;
+      location.hash = '';
+      location.hash = hash;
+    }, 200);
   });
   ##
 </template>

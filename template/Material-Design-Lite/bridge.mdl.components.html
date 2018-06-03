@@ -247,10 +247,10 @@
     </main>
   </div>
   ##
-  tmplScope.upgradeElement = function() {
+  tmplScope.upgradeElement = function(delay) {
     setTimeout(function() {
       componentHandler.upgradeElement(tmplScope.element);
-    });
+    }, delay || 0);
   }
   tmplScope.afterAppendTo = function() {
     tmplScope.upgradeElement();

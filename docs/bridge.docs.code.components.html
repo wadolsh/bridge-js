@@ -690,7 +690,7 @@ bridge.tmplTool.addTmplByUrl([
     });
 
     document.body.appendChild(layout.element);
-    layout.upgradeElement(100);
+    layout.upgradeElement(500);
 });
 `;
 
@@ -761,7 +761,7 @@ bridge.tmplTool.addTmplByUrl([
       content: [example1, example2]
     });
     document.body.appendChild(layout.element);
-    layout.upgradeElement(100);
+    layout.upgradeElement(500);
 });
 `;
 
@@ -783,4 +783,59 @@ tmplScope.getCode = function() {
   })##
 </template>
 
+
+<template id="docs-Code-Template-307-101">
+##
+var code = `
+bridge.tmplTool.addTmpl(
+  'do-Button',
+  '<button data-bridge-event="#\#:function() { document.body.appendChild((Math.floor(Math.random()*2) == 1 ? tmpl.do.Radio({}) : tmpl.do.Checkbox({}) ).element); }#\#">ADD BUTTON</button>'
+  );
+bridge.tmplTool.addTmpl('do-Radio', '<label for="#\#=tmplScope._id#\#"><input type="radio" name="my-radio" id="#\#=tmplScope._id#\#">#\#=tmplScope._id#\#</label>');
+bridge.tmplTool.addTmpl('do-Checkbox', '<label for="#\#=tmplScope._id#\#"><input type="checkbox" name="my-checkbox" id="#\#=tmplScope._id#\#">#\#=tmplScope._id#\#</label>');
+document.body.appendChild(tmpl.do.Button({}).element);
+`;
+
+tmplScope.getCode = function() {
+  return code;
+}
+##
+  <pre><code class="language-js">##-code##</code></pre>
+</template>
+<template id="docs-Code-Template-307-102">
+  ##%tmpl.pg.TestArea({
+    imports: [
+      {type: 'js', text: 'js/bridge.template.js'}
+    ],
+    code: tmpl.docs.CodeTemplate307101({}).getCode()
+  })##
+</template>
+
+
+<template id="docs-Code-Template-308-101">
+##
+var code = `
+
+document.body.appendChild(
+  bridge.tmplTool.tag('div', { style: 'border: 1px solid #ccc', innerHTML: 'DIV'})
+);
+document.body.appendChild(
+  bridge.tmplTool.tag('button', { onclick: function(){ alert('Button Click.'); }, innerHTML: 'BUTTON'})
+);
+`;
+
+tmplScope.getCode = function() {
+  return code;
+}
+##
+  <pre><code class="language-js">##-code##</code></pre>
+</template>
+<template id="docs-Code-Template-308-102">
+  ##%tmpl.pg.TestArea({
+    imports: [
+      {type: 'js', text: 'js/bridge.template.js'}
+    ],
+    code: tmpl.docs.CodeTemplate308101({}).getCode()
+  })##
+</template>
 </body>

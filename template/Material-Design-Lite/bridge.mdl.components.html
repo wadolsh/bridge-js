@@ -45,7 +45,7 @@
   ##
   /*
   tmplScope.afterReflash = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   */
   ##
@@ -69,7 +69,7 @@
   &lt;/##=type##&gt;
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -117,7 +117,7 @@
   </div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -182,7 +182,7 @@
   </dialog>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -249,7 +249,7 @@
   ##
   tmplScope.upgradeElement = function(delay) {
     setTimeout(function() {
-      componentHandler.upgradeElement(tmplScope.element);
+      if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
     }, delay || 0);
   }
   tmplScope.afterAppendTo = function() {
@@ -303,7 +303,7 @@
   </div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -387,7 +387,7 @@
   </footer>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -413,7 +413,7 @@
   </footer>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -483,7 +483,7 @@
   </ul>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -503,7 +503,7 @@
   &lt;div class="mdl-progress mdl-js-progress ##=MDL.options('mdl-progress--', options)## ##=data.class##" ##=styleProp##&gt;</div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -523,7 +523,7 @@
   <div class="mdl-spinner mdl-js-spinner ##=MDL.options('mdl-spinner--', options)## ##=MDL.is(active, 'is-active')## ##=data.class##"></div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -541,7 +541,7 @@
   </ul>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -569,7 +569,7 @@
   <input class="mdl-slider mdl-js-slider" type="range" min="##=min##" max="##=max##" value="##=value##" data-bridge-event="##:event##">
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -586,7 +586,7 @@
   </div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -623,7 +623,7 @@
   </label>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -683,7 +683,7 @@
   &lt;/table&gt;
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -730,7 +730,7 @@
   </div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>
@@ -744,7 +744,7 @@
   <div class="mdl-tooltip ##=MDL.options('mdl-tooltip--', options)##" for="##=forProp##">##%content##</div>
   ##
   tmplScope.afterAppendTo = function() {
-    componentHandler.upgradeElement(tmplScope.element);
+    if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
   ##
 </template>

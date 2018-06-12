@@ -65,7 +65,8 @@
     item.lat = parseFloat(item.lat || 0);
     item.lng = parseFloat(item.lng || 0);
 
-    var marker = new google.maps.Marker(item.option || {
+    if (item.option) item.option.map = map;
+    var marker = new (item.objetClass || google.maps.Marker)(item.option || {
       map: map,
       icon: item.icon,
       title: item.title,

@@ -1,3 +1,3 @@
 # bridge-js
 
-https://wadolsh.github.io/bridge-js/#Docs/Intro
+https://wadolsh.github.io/bridge-js

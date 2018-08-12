@@ -74,7 +74,6 @@
           if (xmlhttp.status == 200) {
             callback(parser[getType || 'text'](xmlhttp.responseText), xmlhttp.status, xmlhttp);
           } else {
-            //memberObj.stopReflash();
             alert('Request Error.\n\nURL: ' + url + '\nSTATUS: ' + xmlhttp.status);
             console.log('!200', xmlhttp.status, url, option);
           }

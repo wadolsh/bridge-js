@@ -60,10 +60,11 @@
   var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
   var icon = data.icon;
   var label = data.label;
+  var prop = data.prop;
   var event = data.event;
   var disabled = data.disabled;
   ##
-  &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
+  &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" ##=MDL.prop(prop)## data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
     ##if (icon) {##<i class="material-icons">##=icon##</i>##}##
     ##%label##
   &lt;/##=type##&gt;
@@ -146,15 +147,16 @@
   var title = data.title;
   var content = data.content;
   var actions = data.actions || {};
+  var close = data.close;
   
   tmplScope.showModal = function() {
     tmplScope.element.showModal();
   }
-  tmplScope.close = function() {
+  tmplScope.close = close || function() {
     tmplScope.element.close();
   }
   ##
-  <dialog class="mdl-dialog">
+  <dialog class="mdl-dialog ##=data.class##">
     ##if (title) {##&lt;##=title.type || 'h4'## class="mdl-dialog__title"&gt;##%title.label || title##&lt;/##=title.type || 'h4'##&gt;##}##
     ##if (content) {##
     <div class="mdl-dialog__content">
@@ -184,6 +186,9 @@
   tmplScope.afterAppendTo = function() {
     if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
   }
+  ##
+  ###
+  if (dialogPolyfill) dialogPolyfill.registerDialog(this);
   ##
 </template>
   
@@ -652,7 +657,10 @@
   var shadow = data.shadow;
   var thead = data.thead;
   var tbody = data.tbody;
+  //var theadOptions = data.theadOptions || [];
+  var tbodyOptions = data.tbodyOptions || [];
   var items = tbody ? tbody.items ? tbody.items : tbody : data.items;
+  var trEvent = data.trEvent
   ##
   &lt;table class="mdl-data-table mdl-js-data-table ##=MDL.options('mdl-data-table--', options)## ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')##"&gt;
     ##if (thead) {##
@@ -669,12 +677,12 @@
     ##if (items) {##
     &lt;tbody&gt;
       ##items.forEach(function(tr) {##
-      &lt;tr&gt;
-        ##tr.forEach(function(td) {
+      &lt;tr data-bridge-event="##:trEvent::tr##"&gt;
+        ##tr.forEach(function(td, tdIdx) {
           var label = td.label || td;
           // ##=MDL.is(typeof label === 'string' || label instanceof String, 'mdl-data-table__cell--non-numeric')## 
         ##
-        &lt;td class="##=MDL.options('mdl-data-table__cell--', td.options)##"&gt;##=label##&lt;/td&gt;
+        &lt;td class="##=MDL.options('mdl-data-table__cell--', td.options || tbodyOptions[tdIdx])##"&gt;##=label##&lt;/td&gt;
         ##})##
       &lt;/tr&gt;
       ##})##

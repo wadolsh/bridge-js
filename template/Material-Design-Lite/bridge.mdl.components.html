@@ -11,11 +11,15 @@
       });
       return propStrArray.join(' ');
     },
+    attr: function(type, value) {
+      if (!value || !type) return '';
+      return type + '="' + value + '"';
+    },
     is: function(value, returnValue) {
       return value ? returnValue : '';
     },
     options: function(prefix, options) {
-      return options ? prefix + options.join(' ' + prefix) : '';
+      return options && options.length > 0 ? (prefix + options.join(' ' + prefix)) : '';
     },
     isElement: function(item) {
       if (!item) return false;
@@ -64,9 +68,9 @@
   var event = data.event;
   var disabled = data.disabled;
   ##
-  &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')##" ##=MDL.prop(prop)## data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
+  &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')## ##=data.class##" ##=MDL.prop(prop)## data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
     ##if (icon) {##<i class="material-icons">##=icon##</i>##}##
-    ##%label##
+    <span>##%label##</span>
   &lt;/##=type##&gt;
   ##
   tmplScope.afterAppendTo = function() {
@@ -133,11 +137,14 @@
   var contactClass = data.contactClass;
   var action = data.action;
   var label = data.label;
+  tmplScope.setText = function(str) {
+    chipText.innerHTML = str;
+  };
   ##
   &lt;##=type## class="mdl-chip ##=MDL.options('mdl-chip--', options)## ##=data.class##" data-bridge-event="##:event##"&gt;
     ##if(img) {##<img class="mdl-chip__contact" src="##=img##"></img>##}##
     ##if(contact) {##<span class="mdl-chip__contact ##=contactClass##">##%contact##</span>##}##
-    <span class="mdl-chip__text">##%label##</span>
+    <span class="mdl-chip__text" data-bridge-var="##:chipText##">##%label##</span>
     ##if(action) {##<button type="button" class="mdl-chip__action" data-bridge-event="##:action.event##"><i class="material-icons">##=action.icon##</i></button>##}##
   &lt;/##=type##&gt;
 </template>
@@ -149,12 +156,16 @@
   var actions = data.actions || {};
   var close = data.close;
   
+  tmplScope.show = function() {
+    tmplScope.element.show();
+  }
   tmplScope.showModal = function() {
     tmplScope.element.showModal();
   }
-  tmplScope.close = close || function() {
+  tmplScope.close = function(e, edata, tmplElem, scope) {
+    if (close) close.apply(null, arguments);
     tmplScope.element.close();
-  }
+  };
   ##
   <dialog class="mdl-dialog ##=data.class##">
     ##if (title) {##&lt;##=title.type || 'h4'## class="mdl-dialog__title"&gt;##%title.label || title##&lt;/##=title.type || 'h4'##&gt;##}##
@@ -168,17 +179,16 @@
         actions.items.forEach(function(item) {##
         ##%MDL.isAppandAble(item) ? item : tmpl.mdl.Button(Object.assign({ripple: MDL.ripple}, item))##
         ##})
-      } else {##
+      }##
       ##if (actions.agree) {##<button type="button" class="mdl-button" data-bridge-event="##:actions.agree.event##">##%actions.agree.label || actions.agree || 'Agree'##</button>##}##
       ##if (actions.disagree) {##
       <button type="button" class="mdl-button close" data-bridge-event="##:actions.disagree.event || function() {
-        tmplScope.close();
+        tmplScope.close.apply(null, arguments);
       }##">##%actions.disagree.label || actions.disagree || 'Disagree'##</button>
-      ##} else {##
+      ##} else if (actions.close != false) {##
       <button type="button" class="mdl-button close" data-bridge-event="##:function() {
-        tmplScope.close();
+        tmplScope.close.apply(null, arguments);
       }##">Close</button>
-      ##}##
       ##}##
     </div>
   </dialog>
@@ -215,7 +225,7 @@
       ##
       <div class="mdl-layout__header-row">
         <!-- Title -->
-        ##if (h.title) {##<span class="mdl-layout-title" data-bridge-var="##:titleArea##">##%(h.title)##</span>##}##
+        ##if (h.title) {##<div class="mdl-layout-title" data-bridge-var="##:titleArea##">##%(h.title)##</div>##}##
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
@@ -276,21 +286,30 @@
       ##if (MDL.isElement(item)) {##
     ##%item##
       ##} else {##
-    <a class="mdl-navigation__link" href="##=item.href ? item.href : 'javascript:void(0)'##" data-bridge-event="##:item.event##">##=item.label || item##</a>
+    <a class="mdl-navigation__link" href="##=item.href ? item.href : 'javascript:void(0)'##" data-bridge-event="##:item.event##">##if (item.label){##<i class="material-icons">##=item.icon##</i>##}####=item.label || item##</a>
       ##}##
     ##})##
   </nav>
 </template>
 
-
-
-
 <template id="mdl-Grid">
+  ##
+  var gridOptions = data.gridOptions || [];
+  var cellOptions = data.cellOptions || [];
+  ##
+  <div class="mdl-grid ##=MDL.options('mdl-grid--', gridOptions)## ##=data.class##">
+    ##if (data.items) data.items.forEach(function(item) {
+      if (!item) return;
+    ##
+    <div class="mdl-cell ##=MDL.options('mdl-cell--', cellOptions.concat(item.options || []))## ##=item.class##" data-bridge-event="##:item.event##">##%item ? item.content ? item.content : item : null##</div>
+    ##});##
+  </div>
 </template>
 
 <template id="mdl-Tabs">
   ##
   var items = data.items || [];
+  items = items.filter(Boolean);
   var _id = tmplScope._id;
   var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
   ##
@@ -332,7 +351,7 @@
         ##top.dropDown.forEach(function(item) {##
         <div class="mdl-mega-footer__drop-down-section">
           ##if (item.heading) {##<h1 class="mdl-mega-footer__heading">##%item.heading##</h1>##}##
-          ##%tmpl.mdl.FooterLinkList({type: 'mega', items: item.items})##
+          ##%tmpl.mdl.FooterLinkList({type: 'mega', class: item.class, items: item.items})##
         </div>
         ##})##
       ##}##
@@ -355,7 +374,7 @@
         ##middle.dropDown.forEach(function(item) {##
         <div class="mdl-mega-footer__drop-down-section">
           ##if (item.heading) {##<h1 class="mdl-mega-footer__heading">##%item.heading##</h1>##}##
-          ##%tmpl.mdl.FooterLinkList({type: 'mega', items: item.items})##
+          ##%tmpl.mdl.FooterLinkList({type: 'mega', class: item.class, items: item.items})##
         </div>
         ##})##
       ##}##
@@ -378,7 +397,7 @@
         ##bottom.dropDown.forEach(function(item) {##
         <div class="mdl-mega-footer__drop-down-section">
           ##if (item.heading) {##<h1 class="mdl-mega-footer__heading">##%item.heading##</h1>##}##
-          ##%tmpl.mdl.FooterLinkList({type: 'mega', items: item.items})##
+          ##%tmpl.mdl.FooterLinkList({type: 'mega', class: item.class, items: item.items})##
         </div>
         ##})##
       ##}##
@@ -434,7 +453,7 @@
   ##
   <ul class="mdl-##=type##-footer__link-list ##=data.class##">
     ##items.forEach(function(item) {##
-    <li><a href="##=item.href || '#'##">##%item.label##</a></li>
+    &lt;li ##=MDL.attr('class', item.liClass)##&gt;##if (item.element) {## ##%item## ##} else {## &lt;a ##=MDL.attr('href', item.href || '#')## ##=MDL.attr('class', item.class)## data-bridge-event="##:item.event##" &gt;##=item.label##&lt;/a&gt; ##}##&lt;/li&gt;
     ##})##
   </ul>
 </template>
@@ -454,15 +473,15 @@
       ##%item##
       ##} else {##
       <span class="mdl-list__item-primary-content">
-        ##if (item.icon) {##<i class="material-icons mdl-list__item-##=item.iconStyle || iconStyle##">##=item.icon##</i>##}##
+        ##if (item.icon) {##&lt;i class="material-icons mdl-list__item-##=item.iconStyle || iconStyle##" ##=MDL.prop(item.iconProp || data.iconProp)##&gt;##=item.icon##&lt;/i&gt;##}##
         ##if (!item.title && !item.body) {##
         ##%item##
         ##} else if (lineCount == 3) {##
-        <span>##=item.title##</span>
-        <span class="mdl-list__item-text-body">##=item.body##</span>
+        <span>##%item.title##</span>
+        <span class="mdl-list__item-text-body">##%item.body##</span>
         ##} else if (lineCount == 2 || (item.title && item.body)) {##
         <span>##=item.title##</span>
-        <span class="mdl-list__item-sub-title">##=item.body##</span>
+        <span class="mdl-list__item-sub-title">##%item.body##</span>
         ##} else {##
         <span>##=item.title##</span>
         ##}##
@@ -498,8 +517,14 @@
   var options = data.options;
   var styleProp = data.style ? 'style="' + data.style + '"' : '';
   
+  
+  var currentValue = 0;
   tmplScope.setProgress = function(val) {
+    currentValue = val;
     tmplScope.element.MaterialProgress.setProgress(val);
+  }
+  tmplScope.getProgress = function(val) {
+    return currentValue;
   }
   tmplScope.setBuffer = function(val) {
     tmplScope.element.MaterialProgress.setBuffer(val);
@@ -556,10 +581,15 @@
   var min = data.min || 0;
   var max = data.max || 100;
   var value = data.value || 0;
+  var step = data.step || 1;
   var event = data.event;
   
   tmplScope.value = function(val) {
-    tmplScope.element.value = val;
+    if (tmplScope.element.MaterialSlider) {
+      tmplScope.element.MaterialSlider.change(val);
+    } else {
+      tmplScope.element.value = val;
+    }
     return tmplScope.element.value;
   }
   tmplScope.min = function(val) {
@@ -570,8 +600,12 @@
     tmplScope.element.max = val;
     return tmplScope.element.max;
   }
+  tmplScope.step = function(val) {
+    tmplScope.element.step = val;
+    return tmplScope.element.step;
+  }
   ##
-  <input class="mdl-slider mdl-js-slider" type="range" min="##=min##" max="##=max##" value="##=value##" data-bridge-event="##:event##">
+  <input class="mdl-slider mdl-js-slider" type="range" min="##=min##" max="##=max##" value="##=value##" step="##=step##" data-bridge-event="##:event##">
   ##
   tmplScope.afterAppendTo = function() {
     if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
@@ -581,9 +615,14 @@
 
 <template id="mdl-Snackbar">
   ##
+  var base = data.base;
   tmplScope.showSnackbar = function(obj) {
-    tmplScope.element.MaterialSnackbar.showSnackbar(obj);
-  }
+    if (base) {
+      tmplScope.element.MaterialSnackbar.showSnackbar(Object.assign({}, base, obj));
+    } else {
+      tmplScope.element.MaterialSnackbar.showSnackbar(obj);
+    }
+  };
   ##
   <div class="mdl-js-snackbar mdl-snackbar">
     <div class="mdl-snackbar__text"></div>
@@ -600,6 +639,7 @@
 
 <template id="mdl-Toggle">
   ##
+  var scope = data.scope;
   var type = data.type;
   var inputType = data.inputType || data.type;
   var inputClass = 'mdl-' + type + '__' + (data.inputClass || 'input');
@@ -611,20 +651,20 @@
   var _id = data.id || tmplScope._id;
   var event = data.event;
   
-  tmplScope.input = function() {
+  scope.input = tmplScope.input = function() {
     return input;
   }
-  tmplScope.value = function() {
+  scope.value = tmplScope.value = function() {
     return input.value;
   }
-  tmplScope.checked = function() {
+  scope.checked = tmplScope.checked = function() {
     return input.checked;
   }
   ##
-  <label class="mdl-##=type## mdl-js-##=type## mdl-js-ripple-effect" for="##=_id##">
+  <label class="mdl-##=type## mdl-js-##=type## mdl-js-ripple-effect ##=data.class##" for="##=_id##">
     &lt;input type="##=inputType##" id="##=_id##" ##=name ? 'name="' + name + '"' : ''## class="##=inputClass##" value="##=value##" ##=checked ? 'checked' : ''## data-bridge-var="##:input##" data-bridge-event="##:event##"&gt;
     ##if (icon) {##<i class="mdl-icon-toggle__label material-icons">##=icon##</i>##}##
-    <span class="mdl-##=type##__label">##=label##</span>
+    ##if (label) {##<span class="mdl-##=type##__label">##=label##</span>##}##
   </label>
   ##
   tmplScope.afterAppendTo = function() {
@@ -635,19 +675,19 @@
 
 
 <template id="mdl-Checkbox">
-  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'checkbox'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'checkbox', scope: tmplScope}))##
 </template>
 
 <template id="mdl-Radio">
-  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'radio', inputClass: 'button'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'radio', inputClass: 'button', scope: tmplScope}))##
 </template>
 
 <template id="mdl-IconToggle">
-  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'icon-toggle', inputType: 'checkbox'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'icon-toggle', inputType: data.inputType || 'checkbox', scope: tmplScope}))##
 </template>
 
 <template id="mdl-Switch">
-  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'switch', inputType: 'checkbox'}))##
+  ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'switch', inputType: data.inputType || 'checkbox', scope: tmplScope}))##
 </template>
 
 
@@ -657,19 +697,22 @@
   var shadow = data.shadow;
   var thead = data.thead;
   var tbody = data.tbody;
+  var checkboxValueKey = data.checkboxValueKey;
+  var rowItemKeys = data.rowItemKeys;
   //var theadOptions = data.theadOptions || [];
   var tbodyOptions = data.tbodyOptions || [];
   var items = tbody ? tbody.items ? tbody.items : tbody : data.items;
-  var trEvent = data.trEvent
+  var trEvent = data.trEvent || data.rowSelectEvent;
+  var checkboxEvent = data.checkboxEvent;
   ##
-  &lt;table class="mdl-data-table mdl-js-data-table ##=MDL.options('mdl-data-table--', options)## ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')##"&gt;
+  &lt;table class="mdl-data-table mdl-js-data-table ##=MDL.options('mdl-data-table--', options)## ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')## ##=data.class##"&gt;
     ##if (thead) {##
     &lt;thead&gt;
       &lt;tr&gt;
         ##thead.forEach(function(th) {
-          var label = th.label || th;
+          var label = th ? (th.label || th) : '';
         ##
-        &lt;th class="##=MDL.options('mdl-data-table__cell--', th.options)## ##=MDL.options('mdl-data-table__header--', th.options)##"&gt;##%label##&lt;/th&gt;
+        &lt;th class="##=MDL.options('mdl-data-table__cell--', th ? th.options : null)## ##=MDL.options('mdl-data-table__header--', th ? th.options : null)##" ##=th && th.prop ? MDL.prop(th.prop): null##&gt;##%label##&lt;/th&gt;
         ##})##
       &lt;/tr&gt;
     &lt;/thead&gt;
@@ -677,13 +720,22 @@
     ##if (items) {##
     &lt;tbody&gt;
       ##items.forEach(function(tr) {##
-      &lt;tr data-bridge-event="##:trEvent::tr##"&gt;
-        ##tr.forEach(function(td, tdIdx) {
-          var label = td.label || td;
-          // ##=MDL.is(typeof label === 'string' || label instanceof String, 'mdl-data-table__cell--non-numeric')## 
-        ##
-        &lt;td class="##=MDL.options('mdl-data-table__cell--', td.options || tbodyOptions[tdIdx])##"&gt;##=label##&lt;/td&gt;
-        ##})##
+      &lt;tr class="##=tr.isSelected ? 'is-selected' : ''##" data-bridge-event="##:trEvent::tr##"&gt;
+        ##if (rowItemKeys) {##
+          ##rowItemKeys.forEach(function(key, tdIdx) {
+            var td = tr[key];
+            var label = td ? (td.label || td) : '';
+          ##
+            &lt;td class="##=MDL.options('mdl-data-table__cell--', td ? (td.options || tbodyOptions[tdIdx]) : '')##" ##=td && td.prop ? MDL.prop(td.prop): null##&gt;##%label##&lt;/td&gt;
+          ##});##
+        ##} else {##
+          ##tr.forEach(function(td, tdIdx) {
+            var label = td ? (td.label || td) : '';
+            // ##=MDL.is(typeof label === 'string' || label instanceof String, 'mdl-data-table__cell--non-numeric')## 
+          ##
+          &lt;td class="##=MDL.options('mdl-data-table__cell--', td ? (td.options || tbodyOptions[tdIdx]) : '')##" ##=td && td.prop ? MDL.prop(td.prop): null##&gt;##%label##&lt;/td&gt;
+          ##})##
+        ##}##
       &lt;/tr&gt;
       ##})##
     &lt;/tbody&gt;
@@ -692,25 +744,52 @@
   ##
   tmplScope.afterAppendTo = function() {
     if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
+    var boxes = tmplScope.element.querySelectorAll('tbody .mdl-data-table__select') || [];
+    for (var i = 0, length = boxes.length; i < length; i++) {
+      if (checkboxValueKey) boxes[i].MaterialCheckbox.inputElement_.value = items[i][checkboxValueKey];
+
+      //boxes[i].MaterialCheckbox.inputElement_.onchange;
+      //boxes[i].MaterialCheckbox.check();
+      //boxes[i].MaterialCheckbox.updateClasses();
+    }
   }
   ##
 </template>
 
 <template id="mdl-Text-Field">
+  <style id="style-mdl-Text-Field">
+    .mdl-textfield__help {
+      color: #757575;
+      position: absolute;
+      font-size: 12px;
+      margin-top: 3px;
+      display: block;
+    }
+  </style>
   ##
   var type = data.type || 'text';
   var name = data.name;
   var value = data.value;
+  var prop = data.prop;
   var icon = data.icon;
   var options = data.options;
   var label = data.label;
   var patternProp = data.pattern ? ('pattern="' + data.pattern + '"') : '';
   var errorMsg = data.errorMsg;
+  var helpMsg = data.helpMsg;
   var rows = data.rows;
   var _id = data.id || tmplScope._id;
   var event = data.event;
+  tmplScope.value = function(val) {
+    if (val != undefined) {
+      tmplScope.input.value = val;
+      tmplScope.element.MaterialTextfield.checkDirty();
+    } else {
+      return tmplScope.input.value;
+    }
+  }
   ##
-  <div class="mdl-textfield mdl-js-textfield ##=MDL.options('mdl-textfield--', options)##">
+  &lt;div class="mdl-textfield mdl-js-textfield ##=MDL.options('mdl-textfield--', options)## ##=data.class##" ##=MDL.prop(prop)##&gt;
     ##if ((options || []).indexOf('expandable') > -1) {##
       ##if (icon) {##
         ##if (MDL.isElement(icon)) {##
@@ -722,18 +801,18 @@
         ##}##
       ##}##
     <div class="mdl-textfield__expandable-holder">
-      &lt;input class="mdl-textfield__input" type="##=type##" id="##=_id##" name="##=name##" value="##=value##" ##=patternProp## data-bridge-event="##:event##"&gt;
+      &lt;input class="mdl-textfield__input" type="##=type##" id="##=_id##" name="##=name##" value="##=value##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(prop)##&gt;
       <label class="mdl-textfield__label" for="##=_id##">##=label##</label>
     </div>
     ##} else {##
       ##if (rows && rows > 1) {##
-    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##"&gt;##=value##&lt;/textarea&gt;
+    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(prop)##&gt;##=value##&lt;/textarea&gt;
       ##} else {##
-    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##"&gt;
+    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(prop)##&gt;
       ##}##
     ##if (label) {##<label class="mdl-textfield__label" for="##=_id##">##=label##</label>##}##
+    ##if (helpMsg) {##<span class="mdl-textfield__help">##%helpMsg##</span>##}##
     ##if (errorMsg) {##<span class="mdl-textfield__error">##%errorMsg##</span>##}##
-    
     ##}##
   </div>
   ##

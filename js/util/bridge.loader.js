@@ -3,6 +3,31 @@
  * Code released under the MIT license
  */
 (function() {'use strict';
+
+  // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+  if (!Array.prototype.findIndex) {
+    Array.prototype.findIndex = function(predicate) {
+      if (this === null) {
+        throw new TypeError('Array.prototype.findIndex called on null or undefined');
+      }
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+      var list = Object(this);
+      var length = list.length >>> 0;
+      var thisArg = arguments[1];
+      var value;
+  
+      for (var i = 0; i < length; i++) {
+        value = list[i];
+        if (predicate.call(thisArg, value, i, list)) {
+          return i;
+        }
+      }
+      return -1;
+    };
+  }
+
   var root = this;
   var Bridge = root.bridge = root.bridge || {};
   var loader = Bridge.loader = Bridge.loader || {};
@@ -142,11 +167,129 @@ console.log('!200', xmlhttp.status, url, option);
     });
   }
 
+  liveReload.liveReloadIntervId = null;
   liveReload.socket = null;
   liveReload.start = function(url) {
+    /*
     tmplTool.liveReloadSupport = function(tmplScope) {
       tmplScope.element.tmplScope = tmplScope;
     }
+    //if (!config.repository.use) return;
+    if (this.socket) {
+        this.stop();
+    }
+    var socket = io(url || '//' + window.document.location.host + '/');
+    this.socket = socket;
+    socket.on('liveReload', function (data) {
+console.log('liveReload', data);
+      if (data.path) {
+        var path = data.path;
+        if (path && path[0] != '/') {
+          path = '/' + path;
+        }
+        if (data.path.indexOf('components.html') > -1) {
+
+          requestFunc(path, null, function(text) {
+console.log('addTmpls: ' + path);
+
+            var $template = document.createElement('template');
+            $template.innerHTML = text;
+            var $templateContent = ($template.content || $template);
+            var importedTarget = document.querySelector('link[rel="import"][href="' + path + '"]');
+            if (importedTarget) {
+              var importedContent = importedTarget.import;
+
+              // reload style
+              var importedStyleNodes = importedContent.querySelectorAll('style');
+              Array.prototype.forEach.call(importedStyleNodes, function(styleNode) {
+                styleNode.parentNode.removeChild(styleNode);
+              });
+              var styleNodes = $templateContent.querySelectorAll('style');
+              Array.prototype.forEach.call(styleNodes, function(styleNode) {
+                importedContent.head.appendChild(styleNode);
+              });
+            }
+
+            // reload template
+            var tmplNodes = $templateContent.querySelectorAll('template');
+            var tmplIds = Array.prototype.presetObjomap.call(tmplNodes, function(ele) {
+              return ele.id ;
+            });
+
+            var escapeHtml = tmplTool.escapeHtml;
+            var reflashIds = [];
+            var removeElements = Array.prototype.filter.call(tmplNodes, function(ele) {
+              var tmplCache = Bridge.tmplCache.get(ele.id);
+              if (!tmplCache || (tmplCache.templateText != escapeHtml.escape(escapeHtml.unescape(ele.innerHTML)))) {
+console.log('Changed template : ', ele.id);
+                reflashIds.push(ele.id);
+                return false;
+              }
+              return true;
+            });
+
+            for (var i=0, size=removeElements.length; i < size; i++) {
+              $templateContent.removeChild(removeElements[i]);
+            }
+
+            tmplTool.addTmpls($template.innerHTML);
+
+            var reflashNodeList = Array.prototype.filter.call(document.querySelectorAll('*'), function(ele) {
+              if (ele.tmplScope) {
+                return reflashIds.includes(ele.tmplScope.tmplId);
+              }
+              return false;
+            });
+            for (var i=0, size=reflashNodeList.length; i < size; i++) {
+              reflashNodeList[i].tmplScope.reflash();
+            }
+          });
+        } else if (path.indexOf('.js') > -1) {
+            loader.js(path);
+        } else if (path.indexOf('.css') > -1) {
+            loader.css(path);
+        } else if (path.indexOf('.html') > -1) {
+            window.location.reload();
+        }
+      }
+    });
+    */
+
+
+    var tmplScopeArray = [];
+    tmplTool.liveReloadSupport = function(tmplScope) {
+//console.log('----------------add : ' + tmplScope._id);
+      var index = tmplScopeArray.findIndex(function(scope) {
+        return scope._id == tmplScope._id;
+      });
+      if (index > -1) {
+        tmplScopeArray.splice(index, 1);
+      }
+      tmplScopeArray.push(tmplScope);
+    }
+    
+    liveReload.liveReloadIntervId = setInterval(function() {
+      console.log('setInterval 1 : ' + tmplScopeArray.length);
+      /*
+      for (var i=0,length=tmplScopeArray.length; i < length; i++) {
+        if (tmplScopeArray[i] && !tmplScopeArray[i].element.isConnected) {
+          tmplScopeArray.splice(i, 1);
+        } else {
+          
+        }
+      }
+      */
+      var index = tmplScopeArray.length;
+      while (index--) {
+        if (!tmplScopeArray[index].element.isConnected) {
+          tmplScopeArray.splice(index, 1);
+        } else {
+          
+        }
+      }
+      console.log('setInterval 2 : ' + tmplScopeArray.length, new Date());
+    }, 10000);
+    
     //if (!config.repository.use) return;
     if (this.socket) {
         this.stop();
@@ -206,15 +349,19 @@ console.log('Changed template : ', ele.id);
             }
 
             tmplTool.addTmpls($template.innerHTML);
-
-            var reflashNodeList = Array.prototype.filter.call(document.querySelectorAll('*'), function(ele) {
-              if (ele.tmplScope) {
-                return reflashIds.includes(ele.tmplScope.tmplId);
+            
+            var reflashTargetList = tmplScopeArray.filter(function(scope) {
+              if (scope.element.isConnected) {
+                return reflashIds.includes(scope.tmplId);
               }
               return false;
             });
-            for (var i=0, size=reflashNodeList.length; i < size; i++) {
-              reflashNodeList[i].tmplScope.reflash();
+
+            for (var i=0, size=tmplScopeArray.length; i < size; i++) {
+              if (tmplScopeArray[i].element.isConnected && reflashIds.includes(tmplScopeArray[i].tmplId)) {
+                tmplScopeArray[i].reflash();
+                console.log(tmplScopeArray[i]._id, tmplScopeArray[i].element.isConnected);
+              }
             }
           });
         } else if (path.indexOf('.js') > -1) {
@@ -230,6 +377,7 @@ console.log('Changed template : ', ele.id);
   };
 
   liveReload.stop = function() {
+    if (liveReload.liveReloadIntervId) clearInterval(liveReload.liveReloadIntervId);
     delete tmplTool.liveReloadSupport;
     this.socket.disconnect();
     this.scoket = null;

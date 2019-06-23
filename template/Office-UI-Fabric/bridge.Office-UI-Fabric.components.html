@@ -448,12 +448,12 @@
       }
     ##
     ##if (data.label) {##<label class="ms-Label">##=data.label##</label>##}##
-    ##if (data.type=='textarea') {##<textarea class="ms-TextField-field" rows="##=(data.rows || 3)##" name="##=data.name##" id="##=data.id##"
-                                      placeholder="##=data.placeholder##" data-bridge-load="##:loadEvent##" data-bridge-event="##:[enterKeyEvent, data.inputEvent]##">##=data.value##</textarea>
-    ##} else {##<input class="ms-TextField-field" type="##=data.type || 'text'##" name="##=data.name##" id="##=data.id##" value="##=data.value##"
-                  placeholder="##=data.placeholder##" list="##=data.listId || 'datalist_' + data.name##" data-bridge-load="##:loadEvent##" data-bridge-event="##:[enterKeyEvent, data.inputEvent]##">
+    ##if (data.type=='textarea') {##&lt;textarea class="ms-TextField-field" rows="##=(data.rows || 3)##" ##=Fabric.prop({id: data.id, name: data.name, placeholder: data.placeholder})##
+                                      data-bridge-load="##:loadEvent##" data-bridge-event="##:[enterKeyEvent, data.inputEvent]##"&gt;##=data.value##&lt;/textarea&gt;
+    ##} else {##&lt;input class="ms-TextField-field" type="##=data.type || 'text'##" ##=Fabric.prop({id: data.id, name: data.name, placeholder: data.placeholder, value: data.value})##
+                  list="##=data.listId || 'datalist_' + tmplScope._id##" data-bridge-load="##:loadEvent##" data-bridge-event="##:[enterKeyEvent, data.inputEvent]##"&gt;
         ##if(data.type == 'search' && data.options) {##
-        <datalist id="##=data.listId || 'datalist_' + data.name##">
+        <datalist id="##=data.listId || 'datalist_' + tmplScope._id##">
           ##data.options.forEach(function(option) {##
           &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
           ##});##

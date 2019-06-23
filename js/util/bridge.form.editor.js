@@ -4,6 +4,13 @@
   var form = Bridge.form = Bridge.form || {};
 
   var validateTool = Bridge.validateTool = {
+    required : function(messageObj, value, sw) {
+      if (sw && (!value || value.length == 0)) {
+        // messageObj.message.push("必須項目です。");
+        return "必須項目です。";
+      }
+      return; 
+    },
     isNullAble : function(messageObj, value, sw) {
       if (!sw && !value) {
         // messageObj.message.push("必須項目です。");
@@ -127,26 +134,52 @@
     var values = {};
     var inputConfig = null;
     var inputObj = null;
-    Array.prototype.forEach.call($html.querySelectorAll('input[name], textarea[name], select[name]'), function(input, ind) {
-      inputConfig = config[input.name] || {};
-      if ((input.type == "radio" || input.type == "checkbox") && !input.checked) {
-        return;
-      }
+    
+    if (Array.isArray(config)) {
+      var configObj = {};
+      if (!config[0].name) return;
+      config.forEach(function(obj) {
+        configObj[obj.name] = obj;
+      });
+      config = configObj;
+    }
+
+    var inputArray = $html.querySelectorAll('input[name], textarea[name], select[name]');
+    var nameArray = Array.prototype.map.call(inputArray, function(target) {
+      return target.name;
+    }).filter(function(val, i, self){
+    	return val && i === self.indexOf(val);
+    });
+
+    nameArray.forEach(function(name, ind) {
+      var target = Array.prototype.filter.call(inputArray, function(input) {
+        return input.name == name;
+      });
+      inputConfig = config[name] || {};
       inputObj = {
         inputConfig: inputConfig,
-        target: input,
-        name: input.name,
+        target: target.length == 1 ? target[0] : target,
+        name: name,
         validateTool: inputConfig.validateTool || config.validateTool || Bridge.validateTool,
         rule: inputConfig.rule,
         multiple: inputConfig.multiple != undefined ? inputConfig.multiple : true,
         
         val: inputConfig.val || config.val || function () {
           var target = this.target;
-          if (target.type == "checkbox") {
+          if (target.type == "checkbox" || target.type == "radio") {
             //return target.checked ? (target.value || true) : (target.value ? '' : false);
             return target.checked ? (target.value || true) : null;
-          } else if (target.type == "radio") {
-            return target.checked ? (target.value || true) : null;
+          } else if (Array.isArray(target) && target[0].type == "checkbox") {
+            return target.filter(function(ele) {
+              return ele.checked;
+            }).map(function(ele) {
+              return ele.value || true;
+            });
+          } else if (Array.isArray(target) && target[0].type == "radio") {
+            var selected = target.filter(function(ele) {
+              return ele.checked;
+            })[0];
+            return selected ? (selected.value || true) : null;
           }
           return this.inputConfig.returnValue ? this.inputConfig.returnValue(target.value) : target.value;
         },

@@ -366,6 +366,13 @@
       }, id));
       return this;
     },
+    reqDrop : function (key) {
+      this.combine(this.addId({
+        "key" : key,
+        "method" : "reqDrop"
+      }));
+      return this;
+    },
     reqExecMethod : function (key, method, data) {
       this.combine({
         "key" : key,

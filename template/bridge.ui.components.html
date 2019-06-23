@@ -194,25 +194,28 @@
     },
     '.brui-Splitter .brui-SplitterIcon': {
       //opacity: '0'
-      'border-radius': '50%'
     },
     //'.brui-Splitter:hover .brui-SplitterIcon': {
     '.brui-Splitter .brui-SplitterIcon:hover': {
       opacity: '0.4',
-      width: '20px',
-      height: '20px'
+      width: '30px',
+      height: '30px',
+      'z-index': '10000',
+      'border-radius': '50%'
     },
     //'.brui-Splitter:hover .brui-SplitterIcon:hover': {
     '.brui-Splitter .brui-SplitterIcon:active': {
       opacity: '1',
-      width: '20px',
-      height: '20px'
+      width: '30px',
+      height: '30px',
+      'z-index': '10000',
+      'border-radius': '50%'
     },
     '.brui-Splitter-horizontal .brui-SplitterIcon': {
       cursor: 'e-resize',
-      top: 'calc(50% - 10px)',
+      top: 'calc(50% - 13px)',
       //left: '-10px',
-      height: '20px',
+      height: '30px',
       width: '4px',
       background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAADQ0lEQVR4Xu2dMU5DQQxEHQm4JUg0KbgQBRISXBOQUOhZSzvF2p6Xeq2/nnkZ7yfJ5xK8rBW4WHdP8wEA5hAAAACYK2DePgkAAOYKmLdPAgCAuQLm7ZMAAGCugHn7JAAAmCtg3j4JAADmCpi3TwIAgLkC5u2TAABgroB5+yQAAJgrYN4+CQAA5gqYt08CAMB4BT4i4mmzy7eIuG7WtiibngB3EfElOPEdEfdCfflSAFhb9BMRN4jGvgAAAMbCfWtMHQEkQHM8ACAxkBHACGj+Hl9vnwQgAaTbQM4AzfOBBCABSIAVAxwCOQQ2D3kOgZKBJAAJIAFUvVg9BN4+SHqo3qSyv+kJcNPmPSKeN0V6jYiXzdoWZQ4AtDDi1CYB4JTyRa4LAEWMOLUNADilfJHrAkARI05tAwBOKV/kugBQxIhT2wCAU8oXuS4AFDHi1DYA4JTyRa4LAEWMOLUNADilfJHrAkARI05tAwBOKV/kugBQxIhT2wCAU8oXua4DADwfYAHbdADUr4TxfIAiSbW7DRUAfhm0q3yROgBIjGAErAUiAYq8k3e3QQKQAPw2cMUAI4ARsJuuLeoYAYwARgAjYD+suAvY165EJSOAEcAIYATshxEjYF+7EpXqCOD5ACVs1DbB8wGMPw7W0DGonv6XQAMLtRYBQNOvfTUAtLdQawAANP3aVwNAewu1BgBA0699NQC0t1BrAAA0/dpXA0B7C7UGAEDTr301ALS3UGsAADT92lcDQHsLtQYAQNOvfTUAtLdQa8ABgM+IeNyU6S0irpu1LcqmA6B+JYznA7TA+P9NqgDwpVAA+PsX9GNfjIC1tSRAc/QZAYmBJAAJ0Pw9vt4+CUAC8NvAFQOMAEYAI2ChAHcBzfHgDMAZgDMAZ4D9GGME7GtXolIdATwfoISN2iZ4PsBCv+m3gRo6BtUAYGCy8yHQ3N68fRIg12j0CgAYbW/eHADkGo1eAQCj7c2bA4Bco9ErAGC0vXlzAJBrNHoFAIy2N28OAHKNRq8AgNH25s0BQK7R6BUAMNrevDkAyDUavQIARtubNwcAuUajVwDAaHvz5gAg12j0CgAYbW/eHADkGo1eAQCj7c2bA4Bco9ErfgHIAWCBRNuSUAAAAABJRU5ErkJggg==) rgba(0,0,0,0.2) center/80% no-repeat',
       //background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAh0lEQVRIS+2UQQ7AIAgE8aG8zoe24UBCEbt4oJfiyQRkzeyGQcVnFM+nHwkw8yU455zD3hHiNKIWWFAKEuGtBYTI9+u70IPIxIyAhsD+dhHQQb45K+DfPQTs8F38bEzfIqp4vxWQH5UiihJzkqKUyXZgWUwj81CKdob3LoIEYAPa96jeAogQ3VFmsBlbASBkAAAAAElFTkSuQmCC) rgba(0,0,0,0.2) center no-repeat',
@@ -220,12 +223,14 @@
     },
     //'.brui-Splitter-horizontal:hover .brui-SplitterIcon': {
     '.brui-Splitter-horizontal .brui-SplitterIcon:hover, .brui-Splitter-horizontal .brui-SplitterIcon:active': {
-      left: '-8px'
+      left: '-13px'
     },
     '.brui-Splitter-horizontal .brui-SplitterIcon.maxPrev': {
       cursor: 'pointer',
       top: '0',
       width: '30px',
+      'z-index': '10000',
+      'border-radius': '50%',
       background: 'url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cG9seWdvbiBmaWxsPSIjMDEwMTAxIiBwb2ludHM9IjMwLjQsMjAuNiA2Ni43LDQ5LjEgMzAuNCw3Ny42IDMxLjYsNzkuMSA2OS45LDQ5LjEgMzEuNiwxOS4xIDMwLjQsMjAuNiAiLz48L3N2Zz4=) rgba(0,0,0,0.2) center/80% no-repeat',
       //background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABGElEQVRIS91VUQ6DIAwVXRbv4UW4hJ/cpXfh00t4EU+yzS1tKMEKgkaXbPyYgPS9vvZRVV281MXxq/8CwGzeoWQAUAPAzN8jcnqJtNa3cRyfLgiBGWM8oLV2IefWWUgkWYMwAF7YAoidM4gH6Pu+GYZhlszd5VrKh/uCxMNae5cyMoDSWjcoUY65CKCMMUjKL8zUkX3hpgfYw7wEZCWRZN51XYMdVNo5qcwpg8hhVPMMWFQu3Fz0/l7mOblWALIdSyXC/7C4bduyl+iqQpdO00QV53UEJBWHanACSEx/quPCaDK90kwSTYLcPcCpRgsfR59BuFnq5hRzAMDakoe+99g5MPbEked6NU9kBtEfUj7g+ZEbRr8/kz+hh8VF66UplQAAAABJRU5ErkJggg==) rgba(0,0,0,0.2) center no-repeat',
     },
@@ -233,21 +238,23 @@
       cursor: 'pointer',
       top: 'initial',
       bottom: 0,
+      'z-index': '10000',
+      'border-radius': '50%',
       background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAh0lEQVRIS+2UQQ7AIAgE8aG8zoe24UBCEbt4oJfiyQRkzeyGQcVnFM+nHwkw8yU455zD3hHiNKIWWFAKEuGtBYTI9+u70IPIxIyAhsD+dhHQQb45K+DfPQTs8F38bEzfIqp4vxWQH5UiihJzkqKUyXZgWUwj81CKdob3LoIEYAPa96jeAogQ3VFmsBlbASBkAAAAAElFTkSuQmCC) rgba(0,0,0,0.2) center/80% no-repeat',
     },
     '.brui-Splitter-vertical .brui-SplitterIcon': {
       cursor: 'n-resize',
       //top: '-10px',
-      left: 'calc(50% - 10px)',
+      left: 'calc(50% - 13px)',
       height: '4px',
-      width: '20px',
+      width: '30px',
       background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAADEUlEQVR4Xu2ZwWoVURBEOyD+ZQQ3WfhFghDQ35QQCRgQJK9hxnJSnPPW9/btqjpTm3c3/tAO3KHVK34EAA6BAAgA3AG4fBtAAOAOwOXbAAIAdwAu3wYQALgDcPk2gADAHYDLtwEEAO4AXL4NIABwB+DybQABgDsAl28DCADcAbh8G0AA4A7A5dsAAgB3AC7fBhAAuANw+TaAAMAdgMu3AQQA7gBcvg0gAHAH4PJtAAGAOwCXbwMIANwBuHwbQADgDsDl2wACAHcALt8GEAC4A3D5NoAAwB2Ay7cBBADuAFy+DSAAcAfg8m0AAYA7AJdvAwgA3AG4fBtAAOAOwOXbAAIQd+D7zHw6+Mq3mXk4ePf12tXv/5iZ+4Ma/oX+m0+nG+DDzPw8KP712pkd6e+v1p8xdx0+M/QArta/ZvTeAXj6DdEq5I0DZwNof3/1TQBuWyQAK0K3D9C/wKv1r/HZADbACsmZA1d/AfT31+xsABtgheTMAfoXeLX+NTsbwAZYITlz4OovgP7+mp0NYAOskJw5QP8Cr9a/ZvfeG+Dlj6SPq4q3D5wNoP391bo0AC8LPM7M53WTvw88z8zXmfly4O6fV+jv37TvfwBwMj+vJx0QgKS7BbMFoCCk5IoCkHS3YLYAFISUXFEAku4WzBaAgpCSKwpA0t2C2QJQEFJyRQFIulswWwAKQkquKABJdwtmC0BBSMkVBSDpbsFsASgIKbmiACTdLZgtAAUhJVcUgKS7BbMFoCCk5IoCkHS3YLYAFISUXFEAku4WzBaAgpCSKwpA0t2C2QJQEFJyRQFIulswWwAKQkquKABJdwtmC0BBSMkVBSDpbsFsASgIKbmiACTdLZgtAAUhJVcUgKS7BbMFoCCk5IoCkHS3YLYAFISUXFEAku4WzBaAgpCSKwpA0t2C2QJQEFJyRQFIulswWwAKQkquKABJdwtmC0BBSMkVBSDpbsFsASgIKbmiACTdLZgtAAUhJVcUgKS7BbMFoCCk5IoCkHS3YLYAFISUXFEAku4WzBaAgpCSKwpA0t2C2b8AGu5dgZpJiAYAAAAASUVORK5CYII=) rgba(0,0,0,0.2) center/80% no-repeat',
       //background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAgElEQVRIS9WVUQ7AIAhD9aCcjoNu8YPEsGwtH9Xpr4YHLWBv4tPF8du/AGZ2jYrdnU6MfhjBQ1IWQgFy8AoEAt6CsxAImLtM6sEAnQFAmqPBzN318EAOQBlW79dXsFWiM9r0y0RJBcgTtFWpXSTdpiGZ9D/IECTL7CMlUXV6lwJu4PtIGZKJjy4AAAAASUVORK5CYII=) rgba(0,0,0,0.2) center/80% no-repeat',
       'background-size': '16px'
     },
     //'.brui-Splitter-vertical:hover .brui-SplitterIcon': {
     '.brui-Splitter-vertical .brui-SplitterIcon:hover, .brui-Splitter-vertical .brui-SplitterIcon:active': {
-      top: '-8px'
+      top: '-13px'
     },
     '.brui-Splitter-vertical .brui-SplitterIcon.maxPrev': {
       cursor: 'pointer',
@@ -317,7 +324,7 @@
 
 <template id="brui-WindowResize">
   ##
-  var dragEvent = data.dragEvent;
+  var dragCallback = data.dragCallback;
   var clickPosition = null;
   var startPosition = null;
   var startSize = null;
@@ -349,7 +356,7 @@
         target.style.height = (e.pageY - startPosition.y + startSize.y + 2) + 'px';
       }
       
-      if (dragEvent) dragEvent(e, edata, tmplElem);
+      if (dragCallback) dragCallback(e, edata, tmplElem);
     },
     touchstart: function(e) {
       //event.mouseover.call(this, e);
@@ -380,26 +387,31 @@
   //var beforePosition = null;
   var clickPosition = null;
   var startPosition = null;
+  var styleStatus = null;
   
   var target = null;
   var targetParent = null;
   
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     /*
-    mouseover: function(e) {
+    mouseover: function(e, edata, tmplElem) {
       e = e.touches ? e.touches[0] : e;
       target = this.parentElement;
       target.style.position = 'absolute';
       //this.style.opacity = 1;
     },
     */
-    mousedown: function(e) {
+    mousedown: function(e, edata, tmplElem) {
       e = e.touches ? e.touches[0] : e;
       target = this.parentElement;
       targetParent = target.parentElement;
       clickPosition = {x: e.layerX || 0, y: e.layerY || 0};
       startPosition = {x: parseInt(e.pageX - target.offsetLeft) || 0, y: parseInt(e.pageY - target.offsetTop) || 0};
-
+      styleStatus = {};
+      target.style.cssText.split(';').forEach(function(str) {
+        var keyValue = str.split(':');
+        if (keyValue.length > 1) styleStatus[keyValue[0]] = keyValue[1].trim();
+      });
     },
     drag: function(e, edata, tmplElem) {
       e = e.touches ? e.touches[0] : e;
@@ -411,23 +423,34 @@
       //target.style.left = Math.max(0, e.pageX - startPosition.x)+ 'px';
       //target.style.top = Math.max(0, e.pageY - startPosition.y) + 'px';
       
-      target.style.left = Math.min(Math.max(0, e.pageX - startPosition.x), targetParent.offsetWidth - target.offsetWidth)+ 'px';
-      target.style.top = Math.min(Math.max(0, e.pageY - startPosition.y), targetParent.offsetHeight - target.offsetHeight) + 'px';
+      //target.style.left = Math.min(Math.max(0, e.pageX - startPosition.x), targetParent.offsetWidth - target.offsetWidth)+ 'px';
+      //target.style.top = Math.min(Math.max(0, e.pageY - startPosition.y), targetParent.offsetHeight - target.offsetHeight) + 'px';
+      
+      var left = Math.min(Math.max(0, e.pageX - startPosition.x), targetParent.offsetWidth - target.offsetWidth)+ 'px';
+      styleStatus.left = left;
+      var top = Math.min(Math.max(0, e.pageY - startPosition.y), targetParent.offsetHeight - target.offsetHeight) + 'px';
+      styleStatus.top = top;
+
+      var styleStrArray = [];
+      Object.keys(styleStatus).forEach(function(key) {
+        if (styleStatus[key]) styleStrArray.push(key + ':' + styleStatus[key] + ';');
+      });
+      target.style.cssText = styleStrArray.join('; ');
       
     },
-    touchstart: function(e) {
+    touchstart: function(e, edata, tmplElem) {
       //event.mouseover.call(this, e);
       event.mousedown.call(this, e);
     },
     /*
-    touchend: function(e) {
+    touchend: function(e, edata, tmplElem) {
       var self = this;
       setTimeout(function() {
         event.mouseout.call(self, e);
       }, 1500);
     },
     */
-    touchmove: function(e) {
+    touchmove: function(e, edata, tmplElem) {
       event.drag.call(this, e);
     }
   });
@@ -443,13 +466,14 @@
 
 <template id="brui-WindowMaximizar">
   ##
+  var clickCallback = data.clickCallback;
   var isFull = false;
   var beforePosition = {};
   
   var icon = null;
   
   var event = Object.assign({}, BridgeUi.WindowEvents, {
-    click: function(e) {
+    click: function(e, edata, tmplElem) {
       var target = this.parentElement;
       var classList = e.currentTarget.classList;
       
@@ -490,6 +514,7 @@
         classList.remove('minIcon');
         classList.add('maxIcon');
       }
+      if (clickCallback) clickCallback(e, edata, tmplElem);
     }
   });
   ##
@@ -502,6 +527,7 @@
 
 <template id="brui-WindowMinimizar">
   ##
+  var clickCallback = data.clickCallback;
   var isMin = false;
   var beforeHeight = null;
   var beforeOverflow = null;
@@ -519,7 +545,7 @@
   }}));
   
   var event = Object.assign({}, BridgeUi.WindowEvents, {
-    click: function(e) {
+    click: function(e, edata, tmplElem) {
       target = this.parentElement;
       //var content = target.querySelector('.brui-Window-Content');
       //var icons = target.querySelectorAll('.brui-WindowIcon');
@@ -529,6 +555,8 @@
       target.style.display = 'none';
       target.parentElement.appendChild(runIconElement.element || runIconElement);
       isMin = true;
+      
+      if (clickCallback) clickCallback(e, edata, tmplElem);
 
       /*
       if (!isMin) {
@@ -613,7 +641,7 @@
 
 <template id="brui-Splitter">
   ##
-  var dragEvent = data.dragEvent;
+  var dragCallback = data.dragCallback;
   var direction = data.direction != 'vertical' ? 'horizontal' : 'vertical';
   var widthMargin = data.widthMargin || BridgeUi.splitterSize + 'px';
   var minSize = data.minSize || 5;
@@ -643,11 +671,14 @@
       var result = (isPrevStartOver ? false : isPrevOver) || (isStartOver ? false : isOver);
       return result;
     } else {
-      var isPrevOver = prevTarget.offsetHeight > prevTarget.scrollHeight;
+      //var isPrevOver = prevTarget.offsetHeight > prevTarget.scrollHeight;
+      var isPrevOver = prevTarget.scrollHeight > prevTarget.clientHeight;
       var isPrevStartOver = startPosition.y <= event.pageY;
-      var isOver = nextTarget.offsetHeight > nextTarget.scrollHeight;
+      //var isOver = nextTarget.offsetHeight > nextTarget.scrollHeight;
+      var isOver = nextTarget.scrollHeight > nextTarget.clientHeight;
       var isStartOver = startPosition.y >= event.pageY;
       var result = (isPrevStartOver ? false : isPrevOver) || (isStartOver ? false : isOver);
+//console.log(isPrevOver, isPrevStartOver, isOver, result);
       return result;
     }
   }
@@ -739,7 +770,7 @@ console.log('mousedown');
       skipRendering = 0;
       e = e.touches ? e.touches[0] : e;
 //console.log('drag', isMove, e.screenX);
-      if (!isMove || e.pageX == 0 || isOverflowed(direction, targetNext, targetPrev, e)
+      if (!isMove || e.pageX == 0 //|| isOverflowed(direction, targetNext, targetPrev, e)
       ) return;
 //console.log('drag1', isMove, e.pageX, e.x, e.clientX, e.screenX, e.layerX, e.offsetX );
 //console.log('drag2', isMove, e.pageY, e.y, e.clientY, e.screenY, e.layerY, e.offsetY );
@@ -763,7 +794,7 @@ console.log('mousedown');
         targetPrev.style.height = 'calc(' + afterTargePrevHeight + '% - ' + widthMargin + ')';
         targetNext.style.height = 'calc(' + afterTargeHeight + '% - ' + widthMargin + ')';
       }
-      if (dragEvent) dragEvent(e, edata, tmplElem);
+      if (dragCallback) dragCallback(e, edata, tmplElem);
     },
     touchstart: function(e) {
 //console.log('touchstart');
@@ -780,10 +811,10 @@ console.log('mousedown');
       }, 1500);
     },
     */
-    touchmove: function(e) {
+    touchmove: function(e, edata, tmplElem) {
       //e.preventDefault();
-//console.log('touchstart');
-      event.drag.call(this, e);
+//console.log('touchmove');
+      event.drag.call(this, e, edata, tmplElem);
     }
   });
   
@@ -907,7 +938,7 @@ console.log('mousedown');
 <template id="brui-Splitter-Layout">
   <div class="brui-Splitter-Layout ##=data.class##" style="##=data.style##">
   ##
-  var dragEvent = data.dragEvent;
+  var dragCallback = data.dragCallback;
   var style = data.style;
   var direction = tmplScope.direction = data.direction != 'vertical' && data.direction != 'v' ? 'horizontal' : 'vertical';
   var items = data.items || [];
@@ -961,7 +992,7 @@ console.log('mousedown');
       }
     }
 
-    var splitter = index == 0 && !data.splitter && !contentItem.splitter ? null : tmpl.brui.Splitter(Object.assign({direction: data.direction, dragEvent: dragEvent}, contentItem.splitter, data.splitter));
+    var splitter = index == 0 && !data.splitter && !contentItem.splitter ? null : tmpl.brui.Splitter(Object.assign({direction: data.direction, dragCallback: dragCallback}, contentItem.splitter, data.splitter));
     if (splitter) splitters.push(splitter);
     var style = BridgeUi.toStyle(layoutStyle) + " ";
   ##

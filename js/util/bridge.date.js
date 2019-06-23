@@ -37,4 +37,40 @@
             return dateStr.format(format || 'yyyy-MM-dd HH:mm:ss', new Date());
         }
     }
+
+    Bridge.date.addSeconds = function(date, num) {
+        return new Date(date.getTime() + (1000 * num));
+    }
+
+    Bridge.date.addMinutes = function(date, num) {
+        return new Date(date.getTime() + (60000 * num));
+    }
+
+    Bridge.date.addHours = function(date, num) {
+        return new Date(date.getTime() + (3600000 * num));
+    }
+
+    Bridge.date.addDates = function(date, num) {
+        return new Date(date.getTime() + (86400000 * num));
+    }
+
+    Bridge.date.addMonths = function(date, num) {
+        var value = new Date(date.getTime());
+        var mo = date.getMonth();
+        var yr = date.getFullYear();
+    
+        mo = (mo + num) % 12;
+        if (0 > mo) {
+            yr += (date.getMonth() + num - mo - 12) / 12;
+            mo += 12;
+        }
+        else
+            yr += ((date.getMonth() + num - mo) / 12);
+    
+        value.setDate(1);
+        value.setMonth(mo);
+        value.setFullYear(yr);
+        return value;
+    }
+
 }).call(this);

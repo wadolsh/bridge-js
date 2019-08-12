@@ -99,9 +99,9 @@
       ##} else if (data.type == 'checkbox' || data.type == 'radio') {
       var options = data.options;
       options.forEach(function(option) {##
-      <div class="##=data.type + (data.inline ? '-inline' : null)## ##=data.optionClass##">
+      <div class="##=data.type + (data.inline ? '-inline' : '')## ##=data.optionClass##">
         <label>
-          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value || option)##" ##=BS.prop(data.prop)## ##=data.value == (option.value || option) ? 'checked' : null## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label == undefined ? option : option.label)##
+          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value || option)##" ##=BS.prop(data.prop)## ##=data.value == (option.value || option) || option.checked ? 'checked' : null## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label == undefined ? option : option.label)##
         </label>
       </div>
       ##});
@@ -156,7 +156,7 @@
     }
   }
   ##
-  <!---<##=tag## ##=data.href ? 'href="' + data.href + '"' : null## ##=type ? 'type="' + type + '"' : null## class="btn btn-##=data.styleClass || 'default'## ##=data.class## ##=toggle ? 'active' : ''##" ##=data.style ? 'style="' + data.style + '"' : null##  ##=data.title ? 'title="' + data.title + '"' : null## ##=data.disabled ? 'disabled' : null## data-bridge-event="##:event##">--->
+  <!---<##=tag## ##=data.href ? 'href="' + data.href + '"' : null## ##=type ? 'type="' + type + '"' : ''## class="btn btn-##=data.styleClass || 'default'## ##=data.class## ##=toggle ? 'active' : ''##" ##=data.style ? 'style="' + data.style + '"' : null##  ##=data.title ? 'title="' + data.title + '"' : null## ##=data.disabled ? 'disabled' : null## data-bridge-event="##:event##">--->
     ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon##" aria-hidden="true"></span>##}##
     ##%data.label##
     ##if(data.ricon){##<span class="glyphicon glyphicon-##=data.ricon##" aria-hidden="true"></span>##}##
@@ -356,6 +356,7 @@
 </template>
 <template id="bs-Table">
   ##
+  var trNonblocking = data.trNonblocking == undefined ? 0 : data.trNonblocking;
   var thead = data.thead ? Array.isArray(data.thead[0]) ? data.thead : [data.thead] : null;
   if (data.items) data.tbody = data.items;
   ##
@@ -374,7 +375,7 @@
     if (data.tbody && data.tbody.length > 0) {##
     &lt;tbody&gt;
       ##data.tbody.forEach(function(tr, index) {##
-        ##%tmpl.bs.TableTr({tr: tr, trEvent: data.trEvent, tdEvent: data.tdEvent, parentData: data, trIndex: index})::0##
+        ##%tmpl.bs.TableTr({tr: tr, trEvent: data.trEvent, tdEvent: data.tdEvent, parentData: data, trIndex: index})::trNonblocking##
       ##});##
     </tbody>
     ##}##

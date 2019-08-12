@@ -956,7 +956,7 @@
     */
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-        if (xmlhttp.status == 200) {
+        if (xmlhttp.status == 200 || xmlhttp.status === 0) {
           callback(xmlhttp.responseText, xmlhttp.status, xmlhttp);
         } else if(xmlhttp.status == 400) {
           alert('There was an error 400');
@@ -1004,10 +1004,10 @@
     });
   }
 
-  var count = 0;
+  var elementCount = 0;
   tmplTool.genId = function(tmplId) {
-    count++;
-    return tmplId + count;
+    elementCount++;
+    return tmplId + elementCount;
   }
 
   var tag = tmplTool.tag = function(tagName, attrs) {

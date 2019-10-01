@@ -70,7 +70,7 @@
   ##
   &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')## ##=data.class##" ##=MDL.prop(prop)## data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
     ##if (icon) {##<i class="material-icons">##=icon##</i>##}##
-    <span>##%label##</span>
+    ##if (label) {##<span>##%label##</span>##}##
   &lt;/##=type##&gt;
   ##
   tmplScope.afterAppendTo = function() {
@@ -635,8 +635,6 @@
   ##
 </template>
 
-
-
 <template id="mdl-Toggle">
   ##
   var scope = data.scope;
@@ -650,6 +648,7 @@
   var checked = data.checked;
   var _id = data.id || tmplScope._id;
   var event = data.event;
+  var prop = data.prop;
   
   scope.input = tmplScope.input = function() {
     return input;
@@ -661,7 +660,7 @@
     return input.checked;
   }
   ##
-  <label class="mdl-##=type## mdl-js-##=type## mdl-js-ripple-effect ##=data.class##" for="##=_id##">
+  &lt;label class="mdl-##=type## mdl-js-##=type## mdl-js-ripple-effect ##=data.class##" ##=MDL.prop(prop)## for="##=_id##"&gt;
     &lt;input type="##=inputType##" id="##=_id##" ##=name ? 'name="' + name + '"' : ''## class="##=inputClass##" value="##=value##" ##=checked ? 'checked' : ''## data-bridge-var="##:input##" data-bridge-event="##:event##"&gt;
     ##if (icon) {##<i class="mdl-icon-toggle__label material-icons">##=icon##</i>##}##
     ##if (label) {##<span class="mdl-##=type##__label">##=label##</span>##}##
@@ -672,7 +671,6 @@
   }
   ##
 </template>
-
 
 <template id="mdl-Checkbox">
   ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'checkbox', scope: tmplScope}))##
@@ -689,7 +687,6 @@
 <template id="mdl-Switch">
   ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'switch', inputType: data.inputType || 'checkbox', scope: tmplScope}))##
 </template>
-
 
 <template id="mdl-Table">
   ##

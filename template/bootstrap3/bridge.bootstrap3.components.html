@@ -156,7 +156,7 @@
     }
   }
   ##
-  <!---<##=tag## ##=data.href ? 'href="' + data.href + '"' : null## ##=type ? 'type="' + type + '"' : ''## class="btn btn-##=data.styleClass || 'default'## ##=data.class## ##=toggle ? 'active' : ''##" ##=data.style ? 'style="' + data.style + '"' : null##  ##=data.title ? 'title="' + data.title + '"' : null## ##=data.disabled ? 'disabled' : null## data-bridge-event="##:event##">--->
+  <!---<##=tag## ##=data.href ? 'href="' + data.href + '"' : null## ##=type ? 'type="' + type + '"' : ''## class="btn btn-##=data.styleClass || 'default'## ##=data.class## ##=toggle ? 'active' : ''##" ##=data.style ? 'style="' + data.style + '"' : null##  ##=data.title ? 'title="' + data.title + '"' : null## ##=data.disabled ? 'disabled' : null## ##=BS.prop(data.prop)## data-bridge-event="##:event##">--->
     ##if(data.icon){##<span class="glyphicon glyphicon-##=data.icon##" aria-hidden="true"></span>##}##
     ##%data.label##
     ##if(data.ricon){##<span class="glyphicon glyphicon-##=data.ricon##" aria-hidden="true"></span>##}##

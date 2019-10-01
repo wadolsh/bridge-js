@@ -741,6 +741,7 @@
       
       tmplScope.release = function() {
         var props = Object.getOwnPropertyNames(tmplScope);
+        props.splice(props.indexOf(statusKeyName), 1);
         for (var i = 0; i < props.length; i++) {
           delete tmplScope[props[i]];
         }

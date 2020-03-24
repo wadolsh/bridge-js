@@ -14,7 +14,7 @@
       var args = (arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments));
       var propStrArray = [];
       args.forEach(function(props) {
-        if (!props) return; 
+        if (!props) return;
         if (typeof props === 'string') return propStrArray.push(props);
         Object.keys(props).forEach(function(key) {
           if (props[key]) propStrArray.push(key);
@@ -109,7 +109,7 @@
 
     var clickCallback = data.clickCallback;
     var pageSizeChangeEvent = data.pageSizeChangeEvent;
-    
+
     var endNum = Math.max(Math.ceil(totalCount / pageSize), 1);
 
     var items = new Array();
@@ -224,7 +224,7 @@
         for (var j=0,sizej=metaData.length; j < sizej; j++) {
           column = metaData[j];
         ##
-        &lt;td&gt;##var value = column.name == '$arrayData' ? selected : 
+        &lt;td&gt;##var value = column.name == '$arrayData' ? selected :
             column.value instanceof Function ? column.value(column, selected) : (selected[column.name] || column.value)
             if (value instanceof Element) {####%value####} else {####=value####}##&lt;/td&gt;
         ##}##
@@ -265,7 +265,7 @@
       <span class="ms-Table-cell">##=metaData[j].label##</span>
       ##}##
     </div>
-    
+
     ##for (var i=0,sizei=items.length; i < sizei; i++) { var selected = items[i];##
     <div class="ms-Table-row" data-bridge-event="##:(data.rowSelectEvent || checkboxEvent)::{sel: selected, data: data, self: this}##">
       ##if (data.rowCheck) {##<span class="ms-Table-cell ms-Table-rowCheck" data-bridge-event="##:checkboxEvent##"></span>##}##
@@ -275,7 +275,7 @@
         column = metaData[j];
       ##
       <span class="ms-Table-cell">
-        ##var value = column.name == '$arrayData' ? selected : 
+        ##var value = column.name == '$arrayData' ? selected :
           column.value instanceof Function ? column.value(column, selected) : (selected[column.name] || column.value)
           if (value instanceof Element) {##
             ##%value##
@@ -305,7 +305,7 @@
       <div class="ms-Dialog-inner">
         <div class="ms-Dialog-content" data-bridge-event="##:data.contentEvent##">
           ##if (data.subText) {##<p class="ms-Dialog-subText">##=data.subText##</p>##}##
-          ##if (typeof data.content === 'string') {## 
+          ##if (typeof data.content === 'string') {##
             ##=data.content##
           ##} else {##
             ##%data.content##
@@ -400,7 +400,7 @@
                       options: selected.options,
                       data: formData});
     });
-    
+
   } else {
     fieldArray = fieldData;
   }
@@ -571,6 +571,14 @@
 </template>
 
 <template id="ms-NavBar">
+  <style id="style-ms-NavBar">
+    .ms-NavBar .ms-NavBar-fixedMenu {
+      float: left;
+      height: 40px;
+      line-height: 40px;
+      margin-right: 10px;
+    }
+  </style>
   ##
   var items = data.items || [];
   ##
@@ -638,10 +646,7 @@
 
 
 <template id="ms-Persona">
-  <div class="ms-Persona ms-Persona--##=data.typeClass## 
-                          ##=data.presence ? 'ms-Persona--' + data.presence : ''## 
-                          ##=data.square ? 'ms-Persona--square' : ''## 
-                          ##=data.class##"
+  <div class="ms-Persona ms-Persona--##=data.typeClass## ##=data.presence ? 'ms-Persona--' + data.presence : ''## ##=data.square ? 'ms-Persona--square' : ''## ##=data.class##"
                           style="##=data.style##"
                           data-bridge-event="##:data.event##">
     <div class="ms-Persona-imageArea">
@@ -675,7 +680,7 @@
     */
     parent.parentElement.removeChild(parent);
   }
-  
+
   var selectElementEvent = function(e, item, tmplElem) {
     item = Object.assign({}, item);
     item.removeElementEvent = removeElementEvent;
@@ -690,7 +695,7 @@
     }
     if (item.selectElementEventCallBack) item.selectElementEventCallBack.call(this, e, item, tmplElem);
   }
-  
+
   var PeoplePickerSelectedSearchBoxSelection = bridge.tmpl('ms-PeoplePicker-SearchBoxSelection');
   var PeoplePickerSelectedPeople = bridge.tmpl('ms-PeoplePicker-SelectedPeople');
   ##
@@ -832,7 +837,7 @@
         if (active) active.classList.remove('is-active');
         active = tmplElem.querySelector('.ms-PersonaCard-actionDetails.is-active')
         if (active) active.classList.remove('is-active');
-        
+
         tmplElem.querySelector('.ms-PersonaCard-action.action-' + idx).classList.add('is-active');
         tmplElem.querySelector('.ms-PersonaCard-actionDetails.detail-' + idx).classList.add('is-active');
         tmplElem.querySelector('.ms-PersonaCard-details-parent').style.setProperty('margin-left', ('-' + (idx * 100) + '%'), 'important');
@@ -956,7 +961,7 @@
     }
   }##">
     <div class="ms-Panel-main">
-      
+
       <div class="ms-Panel-commands">
         ##if (data.CommandBar) {##
           ##%bridge.tmpl('ms-CommandBar')(data.CommandBar)##
@@ -1002,7 +1007,7 @@
       var offsetSize;
       var fadeIncrement = 0;
       var parentSize;
-  
+
       /**
        * @function start - starts or restarts the animation sequence
        * @memberOf fabric.Spinner
@@ -1015,7 +1020,7 @@
               }
           }, animationSpeed);
       }
-  
+
       /**
        * @function stop - stops the animation sequence
        * @memberOf fabric.Spinner
@@ -1023,9 +1028,9 @@
       function stop() {
           clearInterval(interval);
       }
-  
+
       //private methods
-  
+
       function _init() {
           //for backwards compatibility
           if (_target.className.indexOf("ms-Spinner") === -1) {
@@ -1035,7 +1040,7 @@
           } else {
               spinner = _target;
           }
-  
+
           offsetSize = eightSize;
           numCircles = 8;
           parentSize = spinner.className.indexOf("large") > -1 ? 28 : 20;
@@ -1043,54 +1048,54 @@
           _initializeOpacities();
           start();
       }
-  
+
       function _initializeOpacities() {
           var i = 0;
           var j = 1;
           var opacity;
           fadeIncrement = 1 / numCircles;
-  
+
           for (i; i < numCircles; i++) {
               var circleObject = circleObjects[i];
               opacity = (fadeIncrement * j++);
               _setOpacity(circleObject.element, opacity);
           }
       }
-  
+
       function _fade(circleObject) {
           var opacity = _getOpacity(circleObject.element) - fadeIncrement;
-  
+
           if (opacity <= 0) {
               opacity = 1;
           }
-  
+
           _setOpacity(circleObject.element, opacity);
       }
-  
+
       function _getOpacity(element) {
           return parseFloat(window.getComputedStyle(element).getPropertyValue("opacity"));
       }
-  
+
       function _setOpacity(element, opacity) {
           element.style.opacity = opacity;
       }
-  
+
       function _createCircle() {
           var circle = document.createElement('div');
           circle.className = "ms-Spinner-circle";
           circle.style.width = circle.style.height = parentSize * offsetSize + "px";
           return circle;
       }
-  
+
       function _createCirclesAndArrange() {
-  
+
           var angle = 0;
           var offset = parentSize * offsetSize;
           var step = (2 * Math.PI) / numCircles;
           var i = numCircles;
           var circleObject;
           var radius = (parentSize - offset) * 0.5;
-  
+
           while (i--) {
               var circle = _createCircle();
               var x = Math.round(parentSize * 0.5 + radius * Math.cos(angle) - circle.clientWidth * 0.5) - offset * 0.5;
@@ -1103,9 +1108,9 @@
               circleObjects.push(circleObject);
           }
       }
-  
+
       _init();
-  
+
       return {
           start:start,
           stop:stop
@@ -1136,7 +1141,7 @@
       <div class="ms-Callout-inner">
         <div class="ms-Callout-content">
           <p class="ms-Callout-subText">
-          ##if (typeof data.content === 'string') {## 
+          ##if (typeof data.content === 'string') {##
             ##=data.content##
           ##} else {##
             ##%data.content##
@@ -1172,67 +1177,67 @@
 
 
 <template id="ms-DatePicker">
-  
+
   ##
   (function ($) {
 
     /**
      * DatePicker Plugin
      */
-  
+
     $.fn.DatePicker = function (options) {
-  
+
       return this.each(function () {
-  
+
         /** Set up variables and run the Pickadate plugin. */
         var $datePicker = $(this);
         var $dateField = $datePicker.find('.ms-TextField-field').pickadate($.extend({
           // Strings and translations.
           weekdaysShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-  
+
           // Don't render the buttons
           today: '',
           clear: '',
           close: '',
-  
+
           // Events
           onStart: function() {
             initCustomView($datePicker);
           },
-  
+
           // Classes
           klass: {
-  
+
             // The element states
             input: 'ms-DatePicker-input',
             active: 'ms-DatePicker-input--active',
-  
+
             // The root picker and states
             picker: 'ms-DatePicker-picker',
             opened: 'ms-DatePicker-picker--opened',
             focused: 'ms-DatePicker-picker--focused',
-  
+
             // The picker holder
             holder: 'ms-DatePicker-holder',
-  
+
             // The picker frame, wrapper, and box
             frame: 'ms-DatePicker-frame',
             wrap: 'ms-DatePicker-wrap',
             box: 'ms-DatePicker-dayPicker',
-  
+
             // The picker header
             header: 'ms-DatePicker-header',
-  
+
             // Month & year labels
             month: 'ms-DatePicker-month',
             year: 'ms-DatePicker-year',
-  
+
             // Table of dates
             table: 'ms-DatePicker-table',
-  
+
             // Weekday labels
             weekdays: 'ms-DatePicker-weekday',
-  
+
             // Day states
             day: 'ms-DatePicker-day',
             disabled: 'ms-DatePicker-day--disabled',
@@ -1241,11 +1246,11 @@
             now: 'ms-DatePicker-day--today',
             infocus: 'ms-DatePicker-day--infocus',
             outfocus: 'ms-DatePicker-day--outfocus',
-  
+
           }
         },options||{}));
         var $picker = $dateField.pickadate('picker');
-  
+
         /** Respond to built-in picker events. */
         $picker.on({
           render: function() {
@@ -1255,16 +1260,16 @@
             scrollUp($datePicker);
           }
         });
-  
+
       });
     };
-  
+
     /**
      * After the Pickadate plugin starts, this function
      * adds additional controls to the picker view.
      */
     function initCustomView($datePicker) {
-  
+
       /** Get some variables ready. */
       var $monthControls = $datePicker.find('.ms-DatePicker-monthComponents');
       var $goToday = $datePicker.find('.ms-DatePicker-goToday');
@@ -1272,128 +1277,128 @@
       var $yearPicker = $datePicker.find('.ms-DatePicker-yearPicker');
       var $pickerWrapper = $datePicker.find('.ms-DatePicker-wrap');
       var $picker = $datePicker.find('.ms-TextField-field').pickadate('picker');
-  
+
       /** Move the month picker into position. */
       $monthControls.appendTo($pickerWrapper);
       $goToday.appendTo($pickerWrapper);
       $monthPicker.appendTo($pickerWrapper);
       $yearPicker.appendTo($pickerWrapper);
-  
+
       /** Update the custom view. */
       updateCustomView($datePicker);
-  
+
       /** Move back one month. */
       $monthControls.on('click', '.js-prevMonth', function(event) {
         event.preventDefault();
         var newMonth = $picker.get('highlight').month - 1;
         changeHighlightedDate($picker, null, newMonth, null);
       });
-  
+
       /** Move ahead one month. */
       $monthControls.on('click', '.js-nextMonth', function(event) {
         event.preventDefault();
         var newMonth = $picker.get('highlight').month + 1;
         changeHighlightedDate($picker, null, newMonth, null);
       });
-  
+
       /** Move back one year. */
       $monthPicker.on('click', '.js-prevYear', function(event) {
         event.preventDefault();
         var newYear = $picker.get('highlight').year - 1;
         changeHighlightedDate($picker, newYear, null, null);
       });
-  
+
       /** Move ahead one year. */
       $monthPicker.on('click', '.js-nextYear', function(event) {
         event.preventDefault();
         var newYear = $picker.get('highlight').year + 1;
         changeHighlightedDate($picker, newYear, null, null);
       });
-  
+
       /** Move back one decade. */
       $yearPicker.on('click', '.js-prevDecade', function(event) {
         event.preventDefault();
         var newYear = $picker.get('highlight').year - 10;
         changeHighlightedDate($picker, newYear, null, null);
       });
-  
+
       /** Move ahead one decade. */
       $yearPicker.on('click', '.js-nextDecade', function(event) {
         event.preventDefault();
         var newYear = $picker.get('highlight').year + 10;
         changeHighlightedDate($picker, newYear, null, null);
       });
-  
+
       /** Go to the current date, shown in the day picking view. */
       $goToday.click(function(event) {
         event.preventDefault();
-  
+
         /** Select the current date, while keeping the picker open. */
         var now = new Date();
         $picker.set('select', [now.getFullYear(), now.getMonth(), now.getDate()]);
-  
+
         /** Switch to the default (calendar) view. */
         $datePicker.removeClass('is-pickingMonths').removeClass('is-pickingYears');
-  
+
       });
-  
+
       /** Change the highlighted month. */
       $monthPicker.on('click', '.js-changeDate', function(event) {
         event.preventDefault();
-  
+
         /** Get the requested date from the data attributes. */
         var newYear = $(this).attr('data-year');
         var newMonth = $(this).attr('data-month');
         var newDay = $(this).attr('data-day');
-  
+
         /** Update the date. */
         changeHighlightedDate($picker, newYear, newMonth, newDay);
-  
+
         /** If we've been in the "picking months" state on mobile, remove that state so we show the calendar again. */
         if ($datePicker.hasClass('is-pickingMonths')) {
           $datePicker.removeClass('is-pickingMonths');
         }
       });
-  
+
       /** Change the highlighted year. */
       $yearPicker.on('click', '.js-changeDate', function(event) {
         event.preventDefault();
-  
+
         /** Get the requested date from the data attributes. */
         var newYear = $(this).attr('data-year');
         var newMonth = $(this).attr('data-month');
         var newDay = $(this).attr('data-day');
-  
+
         /** Update the date. */
         changeHighlightedDate($picker, newYear, newMonth, newDay);
-  
+
         /** If we've been in the "picking years" state on mobile, remove that state so we show the calendar again. */
         if ($datePicker.hasClass('is-pickingYears')) {
           $datePicker.removeClass('is-pickingYears');
         }
       });
-  
+
       /** Switch to the default state. */
       $monthPicker.on('click', '.js-showDayPicker', function() {
         $datePicker.removeClass('is-pickingMonths');
         $datePicker.removeClass('is-pickingYears');
       });
-  
+
       /** Switch to the is-pickingMonths state. */
       $monthControls.on('click', '.js-showMonthPicker', function() {
         $datePicker.toggleClass('is-pickingMonths');
       });
-  
+
       /** Switch to the is-pickingYears state. */
       $monthPicker.on('click', '.js-showYearPicker', function() {
         $datePicker.toggleClass('is-pickingYears');
       });
-  
+
     }
-  
+
     /** Change the highlighted date. */
     function changeHighlightedDate($picker, newYear, newMonth, newDay) {
-  
+
       /** All letiables are optional. If not provided, default to the current value. */
       if (typeof newYear === "" || newYear === null) {
         newYear = $picker.get("highlight").year;
@@ -1404,34 +1409,34 @@
       if (typeof newDay === "" || newDay === null) {
         newDay = $picker.get("highlight").date;
       }
-  
+
       /** Update it. */
       $picker.set('highlight', [newYear, newMonth, newDay]);
-  
+
     }
-  
-  
+
+
     /** Whenever the picker renders, do our own rendering on the custom controls. */
     function updateCustomView($datePicker) {
-  
+
       /** Get some variables ready. */
       var $monthPicker = $datePicker.find('.ms-DatePicker-monthPicker');
       var $yearPicker = $datePicker.find('.ms-DatePicker-yearPicker');
       var $picker = $datePicker.find('.ms-TextField-field').pickadate('picker');
-  
+
       /** Set the correct year. */
       $monthPicker.find('.ms-DatePicker-currentYear').text($picker.get('view').year);
-  
+
       /** Highlight the current month. */
       $monthPicker.find('.ms-DatePicker-monthOption').removeClass('is-highlighted');
       $monthPicker.find('.ms-DatePicker-monthOption[data-month="' + $picker.get('highlight').month + '"]').addClass('is-highlighted');
-  
+
       /** Generate the grid of years for the year picker view. */
-  
+
         // Start by removing any existing generated output. */
       $yearPicker.find('.ms-DatePicker-currentDecade').remove();
       $yearPicker.find('.ms-DatePicker-optionGrid').remove();
-  
+
       // Generate the output by going through the years.
       var startingYear = $picker.get('highlight').year - 11;
       var decadeText = startingYear + " - " + (startingYear + 11);
@@ -1441,26 +1446,26 @@
         output += '<span class="ms-DatePicker-yearOption js-changeDate" data-year="' + year + '">' + year +'</span>';
       }
       output += '</div>';
-  
+
       // Output the title and grid of years generated above.
       $yearPicker.append(output);
-  
+
       /** Highlight the current year. */
       $yearPicker.find('.ms-DatePicker-yearOption').removeClass('is-highlighted');
       $yearPicker.find('.ms-DatePicker-yearOption[data-year="' + $picker.get('highlight').year + '"]').addClass('is-highlighted');
     }
-    
+
     /** Scroll the page up so that the field the date picker is attached to is at the top. */
     function scrollUp($datePicker) {
       $('html, body').animate({
         scrollTop: $datePicker.offset().top
       }, 367);
     }
-  
+
   })(jQuery);
   ##
-  
-  
+
+
   <div class="ms-DatePicker">
     <div class="ms-TextField"><label class="ms-Label">Start date</label> <i class="ms-DatePicker-event ms-Icon ms-Icon--event"></i> <input class="ms-TextField-field" type="text" placeholder="Select a date…"></div>
     <div class="ms-DatePicker-monthComponents"><span class="ms-DatePicker-nextMonth js-nextMonth"><i class="ms-Icon ms-Icon--chevronRight"></i></span> <span class="ms-DatePicker-prevMonth js-prevMonth"><i class="ms-Icon ms-Icon--chevronLeft"></i></span>
@@ -1482,15 +1487,6 @@
     </div>
   </div>
 </template>
-
-<style>
-  .ms-NavBar-fixedMenu {
-    float: left;
-    height: 40px;
-    line-height: 40px;
-    margin-right: 10px;
-  }
-</style>
 
 <script>
 var isEdge = function() {

@@ -80,17 +80,6 @@
   // interpolation, evaluation or escaping regex, we need one that is
   // guaranteed not to match.
   var noMatch = /(.)^/;
-  /*
-  var escapes = {
-    "'":    "'",
-    '\\':   '\\',
-    '\r':   'r',
-    '\n':   'n',
-    '\t':   't',
-    '\u2028': 'u2028',
-    '\u2029': 'u2029'
-  };
-  */
   var escapes = {
     "'":    "\\'",
     '\\':   '\\\\',
@@ -103,11 +92,7 @@
     '<': '<',
     '>': '>'
   };
-  //var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
-  //var escaper = /\\|'|\r|\n|\t|\u2028|\u2029|\>[ \n]*\</g;
-  //var escaper = /\>( |\n)+\<|\>( |\n)+|( |\n)+\<|^( |\n)+$|\\|'|\r|\n|\t|\u2028|\u2029/g;
   var escaper = /\>( |\n)+\<|\>( |\n)+|( |\n)+\<|\\|'|\r|\n|\t|\u2028|\u2029/g;
-  //var escaper = /\>[ \n]+\<|\>[ \n]+|[ \n]+\<|\\|'|\r|\n|\t|\u2028|\u2029/g;
 
   var firstElementChild = function(ele) {
     if (ele.firstElementChild) return ele.firstElementChild;
@@ -169,7 +154,6 @@
     interpolate : {
       pattern: /##=([\s\S]+?)##/g,
       exec: function(interpolate) {
-        //interpolate = ('String(' + interpolate + ')[0] == \'@\' ? function() {return String(' + interpolate + ').slice(1);}() : interpolate');
         interpolate = 'typeof (' + interpolate + ')==\'function\' ? (' + interpolate + ')() : (' + interpolate + ')';
         return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
       }
@@ -211,7 +195,6 @@
       exec: function(elementLoad) {
         var source = "';\nvar eventId = (lazyScope.elementLoadArray.length);\n__p+='data-bridge-load=\"'+eventId+'\"';\n";
         var elementLoadSplitArray = elementLoad.split('::');
-        //source += "lazyScope.elementLoadArray[eventId] = " + elementLoad + ";\n__p+='";
         source += "lazyScope.elementLoadArray[eventId] = {loadFunc: " + elementLoadSplitArray[0] + ", selectedData: " + elementLoadSplitArray[1] + "};\n__p+='";
         return source;
       },
@@ -291,7 +274,6 @@
           if (eventType == 'load') {
             var parentElement = $targetElement || $childTarget.parentElement;
             eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
-            //eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), tmplScope.element, tmplScope);
             return;
           } else if (eventType == 'var') {
             tmplScope[eventFunc[eventType]] = $elementTrigger;
@@ -304,7 +286,6 @@
             var parentElement = $targetElement || $childTarget.parentElement;
             event.stopPropagation();
             eventFunc[eventType].call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
-            //eventFunc[eventType].call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), tmplScope.element, tmplScope);
           });
 
           if (triggerKey) {
@@ -341,7 +322,7 @@
                   interpolate = new Function('return ' + interpolate.slice(1) + ';')();
                 }
                 */
-                docFragment.appendChild(self.element.stringToElement(childElement));   
+                docFragment.appendChild(self.element.stringToElement(childElement));
               } else if (typeof childElement === 'number') {
                 docFragment.appendChild(self.element.stringToElement(childElement));
               } else if (typeof childElement === 'function') {
@@ -349,7 +330,6 @@
               } else {
                 docFragment.appendChild(childElement);
               }
-              //tmplScope.childScope.push(child.tmplScope || child);
               if (child.beforeAppendTo) {
                 child.parent = child.parentNode;
                 child.parentScope = tmplScope;
@@ -364,12 +344,6 @@
               });
             });
           } else if (typeof childTarget === 'string') {
-            /*
-            var interpolate = childTarget;
-            if (interpolate[0] == '@') {
-              interpolate = new Function('return ' + interpolate.slice(1) + ';')();
-            }
-            */
             $tmplElement.parentNode.replaceChild(self.element.stringToElement(childTarget), $tmplElement);
           } else if (typeof childTarget === 'number') {
             $tmplElement.parentNode.replaceChild(self.element.stringToElement(childTarget), $tmplElement);
@@ -389,7 +363,6 @@
               if (childTarget.afterAppendTo) setTimeout(function() {
                 childTarget.afterAppendTo();
               });
-              //tmplScope.childScope.push(childElement.tmplScope);
               if (childTarget.tmplId) {
                 if (node1) {
                   childTarget.this = node1.parentNode;
@@ -520,7 +493,6 @@
     });
     return {
       settings: settings,
-      //pattern: new RegExp(patternArray.join('|') + '|$', 'g'),
       pattern: new RegExp(patternArray.join('|'), 'g'),
       exec: execArray,
       lazyExecKeys: Object.keys(lazyScope),
@@ -573,17 +545,9 @@
       settings = Object.assign({}, Bridge.templateSettings, tmplSettings);
       matcher = matcherFunc(settings);
     }
-    //templateText = templateText.replace(/(\/\*[^*]*\*\/)|(\/\/[^*]*|(?<=\>)[ \n]+|[ \n]+(?=\<)|^[ \n]+|[ ]*[\n]+[ ]*)/g, '');
-    //templateText = templateText.replace(/(\/\*[\s\S]*\*\/)|(\/\/[^*]*|(?<=\>)[ \n]+|[ \n]+(?=\<)|^[ \n]+|[ ]*[\n]+[ ]*)/g, '');
-    //templateText = templateText.replace(/([}\)])/g, '$1\n');
-
-    var source = "/* tmplId: " + tmplId +  " */\nvar __t,__p='';\n__p+='";
+    var source = "/* tmplId: " + tmplId +  " */\n//# sourceURL=http://tmpl//" + tmplId.split('-').join('//') + ".js\nvar __t,__p='';\n__p+='";
     source += templateParser(tmplId, templateText, matcher);
     source += "';\nreturn __p;";
-
-    //source = "var __t,__p='';\n" + //,__j=Array.prototype.join," +
-      //"print=function(){__p+=__j.call(arguments,'');};\n" +
-    //source + "return __p;\n";
     var render = null;
     try {
       render = new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', source);
@@ -610,7 +574,6 @@
       var statusKeyName = settings.statusKeyName;
       var lazyScope = JSON.parse(matcher.lazyScopeSeed);
       var tmplScope = Object.assign(tmplScope || {}, {
-      //var tmplScope = tmplScope || {
         tmplId: tmplId,
         //_id: tmplTool.genId(tmplId),
         //[statusKeyName]: {},
@@ -641,7 +604,6 @@
       if (!tmplScope._id) {
         tmplScope._id = tmplTool.genId(tmplId);
       }
-      //tmplScope.childScope = [];
       tmplScope[dataKeyName] = data;
       if (tmplScope[statusKeyName] == undefined) tmplScope[statusKeyName] = {};
       var hasParent = wrapperElement ? true : false;
@@ -653,7 +615,6 @@
       var html = null;
       try {
         html = !data ? '<template></template>' : render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope);
-        // html = !data ? '<!-- -->' : render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope);
       } catch(e) {
         var debugErrorLine = function(source) {
       	  console.log('Error: ', tmplId);
@@ -712,10 +673,15 @@
         }
       }
 
+      if (data && data.$props) {
+        for (var prop in data.$props) {
+          returnTarget[prop] = data.$props[prop];
+        }
+      }
+
       returnTarget.normalize();
       cleanNode(returnTarget);
       tmplScope.element = returnTarget;
-      //returnTarget.tmplScope = tmplScope;
       if (tmplTool.liveReloadSupport) tmplTool.liveReloadSupport(tmplScope);
 
       // style to shadow
@@ -738,7 +704,7 @@
       if (callback) {
         callback.call(wrapperElement, tmplScope);
       }
-      
+
       tmplScope.release = function() {
         var props = Object.getOwnPropertyNames(tmplScope);
         props.splice(props.indexOf(statusKeyName), 1);
@@ -747,7 +713,6 @@
         }
       }
 
-      //returnTarget.render = docFragment.render = tmplScope.render = function(fdata) {
       tmplScope.render = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
@@ -763,7 +728,6 @@
         if (tmplScope.wrapperElement) {
           var wrapperElement = tmplScope.wrapperElement;
           if (beforeRemove) beforeRemove();
-          //tmplScope = tmpl(fdata, tmplScope.wrapperElement, null, null, tmplScope);
           tmplScope.release();
           tmplScope = tmpl(fdata, wrapperElement, null, tmplScope);
           if (afterRemove) afterRemove();
@@ -785,7 +749,6 @@
         }
       };
 
-      //returnTarget.reflash = docFragment.reflash = tmplScope.reflash = function(fdata) {
       tmplScope.reflash = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
@@ -795,7 +758,6 @@
         if (beforeReflash) tmplScope.beforeReflash();
         var scope = tmplScope.render(Object.assign(data || {}, fdata));
         if (afterReflash) tmplScope.afterReflash();
-        // tmplScope = null;
         return scope;
       };
 
@@ -809,7 +771,6 @@
         tmpl: tmpl,
         source: escapeHtml.escape(tmpl.source),
         templateText: escapeHtml.escape(templateText),
-        //elements: new Array()
       };
       cachedTmpl.set(tmplId, tmplMeta);
       var tmplIdNames = tmplId.split('-');
@@ -876,7 +837,7 @@
       option = {};
     }
     option = Object.assign({loadScript: true, loadLink: true}, option);
-    
+
     var importDataParser = function(obj) {
       if (typeof obj === 'string') {
         return {url: obj, option: option};
@@ -905,7 +866,7 @@
         appendToHead(scripts);
       }
     }
-    
+
     if (Array.isArray(importData)) {
       var arraySize = importData.length;
       importData.forEach(function(data) {
@@ -951,7 +912,7 @@
       if (urlCacheStatus) {
         var lastModified = urlCacheStatus['Last-Modified'];
         var eTag = urlCacheStatus['ETag'];
-        
+
       }
     }
     */
@@ -969,6 +930,7 @@
 
     if (option) {
       xmlhttp.open(option.method || 'GET', url, true);
+      if (option.timeout) xmlhttp.timeout = option.timeout;
       if (option.headers) Object.keys(option.headers).forEach(function(key) {
         xmlhttp.setRequestHeader(key, option.headers[key]);
       });
@@ -1030,6 +992,10 @@
           + '  ##%data.content##'
           + '##}##');
 
-  addTmpl('br-Input', '&lt;input type="##=data.type##" value="##=data.value##" ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"/&gt;');
+  addTmpl('br-Input', '&lt;input name="##=data.name##" type="##=data.type##" value="##=data.value##" ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"/&gt;');
+  addTmpl('br-Select', '&lt;select name="##=data.name##" value="##=data.value##" ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"&gt;'
+          + '&lt;option class="empty" value=""&gt;##=data.placeholder##&lt;/option&gt;'
+          + '##%data.options.map(option => \'&lt;option value="\' + option.value + \'"\' + (data.value == option.value ? \'selected=""\' : \'\') + \'&gt;\' + option.label + \'&lt;/option&gt;\')##'
+          + '&lt;select/&gt;');
 
 }).call(this);

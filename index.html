@@ -35,7 +35,7 @@
       }
       document.head.appendChild(script);
     }
-    
+
     var lang = document.documentElement.lang;
     bridge.tmplTool.addTmplByUrl([
         'template/bridge.ui.components.html',
@@ -54,6 +54,11 @@
       */
     });
 
+    var getTypePresetHeader = {
+      text: {},
+      json: {'Content-Type': 'application/json'},
+      xml: {}
+    }
     var parser = {
       text: function(str) {
         return str;
@@ -85,6 +90,10 @@
       if (option) {
         xmlhttp.open(option.method || 'POST', url, true);
         xmlhttp.timeout = 60000;
+        var presetHeader = getTypePresetHeader[getType || 'text'];
+        Object.keys(presetHeader).forEach(function(key) {
+          xmlhttp.setRequestHeader(key, presetHeader[key]);
+        })
         if (option.headers) Object.keys(option.headers).forEach(function(key) {
           xmlhttp.setRequestHeader(key, option.headers[key]);
         });
@@ -96,13 +105,13 @@
       }
       if (sidebar) sidebar.classList.add('send');
     };
-    requestPost = function(url, body, callback) {
+    var requestPost = function(url, body, callback) {
       requestFunc(url, 'json', callback, {method: 'POST', body: JSON.stringify(body)});
     }
-    requestGetJson = function(url, callback) {
+    var requestGetJson = function(url, callback) {
       requestFunc(url, 'json', callback, {method: 'GET'});
     }
-    requestGetText = function(url, callback) {
+    var requestGetText = function(url, callback) {
       requestFunc(url, 'text', callback, {method: 'GET'});
     }
   </script>

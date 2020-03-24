@@ -1,5 +1,5 @@
 <body>
-<template id="FabricFunction" data-bridge-load-script="true">
+  <template id="FabricFunction" data-bridge-load-script="true">
   ##
   window.MDL = {
     ripple: false,
@@ -36,7 +36,7 @@
   }
   ##
 </template>
-<template id="mdl-Badge">
+  <template id="mdl-Badge">
   ##
   var tag = data.tag || 'div';
   var icon = data.icon;
@@ -55,7 +55,7 @@
   ##
 </template>
 
-<template id="mdl-Button">
+  <template id="mdl-Button">
   ##
   var idProp = data.id ? 'id="' + data.id + '"' : null;
   var href = data.href;
@@ -69,7 +69,7 @@
   var disabled = data.disabled;
   ##
   &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')## ##=data.class##" ##=MDL.prop(prop)## data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
-    ##if (icon) {##<i class="material-icons">##=icon##</i>##}##
+    ##if (icon) {##<i class="material-icons" data-bridge-var="##:iconVar##">##=icon##</i>##}##
     ##if (label) {##<span>##%label##</span>##}##
   &lt;/##=type##&gt;
   ##
@@ -79,7 +79,7 @@
   ##
 </template>
 
-<template id="mdl-Card">
+  <template id="mdl-Card">
   ##
   var shadow = data.shadow;
   var title = data.title;
@@ -127,7 +127,7 @@
   ##
 </template>
 
-<template id="mdl-Chip">
+  <template id="mdl-Chip">
   ##
   var type = data.type || 'span';
   var options = data.options;
@@ -149,13 +149,13 @@
   &lt;/##=type##&gt;
 </template>
 
-<template id="mdl-Dialog">
+  <template id="mdl-Dialog">
   ##
   var title = data.title;
   var content = data.content;
   var actions = data.actions || {};
   var close = data.close;
-  
+
   tmplScope.show = function() {
     tmplScope.element.show();
   }
@@ -201,17 +201,17 @@
   if (dialogPolyfill) dialogPolyfill.registerDialog(this);
   ##
 </template>
-  
-<template id="mdl-Layout">
+
+  <template id="mdl-Layout">
   ##
   var content = data.content;
   var header = data.header || {};
   var tabs = data.tabs;
-  var drawer = data.drawer || {};
+  var drawer = data.drawer;
   //var title = data.title;
   var options = data.options;
   //var items = data.items || [];
-  
+
   var ripple = data.ripple == undefined ? MDL.ripple : data.ripple;
   ##
   <!-- Always shows a header, even in smaller screens. -->
@@ -277,7 +277,7 @@
   ##
 </template>
 
-<template id="mdl-Navigation">
+  <template id="mdl-Navigation">
   ##
   var items = data.items || [];
   ##
@@ -292,7 +292,7 @@
   </nav>
 </template>
 
-<template id="mdl-Grid">
+  <template id="mdl-Grid">
   ##
   var gridOptions = data.gridOptions || [];
   var cellOptions = data.cellOptions || [];
@@ -306,7 +306,7 @@
   </div>
 </template>
 
-<template id="mdl-Tabs">
+  <template id="mdl-Tabs">
   ##
   var items = data.items || [];
   items = items.filter(Boolean);
@@ -332,7 +332,7 @@
   ##
 </template>
 
-<template id="mdl-Mega-Footer">
+  <template id="mdl-Mega-Footer">
   ##
   var top = data.top;
   var middle = data.middle;
@@ -416,7 +416,7 @@
   ##
 </template>
 
-<template id="mdl-Mini-Footer">
+  <template id="mdl-Mini-Footer">
   ##
   var self = data.self;
   var left = data.left;
@@ -442,11 +442,11 @@
   ##
 </template>
 
-<template id="mdl-Logo">
+  <template id="mdl-Logo">
   <div class="mdl-logo ##=data.class##">##%data.label##</div>
 </template>
 
-<template id="mdl-Footer-Link-List">
+  <template id="mdl-Footer-Link-List">
   ##
   var type = data.type;
   var items = data.items;
@@ -458,7 +458,7 @@
   </ul>
 </template>
 
-<template id="mdl-List">
+  <template id="mdl-List">
   ##
   var items = data.items || [];
   var itemStyles = ['', '', 'mdl-list__item--two-line', 'mdl-list__item--three-line'];
@@ -468,7 +468,7 @@
     ##items.forEach(function(item) {
         var lineCount = item.lineCount || data.lineCount;
     ##
-    <li class="mdl-list__item ##=itemStyles[lineCount] || ''##">
+    <li class="mdl-list__item ##=itemStyles[lineCount] || ''##" data-bridge-event="##:item.event::item##" style="##=item.event ? 'cursor: pointer;' : ''##">
       ##if (MDL.isElement(item)) {##
       ##%item##
       ##} else {##
@@ -496,11 +496,11 @@
       ##} else {##
       <span class="mdl-list__item-secondary-content">
         ##if (action.info) {##<span class="mdl-list__item-secondary-info">##%action.info##</span>##}##
-        <a class="mdl-list__item-secondary-action" href="##=action.href ? action.href : '#'##" data-bridge-event="##:action.event##"><i class="material-icons">##=action.icon##</i></a>
+        <a class="mdl-list__item-secondary-action ##=action.class##" href="##=action.href ? action.href : '#'##" data-bridge-event="##:action.event##"><i class="material-icons ##=action.iconClass##">##=action.icon##</i></a>
       </span>
       ##}##
       ##}##
-      
+
       ##}##
     </li>
     ##})##
@@ -512,12 +512,12 @@
   ##
 </template>
 
-<template id="mdl-Progress">
+  <template id="mdl-Progress">
   ##
   var options = data.options;
   var styleProp = data.style ? 'style="' + data.style + '"' : '';
-  
-  
+
+
   var currentValue = 0;
   tmplScope.setProgress = function(val) {
     currentValue = val;
@@ -538,11 +538,11 @@
   ##
 </template>
 
-<template id="mdl-Spinner">
+  <template id="mdl-Spinner">
   ##
   var options = data.options;
   var active = data.active == undefined ? true : data.active;
-  
+
   tmplScope.active = function() {
     return tmplScope.element.classList.contains('is-active');
   }
@@ -558,7 +558,7 @@
   ##
 </template>
 
-<template id="mdl-Menu">
+  <template id="mdl-Menu">
   ##
   var forValue = data.for;
   var options = data.options;
@@ -576,14 +576,14 @@
   ##
 </template>
 
-<template id="mdl-Slider">
+  <template id="mdl-Slider">
   ##
   var min = data.min || 0;
   var max = data.max || 100;
   var value = data.value || 0;
   var step = data.step || 1;
   var event = data.event;
-  
+
   tmplScope.value = function(val) {
     if (tmplScope.element.MaterialSlider) {
       tmplScope.element.MaterialSlider.change(val);
@@ -613,7 +613,7 @@
   ##
 </template>
 
-<template id="mdl-Snackbar">
+  <template id="mdl-Snackbar">
   ##
   var base = data.base;
   tmplScope.showSnackbar = function(obj) {
@@ -635,7 +635,7 @@
   ##
 </template>
 
-<template id="mdl-Toggle">
+  <template id="mdl-Toggle">
   ##
   var scope = data.scope;
   var type = data.type;
@@ -649,7 +649,7 @@
   var _id = data.id || tmplScope._id;
   var event = data.event;
   var prop = data.prop;
-  
+
   scope.input = tmplScope.input = function() {
     return input;
   }
@@ -672,23 +672,23 @@
   ##
 </template>
 
-<template id="mdl-Checkbox">
+  <template id="mdl-Checkbox">
   ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'checkbox', scope: tmplScope}))##
 </template>
 
-<template id="mdl-Radio">
+  <template id="mdl-Radio">
   ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'radio', inputClass: 'button', scope: tmplScope}))##
 </template>
 
-<template id="mdl-IconToggle">
+  <template id="mdl-IconToggle">
   ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'icon-toggle', inputType: data.inputType || 'checkbox', scope: tmplScope}))##
 </template>
 
-<template id="mdl-Switch">
+  <template id="mdl-Switch">
   ##%tmpl.mdl.Toggle(Object.assign(data, {type: 'switch', inputType: data.inputType || 'checkbox', scope: tmplScope}))##
 </template>
 
-<template id="mdl-Table">
+  <template id="mdl-Table">
   ##
   var options = data.options;
   var shadow = data.shadow;
@@ -701,9 +701,24 @@
   var items = tbody ? tbody.items ? tbody.items : tbody : data.items;
   var trEvent = data.trEvent || data.rowSelectEvent;
   var checkboxEvent = data.checkboxEvent;
+
+  tmplScope.selectedItems = function(items) {
+    if (!items) {
+      var tbody = data.tbody;
+      items = tbody ? tbody.items ? tbody.items : tbody : data.items;
+    }
+    let trs = tmplScope.element.querySelectorAll('tbody tr');
+    let selectedItems = [];
+    trs.forEach((e, i) => {
+      if (e.classList.contains('is-selected')) selectedItems.push(items[i]);
+    });
+    return selectedItems;
+  }
   ##
   &lt;table class="mdl-data-table mdl-js-data-table ##=MDL.options('mdl-data-table--', options)## ##=MDL.is(shadow, 'mdl-shadow--' + shadow + 'dp')## ##=data.class##"&gt;
-    ##if (thead) {##
+    ##if (thead) {
+      if (rowItemKeys && thead.constructor === Object) thead = rowItemKeys.map(key => thead[key]);
+    ##
     &lt;thead&gt;
       &lt;tr&gt;
         ##thead.forEach(function(th) {
@@ -722,13 +737,14 @@
           ##rowItemKeys.forEach(function(key, tdIdx) {
             var td = tr[key];
             var label = td ? (td.label || td) : '';
+            var optionClass = MDL.options('mdl-data-table__cell--', td ? (td.options || tbodyOptions[tdIdx]) : '');
           ##
-            &lt;td class="##=MDL.options('mdl-data-table__cell--', td ? (td.options || tbodyOptions[tdIdx]) : '')##" ##=td && td.prop ? MDL.prop(td.prop): null##&gt;##%label##&lt;/td&gt;
+            &lt;td ##=(optionClass || td && td.class) ? 'class="' + optionClass + ' ' + data.class + '"' : ''## ##=td && td.prop ? MDL.prop(td.prop): null##&gt;##%label##&lt;/td&gt;
           ##});##
         ##} else {##
           ##tr.forEach(function(td, tdIdx) {
             var label = td ? (td.label || td) : '';
-            // ##=MDL.is(typeof label === 'string' || label instanceof String, 'mdl-data-table__cell--non-numeric')## 
+            // ##=MDL.is(typeof label === 'string' || label instanceof String, 'mdl-data-table__cell--non-numeric')##
           ##
           &lt;td class="##=MDL.options('mdl-data-table__cell--', td ? (td.options || tbodyOptions[tdIdx]) : '')##" ##=td && td.prop ? MDL.prop(td.prop): null##&gt;##%label##&lt;/td&gt;
           ##})##
@@ -743,7 +759,9 @@
     if (typeof componentHandler !== 'undefined') componentHandler.upgradeElement(tmplScope.element);
     var boxes = tmplScope.element.querySelectorAll('tbody .mdl-data-table__select') || [];
     for (var i = 0, length = boxes.length; i < length; i++) {
-      if (checkboxValueKey) boxes[i].MaterialCheckbox.inputElement_.value = items[i][checkboxValueKey];
+      var input = boxes[i].MaterialCheckbox.inputElement_;
+      if (checkboxValueKey) input.value = items[i][checkboxValueKey];
+      if (checkboxEvent) input.addEventListener('click', checkboxEvent);
 
       //boxes[i].MaterialCheckbox.inputElement_.onchange;
       //boxes[i].MaterialCheckbox.check();
@@ -753,7 +771,7 @@
   ##
 </template>
 
-<template id="mdl-Text-Field">
+  <template id="mdl-Text-Field">
   <style id="style-mdl-Text-Field">
     .mdl-textfield__help {
       color: #757575;
@@ -768,9 +786,11 @@
   var name = data.name;
   var value = data.value;
   var prop = data.prop;
+  var inputProp = data.inputProp;
   var icon = data.icon;
   var options = data.options;
   var label = data.label;
+  var placeholder = data.placeholder ? 'placeholder="' + data.placeholder + '"' : '';
   var patternProp = data.pattern ? ('pattern="' + data.pattern + '"') : '';
   var errorMsg = data.errorMsg;
   var helpMsg = data.helpMsg;
@@ -780,7 +800,7 @@
   tmplScope.value = function(val) {
     if (val != undefined) {
       tmplScope.input.value = val;
-      tmplScope.element.MaterialTextfield.checkDirty();
+      if (tmplScope.element.MaterialTextfield) tmplScope.element.MaterialTextfield.checkDirty();
     } else {
       return tmplScope.input.value;
     }
@@ -798,14 +818,14 @@
         ##}##
       ##}##
     <div class="mdl-textfield__expandable-holder">
-      &lt;input class="mdl-textfield__input" type="##=type##" id="##=_id##" name="##=name##" value="##=value##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(prop)##&gt;
+      &lt;input class="mdl-textfield__input" type="##=type##" id="##=_id##" name="##=name##" value="##=value##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;
       <label class="mdl-textfield__label" for="##=_id##">##=label##</label>
     </div>
     ##} else {##
       ##if (rows && rows > 1) {##
-    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(prop)##&gt;##=value##&lt;/textarea&gt;
+    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)##&gt;##=value##&lt;/textarea&gt;
       ##} else {##
-    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(prop)##&gt;
+    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;
       ##}##
     ##if (label) {##<label class="mdl-textfield__label" for="##=_id##">##=label##</label>##}##
     ##if (helpMsg) {##<span class="mdl-textfield__help">##%helpMsg##</span>##}##
@@ -819,7 +839,7 @@
   ##
 </template>
 
-<template id="mdl-Tooltip">
+  <template id="mdl-Tooltip">
   ##
   var options = data.options;
   var forProp = data.for;
@@ -836,12 +856,11 @@
 </body>
 
 <script>
-
-if (bridge.tmplTool) {
-  var HTMLImports = HTMLImports;
-  bridge.tmplTool.addTmpls(
-      HTMLImports && HTMLImports.importForElement ? HTMLImports.importForElement(document.currentScript)
-                  : (document._currentScript || document.currentScript).ownerDocument.body);
-  console.log('bridge.mdl.components.html');
-}
+  if (bridge.tmplTool) {
+    var HTMLImports = HTMLImports;
+    bridge.tmplTool.addTmpls(
+      HTMLImports && HTMLImports.importForElement ? HTMLImports.importForElement(document.currentScript) :
+      (document._currentScript || document.currentScript).ownerDocument.body);
+    console.log('bridge.mdl.components.html');
+  }
 </script>

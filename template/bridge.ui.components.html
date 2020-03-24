@@ -1,12 +1,11 @@
-
 <body>
-<template id="brui-BeforeLoad" data-bridge-load-script="true">
+  <template id="brui-BeforeLoad" data-bridge-load-script="true">
   ##
   // https://www.iconfinder.com/icons/778138/cursor_direction_drag_move_icon#size=24
   // https://www.iconfinder.com/HazelDev
   // https://www.iconfinder.com/iconsets/outline-style-1
   // https://www.iconfinder.com/iconsets/slim-square-icons-basics
-  
+
   var BridgeUi = window.BridgeUi = window.BridgeUi || {};
 
   BridgeUi.toStyle = function(obj) {
@@ -43,7 +42,7 @@
           obj.addEventListener(eventName, func);
       }
   }
-  
+
   var iconSize = BridgeUi.iconSize = 20;
   var runIconSize = BridgeUi.runIconSize = 40;
   var splitterSize = BridgeUi.splitterSize = 4;
@@ -76,13 +75,13 @@
       'text-align': 'center',
       'border-bottom': '1px solid rgba(0,0,0,0.3)',
       'box-shadow': '0px 3px 5px -3px #c8ccd0',
-      
+
       'color': '#333',
       'font-family': 'Segoe UI Regular WestEuropean,Segoe UI,Tahoma,Arial,sans-serif',
       'font-size': '12px',
       'font-weight': '400'
     },
-    
+
     '.brui-WindowCloser': {
       background: 'url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGhlaWdodD0iNTEycHgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTI7IiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEycHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CjwhW0NEQVRBWwoJLnN0MHtkaXNwbGF5OmlubGluZTt9Cgkuc3Qxe2ZpbGw6bm9uZTtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MTY7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDJ7ZGlzcGxheTpub25lO30KXV0+Cjwvc3R5bGU+PGcgY2xhc3M9InN0MiIgaWQ9ImNyb3NzIj48ZyBjbGFzcz0ic3QwIj48bGluZSBjbGFzcz0ic3QxIiB4MT0iMTEyLjUiIHgyPSI0MDEiIHkxPSIxMTIuNSIgeTI9IjQwMSIvPjxsaW5lIGNsYXNzPSJzdDEiIHgxPSI0MDEiIHgyPSIxMTIuNSIgeTE9IjExMi41IiB5Mj0iNDAxIi8+PC9nPjwvZz48ZyBpZD0iY3Jvc3NfY29weSI+PHBhdGggZD0iTTI2OC4wNjQsMjU2Ljc1bDEzOC41OTMtMTM4LjU5M2MzLjEyNC0zLjEyNCwzLjEyNC04LjE4OSwwLTExLjMxM2MtMy4xMjUtMy4xMjQtOC4xODktMy4xMjQtMTEuMzE0LDBMMjU2Ljc1LDI0NS40MzYgICBMMTE4LjE1NywxMDYuODQzYy0zLjEyNC0zLjEyNC04LjE4OS0zLjEyNC0xMS4zMTMsMGMtMy4xMjUsMy4xMjQtMy4xMjUsOC4xODksMCwxMS4zMTNMMjQ1LjQzNiwyNTYuNzVMMTA2Ljg0MywzOTUuMzQzICAgYy0zLjEyNSwzLjEyNS0zLjEyNSw4LjE4OSwwLDExLjMxNGMxLjU2MiwxLjU2MiwzLjYwOSwyLjM0Myw1LjY1NywyLjM0M3M0LjA5NS0wLjc4MSw1LjY1Ny0yLjM0M0wyNTYuNzUsMjY4LjA2NGwxMzguNTkzLDEzOC41OTMgICBjMS41NjMsMS41NjIsMy42MDksMi4zNDMsNS42NTcsMi4zNDNzNC4wOTUtMC43ODEsNS42NTctMi4zNDNjMy4xMjQtMy4xMjUsMy4xMjQtOC4xODksMC0xMS4zMTRMMjY4LjA2NCwyNTYuNzV6Ii8+PC9nPjwvc3ZnPg==) center/80% no-repeat'
       //background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABEklEQVRIS+1VyRGDMAy0gUlogl5owk+XQA/0oqdrogeenhwkYwYHYyzJJMMv/GCs3ZW0a6Q4+ZEn44s/ATvh3Yi01i9fBQCFEOLzjqFFNRtMksABAgC5J631JMS6y/g8S0CRhMqDrqVSqjTGPN23pDqs0IM4gLquH/HIUt1i7cul9Q2G3wknICyi5psi8Qvf1FlrKz+SuCs2aCm1IQhnApbAgWEkHDi65KhNNyrniJ2YnJywHWSMiAzjoRAhSZ4AoMRSjhIgVpzV/mTTvu+LYRjmFGJu6bruOo6j/SpolPIQMEdI0kUxAWXFVCeHLrscn7dtWzVNcw8vO/aqUEpdjDG3xfvs/4A6x+aA/WUxB04neAMaIYoZ/zJr8gAAAABJRU5ErkJggg==) center/80% no-repeat'
@@ -131,7 +130,7 @@
 
       overflow: 'auto',
       position: 'absolute',
-      
+
       //padding: '10px',
       //'margin-top': '10px',
       top: (windowTitleHeight + 1) + 'px',
@@ -139,12 +138,12 @@
       left: '0',
       right: '0',
     },
-    
+
     '.brui-Splitter-Layout': {
       width: '100%',
       height: '100%'
     },
-    
+
     '.brui-RunIcon': {
       width: runIconSize + 'px',
       height: runIconSize + 'px',
@@ -288,9 +287,9 @@
     '.brui-icon-plus': {
       //background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAqklEQVRIS+1TwQ3DIAw0STZhLu/iXfxkJvbgk6blYRQiKhNSR2pVfgi4891xDoyXM8aHP4Hq8CmLEHETRGbuett1SUB/jmACgGLZuzCGLfLez0T00FIeJrgacibO8vcDbI2Q5Z4IOe7rJu8BNOnauSisLPp+Ak22ddEcIpZvycwf70FFYNGDewlSSksIYdVy624yEU0xxgJ4tcnNwax/keZG87zboiH016MnBcZUGWDpJGwAAAAASUVORK5CYII=) center center no-repeat',
     }
-    
+
   }
-  
+
   BridgeUi.WindowFunc = {
     maxZindex : function() {
       var zindex = 101;
@@ -305,7 +304,7 @@
       return zindex;
     }
   }
-  
+
 /*
   BridgeUi.WindowEvents = {
     mouseover: function(e) {
@@ -322,7 +321,7 @@
 
 
 
-<template id="brui-WindowResize">
+  <template id="brui-WindowResize">
   ##
   var dragCallback = data.dragCallback;
   var clickPosition = null;
@@ -351,11 +350,11 @@
       if (target.scrollWidth <= (target.clientWidth) || startPosition.x < e.x) {
         target.style.width = (e.pageX - startPosition.x + startSize.x + 2) + 'px';
       }
-      
+
       if (target.scrollHeight <= (target.clientHeight) || startPosition.y < e.y) {
         target.style.height = (e.pageY - startPosition.y + startSize.y + 2) + 'px';
       }
-      
+
       if (dragCallback) dragCallback(e, edata, tmplElem);
     },
     touchstart: function(e) {
@@ -382,16 +381,16 @@
   </div>
 </template>
 
-<template id="brui-WindowDrag">
+  <template id="brui-WindowDrag">
   ##
   //var beforePosition = null;
   var clickPosition = null;
   var startPosition = null;
   var styleStatus = null;
-  
+
   var target = null;
   var targetParent = null;
-  
+
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     /*
     mouseover: function(e, edata, tmplElem) {
@@ -419,13 +418,13 @@
       if (e.x == 0) {
         return;
       }
-      
+
       //target.style.left = Math.max(0, e.pageX - startPosition.x)+ 'px';
       //target.style.top = Math.max(0, e.pageY - startPosition.y) + 'px';
-      
+
       //target.style.left = Math.min(Math.max(0, e.pageX - startPosition.x), targetParent.offsetWidth - target.offsetWidth)+ 'px';
       //target.style.top = Math.min(Math.max(0, e.pageY - startPosition.y), targetParent.offsetHeight - target.offsetHeight) + 'px';
-      
+
       var left = Math.min(Math.max(0, e.pageX - startPosition.x), targetParent.offsetWidth - target.offsetWidth)+ 'px';
       styleStatus.left = left;
       var top = Math.min(Math.max(0, e.pageY - startPosition.y), targetParent.offsetHeight - target.offsetHeight) + 'px';
@@ -436,7 +435,7 @@
         if (styleStatus[key]) styleStrArray.push(key + ':' + styleStatus[key] + ';');
       });
       target.style.cssText = styleStrArray.join('; ');
-      
+
     },
     touchstart: function(e, edata, tmplElem) {
       //event.mouseover.call(this, e);
@@ -461,22 +460,22 @@
         data-bridge-event="##:event##">
   </div>
 </template>
-  
 
 
-<template id="brui-WindowMaximizar">
+
+  <template id="brui-WindowMaximizar">
   ##
   var clickCallback = data.clickCallback;
   var isFull = false;
   var beforePosition = {};
-  
+
   var icon = null;
-  
+
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     click: function(e, edata, tmplElem) {
       var target = this.parentElement;
       var classList = e.currentTarget.classList;
-      
+
       if (!isFull) {
         beforePosition = {
           left: target.style.left,
@@ -496,10 +495,10 @@
         target.style.height = 'initial';
         target.style.maxHeight = 'initial';
         isFull = true;
-        
+
         classList.remove('maxIcon');
         classList.add('minIcon');
-        
+
       } else {
         target.style.left = beforePosition.left;
         target.style.top = beforePosition.top;
@@ -510,7 +509,7 @@
         target.style.maxWidth = beforePosition.maxWidth;
         target.style.maxHeight = beforePosition.maxHeight;
         isFull = false;
-        
+
         classList.remove('minIcon');
         classList.add('maxIcon');
       }
@@ -525,7 +524,7 @@
   </div>
 </template>
 
-<template id="brui-WindowMinimizar">
+  <template id="brui-WindowMinimizar">
   ##
   var clickCallback = data.clickCallback;
   var isMin = false;
@@ -533,17 +532,17 @@
   var beforeOverflow = null;
   var beforeContentDisplay = null;
   var target = null;
-  
+
   var runIcon = data.runIcon || {};
   var runIconStyle = runIcon.style;
-  
+
   var runIconElement = tmpl.brui.RunIcon(Object.assign(runIcon, {event: function(e, edata, tmplElem) {
     runIconStyle = Object.assign(runIconStyle || {}, {left: runIconElement.offsetLeft + 'px', top: runIconElement.offsetTop + 'px'});
     runIconElement.remove();
     target.style.display = beforeContentDisplay;
     isMin = false;
   }}));
-  
+
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     click: function(e, edata, tmplElem) {
       target = this.parentElement;
@@ -555,7 +554,7 @@
       target.style.display = 'none';
       target.parentElement.appendChild(runIconElement.element || runIconElement);
       isMin = true;
-      
+
       if (clickCallback) clickCallback(e, edata, tmplElem);
 
       /*
@@ -585,7 +584,7 @@
 </template>
 
 
-<template id="brui-RunIcon">
+  <template id="brui-RunIcon">
   <div style="##=data.style ? BridgeUi.toStyle(data.style) : ''##"
         class="brui-RunIcon ##=data.class##"
         draggable="false"
@@ -595,7 +594,7 @@
   </div>
 </template>
 
-<template id="brui-WindowCloser">
+  <template id="brui-WindowCloser">
   ##
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     click: function() {
@@ -612,21 +611,18 @@
   </div>
 </template>
 
-<template id="brui-Window">
+  <template id="brui-Window">
   ##
   var dialogs = document.querySelectorAll('.brui-Window');
   var dialogCount = dialogs.length;
   ##
-  <div style="left: ##=dialogCount * 20##px;
-              top: ##=dialogCount * 20##px;
-              z-index: ##=BridgeUi.WindowFunc.maxZindex() + 1##;
-              ##=data.style##"
+  <div style="left: ##=dialogCount * 20##px; top: ##=dialogCount * 20##px; z-index: ##=BridgeUi.WindowFunc.maxZindex() + 1##; ##=data.style##"
         class="brui-Window ##=data.class##"
         data-bridge-event="##:data.event || function(e, edata, tmplElem){
           tmplElem.style.zIndex = BridgeUi.WindowFunc.maxZindex() + 1;
           if (data.clickCallback) data.clickCallback();
         }##">
-    
+
     ##%minimizar=tmpl.brui.WindowMinimizar(Object.assign({style: {left:'0', top: '0'}, runIcon : data.runIcon || {label: data.title || data.runIconLabel}}, data.windowMin))##
     ##%tmpl.brui.WindowDrag(Object.assign({style: {left:'20px', right:'40px', top: '0', width: 'initial'}}, data.windowDrag))##
     ##%tmpl.brui.WindowMaximizar(Object.assign({style: {right:'20px', top: '0'}}, data.windowMax))##
@@ -639,13 +635,14 @@
   </div>
 </template>
 
-<template id="brui-Splitter">
+  <template id="brui-Splitter">
   ##
+  var blankWhenMove = data.blankWhenMove != undefined ? data.blankWhenMove : false;
   var dragCallback = data.dragCallback;
   var direction = data.direction != 'vertical' ? 'horizontal' : 'vertical';
   var widthMargin = data.widthMargin || BridgeUi.splitterSize + 'px';
   var minSize = data.minSize || 5;
-  
+
   var splitterSize = null;
   var targetStartSize = null;
   var targetPrevStartSize = null;
@@ -655,11 +652,11 @@
   var fullPercentageWidth = null;
   var fullHeight = null;
   var fullPercentageHeight = null;
-  
+
   //var parent = null;
   var targetNext = null;
   var targetPrev = null;
-  
+
   var isMove = false;
 
   var isOverflowed = function(direction, nextTarget, prevTarget, event) {
@@ -695,50 +692,20 @@
     }
   }
 
+  var blankMove = function(target, value) {
+    if (blankWhenMove) {
+      var children = target.children;
+      for (var i = 0, length = children.length; i < length; i++) {
+        children[i].style.display = value;
+      }
+    }
+  }
+
   var crt = document.createElement('img');
   crt.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=";
   crt.style.visibility = "hidden";
   var skipRendering = 0;
   var event = Object.assign({}, BridgeUi.WindowEvents, {
-/*
-    mousedown : function(e) {
-      //e.stopPropagation();
-      //e.preventDefault();
-console.log('mousedown');
-      e = e.touches ? e.touches[0] : e;
-      targetNext = this.nextElementSibling;
-      targetPrev = this.previousElementSibling;
-      //parent = targetNext.parentElement;
-      splitterSize = {x: e.target.offsetWidth, y: e.target.offsetHeight};
-      targetStartSize = {x: targetNext.offsetWidth, y: targetNext.offsetHeight};
-      targetPrevStartSize = {x: targetPrev.offsetWidth, y: targetPrev.offsetHeight};
-      
-      clickPosition = {x: e.layerX || 0, y: e.layerY || 0};
-      startPosition = {x: parseInt(e.pageX) || 0, y: parseInt(e.pageY) || 0};
-
-      findFullSize();
-      isMove = true;
-//console.log(isMove);
-    },
-*/
-/*
-    mouseup: function(e) {
-//console.log('mouseup');
-      isMove = false;
-    },
-*/
-/*
-    mousemove: function(e) {
-      //e.preventDefault();
-//console.log('mousemove');
-      event.drag.call(this, e);
-    },
-*/
-//    mouseout: function(e) {
-//console.log('mouseout');
-//      isMove = false;
-//    },
-
     dragstart: function(e) {
 //console.log('dragstart');
       if (e.dataTransfer && e.dataTransfer.setDragImage) {
@@ -752,16 +719,20 @@ console.log('mousedown');
       splitterSize = {x: e.target.offsetWidth, y: e.target.offsetHeight};
       targetStartSize = {x: targetNext.offsetWidth, y: targetNext.offsetHeight};
       targetPrevStartSize = {x: targetPrev.offsetWidth, y: targetPrev.offsetHeight};
-      
+
       //clickPosition = {x: e.layerX || 0, y: e.layerY || 0};
       startPosition = {x: parseInt(e.pageX) || 0, y: parseInt(e.pageY) || 0};
 
       findFullSize();
       isMove = true;
+      blankMove(targetPrev, 'none');
+      blankMove(targetNext, 'none');
     },
 
     dragend: function(e) {
 //console.log('dragend');
+      blankMove(targetPrev, '');
+      blankMove(targetNext, '');
       isMove = false;
     },
     drag: function(e, edata, tmplElem) {
@@ -779,7 +750,7 @@ console.log('mousedown');
         var moveSize = e.pageX - startPosition.x;
         var afterTargePrevWidth = (targetPrevStartSize.x + moveSize) * fullPercentageWidth / fullWidth;
         var afterTargeWidth = fullPercentageWidth - afterTargePrevWidth;
-        
+
         if (afterTargePrevWidth < minSize || afterTargeWidth < minSize) return;
 
         targetPrev.style.width = 'calc(' + afterTargePrevWidth + '% - ' + widthMargin + ')';
@@ -788,9 +759,9 @@ console.log('mousedown');
         var moveSize = e.pageY - startPosition.y;
         var afterTargePrevHeight = (targetPrevStartSize.y + moveSize) * fullPercentageHeight / fullHeight;
         var afterTargeHeight = fullPercentageHeight - afterTargePrevHeight;
-        
+
         if (afterTargePrevHeight < minSize || afterTargeHeight < minSize) return;
-        
+
         targetPrev.style.height = 'calc(' + afterTargePrevHeight + '% - ' + widthMargin + ')';
         targetNext.style.height = 'calc(' + afterTargeHeight + '% - ' + widthMargin + ')';
       }
@@ -800,29 +771,21 @@ console.log('mousedown');
 //console.log('touchstart');
       event.dragstart.call(this, e);
     },
-    touchend: function(e) {
-      isMove = false;
+    touchend: function(e, edata, tmplElem) {
+      //isMove = false;
+      event.dragend.call(this, e, edata, tmplElem);
     },
-    /*
-    touchend: function(e) {
-      var self = this;
-      setTimeout(function() {
-        event.mouseout.call(self, e);
-      }, 1500);
-    },
-    */
     touchmove: function(e, edata, tmplElem) {
       //e.preventDefault();
 //console.log('touchmove');
       event.drag.call(this, e, edata, tmplElem);
     }
   });
-  
-  
+
   tmplScope.toMax = function() {
     targetNext = this.element.nextElementSibling;
     targetPrev = this.element.previousElementSibling;
-    
+
     findFullSize();
 
     var side = fullPercentage = margin = null;
@@ -842,7 +805,7 @@ console.log('mousedown');
   tmplScope.toMin = function() {
     targetNext = this.element.nextElementSibling;
     targetPrev = this.element.previousElementSibling;
-    
+
     findFullSize();
 
     var side = fullPercentage = margin = null;
@@ -884,7 +847,7 @@ console.log('mousedown');
           targetMax = targetNext;
           targetMin = targetPrev;
         }
-        
+
         var target = (direction == 'horizontal') ? 'width' : 'height';
         if (isMax === true) {
           tmplScope.element.style.width = '0px';
@@ -905,7 +868,7 @@ console.log('mousedown');
           }
         }
       }
-      
+
       tmplScope.minMax = {
         open: function() {
           if (!isMax) return;
@@ -935,15 +898,17 @@ console.log('mousedown');
   </div>
 </template>
 
-<template id="brui-Splitter-Layout">
+  <template id="brui-Splitter-Layout">
   <div class="brui-Splitter-Layout ##=data.class##" style="##=data.style##">
   ##
+  var direction = data.direction;
   var dragCallback = data.dragCallback;
+  var blankWhenMove = data.blankWhenMove;
   var style = data.style;
   var direction = tmplScope.direction = data.direction != 'vertical' && data.direction != 'v' ? 'horizontal' : 'vertical';
   var items = data.items || [];
   var layoutStyle = null;
-  
+
   var splitters = tmplScope.splitters = [];
   var splitterDivs = tmplScope.splitterDivs = [];
   var setSplitterDiv = function(target, index) {
@@ -992,13 +957,15 @@ console.log('mousedown');
       }
     }
 
-    var splitter = index == 0 && !data.splitter && !contentItem.splitter ? null : tmpl.brui.Splitter(Object.assign({direction: data.direction, dragCallback: dragCallback}, contentItem.splitter, data.splitter));
+    var splitter = (index == 0 && !data.splitter && !contentItem.splitter)
+      ? null
+      : tmpl.brui.Splitter(Object.assign({direction: direction, dragCallback: dragCallback, blankWhenMove: blankWhenMove}, contentItem.splitter, data.splitter));
     if (splitter) splitters.push(splitter);
     var style = BridgeUi.toStyle(layoutStyle) + " ";
   ##
     ##%splitter##
     <div class="brui-Splitter-item ##=contentItem.class##" style="##=BridgeUi.toStyle(layoutStyle)## ##=contentItem.style##" data-bridge-load="##:setSplitterDiv::index##">
-      ##if (typeof contentItem.content === 'string') {## 
+      ##if (typeof contentItem.content === 'string') {##
         ##=contentItem.content##
       ##} else {##
         ##%contentItem.content##
@@ -1008,7 +975,7 @@ console.log('mousedown');
   </div>
 </template>
 
-<template id="brui-Layout">
+  <template id="brui-Layout">
   <div class="brui-Layout">
   ##
   var style = data.style;
@@ -1016,7 +983,7 @@ console.log('mousedown');
   //var widthMargin = data.widthMargin || '4px';
   var items = data.items || [];
   var layoutStyle = null;
-  
+
   var divs = [];
   var setDiv = function(target, index) {
     divs[index] = target;
@@ -1029,11 +996,11 @@ console.log('mousedown');
     if (item instanceof Node || item instanceof Array) {
       item = items[index] = {content: item, span: 1};
     } else {
-      if (!item.span) item.span = 1; 
+      if (!item.span) item.span = 1;
     }
     spanSizeSum += item.span;
   });
-  
+
   var lastPercent = 100;
   var spanPercent = Math.floor(100 / spanSizeSum * 100) / 100;
   var lastIndex = items.length - 1;
@@ -1067,7 +1034,7 @@ console.log('mousedown');
   </div>
 </template>
 
-<template id="brui-GanttChart-Content-Line">
+  <template id="brui-GanttChart-Content-Line">
   ##
 //console.log(data.item);
   var item = data.item || [];
@@ -1083,13 +1050,13 @@ console.log('mousedown');
   var dayHeight = data.dayHeight || 24;
   var oneDayWidth = data.oneDayWidth || 20;
   var lineHeight = data.lineHeight || 10;
-  
+
   var eventData = {};
   var itemKeyItemsLabel = itemKey['items.label'];
   var itemKeyItemsStartDate = itemKey['items.startDate'];
   var itemKeyItemsEndDate = itemKey['items.endDate'];
   var itemKeyItemsColor = itemKey['items.color'];
-  
+
   var eventItems = item[itemKey.items] || [];
   eventItems.forEach(function(item, index) {
     var date = new Date(item[itemKeyItemsStartDate]);
@@ -1130,7 +1097,7 @@ console.log('mousedown');
     </div>
   </div>
 </template>
-<template id="brui-GanttChart">
+  <template id="brui-GanttChart">
   <style id="style-brui-GanttChart">
     .brui-GanttChart .brui-GanttChart-contetnt {
       overflow: auto;
@@ -1155,7 +1122,7 @@ console.log('mousedown');
       line-height: 24px;
     }
     .brui-GanttChart .cell > .day {
-      
+
     }
     .brui-GanttChart .cell > .date {
       position: relative;
@@ -1191,7 +1158,7 @@ console.log('mousedown');
     .brui-GanttChart .chart-header .label {
       height: 50px;
     }
-    
+
     .brui-GanttChart .line {
       position: absolute;
       height: 10px;
@@ -1201,7 +1168,7 @@ console.log('mousedown');
       z-index: 1;
       font-family: sans-serif;
     }
-    
+
     .brui-GanttChart .brui-GanttChart-Content-Line {
       /*position: relative;*/
     }
@@ -1210,15 +1177,15 @@ console.log('mousedown');
   var items = data.items || [];
   var itemKey = data.itemKey || {};
   var oneDayWidth = data.oneDayWidth || 20;
-  
+
   var startDate = typeof data.startDate === 'string' ? new Date(data.startDate)  : data.startDate;
   startDate.setHours(0, 0, 0, 0);
   var endDate = typeof data.endDate === 'string' ? new Date(data.endDate)  : data.endDate;
   endDate.setHours(0, 0, 0, 0);
-  
+
   var period = data.period;
   var itemsList = data.itemList || [];
-  
+
   var datePeriodArray = [startDate];
   var yearArray = [{year: startDate.getFullYear(), month: startDate.getMonth() + 1}];
   var tempDate = startDate;
@@ -1242,7 +1209,7 @@ console.log('mousedown');
     6: 'saturday',
     0: 'sunday'
   };
-  
+
   var nowDate = new Date();
   nowDate.setHours(0, 0, 0, 0);
   var nowTime = nowDate.getTime();
@@ -1293,9 +1260,9 @@ console.log('mousedown');
   ##
 </template>
 
-<template id="brui-Div">
+  <template id="brui-Div">
   &lt;div  ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"&gt;
-  ##if (typeof data.content === 'string') {## 
+  ##if (typeof data.content === 'string') {##
     ##=data.content##
   ##} else {##
     ##%data.content##
@@ -1303,12 +1270,12 @@ console.log('mousedown');
   </div>
 </template>
 
-<template id="brui-Input">
+  <template id="brui-Input">
   &lt;input type="##=data.type##" value="##=data.value##" ##=data.class ? 'class="' + data.class + '"' : '' ## ##=data.style ? 'style="' + data.style + '"' : '' ## data-bridge-event="##:data.event##"/&gt;
 </template>
 
 
-<template id="brui-Style">
+  <template id="brui-Style">
   <style>
     ##
     Object.keys(data).forEach(function(key) {
@@ -1321,12 +1288,12 @@ console.log('mousedown');
 </template>
 
 
-<template id="brui-Tag">
+  <template id="brui-Tag">
   ##%BridgeUi.HtmlObj.tag(data[0], data[1])##
 </template>
 
 
-<template id="brui-Viewport">
+  <template id="brui-Viewport">
   ##
   var min = (data.min || 50) - 1;
   var max = data.max || 150;
@@ -1357,7 +1324,7 @@ console.log('mousedown');
   </select>
 </template>
 
-<template id="brui-RangeButton">
+  <template id="brui-RangeButton">
   ##
   var min = data.min;
   var max = data.max;
@@ -1386,7 +1353,7 @@ console.log('mousedown');
 </template>
 
 
-<template id="brui-AfterLoad" data-bridge-load-script="true">
+  <template id="brui-AfterLoad" data-bridge-load-script="true">
   ##
   var windowStyle = tmpl.brui.Style(BridgeUi.WindowStyle);
   document.head.appendChild(windowStyle.element || windowStyle);
@@ -1396,14 +1363,14 @@ console.log('mousedown');
 
 
 
-<script>
-if (bridge.tmplTool) {
-  var HTMLImports = HTMLImports;
-  bridge.tmplTool.addTmpls(
-      HTMLImports && HTMLImports.importForElement ? HTMLImports.importForElement(document.currentScript)
-                  : (document._currentScript || document.currentScript).ownerDocument.body);
-  console.log('bridge.ui.components.html');
-}
-</script>
+  <script>
+    if (bridge.tmplTool) {
+      var HTMLImports = HTMLImports;
+      bridge.tmplTool.addTmpls(
+        HTMLImports && HTMLImports.importForElement ? HTMLImports.importForElement(document.currentScript) :
+        (document._currentScript || document.currentScript).ownerDocument.body);
+      console.log('bridge.ui.components.html');
+    }
+  </script>
 
 </body>

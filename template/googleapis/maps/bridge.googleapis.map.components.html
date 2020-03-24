@@ -87,11 +87,12 @@
   });
 
   setTimeout(function() {
+    if (listLat.length == 0 || listLng.length == 0) return;
     var sw = new google.maps.LatLng(Math.min.apply({}, listLat), Math.min.apply({}, listLng));
     var ne = new google.maps.LatLng(Math.max.apply({}, listLat), Math.max.apply({}, listLng));
     var bounds = new google.maps.LatLngBounds(sw, ne);
-    map.fitBounds(bounds);
-  }, 1000);
+    if (bounds) map.fitBounds(bounds);
+  }, 300);
   
   ##
   ##%mapScope.element##

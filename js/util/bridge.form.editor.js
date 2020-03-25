@@ -9,14 +9,14 @@
         // messageObj.message.push("必須項目です。");
         return "必須項目です。";
       }
-      return; 
+      return;
     },
     isNullAble : function(messageObj, value, sw) {
       if (!sw && !value) {
         // messageObj.message.push("必須項目です。");
         return "必須項目です。";
       }
-      return; 
+      return;
     },
     patterns : {
       Digits: {patten : /^\d+$/, message : "数字のみ入力してください。"},
@@ -30,14 +30,14 @@
       if (!value || this.type != 'text' || type == "String") {
         return;
       }
-      
+
       if (type == "isDate") {
         if (isNaN(new Date(value))) {
             return  "日付の入力が正しくありません。";
         }
         return;
       }
-      
+
       if (!value.toString().match(this.validateTool.patterns[type].patten)) {
         return this.validateTool.patterns[type].message;
       }
@@ -107,7 +107,7 @@
       }
     }
   }
-  
+
   form.diffObject = function(before, after) {
     var result = {keys: new Array(), before: {}, after: {}};
     var values = this.values;
@@ -127,14 +127,14 @@
     });
     return result;
   }
-  
+
   form.editor = function($html, config) {
     config = config || {};
     var inputObjList = [];
     var values = {};
     var inputConfig = null;
     var inputObj = null;
-    
+
     if (Array.isArray(config)) {
       var configObj = {};
       if (!config[0].name) return;
@@ -163,12 +163,18 @@
         validateTool: inputConfig.validateTool || config.validateTool || Bridge.validateTool,
         rule: inputConfig.rule,
         multiple: inputConfig.multiple != undefined ? inputConfig.multiple : true,
-        
+
         val: inputConfig.val || config.val || function () {
           var target = this.target;
-          if (target.type == "checkbox" || target.type == "radio") {
+          if (this.inputConfig.returnValue) {
+            return this.inputConfig.returnValue(target.value);
+          } else if (target.type == "checkbox" || target.type == "radio") {
             //return target.checked ? (target.value || true) : (target.value ? '' : false);
             return target.checked ? (target.value || true) : null;
+          } else if (Array.isArray(target) && target[0].type == "text") {
+            return target.map(function(ele) {
+              return ele.value;
+            });
           } else if (Array.isArray(target) && target[0].type == "checkbox") {
             return target.filter(function(ele) {
               return ele.checked;
@@ -181,10 +187,10 @@
             })[0];
             return selected ? (selected.value || true) : null;
           }
-          return this.inputConfig.returnValue ? this.inputConfig.returnValue(target.value) : target.value;
+          return target.value;
         },
         clearError: inputConfig.clearError || config.clearError || Bridge.form.clearError || function() {
-            
+
         },
         renderMessage: inputConfig.renderMessage || config.renderMessage || Bridge.form.renderMessage || function(strArray) {
           alert(strArray.join('\n'));
@@ -209,7 +215,7 @@
               messages.push(message);
             }
           }
-          
+
           if (messages.length !== 0) {
             this.renderMessage(messages);
             return false;
@@ -220,7 +226,7 @@
       inputObjList.push(inputObj);
       setValue(values, inputObj);
     });
-    
+
     return {
       $obj: $html,
       inputObjList: inputObjList,

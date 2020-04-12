@@ -272,7 +272,7 @@
   tmplScope.afterAppendTo = function() {
     tmplScope.upgradeElement();
   }
-  tmplScope.reflashContent = function(scope) {
+  tmplScope.content = function(scope) {
     while (contentArea.firstChild) contentArea.removeChild(contentArea.firstChild);
     contentArea.appendChild(scope.element || scope);
   }

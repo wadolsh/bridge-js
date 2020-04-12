@@ -17,7 +17,7 @@
       options: ['fixed-header'],
       header: {
         title: titleLabel,
-        navigation: [
+        navigationlLinks: [
           {label: 'Content1', event: function(e) {
             var button = tmpl.mdl.Button({label: buttonLabel, options: ['raised', 'accent'], event: function(e) {
               console.log('Click Button1.');
@@ -38,7 +38,7 @@
       },
       drawer: {
         title: 'Title',
-        navigation: [
+        navigationlLinks: [
           {label: 'Navigation Link1'},
           {label: 'Navigation Link2'},
           {label: 'Navigation Link3'},
@@ -60,7 +60,7 @@
     ##%input1##
     ##%input2##
   </template>
-  
+
   <template id="myCode-Content2">
     <div>
       ##%tmpl.mdl.Table({

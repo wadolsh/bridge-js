@@ -219,7 +219,7 @@
     ##if (header) {##
     <header class="mdl-layout__header ##=MDL.options('mdl-layout__header--', header.options)##">
       ##(header.items ? header.items : [header]).forEach(function(h) {
-      tmplScope.reflashTitle = function(title) {
+      tmplScope.title = function(title) {
         if (titleArea) titleArea.innerHTML = title;
       }
       ##
@@ -229,7 +229,8 @@
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
-        ##if (h.navigation) {## ##%tmpl.mdl.Navigation({items: h.navigation})## ##}##
+        ##if (h.navigationLinks) {## ##%tmpl.mdl.Navigation({items: h.navigationLinks})## ##}##
+        ##if (h.navigation) {####%h.navigation####}##
         ##%h.items##
       </div>
       ##})##
@@ -246,7 +247,8 @@
     ##if (drawer) {##
     <div class="mdl-layout__drawer">
       ##if (drawer.title) {##<span class="mdl-layout-title">##%(drawer.title)##</span>##}##
-      ##if (drawer.navigation) {## ##%tmpl.mdl.Navigation({items: drawer.navigation})## ##}##
+      ##if (drawer.navigationLinks) {## ##%tmpl.mdl.Navigation({items: drawer.navigationLinks})## ##}##
+      ##if (drawer.navigation) {####%drawer.navigation####}##
       ##%drawer.items##
     </div>
     ##}##

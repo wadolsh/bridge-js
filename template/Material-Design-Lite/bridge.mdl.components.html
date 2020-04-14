@@ -274,7 +274,13 @@
   }
   tmplScope.content = function(scope) {
     while (contentArea.firstChild) contentArea.removeChild(contentArea.firstChild);
-    contentArea.appendChild(scope.element || scope);
+    if (Array.isArray(scope)) {
+      for (const i in scope) {
+        contentArea.appendChild(scope[i].element || scope[i]);
+      }
+    } else {
+      contentArea.appendChild(scope.element || scope);
+    }
   }
   ##
 </template>

@@ -156,9 +156,9 @@
       'box-shadow': '0 0 8px 0 rgba(0,0,0,0.3)',
       visibility: 'visible',
     },
-    '.brui-RunIcon .brui-RunIcon-Label': {
-      'background-color': '#fed9cc',
-    },
+    //'.brui-RunIcon .brui-RunIcon-Label': {
+    //  'background-color': '#fed9cc',
+    //},
     '.brui-RunIcon .brui-WindowDrag': {
       width: '100%',
       height: '100%',
@@ -318,9 +318,6 @@
   ##
 </template>
 
-
-
-
   <template id="brui-WindowResize">
   ##
   var dragCallback = data.dragCallback;
@@ -461,8 +458,6 @@
   </div>
 </template>
 
-
-
   <template id="brui-WindowMaximizar">
   ##
   var clickCallback = data.clickCallback;
@@ -527,6 +522,7 @@
   <template id="brui-WindowMinimizar">
   ##
   var clickCallback = data.clickCallback;
+  var runIconCallback = data.runIconCallback;
   var isMin = false;
   var beforeHeight = null;
   var beforeOverflow = null;
@@ -535,13 +531,22 @@
 
   var runIcon = data.runIcon || {};
   var runIconStyle = runIcon.style;
+  var runIconKeep = runIcon.keep;
 
-  var runIconElement = tmpl.brui.RunIcon(Object.assign(runIcon, {event: function(e, edata, tmplElem) {
-    runIconStyle = Object.assign(runIconStyle || {}, {left: runIconElement.offsetLeft + 'px', top: runIconElement.offsetTop + 'px'});
-    runIconElement.remove();
-    target.style.display = beforeContentDisplay;
+  var runIconScope = tmpl.brui.RunIcon(Object.assign(runIcon, {event: function(e, edata, tmplElem) {
+    runIconStyle = Object.assign(runIconStyle || {}, {left: tmplElem.offsetLeft + 'px', top: tmplElem.offsetTop + 'px'});
+    if (!edata.keep) runIconScope.remove();
+    tmplScope.element.parentElement.style.zIndex = BridgeUi.WindowFunc.maxZindex() + 1;
+    tmplScope.element.parentElement.style.display = beforeContentDisplay;
     isMin = false;
   }}));
+  if (runIconKeep) {
+    document.body.appendChild(runIconScope.element);
+    runIconScope.element.style.left = '0px';
+    runIconScope.element.style.top = '0px';
+  }
+  tmplScope.runIconScope = runIconScope;
+  if (runIconCallback) runIconCallback(runIconScope);
 
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     click: function(e, edata, tmplElem) {
@@ -549,13 +554,13 @@
       //var content = target.querySelector('.brui-Window-Content');
       //var icons = target.querySelectorAll('.brui-WindowIcon');
 
-      runIconElement = runIconElement.reflash({style: runIconStyle || {left: target.offsetLeft + 'px', top: target.offsetTop + 'px'}});
+      runIconScope = runIconScope.reflash({style: runIconStyle || {left: target.offsetLeft + 'px', top: target.offsetTop + 'px'}});
       beforeContentDisplay = target.style.display;
       target.style.display = 'none';
-      target.parentElement.appendChild(runIconElement.element || runIconElement);
+      target.parentElement.appendChild(runIconScope.element || runIconScope);
       isMin = true;
 
-      if (clickCallback) clickCallback(e, edata, tmplElem);
+      if (clickCallback) clickCallback(e, edata, tmplElem, tmplScope, runIconScope);
 
       /*
       if (!isMin) {
@@ -615,15 +620,24 @@
   ##
   var dialogs = document.querySelectorAll('.brui-Window');
   var dialogCount = dialogs.length;
+  var idx = 0;
+  for (idx=0; idx < dialogCount; idx++) {
+    if (!Array.prototype.find.call(dialogs, (dialog) => dialog.offsetWidth != 0 && dialog.offsetLeft == 20 * idx && dialog.offsetTop == 20 * idx)) break;
+  }
+  tmplScope.remove = function() {
+    tmplScope.element.remove();
+    if (windowMinimizar) windowMinimizar.runIconScope.remove();
+  }
+  var windowMinimizar = null;
   ##
-  <div style="left: ##=dialogCount * 20##px; top: ##=dialogCount * 20##px; z-index: ##=BridgeUi.WindowFunc.maxZindex() + 1##; ##=data.style##"
+  <div style="left: ##=idx * 20##px; top: ##=idx * 20##px; z-index: ##=BridgeUi.WindowFunc.maxZindex() + 1##; ##=data.style##"
         class="brui-Window ##=data.class##"
         data-bridge-event="##:data.event || function(e, edata, tmplElem){
           tmplElem.style.zIndex = BridgeUi.WindowFunc.maxZindex() + 1;
           if (data.clickCallback) data.clickCallback();
         }##">
 
-    ##%minimizar=tmpl.brui.WindowMinimizar(Object.assign({style: {left:'0', top: '0'}, runIcon : data.runIcon || {label: data.title || data.runIconLabel}}, data.windowMin))##
+    ##%windowMinimizar = tmpl.brui.WindowMinimizar(Object.assign({style: {left:'0', top: '0'}, runIcon : data.runIcon || {label: data.title || data.runIconLabel}}, data.windowMin))##
     ##%tmpl.brui.WindowDrag(Object.assign({style: {left:'20px', right:'40px', top: '0', width: 'initial'}}, data.windowDrag))##
     ##%tmpl.brui.WindowMaximizar(Object.assign({style: {right:'20px', top: '0'}}, data.windowMax))##
     ##%tmpl.brui.WindowCloser(Object.assign({style: {right:'0', top: '0'}}, data.windowClose))##

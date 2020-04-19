@@ -618,11 +618,16 @@
 
   <template id="brui-Window">
   ##
+  var startLeft = data.startLeft != undefined ? parseInt(data.startLeft) : 0;
+  var startTop = data.startTop != undefined ? parseInt(data.startTop) : 0;
+  var shiftLeft = data.shiftLeft != undefined ? parseInt(data.shiftLeft) : 20;
+  var shiftTop = data.shiftTop != undefined ? parseInt(data.shiftTop) : 20;
+
   var dialogs = document.querySelectorAll('.brui-Window');
   var dialogCount = dialogs.length;
   var idx = 0;
   for (idx=0; idx < dialogCount; idx++) {
-    if (!Array.prototype.find.call(dialogs, (dialog) => dialog.offsetWidth != 0 && dialog.offsetLeft == 20 * idx && dialog.offsetTop == 20 * idx)) break;
+    if (!Array.prototype.find.call(dialogs, (dialog) => dialog.offsetWidth != 0 && dialog.offsetLeft == startLeft + (idx * shiftLeft) && dialog.offsetTop == startTop + (idx * shiftTop))) break;
   }
   tmplScope.remove = function() {
     tmplScope.element.remove();
@@ -630,7 +635,7 @@
   }
   var windowMinimizar = null;
   ##
-  <div style="left: ##=idx * 20##px; top: ##=idx * 20##px; z-index: ##=BridgeUi.WindowFunc.maxZindex() + 1##; ##=data.style##"
+  <div style="left: ##=startLeft + (idx * shiftLeft)##px; top: ##=startTop + (idx * shiftTop)##px; z-index: ##=BridgeUi.WindowFunc.maxZindex() + 1##; ##=data.style##"
         class="brui-Window ##=data.class##"
         data-bridge-event="##:data.event || function(e, edata, tmplElem){
           tmplElem.style.zIndex = BridgeUi.WindowFunc.maxZindex() + 1;

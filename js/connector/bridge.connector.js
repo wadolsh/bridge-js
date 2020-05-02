@@ -262,7 +262,7 @@
         } : this.addId({
           "key": key,
           "method": "reqData",
-          "parm": {},
+          //"parm": {},
         }, query);
       this.combine(data);
       return this;

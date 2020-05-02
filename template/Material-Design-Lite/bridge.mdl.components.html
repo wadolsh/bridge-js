@@ -568,13 +568,14 @@
 
   <template id="mdl-Menu">
   ##
+  var id = data.id;
   var forValue = data.for;
   var options = data.options;
   var items = data.items || [];
   ##
-  <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect ##=MDL.options('mdl-menu--', options)##" for="##=forValue##">
+  &lt;ul ##=MDL.attr('id', id)## class="mdl-menu mdl-js-menu mdl-js-ripple-effect ##=MDL.options('mdl-menu--', options)##" for="##=forValue##"&gt;
     ##items.forEach(function(item) {##
-    &lt;li class="mdl-menu__item ##=MDL.options('mdl-menu__item--', item.options)##" data-bridge-event="##:item.event##" ##=item.disabled ? 'disabled' : ''##&gt;##%item.label || item##</li>
+    &lt;li ##=MDL.attr('id', item.id)## class="mdl-menu__item ##=MDL.options('mdl-menu__item--', item.options)##" data-bridge-event="##:item.event##" ##=item.disabled ? 'disabled' : ''##&gt;##%item.label || item##</li>
     ##});##
   </ul>
   ##

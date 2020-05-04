@@ -275,7 +275,7 @@
   tmplScope.content = function(scope) {
     while (contentArea.firstChild) contentArea.removeChild(contentArea.firstChild);
     if (Array.isArray(scope)) {
-      for (const i in scope) {
+      for (var i in scope) {
         contentArea.appendChild(scope[i].element || scope[i]);
       }
     } else {
@@ -716,8 +716,8 @@
       var tbody = data.tbody;
       items = tbody ? tbody.items ? tbody.items : tbody : data.items;
     }
-    let trs = tmplScope.element.querySelectorAll('tbody tr');
-    let selectedItems = [];
+    var trs = tmplScope.element.querySelectorAll('tbody tr');
+    var selectedItems = [];
     trs.forEach((e, i) => {
       if (e.classList.contains('is-selected')) selectedItems.push(items[i]);
     });

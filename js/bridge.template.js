@@ -19,7 +19,6 @@
           var nextSource = arguments[index];
           if (nextSource != null) { // Skip over if undefined or null
             for (var nextKey in nextSource) {
-              // Avoid bugs when hasOwnProperty is shadowed
               if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
                 to[nextKey] = nextSource[nextKey];
               }
@@ -44,8 +43,9 @@
         enumerable: true,
         writable: true,
         value: function remove() {
-          if (this.parentNode !== null)
+          if (this.parentNode !== null) {
             this.parentNode.removeChild(this);
+          }
         }
       });
     });
@@ -995,7 +995,7 @@
   addTmpl('br-Input', '&lt;input name="##=data.name##" type="##=data.type##" value="##=data.value##" ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"/&gt;');
   addTmpl('br-Select', '&lt;select name="##=data.name##" value="##=data.value##" ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"&gt;'
           + '&lt;option class="empty" value=""&gt;##=data.placeholder##&lt;/option&gt;'
-          + '##%data.options.map(option => \'&lt;option value="\' + option.value + \'"\' + (data.value == option.value ? \'selected=""\' : \'\') + \'&gt;\' + option.label + \'&lt;/option&gt;\')##'
+          + '##%data.options.map(function(option) { \'&lt;option value="\' + option.value + \'"\' + (data.value == option.value ? \'selected=""\' : \'\') + \'&gt;\' + option.label + \'&lt;/option&gt;\'})##'
           + '&lt;select/&gt;');
 
 }).call(this);

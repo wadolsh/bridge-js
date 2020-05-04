@@ -148,13 +148,13 @@
       .forEach($el.appendChild.bind($el));
     return $el;
   }
-  
+
   var changed = function(node1, node2) {
     return typeof node1 !== typeof node2 ||
            node1.nodeName === '#text' && node1 !== node2 ||
            node1.tagName !== node2.tagName
   }
-  
+
   var updateElement = function($parent, newNode, oldNode, index = 0) {
     if (!oldNode) {
       $parent.appendChild(
@@ -392,7 +392,7 @@
                   interpolate = new Function('return ' + interpolate.slice(1) + ';')();
                 }
                 */
-                docFragment.appendChild(self.element.stringToElement(childElement));   
+                docFragment.appendChild(self.element.stringToElement(childElement));
               } else if (typeof childElement === 'number') {
                 docFragment.appendChild(self.element.stringToElement(childElement));
               } else if (typeof childElement === 'function') {
@@ -795,7 +795,7 @@ console.log(source)
       if (callback) {
         callback.call(wrapperElement, tmplScope);
       }
-      
+
       tmplScope.release = function() {
         var props = Object.getOwnPropertyNames(tmplScope);
         for (var i = 0; i < props.length; i++) {
@@ -854,7 +854,7 @@ console.log(source)
         // tmplScope = null;
         return scope;
       };
-      
+
       tmplScope.update = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
@@ -943,7 +943,7 @@ console.log(source)
       option = {};
     }
     option = Object.assign({loadScript: true, loadLink: true}, option);
-    
+
     var importDataParser = function(obj) {
       if (typeof obj === 'string') {
         return {url: obj, option: option};
@@ -972,7 +972,7 @@ console.log(source)
         appendToHead(scripts);
       }
     }
-    
+
     if (Array.isArray(importData)) {
       var arraySize = importData.length;
       importData.forEach(function(data) {
@@ -1018,7 +1018,7 @@ console.log(source)
       if (urlCacheStatus) {
         var lastModified = urlCacheStatus['Last-Modified'];
         var eTag = urlCacheStatus['ETag'];
-        
+
       }
     }
     */

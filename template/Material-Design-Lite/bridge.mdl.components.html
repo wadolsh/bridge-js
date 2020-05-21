@@ -832,7 +832,7 @@
     </div>
     ##} else {##
       ##if (rows && rows > 1) {##
-    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)##&gt;##=value##&lt;/textarea&gt;
+    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;##=value##&lt;/textarea&gt;
       ##} else {##
     &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;
       ##}##

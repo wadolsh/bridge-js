@@ -84,15 +84,17 @@
     "'":    "\\'",
     '\\':   '\\\\',
     '\r':   '\\r',
-    '\n':   '',
+    '\n':   '\\n',
     '\t':   '\\t',
     '\u2028': '\u2028',
     '\u2029': '\u2029',
     '><': '><',
     '<': '<',
-    '>': '>'
+    '>': '>',
+    //'#': '#'
   };
   var escaper = /\>( |\n)+\<|\>( |\n)+|( |\n)+\<|\\|'|\r|\n|\t|\u2028|\u2029/g;
+  //var escaper = /\>( |\n)+\<|\>( |\n)+|( |\n)+\<|#( |\n)+|( |\n)+#|\\|'|\r|\n|\t|\u2028|\u2029/g;
 
   var firstElementChild = function(ele) {
     if (ele.firstElementChild) return ele.firstElementChild;
@@ -374,7 +376,6 @@
           } else {
             $tmplElement.parentNode.removeChild($tmplElement);
           }
-
         });
       },
       stringToElement: function(str) {
@@ -836,7 +837,7 @@
       callback = option;
       option = {};
     }
-    option = Object.assign({loadScript: true, loadLink: true}, option);
+    option = Object.assign({loadScript: true, loadStyle: true, loadLink: true}, option);
 
     var importDataParser = function(obj) {
       if (typeof obj === 'string') {
@@ -849,7 +850,11 @@
     var appendToHead = function(elements) {
       if (elements && elements.length > 0) {
         Array.prototype.forEach.call(elements, function(element) {
-          document.head.appendChild(element);
+          if (element.id) {
+            var oldElement = document.getElementById(element.id);
+            if (oldElement) oldElement.parentNode.removeChild(oldElement);
+          }
+          document.body.appendChild(element);
         });
       }
     }
@@ -861,8 +866,21 @@
         var links = content.querySelectorAll('link');
         appendToHead(links);
       }
+      if (option.loadStyle) {
+        var styles = content.querySelectorAll('style[id]');
+        appendToHead(styles);
+      }
       if (option.loadScript) {
-        var scripts = content.querySelectorAll('script');
+        var scripts = content.querySelectorAll('script[id]:not([type="template"])');
+        scripts = Array.prototype.filter.call(scripts, function(node) {
+          return node.innerHTML;
+        }).map(function(node) {
+          var scriptText = node.innerHTML;
+          var scriptElm = document.createElement('script');
+          var inlineCode = document.createTextNode(scriptText);
+          scriptElm.appendChild(inlineCode);
+          return scriptElm;
+        });
         appendToHead(scripts);
       }
     }

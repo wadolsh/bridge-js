@@ -68,15 +68,19 @@
       if (autoReflash) renderingArea.reflashCode({code: cMirror.getValue(), type: type});
     }
   });
-  var renderingArea = tmpl.pg.RenderingArea({imports: imports, code: code, type: type, template: template});
   var consoleArea = tmpl.pg.ConsoleArea({show: showConsole});
+  var renderingArea = tmpl.pg.RenderingArea({imports: imports, code: code, type: type, template: template, loadCallback: function(iframe) {
+    setTimeout(function() {
+      consoleArea.setWindow(iframe.contentWindow);
+    });
+  }});
 
   var codeSpliteArea = tmpl.brui.SplitterLayout({
     class: 'code',
     direction: '',
     items: [[tmpl.br.Div({class: 'splitter-title', content: 'Run Code'}), runCodeArea], [tmpl.br.Div({class: 'splitter-title', content: 'Result'}), renderingArea]]
   });
-  
+
   var templateSpliteArea, templateCodeArea = null;
   if (hasTemplate) {
     templateCodeArea = tmpl.pg.CodeMirrorArea({
@@ -114,6 +118,9 @@
     </div>
     ##%consoleArea##
   </div>
+  ###
+
+  ##
 </template>
 
 <template id="pg-Component-PlayGround">
@@ -165,11 +172,11 @@
   var code = data.code;
   var runCode = data.runCode;
   var type = data.type;
-  
+
   var autoReflash = true;
 
   var toRenderingCode = function() {
-    var realCode = "bridge.tmplTool.addTmplByUrl([" + 
+    var realCode = "bridge.tmplTool.addTmplByUrl([" +
         "'" + importTmpls.join("', '") + "'" +
       "], {loadScript: false, loadLink: false}, function() {" +
         (runCode || code) +
@@ -245,6 +252,7 @@
   var template = data.template;
   var code = data.code;
   var type = data.type;
+  var loadCallback = data.loadCallback;
   var loadCount = 0;
   var hasImport = false;
 
@@ -267,9 +275,9 @@
     addTmplByUrl: function(item) {
       loadCount++;
       var loader = 'bridge.tmplTool.addTmplByUrl(' + item.text + ', function() {' +
-        'loadCount--;' + 
-        'if (loadCount == 0) {' + 
-        '  execScript(code);' + 
+        'loadCount--;' +
+        'if (loadCount == 0) {' +
+        '  execScript(code);' +
         '}' +
       '});';
       return tmpl.br.Tag(['script', {innerHTML: loader}]);
@@ -307,20 +315,20 @@
     if (!code) return;
     var head = iframeDocument.head;
     var body = iframeDocument.body;
-    
+
     if (template && type == 'codeIsTemplate') {
       var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
       if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
       template.forEach(function(tmplData) {
         iframeWindow.bridge.tmplTool.addTmpl(tmplData.key, tmplData.code);
       });
-      
+
     } else if (template && type == 'codeIsTemplateFile') {
       var oldTemplateSctipt = iframeDocument.getElementById('templateScript');
       if (oldTemplateSctipt) head.removeChild(oldTemplateSctipt);
       iframeWindow.bridge.tmplTool.addTmpls(template);
     }
-    
+
     if (type == 'codeIsPage') {
       iframeDocument.write(code);
     } else {
@@ -354,20 +362,19 @@
   ##
   <div class="pg-Rendering-Area">
     <iframe data-bridge-load="##:function(target) {
-    setTimeout(function() {
-      iframeWindow = tmplScope.window = target.contentWindow;
-
-      if (target.contentDocument || target.contentWindow) {
-        iframeDocument = target.contentDocument || target.contentWindow.document;
-        var baseTag = tmpl.br.Tag(['base', {href: location.origin + location.pathname}]);
-        iframeDocument.head.appendChild(baseTag.element);
-        imports.forEach(function(obj) {
-          var tag = createImportElement(obj);
-          if (tag) iframeDocument.head.appendChild(tag.element);
-        });
-      }
-    });
-
+      setTimeout(function() {
+        iframeWindow = tmplScope.window = target.contentWindow;
+        if (target.contentDocument || target.contentWindow) {
+          iframeDocument = target.contentDocument || target.contentWindow.document;
+          var baseTag = tmpl.br.Tag(['base', {href: location.origin + location.pathname}]);
+          iframeDocument.head.appendChild(baseTag.element);
+          imports.forEach(function(obj) {
+            var tag = createImportElement(obj);
+            if (tag) iframeDocument.head.appendChild(tag.element);
+          });
+        }
+        if (loadCallback) loadCallback(target);
+      });
     }##" sandbox="allow-same-origin allow-scripts allow-modals"></iframe>
   </div>
 </template>
@@ -431,7 +438,6 @@
   tmplScope.clear = function() {
     while (area.firstChild) { area.removeChild(area.firstChild); }
   }
-
   tmplScope.console = {
     log: function() {
       console.log.apply(null, arguments);
@@ -454,7 +460,7 @@
             }
             return value;
           };
-        
+
           htmlString = (JSON && JSON.stringify ? JSON.stringify(target, replacer, 2) : target);
         } else {
           htmlString = target;
@@ -478,7 +484,7 @@
   tmplScope.show = function(value) {
     tmplScope.element.style.display = value ? '' : 'none';
   }
-  
+
   var consoleBackup = null;
   tmplScope.setWindow = function(target) {
     if (target) {
@@ -515,7 +521,7 @@
           targetWindow.console.error(error);
         }
         targetWindow.console.log(result);
-        
+
       }})##
       ##%tmpl.bs.Button({label: 'AUTO SCROLL', styleClass: 'xs right '+ (autoScroll ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
         autoScroll = !autoScroll;

@@ -1,4 +1,109 @@
 <body>
+<style id="docs-Common-Style">
+    .docs-Base code[class*=language-],
+    .docs-Base pre[class*=language-] {
+    }
+    .docs-Base .row, .docs-Base .sidemenu {
+      height: 100%;
+    }
+    .docs-Base .row {
+      margin-right: 0px;
+      margin-left: 0px;
+    }
+    .docs-Base .sidemenu {
+      border-right: 1px #ddd solid;
+      padding-right: 0px;
+      padding-left: 0px;
+    }
+    .docs-Base .mainArea {
+      overflow: auto;
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+    }
+    .docs-Base .sidemenu .list-group {
+      overflow-x: auto;
+      height: calc(100% - 56px);
+      margin-bottom: 0px;
+    }
+    .docs-Base .sidemenu .list-group-item {
+      border: 0px;
+      cursor: pointer;
+    }
+    .docs-Base .sidemenu .list-group-item {
+      display: none;
+    }
+    .docs-Base .sidemenu .list-group-item.display {
+      display: block;
+    }
+    .docs-Base .sidemenu .list-group-item.H1 {
+      padding-left: 20px;
+      display: block;
+    }
+    .docs-Base .sidemenu .list-group-item.H2 {
+      padding-left: 40px;
+    }
+    .docs-Base .sidemenu .list-group-item.H3 {
+      padding-left: 60px;
+    }
+    .docs-Base .sidemenu .list-group-item.H4 {
+      padding-left: 80px;
+    }
+    .docs-Base .sidemenu .list-group-item.H5 {
+      padding-left: 100px;
+    }
+    .docs-Base .sidemenu .list-group-item.active .list-group-item {
+      color: black;
+    }
+    pre, .ta-TestArea {
+      margin: 0 0 20px;
+    }
+</style>
+<script id="docs-Common-Script">
+  var genSidemenu = function(data) {
+    var titleList = data.element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+    Array.prototype.forEach.call(titleList, function(element) {
+      var splited = element.id.split('/');
+      data.munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1] + ' ' + element.tagName, index: splited[1], hash: '#' + element.id});
+    });
+  }
+
+  var getSidemenu = function(data) {
+    return function() {
+      return data.munuList.map(function(item) {
+        return Object.assign(item, {event: function(e, edata, tmplElem) {
+          if (item.index != data.selectedIndex) {
+            var area = data.contentArea();
+            while (area.firstChild) area.removeChild(area.firstChild);
+            data.tmplScope.reflash({index: item.index});
+            area.appendChild(data.tmplScope.element);
+            data.selectedIndex = item.index;
+
+            Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
+              element.classList.remove('display');
+            });
+            Array.prototype.forEach.call(tmplElem.querySelectorAll('.' + item.index), function(element) {
+              element.classList.add('display');
+            });
+
+            var removeTargets = data.tmplScope.element.querySelectorAll('.page:not(#' + item.index + ')');
+            Array.prototype.forEach.call(removeTargets, function(target) {
+              target.parentElement.removeChild(target);
+            });
+
+            area.appendChild(data.tmplScope.element);
+            data.selectedIndex = item.index;
+          }
+          setTimeout(function() {
+            location.hash = '';
+            location.hash = item.hash;
+          }, 200);
+        }})
+      });;
+    }
+  };
+</script>
 <template id="docs-Base">
   <style id="style-docs-Base">
     html, body, .docs-Base {
@@ -28,12 +133,13 @@
   ###
   setTimeout(function() {
     var hashArray = (location.hash.replace('#', '') || 'Docs/Intro').split('/');
-    if (!hashArray[1]) hashArray[1] = 'Intro';
-    document.querySelector('a[href="#' + hashArray[0] + '"]').click();
+    //if (!hashArray[1]) hashArray[1] = 'Intro';
+    document.querySelector('a[href^="#' + hashArray[0] + '"]').click();
     setTimeout(function() {
-      document.getElementById('sidemenu').querySelector('.' + hashArray.join('_')).click();
+      var sidemenu = document.getElementById('sidemenu');
+      if (sidemenu) sidemenu.querySelector('.' + hashArray.join('_')).click();
     }, 0);
-  }, 0);
+  }, 100);
   ##
   <div class="docs-Base">
     ##%tmpl.bs.Navbar({
@@ -41,10 +147,10 @@
       content: [
         tmpl.bs.NavbarLi({
           items: [
-            {label: '문서', href: "#Docs", event: function() {
+            {label: '레퍼런스', href: "#Docs/Intro", event: function() {
               tmpl.docs.Docs({}, main);
             }},
-            {label: '따라하기', href: "#Tutorial", event: function() {
+            {label: '따라하기', href: "#Tutorial/Calculator", event: function() {
               tmpl.docs.Tutorial({}, main);
             }}
           ]
@@ -70,61 +176,8 @@
 
 <template id="docs-Docs">
   <style id="style-docs-Docs">
-    .docs-Docs, .docs-Docs .row, .docs-Docs .sidemenu {
+    .docs-Docs {
       height: 100%;
-    }
-    .docs-Docs .row {
-      margin-right: 0px;
-      margin-left: 0px;
-    }
-    .docs-Docs .sidemenu {
-      border-right: 1px #ddd solid;
-      padding-right: 0px;
-      padding-left: 0px;
-    }
-    .docs-Docs .mainArea {
-      overflow: auto;
-      position: absolute;
-      top: 0px;
-      bottom: 0px;
-      right: 0px;
-    }
-    .docs-Docs .sidemenu .list-group {
-      overflow-x: auto;
-      height: calc(100% - 56px);
-      margin-bottom: 0px;
-    }
-    .docs-Docs .sidemenu .list-group-item {
-      border: 0px;
-      cursor: pointer;
-    }
-    .docs-Docs .sidemenu .list-group-item {
-      display: none;
-    }
-    .docs-Docs .sidemenu .list-group-item.display {
-      display: block;
-    }
-    .docs-Docs .sidemenu .list-group-item.H1 {
-      padding-left: 20px;
-      display: block;
-    }
-    .docs-Docs .sidemenu .list-group-item.H2 {
-      padding-left: 40px;
-    }
-    .docs-Docs .sidemenu .list-group-item.H3 {
-      padding-left: 60px;
-    }
-    .docs-Docs .sidemenu .list-group-item.H4 {
-      padding-left: 80px;
-    }
-    .docs-Docs .sidemenu .list-group-item.H5 {
-      padding-left: 100px;
-    }
-    .docs-Docs .sidemenu .list-group-item.active .list-group-item {
-      color: black;
-    }
-    pre, .ta-TestArea {
-      margin: 0 0 20px;
     }
   </style>
   ##
@@ -162,7 +215,7 @@
       display: block;
     }
     */
-    
+
     .docs-Docs-Template > pre {
       padding: 10px;
       border-radius: 4px;
@@ -202,41 +255,9 @@
   ##
   var contentArea = data.contentArea;
   var index = data.index || 'Intro';
-  var selectedIndex = null;
-  
   var munuList = [];
-  tmplScope.getSidemenu = function() {
-    return munuList.map(function(item) {
-      return Object.assign(item, {event: function(e, edata, tmplElem) {
-        if (item.index != selectedIndex) {
-          var area = contentArea();
-          while (area.firstChild) area.removeChild(area.firstChild);
-          tmplScope.reflash({index: item.index});
-          area.appendChild(tmplScope.element);
-          selectedIndex = item.index;
-
-          Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
-            element.classList.remove('display');
-          });
-          Array.prototype.forEach.call(tmplElem.querySelectorAll('.' + item.index), function(element) {
-            element.classList.add('display');
-          });
-
-          var removeTargets = tmplScope.element.querySelectorAll('.page:not(#' + item.index + ')');
-          Array.prototype.forEach.call(removeTargets, function(target) {
-            target.parentElement.removeChild(target);
-          });
-
-          area.appendChild(tmplScope.element);
-          selectedIndex = item.index;
-        }
-        setTimeout(function() {
-          location.hash = '';
-          location.hash = item.hash;
-        }, 200);
-      }})
-    });;
-  }
+  var sideData = {contentArea: contentArea, selectedIndex: null, munuList: munuList, tmplScope: tmplScope};
+  tmplScope.getSidemenu = getSidemenu(sideData);
   ##
   <div class="docs-Docs-Template">
     <div class="page" id="Intro">
@@ -256,61 +277,61 @@
         <h2 id="Docs/GettingStarted/Install">설치</h2>
         아래와 같이 bridge.template.js javascript를 추가해주세요.
         ##%tmpl.docs.CodeTemplate00101({})##
-    
+
         이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.<br/>
-        
+
         <h2 id="Docs/GettingStarted/AddTmpl">Template 등록</h2>
         이제 다음과 같은 Template 파일을 만들어 봅시다.
         ##%tmpl.docs.CodeTemplate00201({})##
         이제 do.Simple라는 Template 을 Component 로 사용할 있는 준비가 되었습니다.<br/>
-        
+
         <h2 id="Docs/GettingStarted/Tmpl">Component 생성</h2>
         컨포넌트의 생성과 화면 배치는 다음과 같이 이루어 집니다.
         ##%tmpl.docs.CodeTemplate00301({})##
-    
+
         또는 다음과 같이 사용 할 수도 있습니다.
         ##%tmpl.docs.CodeTemplate00401({})##
-    
+
         {label: 'Div Sample1'} 로 넘겨준 데이터는 Template 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
         아래에서 데모로 코드의 동작을 확인해 보십시오.
         ##%tmpl.docs.CodeTemplate00501({})##
-        
+
         Component 생성시 javascript Object 가 리턴 되어 집니다.<br/>
         이 object는 Template 작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.
         ##%tmpl.docs.CodeTemplate00601({})##
-    
+
         bridge.tmplTool.addTmpl() 을 사용 하여 일일이 Template 을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
-        bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 ��원 하고 있습니다.<br/>
+        bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 하고 있습니다.<br/>
         이때에는 bridge.tmplTool.addTmpls() 를 통해 Template 을 등록 합니다.
         ##%tmpl.docs.CodeTemplate00701({})##
-        
+
         template Tag 의 id 에 지정한 이름으로 Component 생성 할 수 있게 됩니다.</br>
         동일한 id 로 다른 template 을 로딩 하게 되는 경우는 기존 template 를 대체하게 됩니다.</br>
         template Tag 안에 정의도니 style 는 template 해석 할 때에 document 의 head 에 추가 됩니다.</br>
-        style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에, 
+        style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에,
         style Tag 의 id 는 "style-{tempalte의 id}" 로 지정할 것을 권합니다.</br>
         </br>
         아래에서 데모에서 template 구조와 동작을 확인해 보시기 바랍니다.
         ##%tmpl.docs.CodeTemplate00702({})##
-        
+
         <h2 id="Docs/GettingStarted/Example">사용예</h2>
         좀더 실제적인 사용예를 살펴 보겠습니다.<br/>
         먼저 반복 사용되는 UI쪽만을 분리한 template 파일을 만들면 여러 프로젝트에서 재활용 할 수 있을 것입니다.<br/>
         여기서는 Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) 를 bridge.template 로 사용 할 수 있게 만든 bridge.mdl.components.html 를 사용 하겠습니다.<br/>
-        
-        ※ bridge.template 으로 구성된 Material Design Lite 에 관해서는 
+
+        ※ bridge.template 으로 구성된 Material Design Lite 에 관해서는
         <a href="template/Material-Design-Lite/" target="_blank">이곳의 링크</a>를 참고해 주십시오.<br/>
-        
+
         <br/>
         bridge.tmplTool.addTmplByUrl()은 Array 로 지정된 Template 파일을 다운 로드 해서 로딩 한 다음 callback을 실행 합니다.<br/>
-    
+
         <br/>
         <h4>index.html</h4>
         ##%tmpl.docs.CodeTemplate00801({})##
-        
+
         <h4>docs.CodeTemplate00802.components.html</h4>
         ##%tmpl.docs.CodeTemplate00802({})##
-    
+
         데모 화면을 통해 "Content1" 과 "Content2" 를 클릭 해서 Event 발생을 확인해 보시기 바랍니다.<br/>
         Content1 에서는 input 에 값을 넣고 Button 를 클릭해서 입력값의 표시를 확인 해 보시기 바랍니다.
         ##%tmpl.docs.CodeTemplate00803({})##
@@ -332,7 +353,7 @@
         <br>
         HTML Tag 등을 화면에 출력할 필요가 있을 때 사용 합니다.
         ##%tmpl.docs.CodeTemplate10201({})##
-        
+
         <br>
         <h4 id="Docs/Template/Expression/P">[ #\#% #\# ]</h4>
         다른 컨포넌트를 참조 합니다.
@@ -341,7 +362,7 @@
         <br>
         Array 로 복수의 참조를 배치하면 Array 에 정의된 순서대로대상 화면에 배치하게 됩니다.
         ##%tmpl.docs.CodeTemplate10301({})##
-        
+
         <h5>Option</h5>
         <table class="option">
           <tr>
@@ -350,7 +371,7 @@
           </tr>
         </table>
 
-        javascript 는 기본적으로 싱글 스레드로 작동함으로써 대량의 HTML Element를 화면에 추가 하게 되면 DOM 렌더링이 끝난 후에 화면 에 보여 지게 되며, 
+        javascript 는 기본적으로 싱글 스레드로 작동함으로써 대량의 HTML Element를 화면에 추가 하게 되면 DOM 렌더링이 끝난 후에 화면 에 보여 지게 되며,
         또한 화면 로딩이 끝날때까지 유저는 다른 조작을 할 수 없게 됩니다.
         <br>
         #\#% #\#로 HTML Element를 추가 할 때 [::지연시간] 을 지정하게 되면 자동으로 setTimeout 에의한 비동기 렌더링을 실행 하게 됩니다.
@@ -371,7 +392,7 @@
         와 같이 javascript 표현중 HTML TAG 의 사용 할 수 있습니다.
         ##%tmpl.docs.CodeTemplate10401({})##
         ##%tmpl.docs.CodeTemplate10402({})##
-        
+
         <br>
         <h4 id="Docs/Template/Expression/S">[ #\## #\# ]</h4>
         HTML 렌더링이 끝난 후에 javascript 를 평가 합니다.
@@ -392,7 +413,7 @@
         <br>
         단 1회 실행이 필요한 초기화 작업 등에 사용합니다.
         <br>
-        
+
         ##%tmpl.docs.CodeTemplate10601({})##
 
       <h2 id="Docs/Template/Element">Element 참조</h2>
@@ -427,7 +448,7 @@
             <td>콤퍼넌트의 tmplScope</td>
           </tr>
         </table>
-        
+
         ##%tmpl.docs.CodeTemplate20101({})##
         <h5>Option</h5>
         <table class="option">
@@ -443,22 +464,22 @@
             <td>tmplData 입력 받을 데이터를 지정할 수 있습니다.</td>
           </tr>
         </table>
-        
+
         Option 을 지정하는 경우의 예제
         ##%tmpl.docs.CodeTemplate20102({})##
-        
+
         <h4 id="Docs/Template/Expression/data-bridge-load">< data-bridge-load="#\#: #\#" ></h4>
         Element 가 로딩 된 후에 해당 Element 의 참조가 필요한 경우 사용 합니다.
         ##%tmpl.docs.CodeTemplate20201({})##
-        
+
         <h4 id="Docs/Template/Expression/data-bridge-scope-key">< data-bridge-scope-key="#\#: #\#" ></h4>
         지정된 Element 를 tmplScope 에 참조합니다.
         ##%tmpl.docs.CodeTemplate20301({})##
-        
+
         <h4 id="Docs/Template/Expression/data-bridge-var">< data-bridge-var="#\#: #\#" ></h4>
         지정된 Element 를 내부 변수로서 참조 합니다.
         ##%tmpl.docs.CodeTemplate20401({})##
-      
+
       <h2 id="Docs/Template/Variable">내장 변수</h2>
         <h4 id="Docs/Template/Variable/data">data</h4>
           [dataKeyName](default: "data")<br>
@@ -535,7 +556,7 @@
           </table>
         <br><br>
     </div>
-    
+
     <div class="page" id="TemplateEngine">
       <h1 id="Docs/TemplateEngine">Template Engine</h1>
         <h2 id="Docs/TemplateEngine/Setting">Template Engine 설정</h2>
@@ -569,7 +590,7 @@
               </td>
             </tr>
           </table>
-          
+
         <h2 id="Docs/TemplateEngine/TmplTool">bridge.tmplTool 구성</h2>
           <h4 id="Docs/TemplateEngine/TmplTool/escapeHtml">bridge.tmplTool.escapeHtml</h4>
           문자열의 escape, unescape 처리를 합니다.<br>
@@ -664,20 +685,20 @@
               </td>
             </tr>
           </table>
-          
+
           <h4 id="Docs/TemplateEngine/TmplTool/addTmpl">bridge.tmplTool.addTmpl(keyName, templateString, tmplSettings)</h4>
           하나의 Template 를 특정 이름으로 컴파일 합니다.<br>
           ##%tmpl.docs.CodeTemplate302101({})##
           ##%tmpl.docs.CodeTemplate302102({})##
-          
+
           컴파일 시의 해석 엔진을 추가 하거나 수정 하는 것으로 기능을 확장 할 수 있습니다.<br>
           " #\#= #\# "표현을 " {{= }} "로 바꾸어 보겠습니다.
           ##%tmpl.docs.CodeTemplate302103({})##
           ##%tmpl.docs.CodeTemplate302104({})##
-          
+
           템플렛을 작성하는 개발자는 자신 만의 컴파일 해석기를 추가 수정 함으로써 템플릿 안에서 자유로운 표현의 사용이 가능 합니다.<br>
           템플릿 해석기의 표현들은 다음과 같이 구성되어 있습니다.
-          
+
           <table class="option">
             <tr>
               <th colspan="2"></th>
@@ -698,58 +719,50 @@
 
           <h4 id="Docs/TemplateEngine/TmplTool/addTmpls">bridge.tmplTool.addTmpls(templateString, tmplSettings)</h4>
           Template 세트를 컴파일 합니다.<br>
-          
+
           ##%tmpl.docs.CodeTemplate303101({})##
           ##%tmpl.docs.CodeTemplate303102({})##
 
-          
+
           <h4 id="Docs/TemplateEngine/TmplTool/addTmplByUrl">bridge.tmplTool.addTmplByUrl([urlArray], option, callback)</h4>
           Template 세트를 담은 파일을 로드 하여 컴파일 합니다.
-          
+
           ##%tmpl.docs.CodeTemplate304101({})##
           ##%tmpl.docs.CodeTemplate304102({})##
-          
+
           <h4 id="Docs/TemplateEngine/TmplTool/addI18n">bridge.tmplTool.addI18n(keyName, {langName: content...})</h4>
           다국어 지원을 위한 하나의 key, value 를 추가 합니다.
-          
+
           ##%tmpl.docs.CodeTemplate305101({})##
           ##%tmpl.docs.CodeTemplate305102({})##
-          
+
           <h4 id="Docs/TemplateEngine/TmplTool/addI18ns">bridge.tmplTool.addI18ns({keyName: {langName: content...}...})</h4>
           다국어 지원을 위한 key, value 리스트를 동시에 추가 합니다.
-          
+
           ##%tmpl.docs.CodeTemplate306101({})##
           ##%tmpl.docs.CodeTemplate306102({})##
-          
+
           <h4 id="Docs/TemplateEngine/TmplTool/genId">bridge.tmplTool.genId(tmplId)</h4>
           컴퍼넌트 생성시의 _id 를 생성하는 function 입니다.<br>
           Template의 { tmplId + 컴퍼넌트 생성순번 } 으로 _id 를 생성 합니다.
-          
+
           ##%tmpl.docs.CodeTemplate307101({})##
           ##%tmpl.docs.CodeTemplate307102({})##
-          
+
           <h4 id="Docs/TemplateEngine/TmplTool/tag">bridge.tmplTool.tag(tagName, attrs)</h4>
           HTML Element 를 생성하는데 사용하는 util 입니다.
-          
+
           ##%tmpl.docs.CodeTemplate308101({})##
           ##%tmpl.docs.CodeTemplate308102({})##
     </div>
-    
+
     <div class="page" id="Component">
       <h1 id="Docs/Component">Component 사용</h1>
     </div>
 
   </div>
   ###
-  var element = this;
-  var genSidemenu = function() {
-    var titleList = element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
-    Array.prototype.forEach.call(titleList, function(element) {
-      var splited = element.id.split('/');
-      munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1] + ' ' + element.tagName, index: splited[1], hash: '#' + element.id});
-    });
-  }
-  genSidemenu();
+  genSidemenu({munuList: munuList, element: this});
 
   var removeTargets = this.querySelectorAll('.page:not(#' + index + ')');
   Array.prototype.forEach.call(removeTargets, function(target) {
@@ -774,16 +787,76 @@
 
 <template id="docs-Tutorial">
   <style id="style-docs-Tutorial">
-    
+    .docs-Tutorial {
+      height: 100%;
+      margin-top: -1px;
+    }
   </style>
+  ##
+  var contentArea = function() {
+    return docsMain;
+  }
+  var docItems = [
+    {label: '계산기', tmpl: tmpl.docs.TutorialCalculator({contentArea: contentArea})}
+  ];
+  var selectEvent = function(e) {
+    e.target.parentElement.querySelector('.active').classList.remove('active');
+    e.target.classList.add('active');
+  }
+  ##
   <div class="docs-Tutorial">
-    Tutorial
+    <div class="row">
+      <div id="sidemenu" class="col-xs-3 sidemenu">
+        ##docItems.forEach(function(item) {##
+          <h3>##=item.label##</h3>
+          ##%tmpl.bs.ListGroup({active: true, items: item.tmpl.getSidemenu()})##
+        ##});##
+      </div>
+      <div class="col-xs-9 mainArea" data-bridge-var="##:docsMain##"></div>
+    </div>
   </div>
+</template>
+
+
+<template id="docs-Tutorial-Calculator">
+  <style id="style-docs-Tutorial-Calculator">
+
+  </style>
+  ##
+  var munuList = [];
+  var contentArea = data.contentArea;
+  var index = data.index || 'Intro';
+  var munuList = [];
+  var sideData = {contentArea: contentArea, selectedIndex: null, munuList: munuList, tmplScope: tmplScope};
+  tmplScope.getSidemenu = getSidemenu(sideData);
+  ##
+  <div class="docs-Tutorial-Calculator" id="Calculator">
+    <h1 id="Tutorial/Calculator">계산기</h1>
+    <div data-bridge-var="##:continer##"></div>
+  </div>
+  ###
+  genSidemenu({munuList: munuList, element: this});
+
+  requestGetText('docs/CodeSample/docs.CodeSampleCalculator.components.html', function(text) {
+    //code.innerText = text;
+    //Prism.highlightAll();
+
+    var testArea = tmpl.pg.TestArea({
+      imports: [{type: 'js', text: 'js/bridge.template.js'}],
+      template: text,
+      code: `var calculator = tmpl.Calculator.Board({});
+document.body.appendChild(calculator.element);`,
+      type: 'codeIsTemplateFile',
+      showConsole: true
+    })
+    continer.appendChild(testArea.element);
+  });
+  ##
 </template>
 
 </body>
 
-  
+
 <script>
 if (bridge.tmplTool) {
   bridge.tmplTool.addTmpls(

@@ -1,0 +1,98 @@
+<body>
+  <template id="Calculator-Board">
+    <style id="style-Calculator-Board">
+      .Calculator-Board {
+        width: 200px;
+      }
+      .Calculator-Board .display-area {
+        height: 32px;
+        margin: 4px;
+        padding: 4px;
+        border: 1px solid #cccccc;
+        font-size: 20px;
+      }
+      .Calculator-Board .keypad-area {
+        margin: 4px;
+      }
+      .Calculator-Board .Calculator-Button.digit {
+      }
+      .Calculator-Board .Calculator-Button.sign {
+        background-color: #efefef8f;
+      }
+    </style>
+    ##
+    var display = tmpl.Calculator.Display({});
+    var formula = '';
+    var pushDispay = (e, edata, tmplElem) => {
+      var displayText = display.element.innerText + ' ' + (edata.label);;
+      display.element.innerText = displayText.replace(/([\d.]) ([\d.])/g, '$1$2');
+      formula = formula + (edata.real || edata.label);
+    }
+    var calc = (e, edata, tmplElem) => {
+      console.log('formula: ' + formula);
+      var calcFunc = new Function('return (' + formula + ');');
+      display.element.innerText = calcFunc();
+      formula = display.element.innerText;
+    }
+    var buttons = [
+      {label: '7', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '8', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '9', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '÷', buttonCalss: 'sign', real: '/', event: [pushDispay]},
+
+      {label: '4', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '5', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '6', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '×', buttonCalss: 'sign', real: '*', event: [pushDispay]},
+
+      {label: '1', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '2', buttonCalss: 'digit', event: [pushDispay]},
+      {label: '3', buttonCalss: 'digit', event: [pushDispay]},
+      {label: ' - ', buttonCalss: 'sign', event: [pushDispay]},
+
+      {label: '.', buttonCalss: 'sign', event: [pushDispay]},
+      {label: '0', buttonCalss: 'digit', event: [pushDispay]},
+      {label: ' = ', buttonCalss: 'sign', event: [calc]},
+      {label: ' + ', buttonCalss: 'sign', event: [pushDispay]},
+
+    ].map(data => tmpl.Calculator.Button(data));
+    ##
+    <div class="Calculator-Board">
+      <div class="display-area">
+        ##%display##
+      </div>
+      <div class="keypad-area">
+        ##%buttons##
+      </div>
+    </div>
+  </template>
+
+  <template id="Calculator-Button">
+    <style id="style-Calculator-Button">
+      .Calculator-Button {
+        width: calc(25% - 2px);
+        height: 40px;
+        margin: 1px;
+      }
+    </style>
+    ##
+    var label = data.label;
+    var event = data.event;
+    var buttonCalss = data.buttonCalss;
+    ##
+    <button class="Calculator-Button ##=buttonCalss##" data-bridge-event="##:event##">
+      ##=label##
+    </button>
+  </template>
+
+  <template id="Calculator-Display">
+    <style id="style-Calculator-Display">
+      .Calculator-Display {
+        text-align: right;
+      }
+    </style>
+    <div class="Calculator-Display">
+    </div>
+  </template>
+</body>
+

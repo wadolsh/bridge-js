@@ -15,45 +15,58 @@
         margin: 4px;
       }
       .Calculator-Board .Calculator-Button.digit {
+
       }
       .Calculator-Board .Calculator-Button.sign {
-        background-color: #efefef8f;
+        background-color: #95959570;
+        border-width: 1px;
       }
     </style>
     ##
     var display = tmpl.Calculator.Display({});
     var formula = '';
+    var resetStart = true;
     var pushDispay = (e, edata, tmplElem) => {
+      if (edata.type == 'sign' && (display.element.innerText == '' || isNaN(display.element.innerText))) {
+        return;
+      }
+      if (resetStart && edata.type == 'digit') {
+        display.element.innerText = '';
+        formula = '';
+      }
+
       var displayText = display.element.innerText + ' ' + (edata.label);;
       display.element.innerText = displayText.replace(/([\d.]) ([\d.])/g, '$1$2');
       formula = formula + (edata.real || edata.label);
+      resetStart = false;
     }
     var calc = (e, edata, tmplElem) => {
       console.log('formula: ' + formula);
       var calcFunc = new Function('return (' + formula + ');');
       display.element.innerText = calcFunc();
       formula = display.element.innerText;
+      resetStart = true;
     }
     var buttons = [
-      {label: '7', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '8', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '9', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '÷', buttonCalss: 'sign', real: '/', event: [pushDispay]},
+      {label: '7', type: 'digit', event: [pushDispay]},
+      {label: '8', type: 'digit', event: [pushDispay]},
+      {label: '9', type: 'digit', event: [pushDispay]},
+      {label: '÷', type: 'sign', real: '/', event: [pushDispay]},
 
-      {label: '4', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '5', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '6', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '×', buttonCalss: 'sign', real: '*', event: [pushDispay]},
+      {label: '4', type: 'digit', event: [pushDispay]},
+      {label: '5', type: 'digit', event: [pushDispay]},
+      {label: '6', type: 'digit', event: [pushDispay]},
+      {label: '×', type: 'sign', real: '*', event: [pushDispay]},
 
-      {label: '1', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '2', buttonCalss: 'digit', event: [pushDispay]},
-      {label: '3', buttonCalss: 'digit', event: [pushDispay]},
-      {label: ' - ', buttonCalss: 'sign', event: [pushDispay]},
+      {label: '1', type: 'digit', event: [pushDispay]},
+      {label: '2', type: 'digit', event: [pushDispay]},
+      {label: '3', type: 'digit', event: [pushDispay]},
+      {label: ' - ', type: 'sign', event: [pushDispay]},
 
-      {label: '.', buttonCalss: 'sign', event: [pushDispay]},
-      {label: '0', buttonCalss: 'digit', event: [pushDispay]},
-      {label: ' = ', buttonCalss: 'sign', event: [calc]},
-      {label: ' + ', buttonCalss: 'sign', event: [pushDispay]},
+      {label: '.', type: 'sign', event: [pushDispay]},
+      {label: '0', type: 'digit', event: [pushDispay]},
+      {label: ' = ', type: 'sign', event: [calc]},
+      {label: ' + ', type: 'sign', event: [pushDispay]},
 
     ].map(data => tmpl.Calculator.Button(data));
     ##
@@ -78,9 +91,9 @@
     ##
     var label = data.label;
     var event = data.event;
-    var buttonCalss = data.buttonCalss;
+    var type = data.type;
     ##
-    <button class="Calculator-Button ##=buttonCalss##" data-bridge-event="##:event##">
+    <button class="Calculator-Button ##=type##" data-bridge-event="##:event##">
       ##=label##
     </button>
   </template>

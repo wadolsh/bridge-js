@@ -97,18 +97,18 @@
       ##} else if (data.type == 'textarea') {##
       <textarea class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" rows="##=(data.rows || 3)##" data-bridge-event="##:data.event##" placeholder="##=data.placeholder##">##=data.value##</textarea>
       ##} else if (data.type == 'checkbox' || data.type == 'radio') {
-      var options = data.options;
+      var options = data.options = data.options || [{label: data.label || '', value: ''}];
       options.forEach(function(option) {##
       <div class="##=data.type + (data.inline ? '-inline' : '')## ##=data.optionClass##">
         <label>
-          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value || option)##" ##=BS.prop(data.prop)## ##=data.value == (option.value || option) || option.checked ? 'checked' : null## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label == undefined ? option : option.label)##
+          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value != undefined ? option.value : option)##" ##=BS.prop(data.prop)## ##=data.value == (option.value || option) || option.checked ? 'checked' : null## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label == undefined ? option : option.label)##
         </label>
       </div>
       ##});
     } else if (data.type == 'select') {##
       <select class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##">
         ##data.options.forEach(function(option) {##
-        &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
+        &lt;option value="##=option.value || option##" ##=data.value == (option.value != undefined ? option.value : option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
         ##});##
       </select>
     ##} else {##
@@ -116,7 +116,7 @@
         ##if(data.type == 'search' && data.options) {##
         <datalist id="##=data.listId || 'datalist_' + data.name##">
           ##data.options.forEach(function(option) {##
-          &lt;option value="##=option.value || option##" ##=data.value == (option.value || option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
+          &lt;option value="##=option.value || option##" ##=data.value == (option.value != undefined ? option.value : option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
           ##});##
         </datalist>
         ##}##
@@ -246,7 +246,7 @@
   var activeEvent = null;
 
   if (active == 'multiple' || active == 'multi') {
-  
+
   } else if (active == 'single' || active === true) {
     activeEvent = function(e) {
       var active = ul.querySelector('li.active');
@@ -560,7 +560,7 @@
 
   var clickCallback = data.clickCallback;
   var pageSizeChangeEvent = data.pageSizeChangeEvent;
-  
+
   var endNum = Math.max(Math.ceil(totalCount / pageSize), 1);
 
   var items = new Array();
@@ -586,13 +586,13 @@
     items.push({label: i});
   }
   if (startNum != endNum) items.push({label: endNum, class: 'fixed'});
-  
+
   var activeEvent = function(e, edata, tmplElem) {
     //tmplElem.querySelector('.active').classList.remove('active');
     //e.target.parentElement.classList.add('active');
     tmplScope.reflash({pageNum: edata.item.label});
   }
-  
+
   tmplScope.getPageLength = function() {
     return items.length;
   }

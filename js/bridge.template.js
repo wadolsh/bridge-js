@@ -9,14 +9,14 @@
   if (typeof Object.assign != 'function') {
     // Must be writable: true, enumerable: false, configurable: true
     Object.defineProperty(Object, "assign", {
-      value: function assign(target, varArgs) { // .length of function is 2
-        'use strict';
+      value: function assign(target, ...params) { // .length of function is 2
+        // 'use strict';
         if (target == null) { // TypeError if undefined or null
           throw new TypeError('Cannot convert undefined or null to object');
         }
         var to = Object(target);
-        for (var index = 1; index < arguments.length; index++) {
-          var nextSource = arguments[index];
+        for (var index = 0, length = params.length; index < length; index++) {
+          var nextSource = params[index];
           if (nextSource != null) { // Skip over if undefined or null
             for (var nextKey in nextSource) {
               if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
@@ -259,11 +259,15 @@
           return;
         }
 
+        var eventFuncParams = [$elementTrigger, null, (eventData.selectedData == undefined ? data : eventData.selectedData), $targetElement || $childTarget.parentElement, tmplScope];
+
         if (eventFunc instanceof Function) {
           $elementTrigger.addEventListener('click', function(event){
             event.stopPropagation();
-            var parentElement = $targetElement || $childTarget.parentElement;
-            eventFunc.call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            //var parentElement = $targetElement || $childTarget.parentElement;
+            //eventFunc.call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            eventFuncParams[1] = event;
+            eventFunc.call(...eventFuncParams);
           });
           return;
         }
@@ -274,8 +278,10 @@
         }
         Object.keys(eventFunc).forEach(function(eventType) {
           if (eventType == 'load') {
-            var parentElement = $targetElement || $childTarget.parentElement;
-            eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            //var parentElement = $targetElement || $childTarget.parentElement;
+            //eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            eventFuncParams[1] = $elementTrigger;
+            eventFunc[eventType].call(...eventFuncParams);
             return;
           } else if (eventType == 'var') {
             tmplScope[eventFunc[eventType]] = $elementTrigger;
@@ -285,9 +291,11 @@
           }
 
           $elementTrigger.addEventListener(eventType, function(event){
-            var parentElement = $targetElement || $childTarget.parentElement;
             event.stopPropagation();
-            eventFunc[eventType].call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            //var parentElement = $targetElement || $childTarget.parentElement;
+            //eventFunc[eventType].call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
+            eventFuncParams[1] = event;
+            eventFunc[eventType].call(...eventFuncParams);
           });
 
           if (triggerKey) {
@@ -514,12 +522,15 @@
     var index = 0;
     var source = "";
 
-    text.replace(matcher.pattern, function() {
-      var match = arguments[0];
-      var offset = arguments[arguments.length-2];
+    text.replace(matcher.pattern, function(...params) {
+      //var match = arguments[0];
+      //var offset = arguments[arguments.length-2];
+      var match = params[0];
+      var offset = params[params.length-2];
       source += text.slice(index, offset).replace(escaper, escapeFunc);
       var selected, i = null;
-      Array.prototype.slice.call(arguments, 1, -2).some(function(value, idx, arr) {
+      //Array.prototype.slice.call(arguments, 1, -2).some(function(value, idx, arr) {
+      params.slice(1, -2).some(function(value, idx, arr) {
         if (!!value) {
           selected = value;
           i = idx;

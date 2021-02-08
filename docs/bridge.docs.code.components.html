@@ -181,14 +181,16 @@ tmplScope.getCode = function() {
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
       code: `var sample1 = tmpl.doc10101.tmpl01({});
-var sample2 = tmpl.doc10101.tmpl02({label: 'Sample 2'});
-var sample3 = tmpl.doc10101.tmpl02({});
-var sample4 = tmpl.doc10101.tmpl03({});
-var sample5 = tmpl.doc10101.tmpl04({label: 'Sample 5', bgColor: 'red'});
-var sample6 = tmpl.doc10101.tmpl05({tag: 'button', label: 'Sample 6'});
+var sample2_1 = tmpl.doc10101.tmpl02({label: 'Sample 2'});
+var sample2_2 = tmpl.doc10101.tmpl02({});
+var sample3 = tmpl.doc10101.tmpl03({});
+var sample4 = tmpl.doc10101.tmpl04({label: 'Sample 5', bgColor: 'red'});
+var sample5 = tmpl.doc10101.tmpl05({tag: 'button', label: 'Sample 6'});
+var sample6 = tmpl.doc10101.tmpl06({label: () => sample5.data.label});
 
 document.body.appendChild(sample1.element);
-document.body.appendChild(sample2.element);
+document.body.appendChild(sample2_1.element);
+document.body.appendChild(sample2_2.element);
 document.body.appendChild(sample3.element);
 document.body.appendChild(sample4.element);
 document.body.appendChild(sample5.element);
@@ -667,7 +669,7 @@ bridge.tmplTool.addTmplByUrl([
     'template/Material-Design-Lite/bridge.mdl.components.html',
   ], function() {
 
-    var example1 = tmpl.mdl.Checkbox({label: i18n.docsDocsTemplate.lable305.example1});
+    var example1 = tmpl.mdl.Checkbox({label: bridge.i18n.docsDocsTemplate.lable305.example1});
     var langSelect = function(lang) {
       return function() {
         document.documentElement.lang = lang;
@@ -736,8 +738,8 @@ bridge.tmplTool.addTmplByUrl([
     'template/Material-Design-Lite/bridge.mdl.components.html',
   ], function() {
 
-    var example1 = tmpl.mdl.Button({label: i18n.docsDocsTemplate.lable306.example1, ripple: true, options: ['raised', 'accent']});
-    var example2 = tmpl.mdl.TextField({label: i18n.docsDocsTemplate.lable306.example2});
+    var example1 = tmpl.mdl.Button({label: bridge.i18n.docsDocsTemplate.lable306.example1, ripple: true, options: ['raised', 'accent']});
+    var example2 = tmpl.mdl.TextField({label: bridge.i18n.docsDocsTemplate.lable306.example2});
 
     var langSelect = function(lang) {
       return function() {

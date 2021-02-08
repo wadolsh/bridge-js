@@ -562,11 +562,11 @@
     source += "';\nreturn __p;";
     var render = null;
     try {
-      render = new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', source);
+      render = new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', 'i18n', source);
     } catch(e) {
     	var debugErrorLine = function(source, e) {
     	  console.log(tmplId, e.lineNumber, e.columnNumber);
-        new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', source);
+        new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', 'i18n', source);
       }
       if (throwError) {
         debugErrorLine(source, e);
@@ -626,11 +626,11 @@
 
       var html = null;
       try {
-        html = !data ? '<template></template>' : render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope);
+        html = !data ? '<template></template>' : render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope, Bridge.i18n[tmplId]);
       } catch(e) {
         var debugErrorLine = function(source) {
       	  console.log('Error: ', tmplId);
-          render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope);
+          render.call(wrapperElement, data, tmplScope[statusKeyName], tmplScope, lazyScope, Bridge.i18n[tmplId]);
         }
         if (throwError) {
           debugErrorLine(source, e);
@@ -970,22 +970,33 @@
     }
   };
 
-  root.i18n = {};
+  Bridge.i18n = {};
   tmplTool.addI18n = function(fullKey, i18nObj) {
     var langKeyNames = fullKey.split('.');
-    var target = root.i18n;
+    var target = Bridge.i18n;
     var keyLength = langKeyNames.length - 1;
+
     langKeyNames.forEach(function(key, i) {
-      if (!target[key]) target[key] = {};
       if (keyLength === i) {
-        target[key] = function(defaultText) {
-          var label = i18nObj[document.documentElement.lang] || defaultText;
-          if (!label) {
-            if (debug) console.log('label key [' + fullKey + '] is empty!');
+        if (!target[key]) {
+          target[key] = function(defaultText) {
+            var label = i18nObj[document.documentElement.lang] || defaultText;
+            if (!label) {
+              if (debug) console.log('label key [' + fullKey + '] is empty!');
+            }
+            return label;
           }
-          return label;
         }
+
+        Object.keys(i18nObj).filter(lang => i18nObj[lang] instanceof Object).forEach(subKey => {
+          tmplTool.addI18n(fullKey + '.' + subKey, i18nObj[subKey]);
+          delete i18nObj[subKey];
+          return;
+        });
       } else {
+        if (!target[key]) {
+          target[key] = {};
+        }
         target = target[key];
       }
     });

@@ -17,13 +17,14 @@
       options: ['fixed-header'],
       header: {
         title: titleLabel,
-        navigationlLinks: [
+        navigationLinks: [
           {label: 'Content1', event: function(e) {
             var button = tmpl.mdl.Button({label: buttonLabel, options: ['raised', 'accent'], event: function(e) {
               console.log('Click Button1.');
               console.log(myCodeContent1.inputValue());
             }});
             var myCodeContent1 = tmpl.myCode.Content1({});
+
             layout.reflash({content: [
               button,
               myCodeContent1
@@ -38,7 +39,7 @@
       },
       drawer: {
         title: 'Title',
-        navigationlLinks: [
+        navigationLinks: [
           {label: 'Navigation Link1'},
           {label: 'Navigation Link2'},
           {label: 'Navigation Link3'},

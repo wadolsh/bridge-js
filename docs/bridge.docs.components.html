@@ -65,7 +65,7 @@
     var titleList = data.element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
     Array.prototype.forEach.call(titleList, function(element) {
       var splited = element.id.split('/');
-      data.munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1] + ' ' + element.tagName, index: splited[1], hash: '#' + element.id});
+      data.munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1]+'/'+splited[2] + ' ' + element.tagName, index: splited[1]+'\\/'+splited[2], hash: '#' + element.id});
     });
   }
 
@@ -79,7 +79,6 @@
             data.tmplScope.reflash({index: item.index});
             area.appendChild(data.tmplScope.element);
             data.selectedIndex = item.index;
-
             Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
               element.classList.remove('display');
             });
@@ -119,15 +118,17 @@
   </style>
   ##!
   bridge.tmplTool.addI18ns({
-    'docsBase.lable.Docs': {
-      en: 'Documentation',
-      ko: '문서',
-      ja: 'ドキュメント'
-    },
-    'docsBase.lable.Tutorial': {
-      en: 'Tutorial',
-      ko: '따라하기',
-      ja: 'チュートリアル'
+    'docs-Base': {
+      'Docs.label': {
+        en: 'Documentation',
+        ko: '문서',
+        ja: 'ドキュメント'
+      },
+      'Tutorial.label': {
+        en: 'Tutorial',
+        ko: '따라하기',
+        ja: 'チュートリアル'
+      }
     }
   });
   ##
@@ -143,10 +144,19 @@
       */
     };
   }
+  var langItems = [
+    {label: 'ENGLISH', lang: 'en', event: langSelect('en')},
+    {label: '日本穂', lang: 'ja', event: langSelect('ja')},
+    {label: '한국어', lang: 'ko', event: langSelect('ko')},
+  ];
+  var langDropdown = tmpl.bs.NavbarLiDropdown({
+    label: 'Language: ' + langItems.find(item => item.lang == document.documentElement.lang).label,
+    items: langItems,
+  });
   ##
   ###
   setTimeout(function() {
-    var hashArray = (location.hash.replace('#', '') || 'Docs/Intro').split('/');
+    var hashArray = (location.hash.replace('#', '') || 'Docs/Template/Intro').split('/');
     //if (!hashArray[1]) hashArray[1] = 'Intro';
     document.querySelector('a[href^="#' + hashArray[0] + '"]').click();
     setTimeout(function() {
@@ -161,26 +171,17 @@
       content: [
         tmpl.bs.NavbarLi({
           items: [
-            {label: i18n.docsBase.lable.Docs, href: "#Docs/Intro", event: function() {
+            {label: i18n.Docs.label, href: "#Docs/Template/Intro", event: function() {
               tmpl.docs.Docs({}, main);
             }},
-            {label: i18n.docsBase.lable.Tutorial, href: "#Tutorial/Calculator", event: function() {
+            {label: i18n.Tutorial.label, href: "#Tutorial/Calculator", event: function() {
               tmpl.docs.Tutorial({}, main);
             }}
           ]
         }),
         tmpl.bs.NavbarLi({
           class: 'navbar-right',
-          items: [
-            tmpl.bs.NavbarLiDropdown({
-              label: 'LANG',
-              items: [
-                {label: 'EN', event: langSelect('en')},
-                {label: 'KO', event: langSelect('ko')},
-                {label: 'JA', event: langSelect('ja')}
-              ]
-            })
-          ]
+          items: [langDropdown]
         })
       ]
     })##
@@ -196,15 +197,10 @@
   </style>
   ##!
   bridge.tmplTool.addI18ns({
-    'docsDocs.lable.TemplateEngine': {
+    'docs-Docs.Template.label': {
       en: 'Template Engine',
       ko: '텤플릿 엔진',
       ja: 'テンプレートエンジン'
-    },
-    'docsBase.lable.Tutorial': {
-      en: 'Tutorial',
-      ko: '따라하기',
-      ja: 'チュートリアル'
     }
   });
   ##
@@ -213,7 +209,7 @@
     return docsMain;
   }
   var docItems = [
-    {label: i18n.docsDocs.lable.TemplateEngine, tmpl: tmpl.docs.DocsTemplate({contentArea: contentArea})}
+    {label: i18n.Template.label, tmpl: tmpl.docs.DocsTemplate({contentArea: contentArea})}
   ];
   var selectEvent = function(e) {
     e.target.parentElement.querySelector('.active').classList.remove('active');
@@ -280,6 +276,60 @@
       border: 0px;
     }
   </style>
+  ##!
+  bridge.tmplTool.addI18ns({
+    'docs-Docs-Template': {
+      Intro: {
+        label: {
+          en: 'Introduction',
+          ko: '소개',
+          ja: '紹介'
+        },
+        content: {
+          en: ``,
+          ko: `
+              bridge.template 은 웹 어플리케이션을 쉽게 제작할 수있게 만들어 졌습니다.<br/>
+              bridge.template 은 다음과 같은 목표를 가지고 제작 되었었습니다.
+              <ul>
+                <li>SPA(Single Page Application) 작성을 지원</li>
+                <li>재사용 가능한 Component 작성을 지원</li>
+                <li>하나의 Template 안에 style, html, javascript 로직을 통합 함으로써 적은 노력으로 Component를 제작 할 수 있도록 함</li>
+                <li>Html Tag 안에 Event Handler 를 설정 가능도록 함</li>
+                <li>Component 끼리 조합 할 수 있도록 함으로써 블록을 조립하듯이 UI를 제작 할 수 있도록 지원</li>
+              </ul>
+              `,
+          ja: `
+              bridge.template は web アプリケーションを簡単に作れるように支援します。<br/>
+              bridge.template は以下の目標を持って作られました。
+              <ul>
+                <li>SPA(Single Page Application) 作成を支援する</li>
+                <li>再利用可能な Component 作成を支援する</li>
+                <li>各 Template 中に style, html, javascript をまとめて作成することで分かりやすい Component の作成を支援する</li>
+                <li>Html Tag の中に Event Handler を設定する方法を提供する</li>
+                <li>Component 同士で組み合わせることで、ブロックのように組み立て UI が作れるように支援する</li>
+              </ul>
+              `
+        }
+      },
+
+
+      Engine: {
+        label: {
+          en: 'Global Engine Setting',
+          ko: '엔진 설정',
+          ja: 'エンジン設定',
+        },
+      },
+      Component: {
+        label: {
+          en: 'Component',
+          ko: 'Component 사용',
+          ja: 'Component 使用',
+        },
+      }
+    },
+  });
+  ##
   ##
   var contentArea = data.contentArea;
   var index = data.index || 'Intro';
@@ -288,164 +338,319 @@
   tmplScope.getSidemenu = getSidemenu(sideData);
   ##
   <div class="docs-Docs-Template">
-    <div class="page" id="Intro">
-      <h1 id="Docs/Intro">소개</h1>
-        bridge.template 은 웹 어플리케이션을 쉽게 제작할 수있게 만들어 졌습니다.<br/>
-        bridge.template 은 다음과 같은 목표를 가지고 제작 되었었습니다.
-        <ul>
-          <li>SPA(Single Page Application) 작성을 지원</li>
-          <li>재사용 가능한 Component 작성을 지원</li>
-          <li>하나의 Template 안에 style, html, javascript 로직을 통합 함으로써 적은 노력으로 Component를 제작 할 수 있도록 함</li>
-          <li>Html Tag 안에 Event Handler 를 설정 가능도록 함</li>
-          <li>Component 끼리 조합 할 수 있도록 함으로써 블록을 조립하듯이 UI를 제작 할 수 있도록 지원</li>
-        </ul>
+    <div class="page" id="Template/Intro">
+      <h1 id="Docs/Template/Intro">##=i18n.Intro.label##</h1>
+      ##=i18n.Intro.content##
     </div>
-    <div class="page" id="GettingStarted">
-      <h1 id="Docs/GettingStarted">시작하기</h1>
-        <h2 id="Docs/GettingStarted/Install">설치</h2>
-        아래와 같이 bridge.template.js javascript를 추가해주세요.
+  ##!
+  bridge.tmplTool.addI18ns({
+    'docs-Docs-Template': {
+      GettingStarted: {
+        label: {
+          en: 'Getting Started',
+          ko: '시작하기',
+          ja: 'スタートガイド',
+        },
+        Install: {
+          label: {
+            en: 'Install',
+            ko: '설치',
+            ja: '設置'
+          },
+          content1: {
+            en: '',
+            ko: '아래와 같이 bridge.template.js javascript를 추가해주세요.',
+            ja: '以下のように bridge.template.js を javascript として追加してください。'
+          },
+          content2: {
+            en: '',
+            ko: '이제 탬플릿 코드를 사용 가능하게 되었었습니다.',
+            ja: 'これでテンプレートコードを使えるようになりました。'
+          },
+        },
+        AddTmpl: {
+          label: {
+            en: 'Create Template',
+            ko: 'Template 만들기',
+            ja: 'Template 作成'
+          },
+          content1: {
+            en: '',
+            ko: '이제 텍스트를 출력하는 간단한 Template 코드를 만들어 봅시다.',
+            ja: 'テキストを出力する簡単な Template コードを作ってみましょ。'
+          },
+          content2: {
+            en: '',
+            ko: '이제 do.Simple 라는 Template 을 Component 로 사용할 있게 되었습니다.',
+            ja: 'これで do.Simple Template コードを Componentとして使えるようになりました。'
+          },
+        },
+        Tmpl: {
+          label: {
+            en: 'Create Component',
+            ko: 'Component 만들기',
+            ja: 'Component 作成'
+          },
+          content1: {
+            en: '',
+            ko: 'Component 의 생성과 화면 배치는 다음과 같이 이루어 집니다.',
+            ja: 'Component の生成と画面配置は以下のように行います。'
+          },
+          content2: {
+            en: '',
+            ko: '또는 다음과 같이 사용 할 수도 있습니다.',
+            ja: 'このように使用することも可能です。'
+          },
+          content3: {
+            en: '',
+            ko: `{label: 'Div Sample1'} 로 넘겨준 데이터는 Template 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
+                 다음의 데모로 코드의  실행을 확인해 보십시오.`,
+            ja: `{label: 'Div Sample1'} で渡したデータは Template コードの中で data と言う名前で使うようになります。<br/>
+                 次でデモでコードの実行を確認してみましょ。`
+          },
+          content4: {
+            en: '',
+            ko: `Component 생성시 javascript Object 가 리턴 되어 집니다.<br/>
+                 이 object 는 Template 작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.`,
+            ja: `Component を生成時に javascript Object がリターンされます。<br/>
+                 この object は Template 作成時に tmplScope と言う名前で使うことになります。`
+          },
+          content5: {
+            en: '',
+            ko: `bridge.tmplTool.addTmpl() 을 사용 하여 일일이 Template 을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
+                 bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 하고 있습니다.<br/>
+                 이때에는 bridge.tmplTool.addTmpls() 를 통해 Template 을 등록 합니다.`,
+            ja: ``
+          },
+          content6: {
+            en: '',
+            ko: `template Tag 의 id 에 지정한 이름으로 Component 생성 할 수 있게 됩니다.</br>
+                 동일한 id 로 다른 template 을 로딩 하게 되는 경우는 기존 template 를 대체하게 됩니다.</br>
+                 template Tag 안에 정의도니 style 는 template 해석 할 때에 document 의 head 에 추가 됩니다.</br>
+                 style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에,
+                 style Tag 의 id 는 "style-{tempalte의 id}" 로 지정할 것을 권합니다.</br>
+                 </br>
+                 아래에서 데모에서 template 구조와 동작을 확인해 보시기 바랍니다.`,
+            ja: ``
+          },
+        },
+        Example: {
+          label: {
+            en: 'Example',
+            ko: '사용예',
+            ja: '使用例'
+          },
+          content1: {
+            en: '',
+            ko: `좀더 실제적인 사용예를 살펴 보겠습니다.<br/>
+                 자주 사용되는 UI 를 template 으로 만들면 반복적인 코드 작성을 줄일 수 있습니다.<br/>
+                 여기서는 Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) 를 bridge.template 로 만든 bridge.mdl.components.html 를 사용 하겠습니다.<br/>
+                 ※ bridge.template 으로 구성된 Material Design Lite 에 관해서는
+                 <a href="template/Material-Design-Lite/" target="_blank">이곳의 링크</a>를 참고해 주십시오.<br/>
+                 <br/>
+                 bridge.tmplTool.addTmplByUrl()은 Array 로 지정된 Template 파일을 로딩 한 다음 callback을 실행 합니다.
+                `,
+            ja: `より実用的な使用例をみましょう。<br/>
+                 よく使う UI を Template 化するとコードの作成量を減らすことが可能です。<br/>
+                 ここでは Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) を bridge.template で作った bridge.mdl.components.html を使ってみます。<br/>
+                 ※ bridge.template で作成して Material Design Lite  は
+                 <a href="template/Material-Design-Lite/" target="_blank">このリンク</a>を参考にしてください。<br/>
+                 <br/>
+                 bridge.tmplTool.addTmplByUrl()は Array で指定した Template ファイルをローディンクした後に callback を実行します。
+                `
+          },
+          content2: {
+            en: '',
+            ko: `데모 화면을 통해 "Content1" 과 "Content2" 를 클릭 해서 Event 발생을 확인해 보시기 바랍니다.<br/>
+                 Content1 에서는 input 에 값을 넣고 'THIS BUTTON!' 을 클릭해서 입력값의 표시를 확인 해 보시기 바랍니다.`,
+            ja: `デモ画面の Content1 と Content2 をクリックし Event 発生を確認してみてくさい。
+                Content1 をクリックし表示される Input にデータを入力し 'THIS BUTTON!' をクリックし入力値の Console 表示を確認してみてください。`,
+          },
+        }
+      },
+    }
+  });
+  ##
+    <div class="page" id="Template/GettingStarted">
+      <h1 id="Docs/Template/GettingStarted">##=i18n.GettingStarted.label##</h1>
+        <h2 id="Docs/Template/GettingStarted/Install">##=i18n.GettingStarted.Install.label##</h2>
+        ##=i18n.GettingStarted.Install.content1##
         ##%tmpl.docs.CodeTemplate00101({})##
+        ##=i18n.GettingStarted.Install.content2##
 
-        이제 탬플릿 소스를 해석할 수 있는 준비가 되었었습니다.<br/>
-
-        <h2 id="Docs/GettingStarted/AddTmpl">Template 등록</h2>
-        이제 다음과 같은 Template 파일을 만들어 봅시다.
+        <h2 id="Docs/Template/GettingStarted/AddTmpl">##=i18n.GettingStarted.AddTmpl.label##</h2>
+        ##=i18n.GettingStarted.AddTmpl.content1##
         ##%tmpl.docs.CodeTemplate00201({})##
-        이제 do.Simple라는 Template 을 Component 로 사용할 있는 준비가 되었습니다.<br/>
+        ##=i18n.GettingStarted.AddTmpl.content2##
 
-        <h2 id="Docs/GettingStarted/Tmpl">Component 생성</h2>
-        컨포넌트의 생성과 화면 배치는 다음과 같이 이루어 집니다.
+        <h2 id="Docs/Template/GettingStarted/Tmpl">##=i18n.GettingStarted.Tmpl.label##</h2>
+        ##=i18n.GettingStarted.Tmpl.content1##
         ##%tmpl.docs.CodeTemplate00301({})##
 
-        또는 다음과 같이 사용 할 수도 있습니다.
+        ##=i18n.GettingStarted.Tmpl.content2##
         ##%tmpl.docs.CodeTemplate00401({})##
 
-        {label: 'Div Sample1'} 로 넘겨준 데이터는 Template 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
-        아래에서 데모로 코드의 동작을 확인해 보십시오.
+        ##=i18n.GettingStarted.Tmpl.content3##
         ##%tmpl.docs.CodeTemplate00501({})##
 
-        Component 생성시 javascript Object 가 리턴 되어 집니다.<br/>
-        이 object는 Template 작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.
+        ##=i18n.GettingStarted.Tmpl.content4##
         ##%tmpl.docs.CodeTemplate00601({})##
 
-        bridge.tmplTool.addTmpl() 을 사용 하여 일일이 Template 을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
-        bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 하고 있습니다.<br/>
-        이때에는 bridge.tmplTool.addTmpls() 를 통해 Template 을 등록 합니다.
+        ##=i18n.GettingStarted.Tmpl.content5##
         ##%tmpl.docs.CodeTemplate00701({})##
 
-        template Tag 의 id 에 지정한 이름으로 Component 생성 할 수 있게 됩니다.</br>
-        동일한 id 로 다른 template 을 로딩 하게 되는 경우는 기존 template 를 대체하게 됩니다.</br>
-        template Tag 안에 정의도니 style 는 template 해석 할 때에 document 의 head 에 추가 됩니다.</br>
-        style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에,
-        style Tag 의 id 는 "style-{tempalte의 id}" 로 지정할 것을 권합니다.</br>
-        </br>
-        아래에서 데모에서 template 구조와 동작을 확인해 보시기 바랍니다.
+        ##=i18n.GettingStarted.Tmpl.content6##
         ##%tmpl.docs.CodeTemplate00702({})##
 
-        <h2 id="Docs/GettingStarted/Example">사용예</h2>
-        좀더 실제적인 사용예를 살펴 보겠습니다.<br/>
-        먼저 반복 사용되는 UI쪽만을 분리한 template 파일을 만들면 여러 프로젝트에서 재활용 할 수 있을 것입니다.<br/>
-        여기서는 Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) 를 bridge.template 로 사용 할 수 있게 만든 bridge.mdl.components.html 를 사용 하겠습니다.<br/>
-
-        ※ bridge.template 으로 구성된 Material Design Lite 에 관해서는
-        <a href="template/Material-Design-Lite/" target="_blank">이곳의 링크</a>를 참고해 주십시오.<br/>
-
-        <br/>
-        bridge.tmplTool.addTmplByUrl()은 Array 로 지정된 Template 파일을 다운 로드 해서 로딩 한 다음 callback을 실행 합니다.<br/>
-
+        <h2 id="Docs/Template/GettingStarted/Example">##=i18n.GettingStarted.Example.label##</h2>
+        ##=i18n.GettingStarted.Example.content1##
+<!--
         <br/>
         <h4>index.html</h4>
+-->
         ##%tmpl.docs.CodeTemplate00801({})##
 
         <h4>docs.CodeTemplate00802.components.html</h4>
         ##%tmpl.docs.CodeTemplate00802({})##
 
-        데모 화면을 통해 "Content1" 과 "Content2" 를 클릭 해서 Event 발생을 확인해 보시기 바랍니다.<br/>
-        Content1 에서는 input 에 값을 넣고 Button 를 클릭해서 입력값의 표시를 확인 해 보시기 바랍니다.
+        ##=i18n.GettingStarted.Example.content2##
         ##%tmpl.docs.CodeTemplate00803({})##
     </div>
-    <div class="page" id="Template">
-      <h1 id="Docs/Template">Template 문법</h1>
-      <h2 id="Docs/Template/Expression">콘텐츠 표현</h2>
-        <h4 id="Docs/Template/Expression/E">[ #\#= #\# ]</h4>
-        문자열을 표현합니다.
-        <br>
-        HTML 태그와도 자유롭게 사용 될 수 있으나 브라우저에 따라서 "<", ">" 를 escape 해야 정상 작됭 되기도 합니다.
+  ##!
+  bridge.tmplTool.addI18ns({
+    'docs-Docs-Template': {
+      Reference: {
+        label: {
+          en: 'Template Reference',
+          ko: '템플릿 레퍼런스 ',
+          ja: 'テンプレートリファレンス',
+        },
+        Expression: {
+          label: {
+            en: 'Expression',
+            ko: '렌더링 표현 ',
+            ja: 'レンダリング表現',
+          },
+          'E.content1': {
+            en: ``,
+            ko: `문자열을 출력합니다.<br>
+                 HTML 태그와도 자유롭게 사용 될 수 있으나 브라우저에 따라서 "<", ">" 를 escape 해야 정상 작동 되기도 합니다.`,
+            ja: `文字列を出力します。<br>
+                 HTML タグの出力も可能ですが、ブラウザによっては、'<' と '>' を escapeする必要があります。`,
+          },
+          'H.content1': {
+            en: ``,
+            ko: `escape 처리를 한 문자열을 표현 합니다.<br>
+                 escape 처리는 bridge.tmplTool.escapeHtml.escape(); 를 사용합니다.<br>
+                 HTML Tag 등을 화면에 출력할 필요가 있을 때 사용 합니다.`,
+            ja: ``,
+          },
+          P: {
+            content1: {
+              en: ``,
+              ko: `다른 컨포넌트를 참조 합니다.<br>
+                   bridge 의 Component 와 HTML Element, 문자열을 배치 할 수 있습니다.<br>
+                   Array 로 복수의 참조를 배치하면 Array 에 정의된 순서대로대상 화면에 배치하게 됩니다.`,
+              ja: ``,
+            },
+            'Option.label': {
+              en: ``,
+              ko: `::{false / 지연시간(millisecond)}`,
+              ja: ``,
+            },
+            'Option.content1': {
+              en: ``,
+              ko: `동기 / 비동기 렌더링을 설정 할 수 있습니다.<br>※옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.`,
+              ja: ``,
+            },
+            content2: {
+              en: ``,
+              ko: `javascript 는 기본적으로 싱글 스레드로 작동함으로써 대량의 HTML Element를 화면에 추가 하게 되면 DOM 렌더링이 끝난 후에 화면 에 보여 지게 되며,
+                   또한 화면 로딩이 끝날때까지 유저는 다른 조작을 할 수 없게 됩니다.<br>
+                   #\#% #\#로 HTML Element를 추가 할 때 [::지연시간] 을 지정하게 되면 자동으로 setTimeout 에의한 비동기 렌더링을 실행 하게 됩니다.<br>
+                   비동기 로딩을 할 때의 장점은 대량의 HTML Element 를 화면에 추가로 인해 화면의 렌더링이 멈추는 현상을 방지 할 수 있습니다.<br><br>
+                   아래의 예제는 비동기 실행의 예제입니다. { ::i*100 } 로 딜레이 시간을 지정하고 있습니다.<br>
+                   RUN 버튼을 누르면 비동기로 HTML Element 가 추가 되는 것을 확인해 볼 수 있습니다.`,
+              ja: ``,
+            },
+          },
+          'J.content1': {
+            en: ``,
+            ko: `javascript 를 평가 합니다.<br>
+                 #\# #\# 안에 작성된 코드는 javascript 로서 평가 됩니다.<br>
+                 와 같이 javascript 표현중 HTML TAG 의 사용 할 수 있습니다.`,
+            ja: ``,
+          },
+          'S.content1': {
+            en: ``,
+            ko: `HTML 렌더링이 끝난 후에 javascript 를 평가 합니다.<br>
+                 #\# #\# 에서 javascript 가 실행 중일때는 HTML Tag 를 문자열로 작성중임으로 HTML Element 로써 접근 할 수 없습니다.<br>
+                 그에 반해 #\#\# #\# 는 #\# #\# 의 평가가 끝나고 HTML Tag 문자열이 HTML Element 로 변환된 후에 실행 됨으로서 Element에 대한 접근이 가능 합니다.<br>
+                 this 를 사용 하여 해당 HTML Element 에 접근 할 수 있습니다.`,
+            ja: ``,
+          },
+          'Q.content1': {
+            en: ``,
+            ko: `Template 을 로딩 할 때 필요한 작업을 실행 합니다.<br>
+                 #\#! #\# 표현은 Template 로딩시 1회 실행 되며, 이후 Component 생성시에는 실행 되지 않습니다.<br>
+                 단 1회 실행이 필요한 초기화 작업 등에 사용합니다.<br>`,
+            ja: ``,
+          }
+        },
+      },
+    }
+  });
+  ##
+    <div class="page" id="Template/Reference">
+      <h1 id="Docs/Template/Reference">##=i18n.Reference.label##</h1>
+      <h2 id="Docs/Template/Reference/Expression">##=i18n.Reference.Expression.label##</h2>
+        <h4 id="Docs/Template/Reference/Expression/E">[ #\#= #\# ]</h4>
+        ##=i18n.Reference.Expression.E.content1##
         ##%tmpl.docs.CodeTemplate10101({})##
 
-        <br>
-        <h4 id="Docs/Template/Expression/H">[ #\#- #\# ]</h4>
-        escape 처리를 한 문자열을 표현 합니다.
-        <br>
-        escape 처리는 `bridge.tmplTool.escapeHtml.escape(); 를 사용합니다.
-        <br>
-        HTML Tag 등을 화면에 출력할 필요가 있을 때 사용 합니다.
+        <h4 id="Docs/Template/Reference/Expression/H">[ #\#- #\# ]</h4>
+        ##=i18n.Reference.Expression.H.content1##
         ##%tmpl.docs.CodeTemplate10201({})##
 
-        <br>
-        <h4 id="Docs/Template/Expression/P">[ #\#% #\# ]</h4>
-        다른 컨포넌트를 참조 합니다.
-        <br>
-        bridge 의 Component 와 HTML Element, 문자열을 배치 할 수 있습니다.
-        <br>
-        Array 로 복수의 참조를 배치하면 Array 에 정의된 순서대로대상 화면에 배치하게 됩니다.
+        <h4 id="Docs/Template/Reference/Expression/P">[ #\#% #\# ]</h4>
+        ##=i18n.Reference.Expression.P.content1##
         ##%tmpl.docs.CodeTemplate10301({})##
 
         <h5>Option</h5>
         <table class="option">
           <tr>
-            <th>::{false / 지연시간(millisecond)}</th>
-            <td>동기 / 비동기 렌더링을 설정 할 수 있습니다.<br>※옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.</td>
+            <th>##=i18n.Reference.Expression.P.Option.label##</th>
+            <td>##=i18n.Reference.Expression.P.Option.content1##</td>
           </tr>
         </table>
-
-        javascript 는 기본적으로 싱글 스레드로 작동함으로써 대량의 HTML Element를 화면에 추가 하게 되면 DOM 렌더링이 끝난 후에 화면 에 보여 지게 되며,
-        또한 화면 로딩이 끝날때까지 유저는 다른 조작을 할 수 없게 됩니다.
-        <br>
-        #\#% #\#로 HTML Element를 추가 할 때 [::지연시간] 을 지정하게 되면 자동으로 setTimeout 에의한 비동기 렌더링을 실행 하게 됩니다.
-        <br>
-        비동기 로딩을 할 때의 장점은 대량의 HTML Element 를 화면에 추가로 인해 화면의 렌더링이 멈추는 현상을 방지 할 수 있습니다.
-        <br><br>
-        아래의 예제는 비동기 실행의 예제입니다. { ::i*100 } 로 딜레이 시간을 지정하고 있습니다.
-        <br>
-        RUN 버튼을 누르면 비동기로 HTML Element 가 추가 되는 것을 확인해 볼 수 있습니다.
+        ##=i18n.Reference.Expression.P.content2##
         ##%tmpl.docs.CodeTemplate10302({})##
 
         <br>
-        <h4 id="Docs/Template/Expression/J">[ #\# #\# ]</h4>
-        javascript 를 평가 합니다.
-        <br>
-        #\# #\# 안에 작성된 코드는 javascript 로서 평가 됩니다.
-        <br>
-        와 같이 javascript 표현중 HTML TAG 의 사용 할 수 있습니다.
+        <h4 id="Docs/Template/Reference/Expression/J">[ #\# #\# ]</h4>
+        ##=i18n.Reference.Expression.J.content1##
         ##%tmpl.docs.CodeTemplate10401({})##
         ##%tmpl.docs.CodeTemplate10402({})##
 
         <br>
-        <h4 id="Docs/Template/Expression/S">[ #\## #\# ]</h4>
-        HTML 렌더링이 끝난 후에 javascript 를 평가 합니다.
-        <br>
-        #\# #\# 에서 javascript 가 실행 중일때는 HTML Tag 를 문자열로 작성중임으로 HTML Element 로써 접근 할 수 없습니다.
-        <br>
-        그에 반해 #\## #\# 는 #\# #\# 의 평가가 끝나고 HTML Tag 문자열이 HTML Element 로 변환된 후에 실행 됨으로서 Element에 대한 접근이 가능 합니다.
-        <br>
-        this 를 사용 하여 해당 HTML Element 에 접근 할 수 있습니다.
-
+        <h4 id="Docs/Template/Reference/Expression/S">[ #\## #\# ]</h4>
+        ##=i18n.Reference.Expression.S.content1##
         ##%tmpl.docs.CodeTemplate10501({})##
 
         <br>
-        <h4 id="Docs/Template/Expression/Q">[ #\#! #\# ]</h4>
-        Template 을 로딩 할 때 필요한 작업을 실행 합니다.
-        <br>
-        ##! ## 표현은 Template 로딩시 1회 실행 되며, 이후 Component 생성시에는 실행 되지 않습니다.
-        <br>
-        단 1회 실행이 필요한 초기화 작업 등에 사용합니다.
-        <br>
-
+        <h4 id="Docs/Template/Reference/Expression/Q">[ #\#! #\# ]</h4>
+        ##=i18n.Reference.Expression.Q.content1##
         ##%tmpl.docs.CodeTemplate10601({})##
 
-      <h2 id="Docs/Template/Element">Element 참조</h2>
-        <h4 id="Docs/Template/Expression/data-bridge-event">< data-bridge-event="#\#: #\#" ></h4>
+  ##!
+  bridge.tmplTool.addI18ns({
+    'docs-Docs-Template': {
+
+    }
+  });
+  ##
+      <h2 id="Docs/Template/Reference/Element">Element 참조</h2>
+        <h4 id="Docs/Template/Reference/Expression/data-bridge-event">< data-bridge-event="#\#: #\#" ></h4>
         이벤트 핸들러를 지정합니다.
         <br>
         javascript object 로 {'event명' : function(event, tmplData, tmplElem, scope) { callback 처리 }} 으로 핸들러를 지정하게 됩니다.
@@ -496,26 +701,26 @@
         Option 을 지정하는 경우의 예제
         ##%tmpl.docs.CodeTemplate20102({})##
 
-        <h4 id="Docs/Template/Expression/data-bridge-load">< data-bridge-load="#\#: #\#" ></h4>
+        <h4 id="Docs/Template/Reference/Expression/data-bridge-load">< data-bridge-load="#\#: #\#" ></h4>
         Element 가 로딩 된 후에 해당 Element 의 참조가 필요한 경우 사용 합니다.
         ##%tmpl.docs.CodeTemplate20201({})##
 
-        <h4 id="Docs/Template/Expression/data-bridge-scope-key">< data-bridge-scope-key="#\#: #\#" ></h4>
+        <h4 id="Docs/Template/Reference/Expression/data-bridge-scope-key">< data-bridge-scope-key="#\#: #\#" ></h4>
         지정된 Element 를 tmplScope 에 참조합니다.
         ##%tmpl.docs.CodeTemplate20301({})##
 
-        <h4 id="Docs/Template/Expression/data-bridge-var">< data-bridge-var="#\#: #\#" ></h4>
+        <h4 id="Docs/Template/Reference/Expression/data-bridge-var">< data-bridge-var="#\#: #\#" ></h4>
         지정된 Element 를 내부 변수로서 참조 합니다.
         ##%tmpl.docs.CodeTemplate20401({})##
 
-      <h2 id="Docs/Template/Variable">내장 변수</h2>
-        <h4 id="Docs/Template/Variable/data">data</h4>
+      <h2 id="Docs/Template/Reference/Variable">내장 변수</h2>
+        <h4 id="Docs/Template/Reference/Variable/data">data</h4>
           [dataKeyName](default: "data")<br>
           Component 생성시 사용한 입력값을 Template 내에서 참조하기 위한 Object 입니다. <br>
           Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br>
           ※ tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});
 
-        <h4 id="Docs/Template/Variable/status">status</h4>
+        <h4 id="Docs/Template/Reference/Variable/status">status</h4>
           [statusKeyName](default: "status")<br>
           생성된 Component 를 reflash, render 하게 될 경우<br>
           Component data 입력값에 의해서 초기화 되기 때문에 Component 내부에서 발생한 변화를 잃어 버리게 됩니다.<br>
@@ -523,7 +728,7 @@
           Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br>
           ※ tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});
 
-        <h4 id="Docs/Template/Variable/tmplScope">tmplScope</h4>
+        <h4 id="Docs/Template/Reference/Variable/tmplScope">tmplScope</h4>
           tmplScope 는 콤퍼넌트의 모든 것을 담는 Object 입니다.
           <table class="option">
             <tr>
@@ -585,9 +790,9 @@
         <br><br>
     </div>
 
-    <div class="page" id="TemplateEngine">
-      <h1 id="Docs/TemplateEngine">Template Engine</h1>
-        <h2 id="Docs/TemplateEngine/Setting">Template Engine 설정</h2>
+    <div class="page" id="Template/Engine">
+      <h1 id="Docs/Template/Engine">##=i18n.Engine.label##</h1>
+        <h2 id="Docs/Template/Engine/Setting">Template Engine 설정</h2>
           bridge.tmplTool 의 미리 설정한 후에 'bridge.template.js' 를 로딩함으로써 Template Engine 의 옵션을 설정 할 수 있습니다.
           ##%tmpl.docs.CodeTemplate30101({})##
           <br>
@@ -619,8 +824,8 @@
             </tr>
           </table>
 
-        <h2 id="Docs/TemplateEngine/TmplTool">bridge.tmplTool 구성</h2>
-          <h4 id="Docs/TemplateEngine/TmplTool/escapeHtml">bridge.tmplTool.escapeHtml</h4>
+        <h2 id="Docs/Template/Engine/TmplTool">bridge.tmplTool 구성</h2>
+          <h4 id="Docs/Template/Engine/TmplTool/escapeHtml">bridge.tmplTool.escapeHtml</h4>
           문자열의 escape, unescape 처리를 합니다.<br>
           HTML Tag 를 처리할 때 사용 합니다.
 
@@ -714,7 +919,7 @@
             </tr>
           </table>
 
-          <h4 id="Docs/TemplateEngine/TmplTool/addTmpl">bridge.tmplTool.addTmpl(keyName, templateString, tmplSettings)</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/addTmpl">bridge.tmplTool.addTmpl(keyName, templateString, tmplSettings)</h4>
           하나의 Template 를 특정 이름으로 컴파일 합니다.<br>
           ##%tmpl.docs.CodeTemplate302101({})##
           ##%tmpl.docs.CodeTemplate302102({})##
@@ -745,47 +950,47 @@
             </tr>
           </table>
 
-          <h4 id="Docs/TemplateEngine/TmplTool/addTmpls">bridge.tmplTool.addTmpls(templateString, tmplSettings)</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/addTmpls">bridge.tmplTool.addTmpls(templateString, tmplSettings)</h4>
           Template 세트를 컴파일 합니다.<br>
 
           ##%tmpl.docs.CodeTemplate303101({})##
           ##%tmpl.docs.CodeTemplate303102({})##
 
 
-          <h4 id="Docs/TemplateEngine/TmplTool/addTmplByUrl">bridge.tmplTool.addTmplByUrl([urlArray], option, callback)</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/addTmplByUrl">bridge.tmplTool.addTmplByUrl([urlArray], option, callback)</h4>
           Template 세트를 담은 파일을 로드 하여 컴파일 합니다.
 
           ##%tmpl.docs.CodeTemplate304101({})##
           ##%tmpl.docs.CodeTemplate304102({})##
 
-          <h4 id="Docs/TemplateEngine/TmplTool/addI18n">bridge.tmplTool.addI18n(keyName, {langName: content...})</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/addI18n">bridge.tmplTool.addI18n(keyName, {langName: content...})</h4>
           다국어 지원을 위한 하나의 key, value 를 추가 합니다.
 
           ##%tmpl.docs.CodeTemplate305101({})##
           ##%tmpl.docs.CodeTemplate305102({})##
 
-          <h4 id="Docs/TemplateEngine/TmplTool/addI18ns">bridge.tmplTool.addI18ns({keyName: {langName: content...}...})</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/addI18ns">bridge.tmplTool.addI18ns({keyName: {langName: content...}...})</h4>
           다국어 지원을 위한 key, value 리스트를 동시에 추가 합니다.
 
           ##%tmpl.docs.CodeTemplate306101({})##
           ##%tmpl.docs.CodeTemplate306102({})##
 
-          <h4 id="Docs/TemplateEngine/TmplTool/genId">bridge.tmplTool.genId(tmplId)</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/genId">bridge.tmplTool.genId(tmplId)</h4>
           컴퍼넌트 생성시의 _id 를 생성하는 function 입니다.<br>
           Template의 { tmplId + 컴퍼넌트 생성순번 } 으로 _id 를 생성 합니다.
 
           ##%tmpl.docs.CodeTemplate307101({})##
           ##%tmpl.docs.CodeTemplate307102({})##
 
-          <h4 id="Docs/TemplateEngine/TmplTool/tag">bridge.tmplTool.tag(tagName, attrs)</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/tag">bridge.tmplTool.tag(tagName, attrs)</h4>
           HTML Element 를 생성하는데 사용하는 util 입니다.
 
           ##%tmpl.docs.CodeTemplate308101({})##
           ##%tmpl.docs.CodeTemplate308102({})##
     </div>
 
-    <div class="page" id="Component">
-      <h1 id="Docs/Component">Component 사용</h1>
+    <div class="page" id="Template/Component">
+      <h1 id="Docs/Template/Component">##=i18n.Component.label##</h1>
     </div>
 
   </div>
@@ -812,7 +1017,6 @@
   ##
 </template>
 
-
 <template id="docs-Tutorial">
   <style id="style-docs-Tutorial">
     .docs-Tutorial {
@@ -820,12 +1024,21 @@
       margin-top: -1px;
     }
   </style>
+  ##!
+  bridge.tmplTool.addI18ns({
+    'docs-Tutorial.label': {
+      en: 'Calculator',
+      ko: '계산기',
+      ja: '計算機'
+    }
+  });
+  ##
   ##
   var contentArea = function() {
     return docsMain;
   }
   var docItems = [
-    {label: '계산기', tmpl: tmpl.docs.TutorialCalculator({contentArea: contentArea})}
+    {label: i18n.label, tmpl: tmpl.docs.TutorialCalculator({contentArea: contentArea})}
   ];
   var selectEvent = function(e) {
     e.target.parentElement.querySelector('.active').classList.remove('active');
@@ -850,6 +1063,15 @@
   <style id="style-docs-Tutorial-Calculator">
 
   </style>
+  ##!
+  bridge.tmplTool.addI18ns({
+    'docs-Tutorial-Calculator.label': {
+      en: 'Sample Code',
+      ko: '코드예',
+      ja: 'サンプルコード'
+    }
+  });
+  ##
   ##
   var munuList = [];
   var contentArea = data.contentArea;
@@ -859,7 +1081,7 @@
   tmplScope.getSidemenu = getSidemenu(sideData);
   ##
   <div class="docs-Tutorial-Calculator" id="Calculator">
-    <h1 id="Tutorial/Calculator">계산기</h1>
+    <h1 id="Tutorial/Calculator">##=i18n.label##</h1>
     <div data-bridge-var="##:continer##"></div>
   </div>
   ###

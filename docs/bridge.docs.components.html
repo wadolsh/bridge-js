@@ -608,15 +608,15 @@
     <div class="page" id="Template/Reference">
       <h1 id="Docs/Template/Reference">##=i18n.Reference.label##</h1>
       <h2 id="Docs/Template/Reference/Expression">##=i18n.Reference.Expression.label##</h2>
-        <h4 id="Docs/Template/Reference/Expression/E">[ #\#= #\# ]</h4>
+        <h4 id="Docs/Template/Reference/Expression/E">#\#= #\#</h4>
         ##=i18n.Reference.Expression.E.content1##
         ##%tmpl.docs.CodeTemplate10101({})##
 
-        <h4 id="Docs/Template/Reference/Expression/H">[ #\#- #\# ]</h4>
+        <h4 id="Docs/Template/Reference/Expression/H">#\#- #\#</h4>
         ##=i18n.Reference.Expression.H.content1##
         ##%tmpl.docs.CodeTemplate10201({})##
 
-        <h4 id="Docs/Template/Reference/Expression/P">[ #\#% #\# ]</h4>
+        <h4 id="Docs/Template/Reference/Expression/P">#\#% #\#</h4>
         ##=i18n.Reference.Expression.P.content1##
         ##%tmpl.docs.CodeTemplate10301({})##
 
@@ -631,18 +631,18 @@
         ##%tmpl.docs.CodeTemplate10302({})##
 
         <br/>
-        <h4 id="Docs/Template/Reference/Expression/J">[ #\# #\# ]</h4>
+        <h4 id="Docs/Template/Reference/Expression/J">#\# #\#</h4>
         ##=i18n.Reference.Expression.J.content1##
         ##%tmpl.docs.CodeTemplate10401({})##
         ##%tmpl.docs.CodeTemplate10402({})##
 
         <br/>
-        <h4 id="Docs/Template/Reference/Expression/S">[ #\## #\# ]</h4>
+        <h4 id="Docs/Template/Reference/Expression/S">#\## #\#</h4>
         ##=i18n.Reference.Expression.S.content1##
         ##%tmpl.docs.CodeTemplate10501({})##
 
         <br/>
-        <h4 id="Docs/Template/Reference/Expression/Q">[ #\#! #\# ]</h4>
+        <h4 id="Docs/Template/Reference/Expression/Q">#\#! #\#</h4>
         ##=i18n.Reference.Expression.Q.content1##
         ##%tmpl.docs.CodeTemplate10601({})##
 
@@ -739,7 +739,7 @@
   });
   ##
       <h2 id="Docs/Template/Reference/ElementExpression">##=i18n.Reference.ElementExpression.label##</h2>
-        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-event">< data-bridge-event="#\#: #\#" ></h4>
+        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-event">data-bridge-event="#\#: #\#"</h4>
         ##=i18n.Reference.ElementExpression.content1##
         <h5>##=i18n.Reference.ElementExpression.event.Handler.label##</h5>
         <table class="option">
@@ -783,15 +783,15 @@
         ##=i18n.Reference.ElementExpression.event.Option.content1##
         ##%tmpl.docs.CodeTemplate20102({})##
 
-        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-load">< data-bridge-load="#\#: #\#" ></h4>
+        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-load">data-bridge-load="#\#: #\#"</h4>
         ##=i18n.Reference.ElementExpression.load.content1##
         ##%tmpl.docs.CodeTemplate20201({})##
 
-        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-scope-key">< data-bridge-scope-key="#\#: #\#" ></h4>
+        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-scope-key">data-bridge-scope-key="#\#: #\#"</h4>
         ##=i18n.Reference.ElementExpression.scopeKey.content1##
         ##%tmpl.docs.CodeTemplate20301({})##
 
-        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-var">< data-bridge-var="#\#: #\#" ></h4>
+        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-var">data-bridge-var="#\#: #\#"</h4>
         ##=i18n.Reference.ElementExpression.var.content1##
         ##%tmpl.docs.CodeTemplate20401({})##
 
@@ -801,92 +801,111 @@
       Reference: {
         Variable: {
           label: {
-            en: ``,
+            en: `Built-in variable`,
             ko: `내장 변수`,
-            ja: ``,
+            ja: `組み込み変数`,
           },
           'data.content1': {
             en: ``,
             ko: `Component 생성시 사용한 입력값을 Template 내에서 참조하기 위한 Object 입니다. <br/>
                  Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br/>
-                 ※ tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
-            ja: ``,
+                 ※example: tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
+            ja: `Component 生成時に使用した入力値を Template 内で使用するために参照する Object です。<br/>
+                 Template 登録時に templateSettings の dataKeyName を変えることで名前を変更可能です。<br/>
+                 ※example: tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
           },
           'status.content1': {
             en: ``,
-            ko: `생성된 Component 를 reflash, render 하게 될 경우<br/>
+            ko: `Component 를 reflash, render 하게 될 경우<br/>
                  Component data 입력값에 의해서 초기화 되기 때문에 Component 내부에서 발생한 변화를 잃어 버리게 됩니다.<br/>
                  내부의 변화를 status 에 보관하면 reflash, render 시에도 동일한 값을 참조 할 수 있습니다.
-                 Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br/>
-                 ※ tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
+                 Template 등록시 templateSettings 의 statusKeyName 지정함으로써 병경이 가능합니다.<br/>
+                 ※example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
+            ja: `Component を reflash, render すると<br/>
+                 Component data 入力値により再度初期化されるため、Component 内部で発生した変化を失うことになります。<br/>
+                 内部の変化を status へ保管すると reflash, render 後にも再度参照することが可能です。<br/>
+                 Template 登録時に templateSettings の statusKeyName を指定することで名前を変更可能です。<br/>
+                 ※example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
+          },
+          'i18n.content1': {
+            en: ``,
+            ko: `bridge.i18n[tmplId] 에 해당 합니다. Template 안에서 i18n 참조명을 줄여줍니다.`,
+            ja: `bridge.i18n[tmplId] に該当します。Template 内で i18n の参照名を短くします。`,
+          },
+          'lazyScope.content1': {
+            en: ``,
+            ko: ``,
             ja: ``,
           },
           tmplScope: {
             content1: {
               en: ``,
-              ko: `tmplScope 는 콤퍼넌트의 모든 것을 담는 Object 입니다.`,
-              ja: ``,
+              ko: `tmplScope 는 Component 자신에 대한 참조 입니다.`,
+              ja: `tmplScope は Component 自身の参照です。`,
             },
             content2: {
               en: ``,
-              ko: `※ Element 화되기전 부터 참조 가능한 대상`,
-              ja: ``,
+              ko: `Element 화되기전 부터 참조 가능한 대상`,
+              ja: `Element 化される前でも参照可能な対象`,
             },
             'tmplId.content1': {
               en: ``,
-              ko: `Template 의 ID 입니다. 어떠한 템플렛 코드를 사용하여 콤퍼넌트가 생성 되었는지 알 수 있습니다.`,
-              ja: ``,
+              ko: `Template 의 ID 입니다. 어떠한 Template 코드를 사용하여 콤퍼넌트가 생성 되었는지 알 수 있습니다.`,
+              ja: `Template の ID です。どのテンプレートコードが使用されたのか分かります。`,
             },
             '_id.content1': {
               en: ``,
-              ko: `Component 의 ID 입니다. html 의 for 제어와 같은 유니크한 id가 필요할 경우 사용 합니다.`,
-              ja: ``,
+              ko: `Component 의 ID 입니다. HTML Element の id 같은 unique key가 필요할 경우 사용 합니다.`,
+              ja: `Component の ID です。HTML Element の id のように unique key が必要な場合に使用可能です。`,
             },
             'data.content1': {
               en: ``,
               ko: `Component 생성시의 외부 입력값인 data 를 tmplScope 에서도 참조가 가능합니다.`,
-              ja: ``,
+              ja: `Component 生成時の入力データである data を tmplScope でも参照可能です。`,
             },
             'status.content1': {
               en: ``,
-              ko: `Component 생성시의 내부 입력값인 status 를 tmplScope 에서도 참조가 가능합니다.`,
-              ja: ``,
+              ko: `Component 생성시의 내부 보관값인 status 를 tmplScope 에서도 참조가 가능합니다.`,
+              ja: `Component 生成時の内部保管値である status を tmplScope でも参照かのうです。`,
             },
             'replace.content1': {
               en: ``,
               ko: `화면 표시중인 Component 를 다른 Component 로 교체 합니다.`,
-              ja: ``,
+              ja: `画面表示中の Component を ほかの Component と入れ替えます。`,
             },
             'remove.content1': {
               en: ``,
               ko: `해당 Component 를 화면에서 제거 합니다.`,
-              ja: ``,
+              ja: `該当 Component を画面からなくします。`,
             },
             'appendTo.content1': {
               en: ``,
               ko: `해당 Component 를 parentElement 내에 이동하여 삽입합니다.`,
-              ja: ``,
+              ja: `該当 Component を parentElement ないに移動します。`,
             },
             'render.content1': {
               en: ``,
-              ko: `data 입력치로 Component 를 다시 렌더링 합니다. 이전의 data 를 무시 합니다.`,
-              ja: ``,
+              ko: `data 입력치로 Component 를 다시 렌더링 합니다.<br/>
+                   이전의 data 를 무시 합니다.`,
+              ja: `data 入力値で Component を再度レンダリングします。<br/>
+                   以前の data は無視されます。`,
             },
             'reflash.content1': {
               en: ``,
               ko: `data 입력치로 Component 를 다시 렌더링 합니다.<br/>
-                   현재 Component 가 가진 data 와 Object.assign() 로 marge 해서 다시 렌더링 하게 됩니다.`,
-              ja: ``,
+                   현재 Component 가 가진 data 와 Object.assign() 로 merge 해서 다시 렌더링 하게 됩니다.`,
+              ja: `data 入力値で Component を再度レンダリングします。<br/>
+                   現在の Component が持つ data と Object.assign() で merge して再度レンダリングします。`,
             },
             'content3': {
               en: ``,
-              ko: `※ Element 화된 이후 부터 참조 가능한 대상 ( #\#\# #\# 에서 사용가능 )`,
-              ja: ``,
+              ko: `Element 화된 이후 부터 참조 가능한 대상 ( #\#\# #\# 에서 사용가능 )`,
+              ja: `Element 化された後に参照可能になる対象 ( #\#\# #\# で使用可能 )`,
             },
             'element.content1': {
               en: ``,
               ko: `최종 렌더링 된 HTML Element 참조 합니다.`,
-              ja: ``,
+              ja: `レンダリング後の HTML Element を参照します。`,
             },
           },
         }
@@ -903,6 +922,12 @@
           <b>[statusKeyName](default: "status")</b><br/>
           ##=i18n.Reference.Variable.status.content1##
 
+        <h4 id="Docs/Template/Reference/Variable/i18n">i18n</h4>
+          ##=i18n.Reference.Variable.i18n.content1##
+<!--
+        <h4 id="Docs/Template/Reference/Variable/lazyScope">lazyScope</h4>
+          ##=i18n.Reference.Variable.lazyScope.content1##
+-->
         <h4 id="Docs/Template/Reference/Variable/tmplScope">tmplScope</h4>
           ##=i18n.Reference.Variable.tmplScope.content1##
           <table class="option">
@@ -968,28 +993,28 @@
           label: {
             en: ``,
             ko: `Template Engine 설정`,
-            ja: ``,
+            ja: `Template Engine 設定`,
           },
           content1: {
             en: ``,
-            ko: `bridge.tmplTool 의 미리 설정한 후에 'bridge.template.js' 를 로딩함으로써 Template Engine 의 옵션을 설정 할 수 있습니다.`,
-            ja: ``,
+            ko: `bridge.tmplTool 를 설정한 후에 'bridge.template.js' 를 로딩함으로써 Template Engine 의 옵션을 설정 할 수 있습니다.`,
+            ja: `bridge.tmplTool を設定してから 'bridge.template.js' をローディンクすることで Template Engine の オプションを設定可能です。`,
           },
           Option: {
             'showTime.content1': {
               en: ``,
-              ko: `true 인 경우 Template 을 변환 처리하는 시간을 Console.log() 로 출력합니다.`,
-              ja: ``,
+              ko: `true 인 경우 Template 컴파일 처리하는 시간을 Console.log() 로 출력합니다.`,
+              ja: `true の場合 Template コンパイル処理の時間を Console.log() に出力します。`,
             },
             'debug.content1': {
               en: ``,
               ko: `true 인 경우 Template Engine 내의 debug 정보를 Console.log() 로 출력 합니다.`,
-              ja: ``,
+              ja: `true の場合 Template Engine 内の debug 情報を Console.log() に出力します。`,
             },
             'throwError.content1': {
               en: ``,
-              ko: `true 인 경우 Template 변환 처리를 할때 발생 하는 에러를 Console.log()에 표시 할지를 설정합니다.`,
-              ja: ``,
+              ko: `true 인 경우 Template 컴파일 처리를 할때 발생 하는 에러를 Console.log() 로 출력 합니다.`,
+              ja: `true の場合 Template コンパイル処理時に発生したエラー情報を Console.log() に出力します。`,
             },
           }
         }
@@ -1011,21 +1036,21 @@
             <tr>
               <th>showTime</th>
               <td>
-                (default: false)
+                <b>(default: false)</b>&nbsp;
                 ##=i18n.Engine.Setting.Option.showTime.content1##
               </td>
             </tr>
             <tr>
               <th>debug</th>
               <td>
-                (default: false)
+                <b>(default: false)</b>&nbsp;
                 ##=i18n.Engine.Setting.Option.debug.content1##
               </td>
             </tr>
             <tr>
               <th>throwError</th>
               <td>
-                (default: true)
+                <b>(default: true)</b>&nbsp;
                 ##=i18n.Engine.Setting.Option.throwError.content1##
               </td>
             </tr>
@@ -1038,13 +1063,14 @@
           label: {
             en: ``,
             ko: `bridge.tmplTool 구성`,
-            ja: ``,
+            ja: `bridge.tmplTool 構成`,
           },
           'escapeHtml.content1': {
             en: ``,
             ko: `문자열의 escape, unescape 처리를 합니다.<br/>
                  HTML Tag 를 처리할 때 사용 합니다.`,
-            ja: ``,
+            ja: `文字列の escape, unescape 処理を行います。<br/>
+                 HTML Tag を処理する場合に使用します。`,
           }
         }
       }
@@ -1152,36 +1178,38 @@
           addTmpl: {
             content1: {
               en: ``,
-              ko: `하나의 Template 를 특정 이름으로 컴파일 합니다.`,
-              ja: ``,
+              ko: `하나의 Template 를 templateName 지정의 이름으로 컴파일 합니다.`,
+              ja: `一つの Template を templateName 指定の名前でコンパイルします。`,
             },
             content2: {
               en: ``,
               ko: `컴파일 시의 해석 엔진을 추가 하거나 수정 하는 것으로 기능을 확장 할 수 있습니다.<br/>
-                   " #\#= #\# "표현을 " {{= }} "로 바꾸어 보겠습니다.`,
-              ja: ``,
+                   " #\#= #\# " 표현을 " {{= }} " 로 바꾸어 보겠습니다.`,
+              ja: `コンパイル時の解析エンジンを追加または修正することで機能を拡張することができます。<br/>
+                   " #\#= #\# " 表現を " {{= }} " へ変えてみましょう。`,
             },
             content3: {
               en: ``,
-              ko: `템플렛을 작성하는 개발자는 자신 만의 컴파일 해석기를 추가 수정 함으로써 템플릿 안에서 자유로운 표현의 사용이 가능 합니다.<br/>
-                   템플릿 해석기의 표현들은 다음과 같이 구성되어 있습니다.`,
-              ja: ``,
+              ko: `Template 을 작성하는 개발자는 자신 만의 컴파일 해석기를 추가 수정 함으로써 Template 안에서 자유로운 표현의 사용이 가능 합니다.<br/>
+                   Template 해석기의 표현들은 다음과 같이 구성되어 있습니다.`,
+              ja: `Template を作成する開発者は専用のコンパイル解析エンジンを追加または修正することで Template を好きな形で作成できます。<br/>
+                   Template 解析エンジンは以下のように構成されています。`,
             },
             tmplSettings: {
               'pattern.content1': {
                 en: ``,
-                ko: `해석기를 검치하기 위한 정규식 패턴을 지정합니다.`,
-                ja: ``,
+                ko: `해석기가 작동하는 표현을 검치하기 위한 정규식 패턴을 지정합니다.`,
+                ja: `解析エンジンは作動する表現を検知するための正規表現のパターンを指定します。`,
               },
               'exec.content1': {
                 en: ``,
                 ko: `pattern 으로 검출한 문자열을 가공하여 return 하는 문자열 해석을 정의 합니다.`,
-                ja: ``,
+                ja: `pattern で検出した文字列を加工し return する 文字列解析を定義します。`,
               },
               'lazyExec.content1': {
                 en: ``,
-                ko: `exec 의 실해 이후에 Element 의 생성시 Element 를 조작하는 처리를 정의 합니다.`,
-                ja: ``,
+                ko: `exec 의 실행 이후에 Element 의 생성시 Element 를 조작하는 처리를 정의 합니다.`,
+                ja: `exec の実行後に Element の生成時に Element を操作する処理を定義します。`,
               },
             },
           },
@@ -1190,7 +1218,7 @@
     }
   });
   ##
-          <h4 id="Docs/Template/Engine/TmplTool/addTmpl">bridge.tmplTool.addTmpl(keyName, templateString, tmplSettings)</h4>
+          <h4 id="Docs/Template/Engine/TmplTool/addTmpl">bridge.tmplTool.addTmpl(tempalteName, templateString, tmplSettings)</h4>
           ##=i18n.Engine.TmplTool.addTmpl.content1##
           ##%tmpl.docs.CodeTemplate302101({})##
           ##%tmpl.docs.CodeTemplate302102({})##
@@ -1225,34 +1253,35 @@
         TmplTool: {
           'addTmpls.content1': {
             en: ``,
-            ko: `Template 세트를 컴파일 합니다.`,
-            ja: ``,
+            ko: `복수의 Template 을 세트로 컴파일 합니다.`,
+            ja: `複数の Template をセットでコンパイルします。`,
           },
           'addTmplByUrl.content1': {
             en: ``,
             ko: `Template 세트를 담은 파일을 로드 하여 컴파일 합니다.`,
-            ja: ``,
+            ja: `Template セットファイルをロードしコンパイルします。`,
           },
           'addI18n.content1': {
             en: ``,
             ko: `다국어 지원을 위한 하나의 key, value 를 추가 합니다.`,
-            ja: ``,
+            ja: `多言語支援のための一つの key, value を追加します。`,
           },
           'addI18ns.content1': {
             en: ``,
-            ko: `다국어 지원을 위한 key, value 리스트를 동시에 추가 합니다.`,
-            ja: ``,
+            ko: `다국어 지원을 위한 다수의 key, value 를 동시에 추가 합니다.`,
+            ja: `多言語支援のための多数の key, value を同時に追加します。`,
           },
           'genId.content1': {
             en: ``,
-            ko: `컴퍼넌트 생성시의 _id 를 생성하는 function 입니다.<br/>
-                 Template의 { tmplId + 컴퍼넌트 생성순번 } 으로 _id 를 생성 합니다.`,
-            ja: ``,
+            ko: `Component 생성시의 _id 를 생성하는 Function 입니다.<br/>
+                 Template의 { tmplId + Component 생성순번 } 으로 _id 를 생성 합니다.`,
+            ja: `Component 生成時に _id を生成する Function です。<br/>
+                 Template は { tmplId + Component 生成順番 } で _id を生成します。`,
           },
           'tag.content1': {
             en: ``,
             ko: `HTML Element 를 생성하는데 사용하는 util 입니다.`,
-            ja: ``,
+            ja: `HTML Element を生成するための util です。`,
           },
         }
       }

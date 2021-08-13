@@ -188,22 +188,22 @@
       }, 'json');
       this.reset();
     },
-    request: function (callBack, getType) {
+    request: function (callBack, reqOption) {
+      reqOption = reqOption || {}
       var conn = this;
       // (url, callback, getType, option)
       var url = this.url;
       var option = {
         //credentials: 'same-origin',
-        method: 'POST',
+        method: reqOption.method || 'POST',
         //timeout: 300000,
-        headers: {
+        headers: Object.assign({
           'Content-Type': 'application/json'
-        },
+        }, reqOption.headers || {}),
         body: JSON.stringify({
           req: this.queueData
         })
       };
-
       if (conn.beforeRequestFunc) {
         conn.beforeRequestFunc(conn, option);
       }
@@ -223,7 +223,7 @@
         if (conn.closeFunc) {
           conn.closeFunc(data, textStatus, url);
         }
-      }, getType || 'json');
+      }, reqOption.getType || 'json');
       /*
       $.post(this.url, {req : this.queueData}, function (data, textStatus, jqXHR) {
 

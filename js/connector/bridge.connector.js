@@ -64,7 +64,7 @@
     }
 
     if (option) {
-      xmlhttp.open(option.method || 'GET', url, true);
+      xmlhttp.open(option.method || 'GET', url, option.async);
       if (option.timeout) xmlhttp.timeout = option.timeout;
       if (option.headers) Object.keys(option.headers).forEach(function (key) {
         xmlhttp.setRequestHeader(key, option.headers[key]);
@@ -202,7 +202,8 @@
         }, reqOption.headers || {}),
         body: JSON.stringify({
           req: this.queueData
-        })
+        }),
+        async: reqOption.async == undefined ? true : reqOption.async
       };
       if (conn.beforeRequestFunc) {
         conn.beforeRequestFunc(conn, option);

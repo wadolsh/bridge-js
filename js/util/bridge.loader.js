@@ -370,7 +370,7 @@ console.log('Changed template : ', ele.id);
             tmplTool.addTmpls($template.innerHTML);
 
             var reflashTargetList = tmplScopeArray.filter(function (scope) {
-              if (scope.element.isConnected) {
+              if (scope.element && scope.element.isConnected) {
                 return reflashIds.includes(scope.tmplId);
               }
               return false;

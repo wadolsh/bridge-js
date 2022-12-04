@@ -618,7 +618,6 @@ console.log(2, matcher.exec[i].call(matcher.settings, selected))
     if (showTime) console.timeEnd("tmpl:" + tmplId);
 console.log(3, text.slice(index).replace(escaper, escapeFunc))
     source += text.slice(index).replace(escaper, escapeFunc)
-console.log(source)
     return source;
   }
 

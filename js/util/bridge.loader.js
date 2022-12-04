@@ -328,7 +328,7 @@ console.log('Changed template : ', ele.id);
             console.log('addTmpls: ' + path);
 
             var $template = document.createElement('template');
-            $template.innerHTML = text;
+            $template.innerHTML = text.replace(/<(?!template|\/template|body|\/body|html|\/html|head|\/head|script|\/script|link|\/link|meta|\/meta|!--)/gi, '&lt;');
             var $templateContent = ($template.content || $template);
             var importedTarget = document.querySelector('link[rel="import"][href="' + path + '"]');
             if (importedTarget) {

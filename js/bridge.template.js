@@ -154,7 +154,8 @@
       }
     },
     interpolate : {
-      pattern: /##=([\s\S]+?)##/g,
+      //pattern: /(?:##=|\$\{)([\s\S]+?)(?:##|\})/g, // ##=##, ${}
+      pattern: /##=([\s\S]+?)##/g, // ##=##, ${}
       exec: function(interpolate) {
         interpolate = 'typeof (' + interpolate + ')==\'function\' ? (' + interpolate + ')() : (' + interpolate + ')';
         return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
@@ -387,7 +388,7 @@
         });
       },
       stringToElement: function(str) {
-        if (str && str[0] == '<' ) {
+        if (str && str.startsWith('<>')) {
           var temp = document.createElement('template');
           temp.innerHTML = str.replace('<>', '');
           return temp.content;
@@ -815,10 +816,18 @@
       return source;
     } else if (isSupportTemplateTag) {
       var template = document.createElement('template');
-      template.innerHTML = source;
+      //template.innerHTML = source.replace(/(?<=<template[^]*?)<(?=[^]*?<\/template>)/g, '&lt;');
+      template.innerHTML = source.replace(/<(?!template|\/template|body|\/body|html|\/html|head|\/head|script|\/script|link|\/link|meta|\/meta|!--)/gi, '&lt;');
+      /*
+      template.innerHTML = source.replace(/<template([\s\S]*?)<\/template>/gi, (match, p1)=>{
+        return `<template${p1.replace(/</g, '&lt;')}</template>`;
+      });
+      */
     } else {
       var template = document.createElement('template');
-      template.innerHTML = source.replace(/<template/g, '<script type="template"').replace(/<\/template>/g, '</script>');
+      template.innerHTML = 
+        source.replace(/<(?!template|\/template|body|\/body|html|\/html|head|\/head|script|\/script|link|\/link|meta|\/meta|!--)/gi, '&lt;')
+          .replace(/<template/g, '<script type="template"').replace(/<\/template>/g, '</script>');
     }
     return template;
   }
@@ -1023,6 +1032,18 @@
       return element;
   };
 
+  tmplTool.props = function(...props) {
+    if (!props) return;
+    props = Object.assign(...props);
+    var propStrArray = [];
+    Object.keys(props).forEach(function(key) {
+      if (props[key]) propStrArray.push(key + '="' + props[key] + '"');
+    });
+    return propStrArray.join(' ');
+  };
+
+
+
   addTmpl('br-Tag', '##%bridge.tmplTool.tag(data[0], data[1])##');
   addTmpl('br-Div',
           '&lt;div ##=data.id ? \'id="\' + (data.data === true ? tmplScope._id : data.id) + \'"\' : \'\'## ##=data.class ? \'class="\' + data.class + \'"\' : \'\' ## ##=data.style ? \'style="\' + data.style + \'"\' : \'\' ## data-bridge-event="##:data.event##"&gt;'
@@ -1037,5 +1058,62 @@
           + '&lt;option class="empty" value=""&gt;##=data.placeholder##&lt;/option&gt;'
           + '##%data.options.map(function(option) { \'&lt;option value="\' + option.value + \'"\' + (data.value == option.value ? \'selected=""\' : \'\') + \'&gt;\' + option.label + \'&lt;/option&gt;\'})##'
           + '&lt;select/&gt;');
+  addTmpl('br-Template-Viewer', 
+          `<style id="style-ct-Base">
+            .ct-Base h1 {
+              font-size: large;
+              font-weight: bold;
+            }
+            .ct-Base .Header {
+              margin: 10px;
+            }
+            .ct-Base .templateArea {
+              margin: 10px;
+              margin-top: 50px;
+              padding: 10px;
+              border: 1px solid #cccccc
+            }
+            .ct-Base .componentView {
+              margin: 10px;
+            }
+          </style>
+          ##
+          let components = data.components;
+          ##
+          <div class="ct-Base">
+            <ul class="Header">
+              ##Object.keys(components).forEach(key => {##
+                <li><a href="##='#'+key##">##=key##</a></li>
+              ##})##
+            </ul>
+            <div class="Body">
+              ##Object.keys(components).forEach(key => {
+                let componentScopes = components[key];
+              ##
+              <div class="templateArea" id="##=key##" style="display: ##=location.hash == '' || location.hash == ('#' + key) ? '' : 'none'##;">
+                <h1><a href="##='#'+key##">##=key##</a></h1>
+                ##componentScopes.forEach(scope => {##
+                <hr>
+                <div class="componentView">
+                  ##%new Function('return '+scope+';')()##
+                  <pre><code class="language-javascript">##%scope##</code></pre>
+                </div>
+                <hr>
+                ##})##
+              </div>
+              ##})##
+            </div>
+          </div>
+          ###
+          setTimeout(() => {
+            const anchor = document.getElementById(location.hash.replace('#', ''));
+            if (anchor) {
+              window.scrollTo({
+                top: anchor.getBoundingClientRect().top + window.scrollY,
+              })
+            }
+          });
+          window.onhashchange = () => location.reload();
+          ##`);
 
 }).call(this);

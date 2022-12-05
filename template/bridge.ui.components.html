@@ -383,6 +383,8 @@
   var clickPosition = null;
   var startPosition = null;
   var styleStatus = null;
+  var dragStatus = {x: 0, y:0, count: 0};
+  var deltaStatus = {x: 0, y:0};
 
   var target = null;
   var targetParent = null;
@@ -397,6 +399,7 @@
     },
     */
     mousedown: function(e, edata, tmplElem) {
+      // console.log('mousedown');
       e = e.touches ? e.touches[0] : e;
       target = this.parentElement;
       targetParent = target.parentElement;
@@ -407,13 +410,45 @@
         var keyValue = str.split(':');
         if (keyValue.length > 1) styleStatus[keyValue[0]] = keyValue[1].trim();
       });
+      dragStatus.x = e.pageX;
+      dragStatus.y = e.pageY;
+      dragStatus.count = 0;
+    },
+    mouseup: function(e, edata, tmplElem) {
+    },
+    mouseover: function(e, edata, tmplElem) {
+      //console.log('mouseover: ', {x:e.pageX, y:e.pageY});
+    },
+    mousemove: function(e, edata, tmplElem) {
+      //console.log('mousemove: ', {x:e.pageX, y:e.pageY});
+    },
+    dragstart: function(e, edata, tmplElem) {
+
+/*
+      console.log('dragstart');
+      if (e.dataTransfer && e.dataTransfer.setDragImage) {
+        e.dataTransfer.setDragImage(e.target.parentElement, startPosition.x, startPosition.y);
+      }
+*/
     },
     drag: function(e, edata, tmplElem) {
       e = e.touches ? e.touches[0] : e;
 
-      if (e.x == 0) {
+      deltaStatus.x = e.pageX - dragStatus.x;
+      deltaStatus.y = e.pageY - dragStatus.y;
+      dragStatus.count++;
+      //console.log(dragStatus)
+      if (e.x == 0
+        || Math.abs(deltaStatus.x) > 80 || Math.abs(deltaStatus.y) > 80
+        || dragStatus.count % 2 != 0
+      ) {
+        //console.log(dragStatus, deltaStatus, e.pageX, e.pageY)
         return;
       }
+      //console.log('render')
+
+      // https://ja.javascript.info/mouse-drag-and-drop
+      // https://stackoverflow.com/questions/5758090/dragging-a-div-in-jquery-fine-when-mouse-is-slow-but-fails-on-fast-mouse-move
 
       //target.style.left = Math.max(0, e.pageX - startPosition.x)+ 'px';
       //target.style.top = Math.max(0, e.pageY - startPosition.y) + 'px';
@@ -422,8 +457,10 @@
       //target.style.top = Math.min(Math.max(0, e.pageY - startPosition.y), targetParent.offsetHeight - target.offsetHeight) + 'px';
 
       var left = Math.min(Math.max(0, e.pageX - startPosition.x), targetParent.offsetWidth - target.offsetWidth)+ 'px';
+      //var left = (e.pageX - startPosition.x) + 'px';
       styleStatus.left = left;
       var top = Math.min(Math.max(0, e.pageY - startPosition.y), targetParent.offsetHeight - target.offsetHeight) + 'px';
+      //var top = (e.pageY - startPosition.y) + 'px';
       styleStatus.top = top;
 
       var styleStrArray = [];
@@ -431,6 +468,11 @@
         if (styleStatus[key]) styleStrArray.push(key + ':' + styleStatus[key] + ';');
       });
       target.style.cssText = styleStrArray.join('; ');
+      //startPosition = {x: parseInt(e.pageX - target.offsetLeft) || 0, y: parseInt(e.pageY - target.offsetTop) || 0};
+      dragStatus.x = e.pageX;
+      dragStatus.y = e.pageY;
+
+      //console.log('drag: ', 'pageXY', {x: e.pageX, y: e.pageY}, 'deltaXY', deltaStatus, 'clientXY', {x: e.clientX, y: e.clientY}, 'offsetXY', {x: e.offsetX, y: e.offsetY});
 
     },
     touchstart: function(e, edata, tmplElem) {
@@ -449,6 +491,10 @@
       event.drag.call(this, e);
     }
   });
+
+  //var dragEvent = event.drag;
+  //delete event.drag;
+
   ##
   <div style="##=data.style ? BridgeUi.toStyle(data.style) : ''##"
         class="brui-WindowIcon brui-WindowDrag ##=data.class##"
@@ -724,7 +770,7 @@
   var skipRendering = 0;
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     dragstart: function(e) {
-//console.log('dragstart');
+
       if (e.dataTransfer && e.dataTransfer.setDragImage) {
         e.dataTransfer.setDragImage(crt, 0, 0);
       }

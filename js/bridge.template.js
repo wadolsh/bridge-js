@@ -388,7 +388,9 @@
         });
       },
       stringToElement: function(str) {
-        if (str && str.startsWith('<>')) {
+        if (!isNaN(str)) {
+          return document.createTextNode(str);
+        } else if (str && str.startsWith('<>')) {
           var temp = document.createElement('template');
           temp.innerHTML = str.replace('<>', '');
           return temp.content;

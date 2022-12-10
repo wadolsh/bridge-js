@@ -34,7 +34,6 @@
       return idb.cache[dbName];
     }
     */
-
     funcs = funcs || {};
     version = version || 1;
     var request = window.indexedDB.open(dbName, version);
@@ -72,8 +71,11 @@
       count: function(storeStr, onsuccess, onerror) {
         this.queueArray.push({func: "count", storeStr: storeStr, onsuccess: onsuccess, onerror: onerror});
       },
-      put: function(storeStr, data, onsuccess, onerror) {
-        this.queueArray.push({func: "put", storeStr: storeStr, data: data, onsuccess: onsuccess, onerror: onerror});
+      put: function(...dataArray) {
+        this.queueArray.push({func: "put", dataArray: dataArray});
+      },
+      putByKey: function(...dataArray) {
+        this.queueArray.push({func: "putByKey", dataArray: dataArray});
       },
       delete: function(storeStr, searchKey, onsuccess, onerror) {
         this.queueArray.push({func: "delete", storeStr: storeStr, searchKey: searchKey, onsuccess: onsuccess, onerror: onerror});
@@ -84,8 +86,8 @@
       cursor: function(storeStr, filter, onsuccess, onerror) {
         this.queueArray.push({func: "cursor", storeStr: storeStr, filter: filter, onsuccess: onsuccess, onerror: onerror});
       },
-      getAll: function(storeStr, oncomplete) {
-        this.queueArray.push({func: "getAll", storeStr: storeStr, oncomplete: oncomplete});
+      getAll: function(...dataArray) {
+        this.queueArray.push({func: "getAll", dataArray: dataArray});
       },
       close: function() {
         this.queueArray.push({func: "close"});
@@ -107,10 +109,17 @@
           }
           request.onerror = onerror || funcs.putOnerror || idb.onerror;
         }
-        
         dbObj.put = function(storeStr, data, onsuccess, onerror) {
           var store = this.storeFunc(storeStr);
           var request = store.put(data);
+          if (onsuccess || funcs.putOnsuccess) {
+            request.onsuccess = onsuccess || funcs.putOnsuccess;
+          }
+          request.onerror = onerror || funcs.putOnerror || idb.onerror;
+        }
+        dbObj.putByKey = function(storeStr, key, data, onsuccess, onerror) {
+          var store = this.storeFunc(storeStr);
+          var request = store.put(data, key);
           if (onsuccess || funcs.putOnsuccess) {
             request.onsuccess = onsuccess || funcs.putOnsuccess;
           }
@@ -130,7 +139,6 @@
           request.onsuccess = function(event) {
             onsuccess(event.target.result, event);
           };
-          
           request.onerror = onerror || funcs.getOnerror || idb.onerror;
         }
         dbObj.cursor = function(storeStr, filter, onsuccess, onerror) {
@@ -175,6 +183,9 @@
             put: function(data, onsuccess, onerror) {
               return dbObj.put(storeStr, data, onsuccess, onerror);
             },
+            putByKey: function(key, data, onsuccess, onerror) {
+              return dbObj.putByKey(storeStr, key, data, onsuccess, onerror);
+            },
             delete: function(searchKey, onsuccess, onerror) {
               return dbObj.delete(storeStr, searchKey, onsuccess, onerror);
             },
@@ -204,10 +215,14 @@
           //console.log(queueArray);
           data = queueArray[i];
           try {
+            /*
             dbObj[data.func](data.storeStr //data.index ? data.storeStr.index(data.index) : data.storeStr
                             , data.data||data.searchKey||data.filter||data.onsuccess||data.oncomplete
                             , data.onsuccess||data.onerror
                             , data.onerror);
+            */
+
+            dbObj[data.func](...data.dataArray);
           } catch (e) {
             if (funcs.dbErrorCallback) funcs.dbErrorCallback(e, dbObj, data); 
             throw e;

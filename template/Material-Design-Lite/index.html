@@ -227,7 +227,7 @@
               funcStrings.push(tmpl.br.Div({content: '<pre><code class="language-javascript language-html language-css">' + (e2.code) + '</code></pre>'}));
             }
             funcStrings.push(tmpl.br.Div({class: 'codeSpace', content: [
-              '<pre><code class="language-javascript language-html language-css">' + (e2.element || e2) + '</code></pre>',
+              '<><pre><code class="language-javascript language-html language-css">' + (e2.element || e2) + '</code></pre>',
               tmpl.mdldoc.PlayGroundButton({event: function() {
                 while (playGroundArea.firstChild) playGroundArea.removeChild(playGroundArea.firstChild);
                 var playGround = tmpl.mdldoc.PlayGround({runCode: runCode, style: e2.style});
@@ -1558,8 +1558,6 @@ var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via so
 
       layout = tmpl.mdl.Layout(data);
       document.body.appendChild(layout.element);
-      componentHandler.upgradeElement(layout.element);
-
       window.onhashchange = function() {
         var hashArray = location.hash.replace('#', '').split('/');
         if (!hashArray[0]) return;
@@ -1568,8 +1566,9 @@ var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via so
       }
 
       setTimeout(function() {
+        componentHandler.upgradeElement(layout.element);
         window.onhashchange();
-      }, 0);
+      }, 100);
     });
   </script>
 </html>

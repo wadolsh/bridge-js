@@ -481,8 +481,8 @@
       options: ['border'],
       items: [
         {href: '#', label: 'Add to Calendar', ripple: true, options: ['colored']},
-        '<div class="mdl-layout-spacer"></div>',
-        '<i class="material-icons">event</i>'
+        '<><div class="mdl-layout-spacer"></div>',
+        '<><i class="material-icons">event</i>'
       ]
     }
 })`
@@ -518,7 +518,7 @@
                 code:
 `var dialog = tmpl.mdl.Dialog({
     title: 'Allow data collection?',
-    content: '<p>Allowing us to collect data will let us get you the information you want faster.</p>',
+    content: '<><p>Allowing us to collect data will let us get you the information you want faster.</p>',
     actions: {
       agree: {label: 'Agree'}
     }
@@ -533,7 +533,7 @@ document.body.appendChild(dialog.element);`,
                 code:
 `var dialog = tmpl.mdl.Dialog({
     title: 'Allow data collection?',
-    content: '<p>Allow this site to collect usage data to improve your experience?</p>',
+    content: '<><p>Allow this site to collect usage data to improve your experience?</p>',
     actions: {
       options: ['full-width'],
       agree: {label: 'Agree'}
@@ -812,7 +812,7 @@ element:
       id: 'starks-panel',
       active: true,
       content:
-        \`<ul>
+        \`<><ul>
           <li>Eddard</li>
           <li>Catelyn</li>
           <li>Robb</li>
@@ -825,7 +825,7 @@ element:
     {label: 'Lannisters',
       id: 'lannisters-panel',
       content:
-        \`<ul>
+        \`<><ul>
           <li>Tywin</li>
           <li>Cersei</li>
           <li>Jamie</li>
@@ -835,7 +835,7 @@ element:
     {label: 'Targaryens',
       id: 'targaryens-panel',
       content:
-        \`<ul>
+        \`<><ul>
           <li>Viserys</li>
           <li>Daenerys</li>
         </ul>\`

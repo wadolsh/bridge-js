@@ -764,17 +764,17 @@
         }
       };
 
-      tmplScope.reflash = function(fdata) {
+      tmplScope.refresh = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
         var data = tmplScope.data;
-        var beforeReflash = tmplScope.beforeReflash;
-        var afterReflash = tmplScope.afterReflash;
-        if (beforeReflash) tmplScope.beforeReflash();
+        if (tmplScope.beforeRefresh) tmplScope.beforeRefresh();
         var scope = tmplScope.render(Object.assign(data || {}, fdata));
-        if (afterReflash) tmplScope.afterReflash();
+        if (tmplScope.afterRefresh) tmplScope.afterRefresh();
         return scope;
       };
+
+      tmplScope.reflash = tmplScope.refresh;
 
       return tmplScope;
     };
@@ -1097,8 +1097,8 @@
                 ##componentScopes.forEach(scope => {##
                 <hr>
                 <div class="componentView">
-                  ##%new Function('return '+scope+';')()##
                   <pre><code class="language-javascript">##%scope##</code></pre>
+                  ##%new Function('return '+scope+';')()##
                 </div>
                 <hr>
                 ##})##

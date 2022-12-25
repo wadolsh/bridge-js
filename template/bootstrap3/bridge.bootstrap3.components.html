@@ -590,7 +590,7 @@
   var activeEvent = function(e, edata, tmplElem) {
     //tmplElem.querySelector('.active').classList.remove('active');
     //e.target.parentElement.classList.add('active');
-    tmplScope.reflash({pageNum: edata.item.label});
+    tmplScope.refresh({pageNum: edata.item.label});
   }
 
   tmplScope.getPageLength = function() {

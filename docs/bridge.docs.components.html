@@ -76,7 +76,7 @@
           if (item.index != data.selectedIndex) {
             var area = data.contentArea();
             while (area.firstChild) area.removeChild(area.firstChild);
-            data.tmplScope.reflash({index: item.index});
+            data.tmplScope.refresh({index: item.index});
             area.appendChild(data.tmplScope.element);
             data.selectedIndex = item.index;
             Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
@@ -136,7 +136,7 @@
   var langSelect = function(lang) {
     return function() {
       document.documentElement.lang = lang;
-      tmplScope.reflash();
+      tmplScope.refresh();
       /*
       setTimeout(function() {
         navbar.element.querySelector('#'+navbar._id+'builder').click();
@@ -816,14 +816,14 @@
           },
           'status.content1': {
             en: ``,
-            ko: `Component 를 reflash, render 하게 될 경우<br/>
+            ko: `Component 를 refresh, render 하게 될 경우<br/>
                  Component data 입력값에 의해서 초기화 되기 때문에 Component 내부에서 발생한 변화를 잃어 버리게 됩니다.<br/>
-                 내부의 변화를 status 에 보관하면 reflash, render 시에도 동일한 값을 참조 할 수 있습니다.
+                 내부의 변화를 status 에 보관하면 refresh, render 시에도 동일한 값을 참조 할 수 있습니다.
                  Template 등록시 templateSettings 의 statusKeyName 지정함으로써 병경이 가능합니다.<br/>
                  ※example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
-            ja: `Component を reflash, render すると<br/>
+            ja: `Component を refresh, render すると<br/>
                  Component data 入力値により再度初期化されるため、Component 内部で発生した変化を失うことになります。<br/>
-                 内部の変化を status へ保管すると reflash, render 後にも再度参照することが可能です。<br/>
+                 内部の変化を status へ保管すると refresh, render 後にも再度参照することが可能です。<br/>
                  Template 登録時に templateSettings の statusKeyName を指定することで名前を変更可能です。<br/>
                  ※example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
           },
@@ -890,7 +890,7 @@
               ja: `data 入力値で Component を再度レンダリングします。<br/>
                    以前の data は無視されます。`,
             },
-            'reflash.content1': {
+            'refresh.content1': {
               en: ``,
               ko: `data 입력치로 Component 를 다시 렌더링 합니다.<br/>
                    현재 Component 가 가진 data 와 Object.assign() 로 merge 해서 다시 렌더링 하게 됩니다.`,
@@ -967,8 +967,8 @@
               <td>##=i18n.Reference.Variable.tmplScope.render.content1##</td>
             </tr>
             <tr>
-              <th>reflash(data)</th>
-              <td>##=i18n.Reference.Variable.tmplScope.reflash.content1##</td>
+              <th>refresh(data)</th>
+              <td>##=i18n.Reference.Variable.tmplScope.refresh.content1##</td>
             </tr>
             <tr>
               <th colspan="2">##=i18n.Reference.Variable.tmplScope.content3##</th>

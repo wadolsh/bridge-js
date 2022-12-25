@@ -48,7 +48,7 @@ sample → {
   appendTo: function,
   data: {label: "Div Sample"},
   element: Element
-  reflash: function,
+  refresh: function,
   remove: function,
   render: function,
   replace: function,
@@ -673,7 +673,7 @@ bridge.tmplTool.addTmplByUrl([
     var langSelect = function(lang) {
       return function() {
         document.documentElement.lang = lang;
-        example1.reflash();
+        example1.refresh();
       };
     }
 
@@ -744,8 +744,8 @@ bridge.tmplTool.addTmplByUrl([
     var langSelect = function(lang) {
       return function() {
         document.documentElement.lang = lang;
-        example1.reflash();
-        example2.reflash();
+        example1.refresh();
+        example2.refresh();
       };
     }
 

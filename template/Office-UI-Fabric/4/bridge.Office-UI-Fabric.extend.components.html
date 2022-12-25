@@ -84,7 +84,7 @@
         alert(result.error);
         return;
       }
-      listTable = listTable.reflash({items: result.list});
+      listTable = listTable.refresh({items: result.list});
       if (callback) callback(); 
     });
   }

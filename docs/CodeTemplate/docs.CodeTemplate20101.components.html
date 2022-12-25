@@ -45,17 +45,17 @@
   ##
   var clickCounter = 0;
   var overCounter = 0;
-  var reflash = function(target) {
+  var refresh = function(target) {
     target.innerHTML = data.label + ' ' + clickCounter + ' ' + overCounter;
   }
   var eventHandler = {
     click: function(e, tmplData, tmplElem, tmplScope) {
       clickCounter++;
-      reflash(e.target);
+      refresh(e.target);
     },
     mouseover: function(e, tmplData, tmplElem, tmplScope) {
       overCounter++;
-      reflash(e.target);
+      refresh(e.target);
     }
   }
   ##

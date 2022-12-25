@@ -76,7 +76,7 @@
           if (item.index != data.selectedIndex) {
             var area = data.contentArea();
             while (area.firstChild) area.removeChild(area.firstChild);
-            data.tmplScope.reflash({index: item.index});
+            data.tmplScope.refresh({index: item.index});
             area.appendChild(data.tmplScope.element);
             data.selectedIndex = item.index;
 
@@ -121,7 +121,7 @@
   var langSelect = function(lang) {
     return function() {
       document.documentElement.lang = lang;
-      tmplScope.reflash();
+      tmplScope.refresh();
       /*
       setTimeout(function() {
         navbar.element.querySelector('#'+navbar._id+'builder').click();
@@ -489,9 +489,9 @@
 
         <h4 id="Docs/Template/Variable/status">status</h4>
           [statusKeyName](default: "status")<br>
-          생성된 Component 를 reflash, render 하게 될 경우<br>
+          생성된 Component 를 refresh, render 하게 될 경우<br>
           Component data 입력값에 의해서 초기화 되기 때문에 Component 내부에서 발생한 변화를 잃어 버리게 됩니다.<br>
-          내부의 변화를 status 에 보관하면 reflash, render 시에도 동일한 값을 참조 할 수 있습니다.
+          내부의 변화를 status 에 보관하면 refresh, render 시에도 동일한 값을 참조 할 수 있습니다.
           Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br>
           ※ tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});
 
@@ -540,7 +540,7 @@
               </td>
             </tr>
             <tr>
-              <th>reflash(data)</th>
+              <th>refresh(data)</th>
               <td>
                 data 입력치로 Component 를 다시 렌더링 합니다.<br>
                 현재 Component 가 가진 data 와 Object.assign() 로 marge 해서 다시 렌더링 하게 됩니다.

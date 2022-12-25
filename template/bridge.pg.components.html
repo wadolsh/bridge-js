@@ -60,12 +60,12 @@
   var code = data.code;
   var type = data.type;
   var showConsole = data.showConsole || false;
-  var autoReflash = true;
+  var autoRefresh = true;
 
   var runCodeArea = tmpl.pg.CodeMirrorArea({
     value: code,
     changeEvent: function(cMirror) {
-      if (autoReflash) renderingArea.reflashCode({code: cMirror.getValue(), type: type});
+      if (autoRefresh) renderingArea.refreshCode({code: cMirror.getValue(), type: type});
     }
   });
   var consoleArea = tmpl.pg.ConsoleArea({show: showConsole});
@@ -86,7 +86,7 @@
     templateCodeArea = tmpl.pg.CodeMirrorArea({
       value: template,
       changeEvent: function(cMirror) {
-        if (autoReflash) renderingArea.reflashCode({template: cMirror.getValue(), type: type});
+        if (autoRefresh) renderingArea.refreshCode({template: cMirror.getValue(), type: type});
       }
     });
     templateSpliteArea = tmpl.brui.SplitterLayout({
@@ -99,15 +99,15 @@
   <div class="pg-TestArea ##=hasTemplate ? 'template' : ''## ##=showConsole ? 'console' : ''##">
     ##%templateSpliteArea || codeSpliteArea##
     <div class="controlArea">
-      ##%tmpl.bs.Button({label: 'AUTO REFLASH', icon: 'refresh', styleClass: 'xs ' + (autoReflash ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
-        autoReflash = !autoReflash;
-        tmplElem.classList[autoReflash ? 'add' : 'remove']('btn-success');
+      ##%tmpl.bs.Button({label: 'AUTO REFRESH', icon: 'refresh', styleClass: 'xs ' + (autoRefresh ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+        autoRefresh = !autoRefresh;
+        tmplElem.classList[autoRefresh ? 'add' : 'remove']('btn-success');
       }})##
       ##%tmpl.bs.Button({label: 'CODE RESET', icon: 'repeat', styleClass: 'xs', event: function() {
         runCodeArea.codeMirror.setValue(code);
       }})##
       ##%tmpl.bs.Button({label: 'RUN', icon: 'play', styleClass: 'xs', event: function() {
-        renderingArea.reflashCode({template: templateCodeArea ? templateCodeArea.codeMirror.getValue() : null, code: runCodeArea.codeMirror.getValue()});
+        renderingArea.refreshCode({template: templateCodeArea ? templateCodeArea.codeMirror.getValue() : null, code: runCodeArea.codeMirror.getValue()});
       }})##
       ##%tmpl.bs.Button({label: 'CONSOLE', icon: '', styleClass: 'xs right ' + (showConsole ? 'btn-info' : ''), event: function(e, edata, tmplElem) {
         showConsole = !showConsole;
@@ -173,7 +173,7 @@
   var runCode = data.runCode;
   var type = data.type;
 
-  var autoReflash = true;
+  var autoRefresh = true;
 
   var toRenderingCode = function() {
     var realCode = "bridge.tmplTool.addTmplByUrl([" +
@@ -187,7 +187,7 @@
   var runCodeArea = tmpl.pg.CodeMirrorArea({
     value: code,
     changeEvent: function(cMirror) {
-      if (autoReflash) renderingArea.reflashCode({code: cMirror.getValue(), type: type});
+      if (autoRefresh) renderingArea.refreshCode({code: cMirror.getValue(), type: type});
     }
   });
   ##
@@ -197,9 +197,9 @@
       <div class="runCodeAreaTitle">
         <span>Code</span>
         <div class="control">
-          ##%tmpl.bs.Button({label: 'AUTO REFLASH', icon: 'refresh', styleClass: 'xs ' + (autoReflash ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
-            autoReflash = !autoReflash;
-            tmplElem.classList[autoReflash ? 'add' : 'remove']('btn-success');
+          ##%tmpl.bs.Button({label: 'AUTO REFRESH', icon: 'refresh', styleClass: 'xs ' + (autoRefresh ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+            autoRefresh = !autoRefresh;
+            tmplElem.classList[autoRefresh ? 'add' : 'remove']('btn-success');
           }})##
         </div>
       </div>
@@ -352,7 +352,7 @@
       body.removeChild(body.firstChild);
     }
   }
-  tmplScope.reflashCode = function(newCode) {
+  tmplScope.refreshCode = function(newCode) {
     if (!iframeDocument) return;
     clearBody();
     if (newCode.code) code = data.code = newCode.code;

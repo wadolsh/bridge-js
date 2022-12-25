@@ -840,17 +840,14 @@ console.log(3, text.slice(index).replace(escaper, escapeFunc))
         }
       };
 
-      //returnTarget.reflash = docFragment.reflash = tmplScope.reflash = function(fdata) {
-      tmplScope.reflash = function(fdata) {
+      //returnTarget.refresh = docFragment.refresh = tmplScope.refresh = function(fdata) {
+      tmplScope.refresh = function(fdata) {
         var tmplScope = this.tmplScope || this;
         var target = tmplScope.element;
         var data = tmplScope.data;
-        var beforeReflash = tmplScope.beforeReflash;
-        var afterReflash = tmplScope.afterReflash;
-        if (beforeReflash) tmplScope.beforeReflash();
+        if (tmplScope.beforeRefresh) tmplScope.beforeRefresh();
         var scope = tmplScope.render(Object.assign(data || {}, fdata));
-        if (afterReflash) tmplScope.afterReflash();
-        // tmplScope = null;
+        if (tmplScope.afterRefresh) tmplScope.afterRefresh();
         return scope;
       };
 

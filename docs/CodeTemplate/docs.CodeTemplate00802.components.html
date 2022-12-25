@@ -25,13 +25,13 @@
             }});
             var myCodeContent1 = tmpl.myCode.Content1({});
 
-            layout.reflash({content: [
+            layout.refresh({content: [
               button,
               myCodeContent1
             ]});
           }},
           {label: 'Content2', event: function(e) {
-            layout.reflash({content: [
+            layout.refresh({content: [
               tmpl.myCode.Content2({})
             ]});
           }},

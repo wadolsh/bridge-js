@@ -600,7 +600,7 @@
       //var content = target.querySelector('.brui-Window-Content');
       //var icons = target.querySelectorAll('.brui-WindowIcon');
 
-      runIconScope = runIconScope.reflash({style: runIconStyle || {left: target.offsetLeft + 'px', top: target.offsetTop + 'px'}});
+      runIconScope = runIconScope.refresh({style: runIconStyle || {left: target.offsetLeft + 'px', top: target.offsetTop + 'px'}});
       beforeContentDisplay = target.style.display;
       target.style.display = 'none';
       target.parentElement.appendChild(runIconScope.element || runIconScope);

@@ -289,7 +289,7 @@
     </template>
   </body>
   <script type="text/javascript">
-    var reflashCallback = function() {
+    var refreshCallback = function() {
       Prism.highlightAll();
     }
     var data = {
@@ -313,7 +313,7 @@
             });
             layout.content(doc.element);
             layout.title('Badges');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Buttons', href:'#Buttons', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -350,7 +350,7 @@
             });
             layout.content(doc.element);
             layout.title('Buttons');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Cards', href:'#Cards', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -491,7 +491,7 @@
             });
             layout.content(doc.element);
             layout.title('Cards');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Chips', href:'#Chips', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -507,7 +507,7 @@
             });
             layout.content(doc.element);
             layout.title('Chips');
-            reflashCallback();
+            refreshCallback();
 
           }},
           {label: 'Dialogs', href:'#Dialogs', event: function() {
@@ -549,7 +549,7 @@ document.body.appendChild(dialog.element);`,
             });
             layout.content(doc.element);
             layout.title('Dialogs');
-            reflashCallback();
+            refreshCallback();
 
           }},
           {label: 'Layout', href:'#Layout', event: function() {
@@ -793,7 +793,7 @@ document.body.appendChild(dialog.element);`,
             });
             layout.content(doc.element);
             layout.title('Layout');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Tabs', href:'#Tabs', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -847,7 +847,7 @@ element:
             });
             layout.content(doc.element);
             layout.title('Tabs');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Mega-Footer', href:'#Mega-Footer', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -912,7 +912,7 @@ element:
             });
             layout.content(doc.element);
             layout.title('Mega-Footer');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Mini-Footer', href:'#Mini-Footer', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -940,7 +940,7 @@ element:
             });
             layout.content(doc.element);
             layout.title('Mini-Footer');
-            reflashCallback();
+            refreshCallback();
           }},
 
 
@@ -1061,7 +1061,7 @@ style:
             });
             layout.content(doc.element);
             layout.title('Lists');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Progress', href:'#Progress', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1091,7 +1091,7 @@ setTimeout(function() {
             });
             layout.content(doc.element);
             layout.title('Progress');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Spinner', href:'#Spinner', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1113,7 +1113,7 @@ var button = tmpl.mdl.Button({label: 'Spinner Toggle', options: ['raised'], even
             });
             layout.content(doc.element);
             layout.title('Spinner');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Menus', href:'#Menus', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1308,7 +1308,7 @@ var menu = tmpl.mdl.Menu({
             });
             layout.content(doc.element);
             layout.title('Menus');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Sliders', href:'#Sliders', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1329,7 +1329,7 @@ slider.value(20);
             });
             layout.content(doc.element);
             layout.title('Sliders');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Snackbar', href:'#Snackbar', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1372,7 +1372,7 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
             });
             layout.content(doc.element);
             layout.title('Snackbar');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Checkbox', href:'#Checkbox', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1384,7 +1384,7 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
             });
             layout.content(doc.element);
             layout.title('Checkbox');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Radio', href:'#Radio', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1396,7 +1396,7 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
             });
             layout.content(doc.element);
             layout.title('Radio');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Icon-Toggle', href:'#Icon-Toggle', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1408,7 +1408,7 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
             });
             layout.content(doc.element);
             layout.title('Icon-Toggle');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Switch', href:'#Switch', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1420,7 +1420,7 @@ var showSnackbarButton = tmpl.mdl.Button({label: 'SHOW', options: ['raised'], ev
             });
             layout.content(doc.element);
             layout.title('Switch');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Tables', href:'#Tables', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1466,7 +1466,7 @@ element:
             });
             layout.content(doc.element);
             layout.title('Tables');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Text-Fields', href:'#Text-Fields', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1484,7 +1484,7 @@ element:
             });
             layout.content(doc.element);
             layout.title('Text-Fields');
-            reflashCallback();
+            refreshCallback();
           }},
           {label: 'Tooltips', href:'#Tooltips', event: function() {
             var doc = tmpl.mdldoc.Doc({
@@ -1529,7 +1529,7 @@ var tip = tmpl.mdl.Tooltip({for: 'tt4', content: '<>Share your content<br>via so
             });
             layout.content(doc.element);
             layout.title('Tooltips');
-            reflashCallback();
+            refreshCallback();
           }}
         ]
       }

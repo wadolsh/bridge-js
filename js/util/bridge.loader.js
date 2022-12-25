@@ -234,12 +234,12 @@ console.log('addTmpls: ' + path);
             });
 
             var escapeHtml = tmplTool.escapeHtml;
-            var reflashIds = [];
+            var refreshIds = [];
             var removeElements = Array.prototype.filter.call(tmplNodes, function(ele) {
               var tmplCache = Bridge.tmplCache.get(ele.id);
               if (!tmplCache || (tmplCache.templateText != escapeHtml.escape(escapeHtml.unescape(ele.innerHTML)))) {
 console.log('Changed template : ', ele.id);
-                reflashIds.push(ele.id);
+                refreshIds.push(ele.id);
                 return false;
               }
               return true;
@@ -251,14 +251,14 @@ console.log('Changed template : ', ele.id);
 
             tmplTool.addTmpls($template.innerHTML);
 
-            var reflashNodeList = Array.prototype.filter.call(document.querySelectorAll('*'), function(ele) {
+            var refreshNodeList = Array.prototype.filter.call(document.querySelectorAll('*'), function(ele) {
               if (ele.tmplScope) {
-                return reflashIds.includes(ele.tmplScope.tmplId);
+                return refreshIds.includes(ele.tmplScope.tmplId);
               }
               return false;
             });
-            for (var i=0, size=reflashNodeList.length; i < size; i++) {
-              reflashNodeList[i].tmplScope.reflash();
+            for (var i=0, size=refreshNodeList.length; i < size; i++) {
+              refreshNodeList[i].tmplScope.refresh();
             }
           });
         } else if (path.indexOf('.js') > -1) {
@@ -352,12 +352,12 @@ console.log('Changed template : ', ele.id);
             });
 
             var escapeHtml = tmplTool.escapeHtml;
-            var reflashIds = [];
+            var refreshIds = [];
             var removeElements = Array.prototype.filter.call(tmplNodes, function (ele) {
               var tmplCache = Bridge.tmplCache.get(ele.id);
               if (!tmplCache || (tmplCache.templateText != escapeHtml.escape(escapeHtml.unescape(ele.innerHTML)))) {
                 console.log('Changed template : ', ele.id);
-                reflashIds.push(ele.id);
+                refreshIds.push(ele.id);
                 return false;
               }
               return true;
@@ -369,16 +369,16 @@ console.log('Changed template : ', ele.id);
 
             tmplTool.addTmpls($template.innerHTML);
 
-            var reflashTargetList = tmplScopeArray.filter(function (scope) {
+            var refreshTargetList = tmplScopeArray.filter(function (scope) {
               if (scope.element && scope.element.isConnected) {
-                return reflashIds.includes(scope.tmplId);
+                return refreshIds.includes(scope.tmplId);
               }
               return false;
             });
 
             for (var i = 0, size = tmplScopeArray.length; i < size; i++) {
-              if (tmplScopeArray[i].element.isConnected && reflashIds.includes(tmplScopeArray[i].tmplId)) {
-                tmplScopeArray[i].reflash();
+              if (tmplScopeArray[i].element.isConnected && refreshIds.includes(tmplScopeArray[i].tmplId)) {
+                tmplScopeArray[i].refresh();
                 console.log(tmplScopeArray[i]._id, tmplScopeArray[i].element.isConnected);
               }
             }

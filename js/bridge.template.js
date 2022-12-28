@@ -157,8 +157,10 @@
       //pattern: /(?:##=|\$\{)([\s\S]+?)(?:##|\})/g, // ##=##, ${}
       pattern: /##=([\s\S]+?)##/g, // ##=##, ${}
       exec: function(interpolate) {
-        interpolate = 'typeof (' + interpolate + ')==\'function\' ? (' + interpolate + ')() : (' + interpolate + ')';
-        return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+        //interpolate = 'typeof (' + interpolate + ')==\'function\' ? (' + interpolate + ')() : (' + interpolate + ')';
+        //return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+        var interpolateSyntax = 'typeof (interpolate)==\'function\' ? (interpolate)() : (interpolate)';
+        return "';\nvar interpolate=" + interpolate + ";\n__p+=((__t=(" + interpolateSyntax + "))==null?'':__t);\n__p+='";
       }
     },
     scopeKey: {

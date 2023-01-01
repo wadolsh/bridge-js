@@ -230,7 +230,7 @@
   var element = this;
   setTimeout(function() {
     var codeMirror = tmplScope.codeMirror = CodeMirror(element, {
-      value: value,
+      value: value || '',
       lineNumbers: true,
       mode: "javascript"
     });

@@ -148,8 +148,8 @@
     },
     preEvaluate : {
       pattern: /##!([\s\S]+?)##/g,
-      exec: function(preEvaluate) {
-        new Function(preEvaluate)();
+      exec: function(preEvaluate, tmplId) {
+        new Function('tmplId', preEvaluate)(tmplId);
         return '';
       }
     },
@@ -545,7 +545,7 @@
       });
 
       if (!selected) return match;
-      source += matcher.exec[i].call(matcher.settings, selected);
+      source += matcher.exec[i].call(matcher.settings, selected, tmplId);
       index = offset + match.length;
       return match;
     });
@@ -984,6 +984,14 @@
   };
 
   Bridge.i18n = {};
+  tmplTool.i18n = function(i18nObj, defaultText) {
+    var label = i18nObj[document.documentElement.lang] || defaultText;
+    if (!label) {
+      if (debug) console.log('label key [' + fullKey + '] is empty!');
+    }
+    return label;
+  };
+
   tmplTool.addI18n = function(fullKey, i18nObj) {
     var langKeyNames = fullKey.split('.');
     var target = Bridge.i18n;

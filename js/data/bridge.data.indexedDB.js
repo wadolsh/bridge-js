@@ -10,16 +10,29 @@
     console.trace(event);
   };
   
-  idb.deleteDatabase = function(dbName, successCallback, failCallback) {
-    if (idb.cache[dbName] && idb.cache[dbName].db) idb.cache[dbName].db.close();
+  idb.deleteDatabase = function(dbName, successCallback, failCallback, blockedCallback) {
+
+    if (idb.cache[dbName] && idb.cache[dbName].db) {
+      const cache = idb.cache[dbName];
+      for (const objectStoreName of cache.db.objectStoreNames) {
+        console.log(objectStoreName)
+      }
+      cache.close();
+    }
+
     var dbDeleteRequest = window.indexedDB.deleteDatabase(dbName);
+
+    dbDeleteRequest.onblocked = function(event) {
+      console.log("Database blocked.");
+      if (blockedCallback) blockedCallback();
+    }
     dbDeleteRequest.onerror = function(event) {
       console.log("Error deleting database.");
       if (failCallback) failCallback();
     };
-     
+
     dbDeleteRequest.onsuccess = function(event) {
-      console.log("Database deleted successfully");
+      console.log("Database deleted successfully.");
       if (idb.cache[dbName]) {
         delete idb.cache[dbName];
       }

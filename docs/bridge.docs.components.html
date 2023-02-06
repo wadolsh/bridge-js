@@ -1,8 +1,63 @@
 <body>
-<style id="docs-Common-Style">
-    .docs-Base code[class*=language-],
-    .docs-Base pre[class*=language-] {
+
+<script id="docs-Common-Script">
+  var genSidemenu = function(data) {
+    var titleList = data.element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+    Array.prototype.forEach.call(titleList, function(element) {
+      var splited = element.id.split('/');
+      data.munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1]+'/'+splited[2] + ' ' + element.tagName, index: splited[1]+'\\/'+splited[2], hash: '#' + element.id});
+    });
+  }
+
+  var getSidemenu = function(data) {
+    return function() {
+      return data.munuList.map(function(item) {
+        return Object.assign(item, {event: function(e, edata, tmplElem) {
+console.log(11111)
+          if (item.index != data.selectedIndex) {
+            var area = data.contentArea();
+            while (area.firstChild) area.removeChild(area.firstChild);
+            data.tmplScope.refresh({index: item.index});
+            area.appendChild(data.tmplScope.element);
+            data.selectedIndex = item.index;
+            Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
+              element.classList.remove('display');
+            });
+            Array.prototype.forEach.call(tmplElem.querySelectorAll('.' + item.index), function(element) {
+              element.classList.add('display');
+            });
+
+            var removeTargets = data.tmplScope.element.querySelectorAll('.page:not(#' + item.index + ')');
+            Array.prototype.forEach.call(removeTargets, function(target) {
+              target.parentElement.removeChild(target);
+            });
+
+            area.appendChild(data.tmplScope.element);
+            data.selectedIndex = item.index;
+          }
+          setTimeout(function() {
+            location.hash = '';
+            location.hash = item.hash;
+          }, 200);
+        }})
+      });;
     }
+  };
+</script>
+<template id="docs-Base">
+  <style id="style-docs-Base">
+    html, body, .docs-Base {
+      height: 100%;
+    }
+    .docs-Base .main {
+      position: absolute;
+      top: 50px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+
     .docs-Base .row, .docs-Base .sidemenu {
       height: 100%;
     }
@@ -59,62 +114,7 @@
     pre, .ta-TestArea {
       margin: 0 0 20px;
     }
-</style>
-<script id="docs-Common-Script">
-  var genSidemenu = function(data) {
-    var titleList = data.element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
-    Array.prototype.forEach.call(titleList, function(element) {
-      var splited = element.id.split('/');
-      data.munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1]+'/'+splited[2] + ' ' + element.tagName, index: splited[1]+'\\/'+splited[2], hash: '#' + element.id});
-    });
-  }
 
-  var getSidemenu = function(data) {
-    return function() {
-      return data.munuList.map(function(item) {
-        return Object.assign(item, {event: function(e, edata, tmplElem) {
-          if (item.index != data.selectedIndex) {
-            var area = data.contentArea();
-            while (area.firstChild) area.removeChild(area.firstChild);
-            data.tmplScope.refresh({index: item.index});
-            area.appendChild(data.tmplScope.element);
-            data.selectedIndex = item.index;
-            Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
-              element.classList.remove('display');
-            });
-            Array.prototype.forEach.call(tmplElem.querySelectorAll('.' + item.index), function(element) {
-              element.classList.add('display');
-            });
-
-            var removeTargets = data.tmplScope.element.querySelectorAll('.page:not(#' + item.index + ')');
-            Array.prototype.forEach.call(removeTargets, function(target) {
-              target.parentElement.removeChild(target);
-            });
-
-            area.appendChild(data.tmplScope.element);
-            data.selectedIndex = item.index;
-          }
-          setTimeout(function() {
-            location.hash = '';
-            location.hash = item.hash;
-          }, 200);
-        }})
-      });;
-    }
-  };
-</script>
-<template id="docs-Base">
-  <style id="style-docs-Base">
-    html, body, .docs-Base {
-      height: 100%;
-    }
-    .docs-Base .main {
-      position: absolute;
-      top: 50px;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
   </style>
   ##!
   bridge.tmplTool.addI18ns({

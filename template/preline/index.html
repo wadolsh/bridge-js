@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+
+  <script src="../../js/bridge.template.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" data-manual></script>
+
+  <!-- Title -->
+  <title>bridge x preline ui components</title>
+
+  <!-- Font -->
+  <!--<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">-->
+  
+  <!-- Link your Tailwind CSS file -->
+  <link rel="stylesheet" href="output.css">
+</head>
+
+<body>
+
+
+
+  <!-- JS Plugins Init. -->
+  <script>
+    // // bg-red-100 text-red-800 bg-yellow-100 text-yellow-800 bg-green-100 text-green-800 bg-blue-100 text-blue-800 bg-indigo-100 text-indigo-800 bg-purple-100 text-purple-800 bg-white/[.1] text-gray-600 dark:text-gray-400
+    let components = {
+      Badge: [
+        `tmpl.pluc.Badge({})`,
+        ` [tmpl.pluc.Badge({label: 'Badge'}), tmpl.pluc.Badge({label: 'Badge', color: 'red'}), tmpl.pluc.Badge({label: 'Badge', color: 'indigo'})]`,
+        `tmpl.pluc.Badge({label: 'Badge', color: 'blue', rounded: 'md'})`,
+        `tmpl.pluc.Badge({label: 'Badge', color: 'blue', remove: (e, edata, scope) => scope.remove()})`,
+      ],
+      Button: [
+        // bg-gray-500
+        `tmpl.pluc.Button({})`,
+        `tmpl.pluc.Button({label: 'Outline'})`,
+        `tmpl.pluc.Button({label: 'Solid', type: 'solid'})`,
+        `tmpl.pluc.Button({label: 'Outline', type: 'outline'})`,
+        `tmpl.pluc.Button({label: 'Ghost', type: 'ghost'})`,
+        `tmpl.pluc.Button({label: 'Soft', type: 'soft'})`,
+        `tmpl.pluc.Button({label: 'White', type: 'white'})`,
+        `tmpl.pluc.Button({label: 'Link', type: 'link'})`,
+        `tmpl.pluc.Button({type: 'icon', icon: {
+  path: 'M1 7C0.447715 7 -3.73832e-07 7.44771 -3.49691e-07 8C-3.2555e-07 8.55228 0.447715 9 1 9L13.0858 9L7.79289 14.2929C7.40237 14.6834 7.40237 15.3166 7.79289 15.7071C8.18342 16.0976 8.81658 16.0976 9.20711 15.7071L16.0303 8.88388C16.5185 8.39573 16.5185 7.60427 16.0303 7.11612L9.20711 0.292893C8.81658 -0.0976318 8.18342 -0.0976318 7.79289 0.292893C7.40237 0.683417 7.40237 1.31658 7.79289 1.70711L13.0858 7L1 7Z'
+}})`,
+
+        
+        `tmpl.pluc.Button({label: 'Solid', type: 'solid', color: 'blue'})`,
+        `tmpl.pluc.Button({label: 'Outline', type: 'outline', color: 'blue'})`,
+        `tmpl.pluc.Button({label: 'Ghost', type: 'ghost', color: 'blue'})`,
+        `tmpl.pluc.Button({label: 'Soft', type: 'soft', color: 'blue'})`,  // text-blue-500  hover:bg-blue-500 focus:ring-blue-500 
+        `tmpl.pluc.Button({label: 'White', type: 'white', color: 'blue'})`,
+        `tmpl.pluc.Button({label: 'Link', type: 'link', color: 'blue'})`,
+        `tmpl.pluc.Button({type: 'icon', color: 'blue', icon: {
+  path: 'M1 7C0.447715 7 -3.73832e-07 7.44771 -3.49691e-07 8C-3.2555e-07 8.55228 0.447715 9 1 9L13.0858 9L7.79289 14.2929C7.40237 14.6834 7.40237 15.3166 7.79289 15.7071C8.18342 16.0976 8.81658 16.0976 9.20711 15.7071L16.0303 8.88388C16.5185 8.39573 16.5185 7.60427 16.0303 7.11612L9.20711 0.292893C8.81658 -0.0976318 8.18342 -0.0976318 7.79289 0.292893C7.40237 0.683417 7.40237 1.31658 7.79289 1.70711L13.0858 7L1 7Z'
+}})`,
+        
+        // rounded-full
+        `tmpl.pluc.Button({label: 'Button', type: 'solid', color: 'blue', rounded: true})`,
+        `tmpl.pluc.Button({label: 'Button', type: 'outline', color: 'blue', rounded: true})`,
+        `tmpl.pluc.Button({type: 'icon', color: 'blue', rounded: true, icon: {
+    path: 'M1 7C0.447715 7 -3.73832e-07 7.44771 -3.49691e-07 8C-3.2555e-07 8.55228 0.447715 9 1 9L13.0858 9L7.79289 14.2929C7.40237 14.6834 7.40237 15.3166 7.79289 15.7071C8.18342 16.0976 8.81658 16.0976 9.20711 15.7071L16.0303 8.88388C16.5185 8.39573 16.5185 7.60427 16.0303 7.11612L9.20711 0.292893C8.81658 -0.0976318 8.18342 -0.0976318 7.79289 0.292893C7.40237 0.683417 7.40237 1.31658 7.79289 1.70711L13.0858 7L1 7Z'
+  }})`,
+        `tmpl.pluc.Button({type: 'icon-outline', color: 'blue', rounded: true, 
+icon: {
+  path: 'M1 7C0.447715 7 -3.73832e-07 7.44771 -3.49691e-07 8C-3.2555e-07 8.55228 0.447715 9 1 9L13.0858 9L7.79289 14.2929C7.40237 14.6834 7.40237 15.3166 7.79289 15.7071C8.18342 16.0976 8.81658 16.0976 9.20711 15.7071L16.0303 8.88388C16.5185 8.39573 16.5185 7.60427 16.0303 7.11612L9.20711 0.292893C8.81658 -0.0976318 8.18342 -0.0976318 7.79289 0.292893C7.40237 0.683417 7.40237 1.31658 7.79289 1.70711L13.0858 7L1 7Z'
+}})`,
+
+        // w-full
+        `tmpl.pluc.Button({label: 'Button', type: 'solid', color: 'blue', full: true})`,
+        `tmpl.pluc.Button({label: 'Button', type: 'outline', color: 'blue', full: true})`,
+        `tmpl.pluc.Button({label: 'Add to cart', type: 'solid', color: 'blue',
+  icon: {
+    path: 'M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z'
+  }
+})`,
+        `tmpl.pluc.Button({label: 'Signup free', type: 'outline', color: 'gray',
+  icon: {
+    path: 'M1 7C0.447715 7 -3.73832e-07 7.44771 -3.49691e-07 8C-3.2555e-07 8.55228 0.447715 9 1 9L13.0858 9L7.79289 14.2929C7.40237 14.6834 7.40237 15.3166 7.79289 15.7071C8.18342 16.0976 8.81658 16.0976 9.20711 15.7071L16.0303 8.88388C16.5185 8.39573 16.5185 7.60427 16.0303 7.11612L9.20711 0.292893C8.81658 -0.0976318 8.18342 -0.0976318 7.79289 0.292893C7.40237 0.683417 7.40237 1.31658 7.79289 1.70711L13.0858 7L1 7Z'
+  }
+})`,
+
+        // h-[2.375rem] w-[2.375rem] h-[2.875rem] w-[2.875rem] h-[3.875rem] w-[3.875rem]
+        `tmpl.pluc.Button({type: 'solid', color: 'blue',
+  h: '[2.375rem]',
+  w: '[2.375rem]',
+  icon: {
+    path: 'M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z'
+  }
+})`,
+`tmpl.pluc.Button({type: 'solid', color: 'blue',
+  h: '[2.875rem]',
+  w: '[2.875rem]',
+  icon: {
+    path: 'M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z'
+  }
+})`,
+`tmpl.pluc.Button({type: 'solid', color: 'blue',
+  h: '[3.875rem]',
+  w: '[3.875rem]',
+  icon: {
+    w: 5,
+    h: 5,
+    path: 'M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z'
+  }
+})`,
+
+        `tmpl.pluc.Button({label: 'Button', type: 'solid', color: 'blue', loading: true})`,
+        `tmpl.pluc.Button({type: 'outline', color: 'blue', loading: true, h: '[2.375rem]', w: '[2.375rem]'})`,
+
+        // disabled cursor-not-allowed
+        `tmpl.pluc.Button({label: 'Button', type: 'solid', color: 'blue', disabled: true})`,
+        `tmpl.pluc.Button({label: 'Button', type: 'outline', color: 'blue', disabled: true})`,
+      ],
+      InlineRadioGroup: [
+        `tmpl.pluc.InlineRadioGroup({})`,
+        `tmpl.pluc.InlineRadioGroup({name: 'hs-radio-group', items: [
+  {label: 'Apple', value: '10'},
+  {label: 'Pear', value: '20'},
+  {label: 'Orange', value: '30'}
+]})`,
+        `tmpl.pluc.InlineRadioGroup({name: 'hs-radio-group', items: [
+  {label: 'Apple', value: '10'},
+  {label: 'Pear', value: '20', checked: 'true'},
+  {label: 'Orange', value: '30'}
+]})`
+      ],
+      InlineCheckboxGroup: [
+        `tmpl.pluc.InlineCheckboxGroup({})`,
+        `tmpl.pluc.InlineCheckboxGroup({name: 'hs-radio-group', items: [
+  {label: 'Apple', value: '10'},
+  {label: 'Pear', value: '20'},
+  {label: 'Orange', value: '30'}
+]})`,
+        `tmpl.pluc.InlineCheckboxGroup({name: 'hs-radio-group', items: [
+  {label: 'Apple', value: '10'},
+  {label: 'Pear', value: '20', checked: 'true'},
+  {label: 'Orange', value: '30'}
+]})`
+      ],
+      ListGroup: [
+        `tmpl.pluc.ListGroup({})`,
+        `tmpl.pluc.ListGroup({items:[
+  {label: 'Profile'},
+  {label: 'Settings'},
+  {label: 'Newsletter'},
+]})`,
+        `tmpl.pluc.ListGroup({type: 'a', items:[
+  {label: 'Profile', href: '#'},
+  {label: 'Settings', href: '#'},
+  {label: 'Newsletter', href: '#'},
+]})`,
+        `tmpl.pluc.ListGroup({type: 'button', items:[
+  {label: 'Profile', event: () => alert('Profile')},
+  {label: 'Settings', event: () => alert('Settings')},
+  {label: 'Newsletter', event: () => alert('Newsletter')},
+]})`,
+      ],
+      Toast: [
+        `tmpl.pluc.Toast({})`,
+        `tmpl.pluc.Toast({label: 'This is a normal message.'})`,
+        // bg-red-200 text-red-500 border-red-200
+        `tmpl.pluc.Toast({label: 'Hello, world! This is a toast message.', border: 'border border-red-200', bgColor: 'red-100', textColor: 'red-500'})`,
+        `tmpl.pluc.Toast({label: 'This is a normal message.', position: 'BottomCenter'})`,
+        `tmpl.pluc.Toast({label: 'This is a normal message.', hasClose: true})`,
+        `tmpl.pluc.Toast({label: 'This is a normal message. (autoCloseTime: 3000)', autoCloseTime: 3000})`,
+      ],
+      Accordion: [
+        `tmpl.pluc.Accordion({})`,
+        `tmpl.pluc.Accordion({
+          items: [
+            {
+              label: 'Accordion #1',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion #2',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion #3',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            },
+          ]
+        })`,
+        `tmpl.pluc.Accordion({
+          isAlwaysOpen: true,
+          items: [
+            {
+              label: 'Accordion Always open #1',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion Always open #2',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion Always open #3',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            },
+          ]
+        })`,
+        `tmpl.pluc.Accordion({
+          iconType: 'arrow',
+          items: [
+            {
+              label: 'Accordion Arrow #1',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion Arrow #2',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion Arrow #3',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            },
+          ]
+        })`,
+        `tmpl.pluc.Accordion({
+          iconType: 'none',
+          items: [
+            {
+              label: 'Accordion No Arrow #1',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion No Arrow #2',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            }, {
+              label: 'Accordion No Arrow #3',
+              content: "<><em>This is the third item's accordion body.</em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.",
+            },
+          ]
+        })`,
+      ],
+      Tooltip: [
+        `tmpl.pluc.Tooltip({})`,
+        `tmpl.pluc.Tooltip({
+          label: 'Tooltip on top',
+          target: tmpl.pluc.Button({label: 'button'})
+        })`,
+        `tmpl.pluc.Tooltip({
+          placement: 'left',
+          label: 'Tooltip on left',
+          target: tmpl.pluc.Button({label: 'button'})
+        })`,
+        `tmpl.pluc.Tooltip({
+          placement: 'right',
+          label: 'Tooltip on right',
+          target: tmpl.pluc.Button({label: 'button'})
+        })`,
+        `tmpl.pluc.Tooltip({
+          placement: 'bottom',
+          label: 'Tooltip on bottom',
+          target: tmpl.pluc.Button({label: 'button'})
+        })`
+      ],
+      Spinner: [ // text-red-600 // border-[10px]
+        `tmpl.pluc.Spinner({})`,
+        `tmpl.pluc.Spinner({
+          size: 8,
+          border: 10,
+          color: 'red'
+        })`,
+      ],
+      Select: [
+        `tmpl.pluc.Select({})`,
+        `tmpl.pluc.Select({
+          items: [
+            {label: 'United States'},
+            {label: 'Canada'},
+            {label: 'Mexico', value: 2},
+          ]
+        })`,
+        `select2 = tmpl.pluc.Select({
+          value: 1,
+          items: [
+            {label: 'United States'},
+            {label: 'Canada', value: 1},
+            {label: 'Mexico', value: 2},
+          ]
+        })`,
+        '`${select2.getValue()} / ${select2.getItem()}`',
+        `select3 = tmpl.pluc.Select({
+          multiple: true,
+          value: [1, 2],
+          items: [
+            {label: 'United States - event', event: (e, item) => alert(item.label)},
+            {label: 'Canada', value: 1},
+            {label: 'Mexico', value: 2},
+          ]
+        })`,
+        '`${select3.getValue()} / ${select3.getItem()}`',
+      ],
+      Divider: [
+        `tmpl.pluc.Divider({})`,
+        `tmpl.pluc.Divider({
+          items: [
+            [
+              {label: 'United States'},
+              {label: 'Canada'},
+              {label: 'Mexico', value: 2},
+            ]
+          ]
+        })`,
+        `tmpl.pluc.Divider({
+          placement: 'bottom-right',
+          items: [
+            [
+              {title: 'Country1'},
+              {label: 'United States', icon: '<svg class="flex-none" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/></svg>'},
+              {label: 'Canada'},
+              {label: 'Mexico', value: 2},
+            ],
+            [
+              {title: 'Country2'},
+              {label: 'United States'},
+              {label: 'Canada'},
+              {label: 'Mexico', value: 2},
+            ]
+          ]
+        })`,
+      ],
+      Input: [
+        `tmpl.pluc.Input({})`,
+        `tmpl.pluc.Input({px: 3, py: 2, value: 'Canada'})`,
+      ],
+      InputGroup: [
+        `tmpl.pluc.InputGroup({})`,
+        `tmpl.pluc.InputGroup({px: 3, py: 2, value: 'Canada', group: {label: 'Country'}})`,
+      ],
+      Navbar: [
+        `tmpl.pluc.Navbar({})`,
+        `tmpl.pluc.Navbar({
+          brand: {
+            label: 'Brand'
+          },
+          items: [
+            {label: 'United States', href: '#US'},
+            {label: 'Canada', href: '#Canada'},
+            {label: 'Mexico', href: '#Mexico'},
+          ]
+        })`,
+      ],
+    };
+
+    const launcher = () => {
+      bridge.tmplTool.addTmplByUrl([
+          'pluc.components.html',
+        ], function() {
+          let base = bridge.tmplTool.addTmpls(document.body, true);
+          document.body.innerHTML = '';
+          document.body.appendChild(tmpl.br.TemplateViewer({components: components}).element);
+          Prism.highlightAll();
+          var script = document.createElement('script');
+          script.id = 'preline.js';
+          script.src = "preline.js";
+          document.body.appendChild(script);
+      });
+    }
+    if (window.location.port) {
+      var script = document.createElement('script');
+      script.src = "../../js/util/bridge.loader.js";
+      script.async = '';
+      script.onload = function() {
+          bridge.loader.load(['/socket.io/socket.io.js'], function() {
+            bridge.liveReload.start();
+            console.log('live reload on.');
+            launcher();
+          });
+      }
+      document.body.appendChild(script);
+    } else {
+      launcher();
+    }
+
+    bridge.tmplTool.addTmpl('a-test', `<div ##='test'##>aaa</div>`);
+  </script>
+</body>
+</html>

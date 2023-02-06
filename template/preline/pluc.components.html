@@ -1,0 +1,659 @@
+<body>
+
+  <template id="pluc-Badge">
+    ##
+    let label = data.label;
+    let props = data.props;
+    let remoteProps = data.remoteProps;
+    let type = data.type || 'span';
+
+    let event = data.event;
+
+    let color = data.color;
+    let bgColor = data.bgColor;
+    let textColor = data.textColor;
+    let rounded = data.rounded;
+    let compact = data.compact;
+
+    let indicator = data.indicator;
+  
+    let remove = data.remove == true ? () => tmplScope.remove() : data.remove;
+    
+    ##
+    <##=type##
+      data-bridge-event="##:event##"
+      ##=bridge.tmplTool.props({
+        class: `inline-flex items-center ${compact ? 'py-0.5' : 'gap-1.5'} py-1.5 px-3 rounded-${rounded || 'full'} text-xs font-medium ${bgColor || 'bg-' + (color || 'gray') + '-100'} ${textColor || 'text-' + (color || 'gray') + '-800'}`
+      }, props)##
+    >
+      ##if (indicator) {##<span class="w-1.5 h-1.5 inline-block bg-indigo-400 rounded-full"></span>##}##
+      ##%label##
+      ##if (remove) {##
+        <a
+          data-bridge-event="##:remove.event || remove##"
+          ##=bridge.tmplTool.props({
+            // type: "button",
+            class: `flex-shrink-0 h-4 w-4 inline-flex items-center justify-center rounded-full border-0 text-${color || 'gray'}-600 hover:bg-${color || 'gray'}-200 hover:text-${color || 'gray'}-500 focus:outline-none focus:bg-${color || 'gray'}-200 focus:text-${color || 'gray'}-500`,
+          }, remoteProps)##
+        >
+          <span class="sr-only">##%remove.label##</span>
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+          </svg>
+        </a>
+      ##}##
+    </##=type##>
+  </template>
+
+  <template id="pluc-Tab">
+
+  </template>
+
+  <template id="pluc-Button">
+    ##
+    let label = data.label;
+    let disabled = data.disabled;
+    let loading = data.loading;
+    let type = data.type || 'outline';
+    
+    let icon = data.icon;
+
+    let event = data.event;
+
+    let py = data.py || 3;
+    let px = data.px || 4;
+
+    let color = data.color;
+    let textColor = data.textColor || color || 'gray';
+    let borderColor = data.borderColor || color || 'gray';
+    let bgColor = data.bgColor || color || 'gray'; // hover:bg-gray-500 hover:border-gray-500
+    let rounded = data.rounded;
+
+    let full = data.full;
+
+    if (type.startsWith('icon')) {
+      data.h = data.h || '[2.875rem]';
+      data.w = data.w || '[2.875rem]';
+      if (icon) {
+        icon.h = icon.h || '6';
+        icon.w = icon.w || '6';
+      }
+    }
+
+    let buttonClass = null;
+    switch (type){
+      case 'solid':
+        buttonClass = `inline-flex justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border border-transparent font-semibold bg-${bgColor}-500 text-white hover:bg-${bgColor}-600 focus:outline-none focus:ring-2 focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'outline':
+        buttonClass = `inline-flex justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border-2 border-${borderColor}-200 font-semibold text-${textColor}-500 hover:text-white hover:bg-${bgColor}-500 hover:border-${bgColor}-500 focus:outline-none focus:ring-2 focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'ghost':
+        buttonClass = `inline-flex justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border border-transparent font-semibold text-${textColor}-500 hover:bg-${bgColor}-100 focus:outline-none focus:ring-2 focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'soft':
+        buttonClass = `inline-flex justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} bg-${bgColor}-100 border border-transparent font-semibold text-${textColor}-500 hover:text-white hover:bg-${bgColor}-500 focus:outline-none focus:ring-2 ring-offset-white focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'white':
+        buttonClass = `inline-flex justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border font-medium bg-white text-${textColor}-700 shadow-sm hover:bg-${bgColor}-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-${bgColor}-600 transition-all text-sm`; 
+        break;
+      case 'link':
+        buttonClass = `inline-flex justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border border-transparent font-semibold text-${textColor}-500 hover:text-${textColor}-700 focus:outline-none focus:ring-2 ring-offset-white focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+
+      case 'icon':
+        buttonClass = `inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border border-transparent font-semibold bg-${bgColor}-500 text-white hover:bg-${bgColor}-600 focus:outline-none focus:ring-2 focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'icon-solid':
+        buttonClass = `inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border border-transparent font-semibold bg-${bgColor}-500 text-white hover:bg-${bgColor}-600 focus:outline-none focus:ring-2 focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'icon-outline':
+        buttonClass = `inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border-2 border-${borderColor}-200 font-semibold text-${textColor}-500 hover:text-white hover:bg-${bgColor}-500 hover:border-${bgColor}-500 focus:outline-none focus:ring-2 focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'icon-ghost':
+        buttonClass = `inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border border-transparent font-semibold text-${textColor}-500 hover:bg-${bgColor}-100 focus:outline-none focus:ring-2 focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'icon-soft':
+        buttonClass = `inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} bg-${bgColor}-100 border border-transparent font-semibold text-${textColor}-500 hover:text-white hover:bg-${bgColor}-500 focus:outline-none focus:ring-2 ring-offset-white focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+      case 'icon-white':
+        buttonClass = `inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border font-medium bg-white text-${textColor}-700 shadow-sm hover:bg-${bgColor}-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-${bgColor}-600 transition-all text-sm`; 
+        break;
+      case 'icon-link':
+        buttonClass = `inline-flex flex-shrink-0 justify-center items-center gap-2 rounded-${rounded ? 'full' : 'md'} border border-transparent font-semibold text-${textColor}-500 hover:text-${textColor}-700 focus:outline-none focus:ring-2 ring-offset-white focus:ring-${bgColor}-500 focus:ring-offset-2 transition-all text-sm`; 
+        break;
+    }
+    
+    let h = data.h ? `h-${data.h}` : `py-${py}`;
+    let w = data.w ? `w-${data.w}` : `px-${px}`;
+    buttonClass = `${buttonClass} ${full ? 'w-full' : ''} ${h} ${w} ${disabled ? 'cursor-not-allowed' : ''}`;
+
+    let props = data.props;
+    let loadingProps = data.loadingProps;
+    ##
+    <button
+      data-bridge-event="##:event##"
+      ##=bridge.tmplTool.props({
+        type: 'button',
+        class: buttonClass,
+        disabled: !!disabled,
+      }, props)##
+    >
+      ##if (loading) {##
+      <span 
+        ##=bridge.tmplTool.props({
+          role: 'status',
+          'aria-label': 'loading',
+          class: `animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent ${(loading.textColor || loading.color) == 'white' ? 'text-white' : 'text-' + (loading.textColor || loading.color) + '-600'} rounded-full`,
+          disabled: !!disabled,
+        }, loadingProps)##
+      >
+        <span class="sr-only">Loading...</span>
+      </span>
+      ##}##
+      ##=label##
+      ##if (icon) {##
+      <svg 
+        ##=bridge.tmplTool.props({
+          xmlns: 'http://www.w3.org/2000/svg',
+          fill: 'none',
+          viewBox: `0 0 ${icon.viewBox || 24} ${icon.viewBox || 24}`,
+          'stroke-width': '1.5',
+          stroke: 'currentColor',
+          class: `w-${icon.w} h-${icon.h}`,
+          disabled: !!disabled,
+        }, icon.svgProps)##
+      >
+        <path
+          ##=bridge.tmplTool.props({
+            d: `${icon.path}`,
+          }, icon.pathProps)##
+         d="##=icon.path##"/>
+      </svg>
+      ##}##
+    </button>
+  </template>
+
+  <template id="pluc-Radio">
+    ##
+    let name = data.name;
+    let label = data.label;
+    let value = data.value;
+    let type = data.type;
+    let checked = data.checked;
+    let disabled = data.disabled;
+    let event = data.event;
+    let props = data.props;
+    ##
+    <div class="flex" data-bridge-event="##:event##">
+      <input 
+        ##=bridge.tmplTool.props({
+          id: tmplScope._id,
+          name: name,
+          type: type,
+          class: `shrink-0 mt-0.5 border-gray-200 rounded${type == 'radio' ? '-full' : ''} text-blue-600 focus:ring-blue-500`,
+          checked: checked,
+          disabled: !!disabled,
+          value: value
+        }, props)##
+      >
+      <label for="##=tmplScope._id##" class="text-sm text-gray-500 ml-3">##=label##</label>
+    </div>
+  </template>
+
+  <template id="pluc-InlineRadioGroup">
+    ##
+    let name = data.name;
+
+    let items = data.items || [];
+    let props = data.props;
+    ##
+    <div 
+      ##=bridge.tmplTool.props({
+        class: `flex gap-x-6`,
+      }, props)##
+    >
+      ##items.forEach(item => {##
+      ##%tmpl.pluc.Radio(Object.assign({name: name, type: 'radio'}, item))##
+      ##});##
+    </div>
+  </template>
+
+  <template id="pluc-InlineCheckboxGroup">
+    ##
+    let name = data.name;
+
+    let items = data.items || [];
+    let props = data.props;
+    ##
+    <div 
+      ##=bridge.tmplTool.props({
+        class: `flex gap-x-6`,
+      }, props)##
+    >
+      ##items.forEach(item => {##
+      ##%tmpl.pluc.Radio(Object.assign({name: name, type: 'checkbox'}, item))##
+      ##});##
+    </div>
+  </template>
+
+
+
+  <template id="pluc-ListGroup">
+    ##
+    let items = data.items || [];
+    let type = data.type || 'li';
+    let listType = type == 'li' ? 'ul' : 'div';
+
+    let props = data.props;
+    let liProps = data.liProps;
+
+    ##
+    <##=listType## 
+      ##=bridge.tmplTool.props({
+        class: `max-w-xs flex flex-col`,
+      }, props)##
+    >
+      ##items.forEach(item => {##
+      <##=type## 
+        data-bridge-event="##:item.event##"
+        ##=bridge.tmplTool.props({
+          href: item.href,
+          type: type == 'button'? 'button' : undefined,
+          class: `inline-flex items-center gap-x-2 py-3 px-4 text-sm font-medium bg-white border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg`,
+        }, liProps, item.props)##
+      >
+        ##%item.label##
+      </##=type##>
+      ##})##
+    </##=listType##>
+  </template>
+  
+  <template id="pluc-Svg">
+    ##
+    let props = data.props;
+    let path = data.path;
+    ##
+    <svg
+      ##=bridge.tmplTool.props({
+        class: `h-4 w-4 text-blue-500 mt-0.5`,
+        xmlns: 'http://www.w3.org/2000/svg',
+        width: '16',
+        height: '16',
+        fill: 'currentColor',
+        viewBox: '0 0 16 16"'
+      }, props)##
+    >
+      <path d="##=data.path##"/>
+    </svg>
+  </template>
+
+  <template id="pluc-Toast">
+    ##
+    let label = data.label;
+    let icon = data.icon;
+    let props = data.props;
+
+    let border = data.border || 'border';
+    let textColor = data.textColor || 'gray-700'; // text-gray-700
+    let bgColor = data.bgColor || 'white'; // bg-white
+
+    let autoCloseTime = data.autoCloseTime || 0;
+
+    let hasClose = data.hasClose != undefined ?  data.hasClose : !!data.closeButtonEvent;
+    let closeButtonEvent = data.closeButtonEvent;
+    if (hasClose && closeButtonEvent == undefined) {
+      closeButtonEvent = () => tmplScope.remove();
+    }
+
+    let position = data.position;
+    let pm = 12; // bottom-12
+    let positionMap = {
+      TopLeft: `absolute top-${pm} left-${pm}`,
+      TopCenter: `absolute top-${pm} left-1/2 -translate-x-1/2`,
+      TopRight: `absolute top-${pm} right-${pm}`,
+      Center: `absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2`,
+      BottomLeft: `absolute bottom-${pm} left-${pm}`,
+      BottomCenter: `absolute bottom-${pm} left-1/2 -translate-x-1/2`,
+      BottomRight: `absolute bottom-${pm} right-${pm}`
+    }
+    ##
+    <div 
+      ##=bridge.tmplTool.props({
+        class: `z-10 ${positionMap[position]}`,
+        id: tmplScope._id
+      })##
+    >
+      <div 
+        ##=bridge.tmplTool.props({
+          class: `max-w-xs bg-${bgColor} ${border} rounded-md shadow-lg`,
+          role: 'alert'
+        }, props)##
+      >
+        <div class="flex p-4">
+          ##if (icon) {##
+          <div class="flex-shrink-0">
+            ##%icon##
+          </div>
+          ##}##
+          <div class="ml-3">
+            <p class="text-sm text-##=textColor##">
+              ##%label##
+            </p>
+          </div>
+          
+          ##if (hasClose) {##
+          <div class="ml-auto">
+
+            <button
+              ##=bridge.tmplTool.props({
+                type: 'button',
+                class: `inline-flex flex-shrink-0 justify-center items-center h-4 w-4 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition-all text-sm`,
+                'data-hs-remove-element': tmplScope._id,
+              })##
+              data-bridge-event="##:closeButtonEvent##"
+            >
+              <span class="sr-only">Close</span>
+              <svg class="w-3.5 h-3.5" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.92524 0.687069C1.126 0.486219 1.39823 0.373377 1.68209 0.373377C1.96597 0.373377 2.2382 0.486219 2.43894 0.687069L8.10514 6.35813L13.7714 0.687069C13.8701 0.584748 13.9882 0.503105 14.1188 0.446962C14.2494 0.39082 14.3899 0.361248 14.5321 0.360026C14.6742 0.358783 14.8151 0.38589 14.9468 0.439762C15.0782 0.493633 15.1977 0.573197 15.2983 0.673783C15.3987 0.774389 15.4784 0.894026 15.5321 1.02568C15.5859 1.15736 15.6131 1.29845 15.6118 1.44071C15.6105 1.58297 15.5809 1.72357 15.5248 1.85428C15.4688 1.98499 15.3872 2.10324 15.2851 2.20206L9.61883 7.87312L15.2851 13.5441C15.4801 13.7462 15.588 14.0168 15.5854 14.2977C15.5831 14.5787 15.4705 14.8474 15.272 15.046C15.0735 15.2449 14.805 15.3574 14.5244 15.3599C14.2437 15.3623 13.9733 15.2543 13.7714 15.0591L8.10514 9.38812L2.43894 15.0591C2.23704 15.2543 1.96663 15.3623 1.68594 15.3599C1.40526 15.3574 1.13677 15.2449 0.938279 15.046C0.739807 14.8474 0.627232 14.5787 0.624791 14.2977C0.62235 14.0168 0.730236 13.7462 0.92524 13.5441L6.59144 7.87312L0.92524 2.20206C0.724562 2.00115 0.611816 1.72867 0.611816 1.44457C0.611816 1.16047 0.724562 0.887983 0.92524 0.687069Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+          ##}##
+        </div>
+      </div>
+    </div>
+    ###
+    if (autoCloseTime != 0) setTimeout(() => tmplScope.remove(), autoCloseTime);
+    ##
+  </template>
+
+
+  <template id="pluc-Accordion">
+    ##
+    let items = data.items || [];
+    let isAlwaysOpen = data.isAlwaysOpen ? ' data-hs-accordion-always-open' : '';
+
+    let iconType = data.iconType || 'plus';
+    let cls = data.class || ' bg-white border -mt-px first:rounded-t-lg last:rounded-b-lg';
+    let buttonCls = data.buttonClass;
+
+    ##
+    <div class="hs-accordion-group"##=isAlwaysOpen##>
+      ##items.forEach((item, idx) => {##
+      <div class="hs-accordion ##=cls##" id="##=`${tmplScope._id}-heading-${idx}`##">
+        <button class="hs-accordion-toggle hs-accordion-active:text-blue-600 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition py-4 px-5 hover:text-gray-500 ##=buttonCls##" aria-controls="##=`${tmplScope._id}-collapse-${idx}`##">
+          ##if (iconType == 'none') {##
+          ##} else if (iconType == 'arrow') {##
+          <svg class="hs-accordion-active:hidden hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 block w-3 h-3 text-gray-600 group-hover:text-gray-500" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <svg class="hs-accordion-active:block hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 hidden w-3 h-3 text-gray-600 group-hover:text-gray-500" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 11L8.16086 5.31305C8.35239 5.13625 8.64761 5.13625 8.83914 5.31305L15 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          ##} else {##
+          <svg class="hs-accordion-active:hidden hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 block w-3 h-3 text-gray-600 group-hover:text-gray-500" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 8.85999L14.5 8.85998" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 15.36L8 2.35999" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <svg class="hs-accordion-active:block hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 hidden w-3 h-3 text-gray-600 group-hover:text-gray-500" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 8.85999L14.5 8.85998" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          ##}##
+          ##%item.label##
+        </button>
+        <div id="##=`${tmplScope._id}-collapse-${idx}`##" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="##=`${tmplScope._id}-heading-${idx}`##">
+          <div class="pb-4 px-5">
+            <p class="text-gray-800">
+              ##%item.content##
+            </p>
+          </div>
+        </div>
+      </div>
+      ##})##
+    </div>
+  </template>
+
+  <template id="pluc-Tooltip">
+    ##
+    let placement = data.placement || 'top';
+    let label = data.label;
+    let target = data.target;
+
+    if (target) (target.element || target).classList.add('hs-tooltip-toggle');
+    ##
+    <div class="hs-tooltip inline-block [--placement:##=placement##]">
+      ##%target##
+      <span class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded-md shadow-sm" role="tooltip">
+        ##=label##
+      </span>
+    </div>
+  </template>
+
+
+  <template id="pluc-Spinner">
+    ##
+    let size = data.size || 6;
+    let border = data.border || 3;
+    let color = data.color || 'blue'; // text-blue-600
+    ##
+    <div class="animate-spin inline-block w-##=size## h-##=size## border-[##=border##px] border-current border-t-transparent text-##=color##-600 rounded-full" role="status" aria-label="loading">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </template>
+  
+
+  <template id="pluc-Select">
+    <select class="py-3 px-4 pr-9 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+      <option selected></option>
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+    </select>
+  </template>
+
+
+  <template id="pluc-Select">
+    ##
+    let valueArray = [].concat(data.value);
+    let multiple = data.multiple == undefined ? false : data.multiple;
+  
+    let event = data.event;
+
+    let selectProps = data.selectProps;
+  
+    let selectedItem = data.selectedItem || {};
+    let selectedIndex = data.selectedIndex;
+    if (selectedIndex != undefined) selectedItem = items[selectedIndex];
+  
+    let items = data.items || [];
+  
+    tmplScope.getValue = () => {
+      if (multiple) {
+        let selectedArray = [];
+        Array.prototype.forEach.call(tmplScope.element.querySelectorAll('option'), (option, idx) => {
+          if (option.selected && option.value != undefined) selectedArray.push(option.value);
+        });
+        return selectedArray;
+      } else {
+        return select.value;
+      }
+    };
+  
+    tmplScope.getItem = () => {
+      let selectedArray = [];
+      Array.prototype.forEach.call(tmplScope.element.querySelectorAll('option'), (option, idx) => {
+        if (option.selected) selectedArray.push(items[idx]);
+      });
+      return multiple ? selectedArray : selectedArray[0];
+    };
+    ##
+    <select
+      data-bridge-event="##:event##"
+      data-bridge-var="##:select##"
+      ##=bridge.tmplTool.props({
+        id: tmplScope._id,
+        multiple: multiple,
+        class: 'py-3 px-4 pr-9 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500'
+      }, selectProps)##
+    >
+      ##items.forEach(item => {##
+      <option
+        data-bridge-event="##:item.event::item##"
+        value="##=item.value || ''##"
+        ##=bridge.tmplTool.props({
+          selected: item.selected != undefined ? item.selected : valueArray.indexOf(item.value) > -1
+        }, item.props)##
+      >
+        ##%item.label##
+      </option>
+      ##})##
+    </select>
+  </template>
+
+  <template id="pluc-Divider">
+    ##
+    let label = data.label;
+    let itemArrays = data.items;
+    let placement = data.placement;
+
+    let buttonProps = data.buttonProps;
+    ##
+    <div class="hs-dropdown relative inline-flex [--placement:##=placement##]">
+      <button id="##=tmplScope._id##"
+          ##=bridge.tmplTool.props({
+            "type": "button",
+            "class": "hs-dropdown-toggle py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm",
+          }, buttonProps)##>
+        ##=label##
+        <svg class="hs-dropdown-open:rotate-180 w-2.5 h-2.5 text-gray-600" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden mt-2 min-w-[15rem] bg-white shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200" aria-labelledby="##=tmplScope._id##">
+      ##(itemArrays || []).forEach(itemArray => {##
+        <div class="py-2 first:pt-0 last:pb-0">
+        ##(Array.isArray(itemArray) ? itemArray : []).forEach(item => {##
+          ##if (item.title) {##
+          <span class="block py-2 px-3 text-xs font-medium uppercase text-gray-400">
+            ##=item.title##
+          </span>
+          ##} else {##
+          <a data-bridge-event="##:item.event##"
+              ##=bridge.tmplTool.props({
+                href: item.href,
+                class: 'flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500'
+              }, item.props)##>
+            ##=item.icon##
+            ##=item.label##
+          </a>
+          ##}##
+        ##})##
+        </div>
+      ##})##
+      </div>
+    </div>
+  </template>
+
+
+  <template id="pluc-Input">
+    ##
+    let px = data.px == undefined ? 4 : data.px;
+    let py = data.py == undefined ? 4 : data.py;
+    let value = data.value;
+    let event = data.event;
+
+    let props = data.props;
+
+    var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
+      if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
+    }} : null;
+
+    tmplScope.setValue = (value) => {
+      input.value = value;
+    };
+    
+    ##
+    <input data-bridge-var="##:input##"
+      data-bridge-event="##:[enterKeyEvent, event]##"
+      ##=bridge.tmplTool.props({
+        "type": "text",
+        "class": `py-${py} px--${px} block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500`,
+        "value": value,
+      }, props)##>
+  </template>
+  
+
+  <template id="pluc-InputGroup">
+    ##
+    let group = data.group;
+    let px = data.px == undefined ? 4 : data.px;
+    let py = data.py == undefined ? 4 : data.py;
+    let value = data.value;
+    let event = data.event;
+
+    let props = data.props;
+
+    var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
+      if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
+    }} : null;
+
+    tmplScope.setValue = (value) => {
+      input.value = value;
+    };
+    ##
+    <div class="flex rounded-md shadow-sm">
+      ##if (group) {##
+      <span
+        ##=bridge.tmplTool.props({
+          "class": "px-4 inline-flex items-center min-w-fit rounded-l-md border border-r-0 border-gray-200 bg-gray-50 text-sm text-gray-500",
+          "value": value,
+        }, group.props)##>
+      ##=group.label##
+      </span>
+      ##}##
+      <input data-bridge-var="##:input##"
+        data-bridge-event="##:[enterKeyEvent, event]##"
+        ##=bridge.tmplTool.props({
+          "type": "text",
+          "class": `py-${py} px--${px} block w-full border-gray-200 rounded-r-md text-sm focus:border-blue-500 focus:ring-blue-500`,
+          "value": value,
+        }, props)##>
+    </div>
+  </template>
+
+  <template id="pluc-Navbar">
+    ##
+    items = data.items;
+    brand = data.brand;
+    ##
+    <header class="flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white text-sm py-4">
+      <nav class="max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between" aria-label="Global">
+        ##if (brand) {##
+        <a  data-bridge-event="##:brand.event##"
+          ##=bridge.tmplTool.props({
+            "class": `flex-none text-xl font-semibold`,
+            "href": brand.href,
+          }, brand.props)##>##=brand.label##</a>
+        ##}##
+        <div class="flex flex-row items-center gap-5 mt-5 sm:justify-end sm:mt-0 sm:pl-5">
+        ##(items || []).forEach(item => {##
+          <a data-bridge-event="##:item.event##"
+            ##=bridge.tmplTool.props({
+              "class": `font-medium text-gray-600 hover:text-gray-400`,
+              "href": item.href,
+            }, item.props)##>##=item.label##</a>
+        ##})##
+        </div>
+      </nav>
+    </header>
+  </template>
+  
+</body>
+
+
+<a class="font-medium text-blue-500" href="#" aria-current="page">Landing</a>
+<template id="pluc-InlineRadioGroup1">
+
+</template>

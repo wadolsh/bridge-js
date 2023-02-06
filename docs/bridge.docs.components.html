@@ -13,7 +13,7 @@
     return function() {
       return data.munuList.map(function(item) {
         return Object.assign(item, {event: function(e, edata, tmplElem) {
-console.log(11111)
+
           if (item.index != data.selectedIndex) {
             var area = data.contentArea();
             while (area.firstChild) area.removeChild(area.firstChild);
@@ -133,34 +133,44 @@ console.log(11111)
   });
   ##
   ##
-  var langSelect = function(lang) {
+
+  let langSelect = function(lang) {
     return function() {
+      const queryLang = location.search.split(/[?&]/g).find(q => q.startsWith('lang'));
+      if (queryLang) {
+        location.search = location.search.replace(queryLang.split('=')[1], lang);
+        return;
+      }
+
       document.documentElement.lang = lang;
       tmplScope.refresh();
-      /*
-      setTimeout(function() {
-        navbar.element.querySelector('#'+navbar._id+'builder').click();
-      }, 10);
-      */
+      localStorage.setItem('lang', lang);
     };
   }
-  var langItems = [
+  let langItems = [
     {label: 'ENGLISH', lang: 'en', event: langSelect('en')},
     {label: '日本語', lang: 'ja', event: langSelect('ja')},
     {label: '한국어', lang: 'ko', event: langSelect('ko')},
   ];
-  var langDropdown = tmpl.bs.NavbarLiDropdown({
+
+  let navigatorLang = navigator.language.split('-')[0];
+  let defaultLang = langItems.findIndex(item => item.lang == navigatorLang) > -1 ? navigatorLang : 'en';
+  const queryLang = location.search.split(/[?&]/g).find(q => q.startsWith('lang'));
+  if (queryLang && langItems.find(o => o.lang == queryLang.split('=')[1])) document.documentElement.lang = queryLang.split('=')[1];
+  if (!document.documentElement.lang) document.documentElement.lang = localStorage.getItem('lang') || defaultLang;
+
+  let langDropdown = tmpl.bs.NavbarLiDropdown({
     label: 'Language: ' + langItems.find(item => item.lang == document.documentElement.lang).label,
     items: langItems,
   });
   ##
   ###
   setTimeout(function() {
-    var hashArray = (location.hash.replace('#', '') || 'Docs/Template/Intro').split('/');
+    let hashArray = (location.hash.replace('#', '') || 'Docs/Template/Intro').split('/');
     //if (!hashArray[1]) hashArray[1] = 'Intro';
     document.querySelector('a[href^="#' + hashArray[0] + '"]').click();
     setTimeout(function() {
-      var sidemenu = document.getElementById('sidemenu');
+      let sidemenu = document.getElementById('sidemenu');
       if (sidemenu) sidemenu.querySelector('.' + hashArray.join('_')).click();
     }, 0);
   }, 100);
@@ -286,7 +296,17 @@ console.log(11111)
           ja: '紹介'
         },
         content: {
-          en: ``,
+          en: `
+              bridge.template helps you create web applications easily. <br/>
+              bridge.template was created with the following goals:
+              <ul>
+                <li>Support creation of SPA(Single Page Application)</li>
+                <li>Helps create reusable Components</li>
+                <li>By creating style, html, and javascript in each template, it helps to create an easy-to-understand Component</li>
+                <li>Provide a way to set the Event Handler inside the Html Tag</li>
+                <li>By combining Components, it helps to create an assembly UI like a block</li>
+              </ul>
+              `,
           ko: `
               bridge.template 은 웹 어플리케이션을 쉽게 제작할 수있게 만들어 졌습니다.<br/>
               bridge.template 은 다음과 같은 목표를 가지고 제작 되었었습니다.
@@ -342,12 +362,12 @@ console.log(11111)
             ja: '設置'
           },
           content1: {
-            en: '',
+            en: 'Add bridge.template.js as javascript like below.',
             ko: '아래와 같이 bridge.template.js javascript를 추가해주세요.',
             ja: '以下のように bridge.template.js を javascript として追加してください。'
           },
           content2: {
-            en: '',
+            en: 'Now you can use the template code.',
             ko: '이제 탬플릿 코드를 사용 가능하게 되었었습니다.',
             ja: 'これでテンプレートコードを使えるようになりました。'
           },
@@ -359,12 +379,12 @@ console.log(11111)
             ja: 'Template 作成'
           },
           content1: {
-            en: '',
+            en: `Let's create a simple Template code that outputs some text.`,
             ko: '이제 텍스트를 출력하는 간단한 Template 코드를 만들어 봅시다.',
             ja: 'テキストを出力する簡単な Template コードを作ってみましょ。'
           },
           content2: {
-            en: '',
+            en: `Now we can use the 'do.Simple' template code as a Component.`,
             ko: '이제 do.Simple 라는 Template 을 Component 로 사용할 있게 되었습니다.',
             ja: 'これで do.Simple Template コードを Componentとして使えるようになりました。'
           },
@@ -376,46 +396,64 @@ console.log(11111)
             ja: 'Component 作成'
           },
           content1: {
-            en: '',
+            en: 'Component generation and screen placement are performed as follows.',
             ko: 'Component 의 생성과 화면 배치는 다음과 같이 이루어 집니다.',
             ja: 'Component の生成と画面配置は以下のように行います。'
           },
           content2: {
-            en: '',
+            en: 'You can also use it like this.',
             ko: '또는 다음과 같이 사용 할 수도 있습니다.',
             ja: 'このように使用することも可能です。'
           },
           content3: {
-            en: '',
+            en: `The data passed in {label: 'Div Sample1'} will be used in the Template code with the name 'data'. <br/>
+                  Now let's see the code running in the demo. `,
             ko: `{label: 'Div Sample1'} 로 넘겨준 데이터는 Template 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
                  다음의 데모로 코드의  실행을 확인해 보십시오.`,
             ja: `{label: 'Div Sample1'} で渡したデータは Template コードの中で data と言う名前で使うようになります。<br/>
                  次でデモでコードの実行を確認してみましょ。`
           },
           content4: {
-            en: '',
+            en: `A javascript Object is returned when creating a Component. <br/>
+                  This object will be used under the name tmplScope when creating a Template. `,
             ko: `Component 생성시 javascript Object 가 리턴 되어 집니다.<br/>
                  이 object 는 Template 작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.`,
             ja: `Component を生成時に javascript Object がリターンされます。<br/>
                  この object は Template 作成時に tmplScope と言う名前で使うことになります。`
           },
           content5: {
-            en: '',
+            en: `Registering this template one by one using bridge.tmplTool.addTmpl() would be a lot of work. <br/>
+                bridge.template allows you to take advantage of template tags in the same way as web components. <br/>
+                If so, register the Template via bridge.tmplTool.addTmpls().`,
             ko: `bridge.tmplTool.addTmpl() 을 사용 하여 일일이 Template 을 등록하는 일은 고된 작입이 될 수 있습니다.<br/>
                  bridge.template 에서는 Web Component 와 유사하게 template Tag 를 활용 할 수 있도록 하고 있습니다.<br/>
                  이때에는 bridge.tmplTool.addTmpls() 를 통해 Template 을 등록 합니다.`,
-            ja: ``
+            ja: `bridge.tmplTool.addTmpl() を使用していちいちこのテンプレートを登録することは、大変な作業になります。<br/>
+                bridge.template では、Web Component と同様に template Tag を活用できるようにしています。<br/>
+                その場合は、bridge.tmplTool.addTmpls() を通じて Template を登録します。`
           },
           content6: {
-            en: '',
+            en: `You can generate a Component with the name specified in the id of the template Tag. </br>
+                Replace the existing template if you want to load another template with the same id. </br>
+                The style defined in the template tag will be added to the head of the document when parsing the template. </br>
+                If the id of the style tag overlaps, it will be replaced with the style of the last interpreted template, so
+                It is recommended to specify the style tag id with "style-{tempalte id}". </br>
+                </br>
+                Check out the template structure and behavior in the demo below. `,
             ko: `template Tag 의 id 에 지정한 이름으로 Component 생성 할 수 있게 됩니다.</br>
                  동일한 id 로 다른 template 을 로딩 하게 되는 경우는 기존 template 를 대체하게 됩니다.</br>
-                 template Tag 안에 정의도니 style 는 template 해석 할 때에 document 의 head 에 추가 됩니다.</br>
+                 template Tag 안에 정의된 style 는 template 해석 할 때에 document 의 head 에 추가 됩니다.</br>
                  style Tag 의 id 가 중복 될 경우 마지막에 해석된 template 의 style 로 대체 되기 지기 때문에,
                  style Tag 의 id 는 "style-{tempalte의 id}" 로 지정할 것을 권합니다.</br>
                  </br>
                  아래에서 데모에서 template 구조와 동작을 확인해 보시기 바랍니다.`,
-            ja: ``
+            ja: `template Tag の id に指定した名前で Component を生成できます。 </br>
+                同じ id で別のテンプレートをロードする場合は、既存のテンプレートを置き換えます。</br>
+                template Tag 内で定義された style は template を解釈する際に document の head に追加されます。 </br>
+                style Tag の id が重複する場合、最後に解釈された template の style に置き換えられるため、
+                style Tagのidは "style-{tempalteのid}"で指定することをお勧めします。</br>
+                </br>
+                以下のデモでテンプレート構造と動作を確認してください。`
           },
         },
         Example: {
@@ -425,7 +463,13 @@ console.log(11111)
             ja: '使用例'
           },
           content1: {
-            en: '',
+            en: `Let's look at a more practical use case. <br/>
+                It is possible to reduce the amount of code creation by making frequently used UI templates. <br/>
+                Here, Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) is bridge.mdl created with bridge.template. Try using components.html. <br/>
+                * Create with bridge.template and Material Design Lite is
+                Please refer to <a href="template/Material-Design-Lite/" target="_blank">this link</a>. <br/>
+                <br/>
+                bridge.tmplTool.addTmplByUrl() executes callback after loading the Template file specified by Array.`,
             ko: `좀더 실제적인 사용예를 살펴 보겠습니다.<br/>
                  자주 사용되는 UI 를 template 으로 만들면 반복적인 코드 작성을 줄일 수 있습니다.<br/>
                  여기서는 Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) 를 bridge.template 로 만든 bridge.mdl.components.html 를 사용 하겠습니다.<br/>
@@ -444,7 +488,8 @@ console.log(11111)
                 `
           },
           content2: {
-            en: '',
+            en: `Click Content1 and Content2 on the demo screen and check the event occurrence.
+                Click Content1, enter data in the displayed Input, click 'THIS BUTTON!', and check the console display of the input value.`,
             ko: `데모 화면을 통해 "Content1" 과 "Content2" 를 클릭 해서 Event 발생을 확인해 보시기 바랍니다.<br/>
                  Content1 에서는 input 에 값을 넣고 'THIS BUTTON!' 을 클릭해서 입력값의 표시를 확인 해 보시기 바랍니다.`,
             ja: `デモ画面の Content1 と Content2 をクリックし Event 発生を確認してみてくさい。
@@ -516,7 +561,9 @@ console.log(11111)
             ja: 'レンダリング表現',
           },
           'E.content1': {
-            en: ``,
+            en: `Output a string. <br/>
+                You can also output HTML tags, but you may need to escape '<' and '>' depending on your browser. <br/>
+                If Function is specified, output the execution result of Function.`,
             ko: `문자열을 출력합니다.<br/>
                  HTML 태그와도 자유롭게 사용 될 수 있으나 브라우저에 따라서 "<", ">" 를 escape 해야 정상 작동 되기도 합니다.<br/>
                  Function 이 지정 되었을 경우는 Function의 결과를 출력 합니다.`,
@@ -525,7 +572,9 @@ console.log(11111)
                  Function が指定指定された場合は Function の実行結果を出力します。`,
           },
           'H.content1': {
-            en: ``,
+            en: `Outputs the escaped string. <br/>
+                The escape handling uses bridge.tmplTool.escapeHtml.escape(); <br/>
+                Please use it when you need to output HTML Tag etc.`,
             ko: `escape 처리를 한 문자열을 출력 합니다.<br/>
                  escape 처리는 bridge.tmplTool.escapeHtml.escape(); 를 사용하고 있습니다.<br/>
                  HTML Tag 등을 화면에 출력할 필요가 있을 때 사용 합니다.`,
@@ -535,7 +584,10 @@ console.log(11111)
           },
           P: {
             content1: {
-              en: ``,
+              en: `Outputs a Component or Element. <br/>
+                  Component 와 HTML Element of bridge Template and string output are also possible. <br/>
+                  If multiple output targets are placed in Array, they will be output to the screen in the defined order. <br/>
+                  If Function is specified, output the execution result of Function.`,
               ko: `Component 또는 Element 를 출력 합니다.<br/>
                    bridge Template 의 Component 와 HTML Element 그리고 문자열의 출력도 가능 합니다.<br/>
                    Array 로 복수의 참조를 배치하면 Array 에 정의된 순서대로 화면에 출력하게 됩니다.<br/>,
@@ -546,17 +598,22 @@ console.log(11111)
                    Function が指定指定された場合は Function の実行結果を出力します。`,
             },
             'Option.label': {
-              en: ``,
+              en: `::{false / delay time (millisecond)}`,
               ko: `::{false / 지연시간(millisecond)}`,
               ja: `::{false / 遅延時間(millisecond)}`,
             },
             'Option.content1': {
-              en: ``,
+              en: `Synchronous / asynchronous rendering setting. <br/>※If the option is not specified, The default value is false for synchronous rendering.`,
               ko: `동기 / 비동기 렌더링을 설정 할 수 있습니다.<br/>※옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.`,
-              ja: `同期 / 非同期レンダリング設定が可能です。<br/>※オプション未指定の場合は、デフォルト値が false で同期したレンダリングが可能です。`,
+              ja: `同期 / 非同期レンダリング設定が可能です。<br/>※オプション未指定の場合は、デフォルト値が false で同期したレンダリングになります。`,
             },
             content2: {
-              en: ``,
+              en: `Since javascript basically operates in a single thread, if you add a large amount of HTML Elements to the screen, they will be displayed on the screen after all DOM rendering has been completed, and<br/>
+                  User operations will not be possible until the loading of the screen is completed. <br/>
+                  Asynchronous rendering with setTimeout is done by pointing out the [::delay time] when adding an HTML Element with #\#% #\#. <br/>
+                  Asynchronous loading prevents screen rendering stalls caused by a large number of HTML Elements. <br/><br/>
+                  The sample code below is an example of asynchronous processing. { ::i*100 } sets the delay time. <br/>
+                  Press the RUN button and check the asynchronous screen rendering.`,
               ko: `javascript 는 기본적으로 싱글 스레드로 작동하시 때문에 대량의 HTML Element 를 화면에 추가하게 되면 DOM 렌더링이 끝난 후에 느리게 화면에 출력 되며,<br/>
                    또한 화면 로딩이 끝날때까지 유저는 다른 조작을 할 수 없게 됩니다.<br/>
                    #\#% #\# 로 HTML Element 를 추가 할 때 [::지연시간] 을 지정하게 되면 자동으로 setTimeout 에의한 비동기 렌더링을 실행 하게 됩니다.<br/>
@@ -572,7 +629,9 @@ console.log(11111)
             },
           },
           'J.content1': {
-            en: ``,
+            en: `Run javascript. <br/>
+                #\# Code inside #\# is evaluated as javascript. <br/>
+                In this way, mixing javascript and HTML TAG output enables dynamic screen display.`,
             ko: `javascript 를 실행 합니다.<br/>
                  #\# #\# 안에 작성된 코드는 javascript 로서 평가 됩니다.<br/>
                  이처럼 javascript 실행중에 HTML TAG 출력을 사용 할 수 있게됨으로서 동적인 화면 출력이 가능해 집니다.`,
@@ -581,7 +640,10 @@ console.log(11111)
                  このように、javascript と HTML TAG 出力を混ぜることで動的な画面表示が可能になります。`,
           },
           'S.content1': {
-            en: ``,
+            en: `Executes javascript after HTML rendering. <br/>
+                #\# #\# cannot be approached as an HTML Element while javascript is running because the HTML Tag is in a string state before it becomes a DOM. <br/>
+                #\#\# #\# is executed after the evaluation of #\# #\# and the HTML Tag string is converted to HTML Element, so access to Element is possible. <br/>
+                You can access the HTML Element using this.`,
             ko: `HTML 렌더링이 끝난 후에 javascript 를 실행 합니다.<br/>
                  #\# #\# 에서 javascript 가 실행중일때는 HTML Tag 가 DOM 이되기 전의 문자열 상태이기에 HTML Element 로써 접근할 수 없습니다.<br/>
                  그에 반해 #\#\# #\# 는 #\# #\# 의 평가가 끝나고 HTML Tag 문자열이 HTML Element 로 변환된 후에 실행 됨으로서 Element에 대한 접근이 가능 합니다.<br/>
@@ -592,12 +654,14 @@ console.log(11111)
                  this を使用して HTML Element へ接近可能です。`,
           },
           'Q.content1': {
-            en: ``,
+            en: `Performs any necessary work when loading the Template. <br/>
+                The #\#! #\# expression is executed only once when the Template is loaded. It is not executed when the Component is created.<br/>
+                Any initialization work that needs to be done only once, such as i18n data loading, is defined here.`,
             ko: `Template 을 로딩 할 때 필요한 작업을 실행 합니다.<br/>
                  #\#! #\# 표현은 Template 로딩시 1회 실행되며, 이후 Component 생성시에는 실행 되지 않습니다.<br/>
                  i18n 데이터와 같이, 단 1회 실행이 필요한 초기화 작업 등에 사용합니다.<br/>`,
             ja: `Template をローディンクする時に必要な作業を実行します。<br/>
-                 #\#! #\# 表現は Template ローディンク時に 1回のみ実行されます。Component 生成時は実行されません。
+                 #\#! #\# 表現は Template ローディンク時に 1回のみ実行されます。Component 生成時は実行されません。<br/>
                  i18n データローディンクのように、1回のみ実行が必要な初期化作業などをここに定義します。`,
           }
         },
@@ -658,7 +722,10 @@ console.log(11111)
               ja: 'Element 参照',
             },
             content1: {
-              en: ``,
+              en: `Specifies an event handler. <br/>
+                  Specify {'event name' : function(event, tmplData, tmplElem, scope) { callback processing }} as a handler in the javascript object. <br/>
+                  The specified event handler is added to the Html element with addEventListener. <br/>
+                  If a Function that is not a javascript object is specified, it will be handled by adding a click event handler.`,
               ko: `이벤트 핸들러를 지정합니다.<br/>
                    javascript object 로 {'event명' : function(event, tmplData, tmplElem, scope) { callback 처리 }} 으로 핸들러를 지정하게 됩니다.<br/>
                    지정된 이벤트 핸들러들은 addEventListener 로 HTML Element 에 추가 됩니다.<br/>
@@ -680,7 +747,7 @@ console.log(11111)
                 ja: `Event Object`,
               },
               tmplData: {
-                en: ``,
+                en: `Data parameter when creating a Component`,
                 ko: `Component 작성시의 data 파라메터`,
                 ja: `Component 作成時の data パラメーター`,
               },
@@ -690,7 +757,7 @@ console.log(11111)
                 ja: `Component の HTML Element`,
               },
               scope: {
-                en: ``,
+                en: `Component 's HTML Element`,
                 ko: `Component 의 tmplScope`,
                 ja: `Component の tmplScope`,
               },
@@ -707,29 +774,29 @@ console.log(11111)
                 ja: `複数のイベントハンドラーを指定する場合の表現です。`,
               },
               tmplData: {
-                en: ``,
+                en: `This is an expression when specifying multiple event handlers.`,
                 ko: `tmplData 입력 받을 데이터를 지정할 수 있습니다.`,
                 ja: `tmplData として使用するデータを強制に指定可能にする表現です。`,
               },
               content1: {
-                en: ``,
+                en: `This is a sample code when specifying Option.`,
                 ko: `Option 을 지정하는 경우의 예제`,
                 ja: `Option を指定する場合のサンプルコードです。`,
               },
             },
           },
           'load.content1': {
-            en: ``,
+            en: `Specify a callback and reference the Element if it should be executed after the Element has been loaded.`,
             ko: `Element 가 로딩된 후에 해당 Element 의 참조가 필요한 경우 callback 을 설정해서 Element 를 참조 합니다.`,
             ja: `Element がローディンクされた後に実行する必要がある場合 callback を指定し該当 Element を参照します。`,
           },
           'scopeKey.content1': {
-            en: ``,
+            en: `Refers the specified Element to the tmplScope.`,
             ko: `지정된 Element 를 tmplScope 에 참조시킵니다.`,
             ja: `指定の Element を tmplScope へ参照させます。`,
           },
           'var.content1': {
-            en: ``,
+            en: `Makes the specified Element visible as an internal variable.`,
             ko: `지정된 Element 를 내부 변수로서 참조 합니다.`,
             ja: `指定の Element を内部変数として参照可能にします。`,
           },
@@ -806,7 +873,9 @@ console.log(11111)
             ja: `組み込み変数`,
           },
           'data.content1': {
-            en: ``,
+            en: `An Object that references the input values used when creating a Component for use within the Template. <br/>
+                You can change the name by changing the dataKeyName of templateSettings when registering the Template. <br/>
+                *example: tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
             ko: `Component 생성시 사용한 입력값을 Template 내에서 참조하기 위한 Object 입니다. <br/>
                  Template 등록시 templateSettings 의 dataKeyName 지정함으로써 병경이 가능합니다.<br/>
                  ※example: tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
@@ -815,7 +884,11 @@ console.log(11111)
                  ※example: tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
           },
           'status.content1': {
-            en: ``,
+            en: `When you refresh and render the Component<br/>
+                Component data will be re-initialized with input values, so you will lose any changes that occur inside the Component. <br/>
+                If you store the internal changes in status, you can refer to it again after refresh and render. <br/>
+                You can change the name by specifying the statusKeyName of the templateSettings when registering the Template. <br/>
+                *example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
             ko: `Component 를 refresh, render 하게 될 경우<br/>
                  Component data 입력값에 의해서 초기화 되기 때문에 Component 내부에서 발생한 변화를 잃어 버리게 됩니다.<br/>
                  내부의 변화를 status 에 보관하면 refresh, render 시에도 동일한 값을 참조 할 수 있습니다.
@@ -828,7 +901,7 @@ console.log(11111)
                  ※example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
           },
           'i18n.content1': {
-            en: ``,
+            en: `Corresponds to bridge.i18n[tmplId]. Shorten i18n reference names in Templates.`,
             ko: `bridge.i18n[tmplId] 에 해당 합니다. Template 안에서 i18n 참조명을 줄여줍니다.`,
             ja: `bridge.i18n[tmplId] に該当します。Template 内で i18n の参照名を短くします。`,
           },
@@ -839,71 +912,73 @@ console.log(11111)
           },
           tmplScope: {
             content1: {
-              en: ``,
+              en: `tmplScope is a reference to Component itself.`,
               ko: `tmplScope 는 Component 자신에 대한 참조 입니다.`,
               ja: `tmplScope は Component 自身の参照です。`,
             },
             content2: {
-              en: ``,
+              en: `A target that can be referenced even before being Element`,
               ko: `Element 화되기전 부터 참조 가능한 대상`,
               ja: `Element 化される前でも参照可能な対象`,
             },
             'tmplId.content1': {
-              en: ``,
+              en: `ID of the Template. You can see which template code was used.`,
               ko: `Template 의 ID 입니다. 어떠한 Template 코드를 사용하여 콤퍼넌트가 생성 되었는지 알 수 있습니다.`,
               ja: `Template の ID です。どのテンプレートコードが使用されたのか分かります。`,
             },
             '_id.content1': {
-              en: ``,
+              en: `ID of the Component. It can be used when you need a unique key like HTML Element id.`,
               ko: `Component 의 ID 입니다. HTML Element の id 같은 unique key가 필요할 경우 사용 합니다.`,
               ja: `Component の ID です。HTML Element の id のように unique key が必要な場合に使用可能です。`,
             },
             'data.content1': {
-              en: ``,
+              en: `tmplScope can also refer to data, which is the input data when generating a Component.`,
               ko: `Component 생성시의 외부 입력값인 data 를 tmplScope 에서도 참조가 가능합니다.`,
               ja: `Component 生成時の入力データである data を tmplScope でも参照可能です。`,
             },
             'status.content1': {
-              en: ``,
+              en: `It seems that tmplScope also refers to the status, which is the internally stored value when the Component is created.`,
               ko: `Component 생성시의 내부 보관값인 status 를 tmplScope 에서도 참조가 가능합니다.`,
               ja: `Component 生成時の内部保管値である status を tmplScope でも参照かのうです。`,
             },
             'replace.content1': {
-              en: ``,
+              en: `Replaces the Component being displayed on the screen with another Component.`,
               ko: `화면 표시중인 Component 를 다른 Component 로 교체 합니다.`,
               ja: `画面表示中の Component を ほかの Component と入れ替えます。`,
             },
             'remove.content1': {
-              en: ``,
+              en: `Removes the Component from the screen.`,
               ko: `해당 Component 를 화면에서 제거 합니다.`,
               ja: `該当 Component を画面からなくします。`,
             },
             'appendTo.content1': {
-              en: ``,
+              en: `Append that Component to parentElement.`,
               ko: `해당 Component 를 parentElement 내에 이동하여 삽입합니다.`,
-              ja: `該当 Component を parentElement ないに移動します。`,
+              ja: `該当 Component を parentElement の内部に移動させ差し込みます。`,
             },
             'render.content1': {
-              en: ``,
+              en: `Renders the Component again with the data input value. <br/>
+                  Previous data is ignored.`,
               ko: `data 입력치로 Component 를 다시 렌더링 합니다.<br/>
                    이전의 data 를 무시 합니다.`,
               ja: `data 入力値で Component を再度レンダリングします。<br/>
                    以前の data は無視されます。`,
             },
             'refresh.content1': {
-              en: ``,
+              en: `Renders the Component again with the data input value. <br/>
+                  Merge the data of the current Component with Object.assign() and render again.`,
               ko: `data 입력치로 Component 를 다시 렌더링 합니다.<br/>
                    현재 Component 가 가진 data 와 Object.assign() 로 merge 해서 다시 렌더링 하게 됩니다.`,
               ja: `data 入力値で Component を再度レンダリングします。<br/>
                    現在の Component が持つ data と Object.assign() で merge して再度レンダリングします。`,
             },
             'content3': {
-              en: ``,
+              en: `Targets that can be referenced after being Element (can be used with #\#\# #\# )`,
               ko: `Element 화된 이후 부터 참조 가능한 대상 ( #\#\# #\# 에서 사용가능 )`,
               ja: `Element 化された後に参照可能になる対象 ( #\#\# #\# で使用可能 )`,
             },
             'element.content1': {
-              en: ``,
+              en: `References the rendered HTML Element.`,
               ko: `최종 렌더링 된 HTML Element 참조 합니다.`,
               ja: `レンダリング後の HTML Element を参照します。`,
             },
@@ -991,12 +1066,12 @@ console.log(11111)
         },
         Setting: {
           label: {
-            en: ``,
+            en: `Template engine setting`,
             ko: `Template Engine 설정`,
             ja: `Template Engine 設定`,
           },
           content1: {
-            en: ``,
+            en: `You can configure Template Engine options by setting bridge.tmplTool and then loading 'bridge.template.js'.`,
             ko: `bridge.tmplTool 를 설정한 후에 'bridge.template.js' 를 로딩함으로써 Template Engine 의 옵션을 설정 할 수 있습니다.`,
             ja: `bridge.tmplTool を設定してから 'bridge.template.js' をローディンクすることで Template Engine の オプションを設定可能です。`,
           },
@@ -1007,12 +1082,12 @@ console.log(11111)
               ja: `true の場合 Template コンパイル処理の時間を Console.log() に出力します。`,
             },
             'debug.content1': {
-              en: ``,
+              en: `If true, output the time of Template compilation processing to Console.log().`,
               ko: `true 인 경우 Template Engine 내의 debug 정보를 Console.log() 로 출력 합니다.`,
               ja: `true の場合 Template Engine 内の debug 情報を Console.log() に出力します。`,
             },
             'throwError.content1': {
-              en: ``,
+              en: `If true, output error information that occurred during Template compilation to Console.log().`,
               ko: `true 인 경우 Template 컴파일 처리를 할때 발생 하는 에러를 Console.log() 로 출력 합니다.`,
               ja: `true の場合 Template コンパイル処理時に発生したエラー情報を Console.log() に出力します。`,
             },
@@ -1061,12 +1136,13 @@ console.log(11111)
       Engine: {
         TmplTool: {
           label: {
-            en: ``,
+            en: `bridge.tmplTool configuration`,
             ko: `bridge.tmplTool 구성`,
             ja: `bridge.tmplTool 構成`,
           },
           'escapeHtml.content1': {
-            en: ``,
+            en: `Performs escape and unescape processing for strings. <br/>
+                Used when processing HTML Tags.`,
             ko: `문자열의 escape, unescape 처리를 합니다.<br/>
                  HTML Tag 를 처리할 때 사용 합니다.`,
             ja: `文字列の escape, unescape 処理を行います。<br/>
@@ -1177,19 +1253,21 @@ console.log(11111)
         TmplTool: {
           addTmpl: {
             content1: {
-              en: ``,
+              en: `Compile a single Template with the name given by templateName.`,
               ko: `하나의 Template 를 templateName 지정의 이름으로 컴파일 합니다.`,
               ja: `一つの Template を templateName 指定の名前でコンパイルします。`,
             },
             content2: {
-              en: ``,
+              en: `Capabilities can be extended by adding or modifying compile-time analysis engines. <br/>
+                  Let's change the " #\#= #\# " expression to " {{= }} ".`,
               ko: `컴파일 시의 해석 엔진을 추가 하거나 수정 하는 것으로 기능을 확장 할 수 있습니다.<br/>
                    " #\#= #\# " 표현을 " {{= }} " 로 바꾸어 보겠습니다.`,
               ja: `コンパイル時の解析エンジンを追加または修正することで機能を拡張することができます。<br/>
                    " #\#= #\# " 表現を " {{= }} " へ変えてみましょう。`,
             },
             content3: {
-              en: ``,
+              en: `Developers creating Templates can create Templates however they like by adding or modifying a dedicated compilation analysis engine. <br/>
+                  The Template parsing engine is configured as follows:`,
               ko: `Template 을 작성하는 개발자는 자신 만의 컴파일 해석기를 추가 수정 함으로써 Template 안에서 자유로운 표현의 사용이 가능 합니다.<br/>
                    Template 해석기의 표현들은 다음과 같이 구성되어 있습니다.`,
               ja: `Template を作成する開発者は専用のコンパイル解析エンジンを追加または修正することで Template を好きな形で作成できます。<br/>
@@ -1197,17 +1275,17 @@ console.log(11111)
             },
             tmplSettings: {
               'pattern.content1': {
-                en: ``,
+                en: `The parsing engine specifies a regular expression pattern for detecting expressions to act on.`,
                 ko: `해석기가 작동하는 표현을 검치하기 위한 정규식 패턴을 지정합니다.`,
                 ja: `解析エンジンは作動する表現を検知するための正規表現のパターンを指定します。`,
               },
               'exec.content1': {
-                en: ``,
+                en: `Defines a parser that processes strings detected by pattern and returns them.`,
                 ko: `pattern 으로 검출한 문자열을 가공하여 return 하는 문자열 해석을 정의 합니다.`,
                 ja: `pattern で検出した文字列を加工し return する 文字列解析を定義します。`,
               },
               'lazyExec.content1': {
-                en: ``,
+                en: `Defines a process for manipulating an Element when it is created after executing exec.`,
                 ko: `exec 의 실행 이후에 Element 의 생성시 Element 를 조작하는 처리를 정의 합니다.`,
                 ja: `exec の実行後に Element の生成時に Element を操作する処理を定義します。`,
               },
@@ -1252,34 +1330,35 @@ console.log(11111)
       Engine: {
         TmplTool: {
           'addTmpls.content1': {
-            en: ``,
+            en: `Compile multiple Templates in sets.`,
             ko: `복수의 Template 을 세트로 컴파일 합니다.`,
             ja: `複数の Template をセットでコンパイルします。`,
           },
           'addTmplByUrl.content1': {
-            en: ``,
+            en: `Load and compile the Template set file.`,
             ko: `Template 세트를 담은 파일을 로드 하여 컴파일 합니다.`,
             ja: `Template セットファイルをロードしコンパイルします。`,
           },
           'addI18n.content1': {
-            en: ``,
+            en: `Add one key, value for multilingual support.`,
             ko: `다국어 지원을 위한 하나의 key, value 를 추가 합니다.`,
             ja: `多言語支援のための一つの key, value を追加します。`,
           },
           'addI18ns.content1': {
-            en: ``,
+            en: `Add multiple keys, values at the same time for multilingual support.`,
             ko: `다국어 지원을 위한 다수의 key, value 를 동시에 추가 합니다.`,
             ja: `多言語支援のための多数の key, value を同時に追加します。`,
           },
           'genId.content1': {
-            en: ``,
+            en: `A Function that generates the _id when the Component is generated. <br/>
+                Template generates _id with { tmplId + Component generation order }.`,
             ko: `Component 생성시의 _id 를 생성하는 Function 입니다.<br/>
                  Template의 { tmplId + Component 생성순번 } 으로 _id 를 생성 합니다.`,
             ja: `Component 生成時に _id を生成する Function です。<br/>
                  Template は { tmplId + Component 生成順番 } で _id を生成します。`,
           },
           'tag.content1': {
-            en: ``,
+            en: `A util for generating HTML Elements.`,
             ko: `HTML Element 를 생성하는데 사용하는 util 입니다.`,
             ja: `HTML Element を生成するための util です。`,
           },
@@ -1324,7 +1403,7 @@ console.log(11111)
     'docs-Docs-Template': {
       Component: {
         label: {
-          en: 'Component',
+          en: 'Using Components',
           ko: 'Component 사용',
           ja: 'Component 使用',
         },

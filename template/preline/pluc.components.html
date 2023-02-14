@@ -592,6 +592,9 @@
     tmplScope.setValue = (value) => {
       input.value = value;
     };
+    tmplScope.getValue = () => {
+      return input.value;
+    };
     ##
     <div class="flex rounded-md shadow-sm">
       ##if (group) {##

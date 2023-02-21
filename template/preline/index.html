@@ -30,13 +30,13 @@
   <script>
     // // bg-red-100 text-red-800 bg-yellow-100 text-yellow-800 bg-green-100 text-green-800 bg-blue-100 text-blue-800 bg-indigo-100 text-indigo-800 bg-purple-100 text-purple-800 bg-white/[.1] text-gray-600 dark:text-gray-400
     let components = {
-      Badge: [
+      'pluc-Badge': [
         `tmpl.pluc.Badge({})`,
         ` [tmpl.pluc.Badge({label: 'Badge'}), tmpl.pluc.Badge({label: 'Badge', color: 'red'}), tmpl.pluc.Badge({label: 'Badge', color: 'indigo'})]`,
         `tmpl.pluc.Badge({label: 'Badge', color: 'blue', rounded: 'md'})`,
         `tmpl.pluc.Badge({label: 'Badge', color: 'blue', remove: (e, edata, scope) => scope.remove()})`,
       ],
-      Button: [
+      'pluc-Button': [
         // bg-gray-500
         `tmpl.pluc.Button({})`,
         `tmpl.pluc.Button({label: 'Outline'})`,
@@ -118,7 +118,7 @@ icon: {
         `tmpl.pluc.Button({label: 'Button', type: 'solid', color: 'blue', disabled: true})`,
         `tmpl.pluc.Button({label: 'Button', type: 'outline', color: 'blue', disabled: true})`,
       ],
-      InlineRadioGroup: [
+      'pluc-InlineRadioGroup': [
         `tmpl.pluc.InlineRadioGroup({})`,
         `tmpl.pluc.InlineRadioGroup({name: 'hs-radio-group', items: [
   {label: 'Apple', value: '10'},
@@ -131,7 +131,7 @@ icon: {
   {label: 'Orange', value: '30'}
 ]})`
       ],
-      InlineCheckboxGroup: [
+      'pluc-InlineCheckboxGroup': [
         `tmpl.pluc.InlineCheckboxGroup({})`,
         `tmpl.pluc.InlineCheckboxGroup({name: 'hs-radio-group', items: [
   {label: 'Apple', value: '10'},
@@ -144,7 +144,7 @@ icon: {
   {label: 'Orange', value: '30'}
 ]})`
       ],
-      ListGroup: [
+      'pluc-ListGroup': [
         `tmpl.pluc.ListGroup({})`,
         `tmpl.pluc.ListGroup({items:[
   {label: 'Profile'},
@@ -162,7 +162,7 @@ icon: {
   {label: 'Newsletter', event: () => alert('Newsletter')},
 ]})`,
       ],
-      Toast: [
+      'pluc-Toast': [
         `tmpl.pluc.Toast({})`,
         `tmpl.pluc.Toast({label: 'This is a normal message.'})`,
         // bg-red-200 text-red-500 border-red-200
@@ -171,7 +171,7 @@ icon: {
         `tmpl.pluc.Toast({label: 'This is a normal message.', hasClose: true})`,
         `tmpl.pluc.Toast({label: 'This is a normal message. (autoCloseTime: 3000)', autoCloseTime: 3000})`,
       ],
-      Accordion: [
+      'pluc-Accordion': [
         `tmpl.pluc.Accordion({})`,
         `tmpl.pluc.Accordion({
           items: [
@@ -233,7 +233,7 @@ icon: {
           ]
         })`,
       ],
-      Tooltip: [
+      'pluc-Tooltip': [
         `tmpl.pluc.Tooltip({})`,
         `tmpl.pluc.Tooltip({
           label: 'Tooltip on top',
@@ -255,7 +255,7 @@ icon: {
           target: tmpl.pluc.Button({label: 'button'})
         })`
       ],
-      Spinner: [ // text-red-600 // border-[10px]
+      'pluc-Spinner': [ // text-red-600 // border-[10px]
         `tmpl.pluc.Spinner({})`,
         `tmpl.pluc.Spinner({
           size: 8,
@@ -263,7 +263,7 @@ icon: {
           color: 'red'
         })`,
       ],
-      Select: [
+      'pluc-Select': [
         `tmpl.pluc.Select({})`,
         `tmpl.pluc.Select({
           items: [
@@ -292,7 +292,7 @@ icon: {
         })`,
         '`${select3.getValue()} / ${select3.getItem()}`',
       ],
-      Divider: [
+      'pluc-Divider': [
         `tmpl.pluc.Divider({})`,
         `tmpl.pluc.Divider({
           items: [
@@ -321,15 +321,15 @@ icon: {
           ]
         })`,
       ],
-      Input: [
+      'pluc-Input': [
         `tmpl.pluc.Input({})`,
         `tmpl.pluc.Input({px: 3, py: 2, value: 'Canada'})`,
       ],
-      InputGroup: [
+      'pluc-InputGroup': [
         `tmpl.pluc.InputGroup({})`,
         `tmpl.pluc.InputGroup({px: 3, py: 2, value: 'Canada', group: {label: 'Country'}})`,
       ],
-      Navbar: [
+      'pluc-Navbar': [
         `tmpl.pluc.Navbar({})`,
         `tmpl.pluc.Navbar({
           brand: {

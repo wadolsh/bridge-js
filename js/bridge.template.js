@@ -781,6 +781,7 @@
       return tmplScope;
     };
 
+    Object.defineProperty(tmpl, 'name', {value: tmplId, writable: false});
     tmpl.source = 'function ' + tmplId + '_source (' + (settings.variable || 'data') + '){\n' + source + '}';
 
     if (tmplId) {
@@ -1076,8 +1077,13 @@
               font-size: large;
               font-weight: bold;
             }
-            .ct-Base .Header {
+            .ct-Base .header {
               margin: 10px;
+              margin-top: 50px;
+              border: 1px solid #cccccc;
+            }
+            .ct-Base .header li {
+              padding: 10px 14px;
             }
             .ct-Base .templateArea {
               margin: 10px;
@@ -1088,22 +1094,56 @@
             .ct-Base .componentView {
               margin: 10px;
             }
+            .ct-Base button {
+              padding: 4px 10px;
+              margin: 4px;
+              border-radius: 0.5rem;
+              border: 1px solid #cccccc;
+            }
+            .ct-Base .hide {
+              display: none;
+            }
+            .ct-Base .templateText :not(pre)>code[class*=language-],
+            .ct-Base .templateText pre[class*=language-] {
+              background: #66990015;
+            }
+            .ct-Base .source :not(pre)>code[class*=language-],
+            .ct-Base .source  pre[class*=language-] {
+              background: #0077aa15;
+            }
           </style>
           ##
           let components = data.components;
           ##
-          <div class="ct-Base">
-            <ul class="Header">
+          <div class="ct-Base" style="display: flex; gap: 8px;">
+            <ul class="header" style="">
               ##Object.keys(components).forEach(key => {##
-                <li><a href="##='#'+key##">##=key##</a></li>
+                <li class=""><a href="##='#'+key##">##=key##</a></li>
               ##})##
             </ul>
-            <div class="Body">
+            <div class="body">
               ##Object.keys(components).forEach(key => {
                 let componentScopes = components[key];
+                let templateMeta = bridge.tmplCache.get(key);
               ##
-              <div class="templateArea" id="##=key##" style="display: ##=location.hash == '' || location.hash == ('#' + key) ? '' : 'none'##;">
+              <div class="templateArea" id="##=key##" style="##=location.hash == '' || location.hash == ('#' + key) ? '' : 'display: none'##;">
                 <h1><a href="##='#'+key##">##=key##</a></h1>
+                ##if (templateMeta) {##
+                <div style="display: flex; gap: 8px;">
+                  <button data-bridge-event="##:() => templateText.classList.toggle('hide')##">Template source</button>
+                  <button data-bridge-event="##:() => source.classList.toggle('hide')##">Compiled source</button>
+                </div>
+                <hr>
+                <div class="templateText hide" data-bridge-var="##:templateText##">
+                  <h2>Template source</h2>
+                  <pre><code class="language-javascript">##=templateMeta.templateText##</code></pre>
+                </div>
+                <div class="source hide" data-bridge-var="##:source##">
+                  <h2>Template source</h2>
+                  <pre><code class="language-javascript">##=templateMeta.source##</code></pre>
+                </div>
+                ##}##
+
                 ##componentScopes.forEach(scope => {##
                 <hr>
                 <div class="componentView">

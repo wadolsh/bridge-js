@@ -782,12 +782,13 @@
     };
 
     Object.defineProperty(tmpl, 'name', {value: tmplId, writable: false});
-    tmpl.source = 'function ' + tmplId + '_source (' + (settings.variable || 'data') + '){\n' + source + '}';
+    //tmpl.source = 'function ' + tmplId + '_source (' + (settings.variable || 'data') + '){\n' + source + '}';
+    var tmpl_source = 'function ' + tmplId + '_source (' + (settings.variable || 'data') + '){\n' + source + '}';
 
     if (tmplId) {
       var tmplMeta = {
         tmpl: tmpl,
-        source: escapeHtml.escape(tmpl.source),
+        source: escapeHtml.escape(tmpl_source),
         templateText: escapeHtml.escape(templateText),
       };
       cachedTmpl.set(tmplId, tmplMeta);
@@ -1138,8 +1139,9 @@
                   <h2>Template source</h2>
                   <pre><code class="language-javascript">##=templateMeta.templateText##</code></pre>
                 </div>
+                <hr>
                 <div class="source hide" data-bridge-var="##:source##">
-                  <h2>Template source</h2>
+                  <h2>Compiled source</h2>
                   <pre><code class="language-javascript">##=templateMeta.source##</code></pre>
                 </div>
                 ##}##

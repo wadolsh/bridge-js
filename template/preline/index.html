@@ -350,7 +350,7 @@ icon: {
         ], function() {
           let base = bridge.tmplTool.addTmpls(document.body, true);
           document.body.innerHTML = '';
-          document.body.appendChild(tmpl.br.TemplateViewer({components: components}).element);
+          document.body.appendChild(tmpl.br.TemplateViewer({components: components, label: 'Preline', description: '<a href="https://preline.co/" target="preline">https://preline.co/</a>'}).element);
           Prism.highlightAll();
           var script = document.createElement('script');
           script.id = 'preline.js';

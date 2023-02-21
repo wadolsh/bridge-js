@@ -1075,15 +1075,24 @@
   addTmpl('br-Template-Viewer', 
           `<style id="style-ct-Base">
             .ct-Base h1 {
+              font-size: 24px;
+              font-weight: bold;
+            }
+            .ct-Base h2 {
               font-size: large;
               font-weight: bold;
             }
             .ct-Base .header {
+              padding: 20px;
+              padding-bottom: 0px;
+              margin-top: 10px;
+            }
+            .ct-Base .menu {
               margin: 10px;
               margin-top: 50px;
               border: 1px solid #cccccc;
             }
-            .ct-Base .header li {
+            .ct-Base .menu li {
               padding: 10px 14px;
             }
             .ct-Base .templateArea {
@@ -1116,46 +1125,53 @@
           ##
           let components = data.components;
           ##
-          <div class="ct-Base" style="display: flex; gap: 8px;">
-            <ul class="header" style="">
-              ##Object.keys(components).forEach(key => {##
-                <li class=""><a href="##='#'+key##">##=key##</a></li>
-              ##})##
-            </ul>
-            <div class="body">
-              ##Object.keys(components).forEach(key => {
-                let componentScopes = components[key];
-                let templateMeta = bridge.tmplCache.get(key);
-              ##
-              <div class="templateArea" id="##=key##" style="##=location.hash == '' || location.hash == ('#' + key) ? '' : 'display: none'##;">
-                <h1><a href="##='#'+key##">##=key##</a></h1>
-                ##if (templateMeta) {##
-                <div style="display: flex; gap: 8px;">
-                  <button data-bridge-event="##:() => templateText.classList.toggle('hide')##">Template source</button>
-                  <button data-bridge-event="##:() => source.classList.toggle('hide')##">Compiled source</button>
-                </div>
-                <hr>
-                <div class="templateText hide" data-bridge-var="##:templateText##">
-                  <h2>Template source</h2>
-                  <pre><code class="language-javascript">##=templateMeta.templateText##</code></pre>
-                </div>
-                <hr>
-                <div class="source hide" data-bridge-var="##:source##">
-                  <h2>Compiled source</h2>
-                  <pre><code class="language-javascript">##=templateMeta.source##</code></pre>
-                </div>
-                ##}##
+          <div class="ct-Base">
+            <div class="header">
+              <h1>##=data.label##</h1>
+              <span>##=data.description##</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <ul class="menu" style="">
+                ##Object.keys(components).forEach(key => {##
+                  <li class=""><a href="##='#'+key##">##=key##</a></li>
+                ##})##
+              </ul>
+              <div class="content">
+                ##Object.keys(components).forEach(key => {
+                  let componentScopes = components[key];
+                  let templateMeta = bridge.tmplCache.get(key);
+                ##
+                <div class="templateArea" id="##=key##" style="##=location.hash == '' || location.hash == ('#' + key) ? '' : 'display: none'##;">
+                  <h2><a href="##='#'+key##">##=key##</a></h2>
+                  ##if (templateMeta) {##
+                  <div style="display: flex; gap: 8px;">
+                    <button data-bridge-event="##:() => templateText.classList.toggle('hide')##">Template source</button>
+                    <button data-bridge-event="##:() => source.classList.toggle('hide')##">Compiled source</button>
+                  </div>
+                  <hr>
+                  <div class="templateText hide" data-bridge-var="##:templateText##">
+                    <h2>Template source</h2>
+                    <pre><code class="language-javascript">##=templateMeta.templateText##</code></pre>
+                  </div>
+                  <hr>
+                  <div class="source hide" data-bridge-var="##:source##">
+                    <h2>Compiled source</h2>
+                    <pre><code class="language-javascript">##=templateMeta.source##</code></pre>
+                  </div>
+                  ##}##
 
-                ##componentScopes.forEach(scope => {##
-                <hr>
-                <div class="componentView">
-                  <pre><code class="language-javascript">##%scope##</code></pre>
-                  ##%new Function('return '+scope+';')()##
+                  ##componentScopes.forEach(scope => {##
+                  <hr>
+                  <div class="componentView">
+                    <pre><code class="language-javascript">##%scope##</code></pre>
+                    ##%new Function('return '+scope+';')()##
+                  </div>
+                  <hr>
+                  ##})##
                 </div>
-                <hr>
                 ##})##
               </div>
-              ##})##
+
             </div>
           </div>
           ###

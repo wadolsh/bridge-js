@@ -162,11 +162,7 @@
           disabled: !!disabled,
         }, icon.svgProps)##
       >
-        <path
-          ##=bridge.tmplTool.props({
-            d: `${icon.path}`,
-          }, icon.pathProps)##
-         d="##=icon.path##"/>
+        ##=icon.path##
       </svg>
       ##}##
     </button>

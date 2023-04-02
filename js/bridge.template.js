@@ -1,7 +1,17 @@
 /*
  * Copyright (c) 2016-present, Choi Sungho
  * Code released under the MIT license
- */
+*/
+/*
+if (typeof window === 'undefined') {
+  // server mode
+  window = { Node: { prototype: {}} };
+  Element = {};
+  CharacterData = {};
+  DocumentType = {};
+}
+*/
+
 (function() {"use strict";
 
   // Polyfill
@@ -33,8 +43,10 @@
   }
 
   // from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
+  
   (function (arr) {
     arr.forEach(function (item) {
+      if (!item) return;
       if (item.hasOwnProperty('remove')) {
         return;
       }

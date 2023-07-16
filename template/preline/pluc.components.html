@@ -454,6 +454,10 @@
   
     let items = data.items || [];
   
+    tmplScope.setValue = (value) => {
+      select.value = value;
+    }
+
     tmplScope.getValue = () => {
       if (multiple) {
         let selectedArray = [];

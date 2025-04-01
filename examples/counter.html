@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bridge-js - Simple Counter Example</title>
+  <script src="../js/bridge.template.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    .counter-container {
+      margin: 40px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple Counter Example</h1>
+  
+  <p>This is a simple counter example using Bridge-js. The counter can be incremented and decremented using the buttons below.</p>
+  
+  <div id="counter-container" class="counter-container"></div>
+  
+  <h2>How it Works</h2>
+  
+  <h3>Template Definition</h3>
+  <pre><code>bridge.tmplTool.addTmpls(`
+  &lt;template id="app-Counter"&gt;
+    &lt;style id="style-app-Counter"&gt;
+      .app-Counter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .app-Counter-button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 0 10px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      .app-Counter-button.decrement {
+        background-color: #f44336;
+      }
+      .app-Counter-value {
+        font-size: 24px;
+        padding: 0 20px;
+        min-width: 50px;
+        text-align: center;
+      }
+    &lt;/style&gt;
+    ##
+      var count = data.initialCount || 0;
+      
+      tmplScope.increment = function() {
+        count++;
+        tmplScope.refresh();
+      };
+      
+      tmplScope.decrement = function() {
+        count--;
+        tmplScope.refresh();
+      };
+    ##
+    &lt;div class="app-Counter"&gt;
+      &lt;button class="app-Counter-button decrement" data-bridge-event="click: tmplScope.decrement"&gt;-&lt;/button&gt;
+      &lt;div class="app-Counter-value"&gt;##=count##&lt;/div&gt;
+      &lt;button class="app-Counter-button" data-bridge-event="click: tmplScope.increment"&gt;+&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/template&gt;
+`);
+
+// Create the counter component and add it to the DOM
+var counter = tmpl.app.Counter({initialCount: 0});
+document.getElementById('counter-container').appendChild(counter.element);</code></pre>
+
+  <script>
+    // Define the counter template
+    bridge.tmplTool.addTmpls(`
+      <template id="app-Counter">
+        <style id="style-app-Counter">
+          .app-Counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+          .app-Counter-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border-radius: 4px;
+          }
+          .app-Counter-button.decrement {
+            background-color: #f44336;
+          }
+          .app-Counter-value {
+            font-size: 24px;
+            padding: 0 20px;
+            min-width: 50px;
+            text-align: center;
+          }
+        </style>
+        ##
+          var count = data.initialCount || 0;
+          
+          tmplScope.increment = function() {
+            count++;
+            tmplScope.refresh();
+          };
+          
+          tmplScope.decrement = function() {
+            count--;
+            tmplScope.refresh();
+          };
+        ##
+        <div class="app-Counter">
+          <button class="app-Counter-button decrement" data-bridge-event="click: tmplScope.decrement">-</button>
+          <div class="app-Counter-value">##=count##</div>
+          <button class="app-Counter-button" data-bridge-event="click: tmplScope.increment">+</button>
+        </div>
+      </template>
+    `);
+
+    // Wait for DOM to load then create and add the counter
+    document.addEventListener('DOMContentLoaded', function() {
+      var counter = tmpl.app.Counter({initialCount: 0});
+      document.getElementById('counter-container').appendChild(counter.element);
+    });
+  </script>
+</body>
+</html>

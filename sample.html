@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bridge-js Example</title>
+  <script src="https://wadolsh.github.io/bridge-js/js/bridge.template.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    .example {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .example-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bridge-js Component Examples</h1>
+    <div id="examples"></div>
+  </div>
+
+  <script>
+    // Define templates
+    bridge.tmplTool.addTmpls(`
+      <template id="demo-Container">
+        <style id="style-demo-Container">
+          .demo-Container {
+            margin-bottom: 20px;
+          }
+          .demo-Container-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0078d7;
+          }
+          .demo-Container-description {
+            margin-bottom: 15px;
+          }
+          .demo-Container-content {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+          }
+        </style>
+        <div class="demo-Container">
+          <div class="demo-Container-title">##=data.title##</div>
+          <div class="demo-Container-description">##=data.description##</div>
+          <div class="demo-Container-content">##%data.content##</div>
+        </div>
+      </template>
+
+      <template id="demo-Button">
+        <style id="style-demo-Button">
+          .demo-Button {
+            padding: 8px 16px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+          }
+          .demo-Button:hover {
+            background-color: #106ebe;
+          }
+          .demo-Button.secondary {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+          }
+          .demo-Button.secondary:hover {
+            background-color: #e0e0e0;
+          }
+        </style>
+        ##
+          var className = 'demo-Button';
+          if (data.secondary) {
+            className += ' secondary';
+          }
+        ##
+        <button class="##=className##" data-bridge-event="click: data.onClick">##=data.label##</button>
+      </template>
+
+      <template id="demo-Counter">
+        <style id="style-demo-Counter">
+          .demo-Counter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+          .demo-Counter-value {
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+          }
+          .demo-Counter-button {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            line-height: 1;
+            padding: 0;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+          .demo-Counter-button:hover {
+            background-color: #106ebe;
+          }
+        </style>
+        ##
+          var count = data.initialCount || 0;
+          
+          tmplScope.increment = function() {
+            count++;
+            tmplScope.refresh();
+          };
+          
+          tmplScope.decrement = function() {
+            count--;
+            tmplScope.refresh();
+          };
+        ##
+        <div class="demo-Counter">
+          <button class="demo-Counter-button" data-bridge-event="click: tmplScope.decrement">-</button>
+          <div class="demo-Counter-value">##=count##</div>
+          <button class="demo-Counter-button" data-bridge-event="click: tmplScope.increment">+</button>
+        </div>
+      </template>
+
+      <template id="demo-ToDoList">
+        <style id="style-demo-ToDoList">
+          .demo-ToDoList {
+            width: 100%;
+          }
+          .demo-ToDoList-header {
+            display: flex;
+            margin-bottom: 10px;
+          }
+          .demo-ToDoList-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+          }
+          .demo-ToDoList-items {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+          }
+          .demo-ToDoList-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+          }
+          .demo-ToDoList-item:last-child {
+            border-bottom: none;
+          }
+          .demo-ToDoList-checkbox {
+            margin-right: 10px;
+          }
+          .demo-ToDoList-text {
+            flex-grow: 1;
+          }
+          .demo-ToDoList-text.completed {
+            text-decoration: line-through;
+            color: #999;
+          }
+          .demo-ToDoList-delete {
+            color: #ff5252;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+          }
+        </style>
+        ##
+          var items = data.items || [];
+          var inputValue = '';
+          
+          tmplScope.addItem = function() {
+            if (inputValue.trim() === '') return;
+            
+            items.push({
+              id: Date.now(),
+              text: inputValue,
+              completed: false
+            });
+            
+            inputValue = '';
+            tmplScope.refresh();
+          };
+          
+          tmplScope.updateInput = function(e) {
+            inputValue = e.target.value;
+          };
+          
+          tmplScope.toggleItem = function(id) {
+            var item = items.find(function(item) { return item.id === id; });
+            if (item) {
+              item.completed = !item.completed;
+              tmplScope.refresh();
+            }
+          };
+          
+          tmplScope.deleteItem = function(id) {
+            items = items.filter(function(item) { return item.id !== id; });
+            tmplScope.refresh();
+          };
+          
+          tmplScope.handleKeyPress = function(e) {
+            if (e.key === 'Enter') {
+              tmplScope.addItem();
+            }
+          };
+        ##
+        <div class="demo-ToDoList">
+          <div class="demo-ToDoList-header">
+            <input 
+              class="demo-ToDoList-input" 
+              type="text" 
+              placeholder="Add a new task..." 
+              value="##=inputValue##" 
+              data-bridge-event="input: tmplScope.updateInput, keypress: tmplScope.handleKeyPress"
+            >
+            <button class="demo-Counter-button" data-bridge-event="click: tmplScope.addItem">+</button>
+          </div>
+          <ul class="demo-ToDoList-items">
+            ##
+              for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var textClass = 'demo-ToDoList-text' + (item.completed ? ' completed' : '');
+            ##
+              <li class="demo-ToDoList-item">
+                <input 
+                  class="demo-ToDoList-checkbox" 
+                  type="checkbox" 
+                  ##=item.completed ? 'checked' : ''## 
+                  data-bridge-event="change: function() { tmplScope.toggleItem(##=item.id##); }"
+                >
+                <span class="##=textClass##">##=item.text##</span>
+                <span 
+                  class="demo-ToDoList-delete" 
+                  data-bridge-event="click: function() { tmplScope.deleteItem(##=item.id##); }"
+                >×</span>
+              </li>
+            ##
+              }
+            ##
+          </ul>
+        </div>
+      </template>
+
+      <template id="demo-ColorPicker">
+        <style id="style-demo-ColorPicker">
+          .demo-ColorPicker {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+          }
+          .demo-ColorPicker-controls {
+            display: flex;
+            gap: 15px;
+          }
+          .demo-ColorPicker-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+          .demo-ColorPicker-slider label {
+            width: 20px;
+            text-align: center;
+          }
+          .demo-ColorPicker-preview {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+          }
+          .demo-ColorPicker-value {
+            font-family: monospace;
+            padding: 5px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            text-align: center;
+          }
+        </style>
+        ##
+          var red = data.red || 128;
+          var green = data.green || 128;
+          var blue = data.blue || 128;
+          
+          function updateColor(color, value) {
+            if (color === 'red') red = parseInt(value);
+            if (color === 'green') green = parseInt(value);
+            if (color === 'blue') blue = parseInt(value);
+            tmplScope.refresh();
+          }
+          
+          tmplScope.updateRed = function(e) {
+            updateColor('red', e.target.value);
+          };
+          
+          tmplScope.updateGreen = function(e) {
+            updateColor('green', e.target.value);
+          };
+          
+          tmplScope.updateBlue = function(e) {
+            updateColor('blue', e.target.value);
+          };
+          
+          var hexColor = '#' + 
+            red.toString(16).padStart(2, '0') + 
+            green.toString(16).padStart(2, '0') + 
+            blue.toString(16).padStart(2, '0');
+        ##
+        <div class="demo-ColorPicker">
+          <div class="demo-ColorPicker-controls">
+            <div class="demo-ColorPicker-preview" style="background-color: rgb(##=red##, ##=green##, ##=blue##);"></div>
+            <div>
+              <div class="demo-ColorPicker-slider">
+                <label style="color: red;">R</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="255" 
+                  value="##=red##" 
+                  data-bridge-event="input: tmplScope.updateRed"
+                >
+                <span>##=red##</span>
+              </div>
+              <div class="demo-ColorPicker-slider">
+                <label style="color: green;">G</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="255" 
+                  value="##=green##" 
+                  data-bridge-event="input: tmplScope.updateGreen"
+                >
+                <span>##=green##</span>
+              </div>
+              <div class="demo-ColorPicker-slider">
+                <label style="color: blue;">B</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="255" 
+                  value="##=blue##" 
+                  data-bridge-event="input: tmplScope.updateBlue"
+                >
+                <span>##=blue##</span>
+              </div>
+            </div>
+          </div>
+          <div class="demo-ColorPicker-value">##=hexColor##</div>
+        </div>
+      </template>
+    `);
+
+    // Create examples
+    document.addEventListener('DOMContentLoaded', function() {
+      var examplesContainer = document.getElementById('examples');
+
+      // Example 1: Button Component
+      var buttonExample = tmpl.demo.Container({
+        title: "Button Component",
+        description: "A simple button component with click event handling.",
+        content: tmpl.demo.Button({
+          label: "Click Me!",
+          onClick: function() {
+            alert("Button clicked!");
+          }
+        })
+      });
+      
+      // Example 2: Counter Component
+      var counterExample = tmpl.demo.Container({
+        title: "Counter Component",
+        description: "A counter with increment and decrement functionality.",
+        content: tmpl.demo.Counter({
+          initialCount: 5
+        })
+      });
+      
+      // Example 3: Todo List Component
+      var todoExample = tmpl.demo.Container({
+        title: "Todo List Component",
+        description: "A more complex component with state management.",
+        content: tmpl.demo.ToDoList({
+          items: [
+            { id: 1, text: "Learn Bridge-js", completed: true },
+            { id: 2, text: "Build components", completed: false },
+            { id: 3, text: "Create an application", completed: false }
+          ]
+        })
+      });
+      
+      // Example 4: Color Picker Component
+      var colorPickerExample = tmpl.demo.Container({
+        title: "Color Picker Component",
+        description: "Interactive component with real-time updates.",
+        content: tmpl.demo.ColorPicker({
+          red: 66,
+          green: 135,
+          blue: 245
+        })
+      });
+      
+      // Append all examples
+      examplesContainer.appendChild(buttonExample.element);
+      examplesContainer.appendChild(counterExample.element);
+      examplesContainer.appendChild(todoExample.element);
+      examplesContainer.appendChild(colorPickerExample.element);
+    });
+  </script>
+</body>
+</html>

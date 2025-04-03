@@ -79,21 +79,21 @@
           }
         </style>
         ##
-          let count = data.initialCount || 0;
+          data.initialCount = data.initialCount || 0;
           
           tmplScope.increment = function() {
-            count++;
+            data.initialCount++;
             tmplScope.refresh();
           };
           
           tmplScope.decrement = function() {
-            count--;
+            data.initialCount--;
             tmplScope.refresh();
           };
         ##
         <div class="app-Counter">
           <button class="app-Counter-button decrement" data-bridge-event="##:{click: tmplScope.decrement}##">-</button>
-          <div class="app-Counter-value">##=count##</div>
+          <div class="app-Counter-value">##=data.initialCount##</div>
           <button class="app-Counter-button" data-bridge-event="##:{click: tmplScope.increment}##">+</button>
         </div>
       </template>

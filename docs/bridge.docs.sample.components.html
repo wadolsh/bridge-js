@@ -1,0 +1,369 @@
+<body>
+
+  <template id="demo-Container">
+    <style id="style-demo-Container">
+      .demo-Container {
+        margin-bottom: 20px;
+      }
+      .demo-Container-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #0078d7;
+      }
+      .demo-Container-description {
+        margin-bottom: 15px;
+      }
+      .demo-Container-content {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+    </style>
+    <div class="demo-Container">
+      <div class="demo-Container-title">##=data.title##</div>
+      <div class="demo-Container-description">##=data.description##</div>
+      <div class="demo-Container-content">##%data.content##</div>
+    </div>
+    </template>
+    
+    <template id="demo-Button">
+    <style id="style-demo-Button">
+      .demo-Button {
+        padding: 8px 16px;
+        background-color: #0078d7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .demo-Button:hover {
+        background-color: #106ebe;
+      }
+      .demo-Button.secondary {
+        background-color: #f0f0f0;
+        color: #333;
+        border: 1px solid #ccc;
+      }
+      .demo-Button.secondary:hover {
+        background-color: #e0e0e0;
+      }
+    </style>
+    ##
+      let className = 'demo-Button';
+      if (data.secondary) {
+        className += ' secondary';
+      }
+    ##
+    <button class="##=className##" data-bridge-event="##:{click: data.onClick}##">##=data.label##</button>
+    </template>
+    
+    <template id="demo-Counter">
+    <style id="style-demo-Counter">
+      .demo-Counter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .demo-Counter-value {
+        font-size: 24px;
+        font-weight: bold;
+        min-width: 40px;
+        text-align: center;
+      }
+      .demo-Counter-button {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+        line-height: 1;
+        padding: 0;
+        background-color: #0078d7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .demo-Counter-button:hover {
+        background-color: #106ebe;
+      }
+    </style>
+    ##
+      let count = data.initialCount || 0;
+      
+      tmplScope.increment = function() {
+        data.initialCount++;
+        tmplScope.refresh();
+      };
+      
+      tmplScope.decrement = function() {
+        data.initialCount--;
+        tmplScope.refresh();
+      };
+    ##
+    <div class="demo-Counter">
+      <button class="demo-Counter-button" data-bridge-event="##:{click: tmplScope.decrement}##">-</button>
+      <div class="demo-Counter-value">##=count##</div>
+      <button class="demo-Counter-button" data-bridge-event="##:{click: tmplScope.increment}##">+</button>
+    </div>
+    </template>
+    
+    <template id="demo-ToDoList">
+    <style id="style-demo-ToDoList">
+      .demo-ToDoList {
+        width: 100%;
+      }
+      .demo-ToDoList-header {
+        display: flex;
+        margin-bottom: 10px;
+      }
+      .demo-ToDoList-input {
+        flex-grow: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 10px;
+      }
+      .demo-ToDoList-items {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      .demo-ToDoList-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+      }
+      .demo-ToDoList-item:last-child {
+        border-bottom: none;
+      }
+      .demo-ToDoList-checkbox {
+        margin-right: 10px;
+      }
+      .demo-ToDoList-text {
+        flex-grow: 1;
+      }
+      .demo-ToDoList-text.completed {
+        text-decoration: line-through;
+        color: #999;
+      }
+      .demo-ToDoList-delete {
+        color: #ff5252;
+        cursor: pointer;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+    </style>
+    ##
+      // 최초에 data.items가 없으면 초기화
+      if (!data.items) {
+        data.items = [];
+      }
+      let inputValue = '';
+      
+      tmplScope.addItem = function() {
+        if (inputValue.trim() === '') return;
+        
+        // data.items가 없으면 초기화
+        if (!data.items) {
+          data.items = [];
+        }
+        
+        data.items.push({
+          id: Date.now(),
+          text: inputValue,
+          completed: false
+        });
+        
+        inputValue = '';
+        tmplScope.refresh();
+      };
+      
+      tmplScope.updateInput = function(e) {
+        inputValue = e.target.value;
+      };
+      
+      tmplScope.toggleItem = function(id) {
+        if (!data.items) return;
+        let item = data.items.find(function(item) { return item.id === id; });
+    
+        if (item) {
+          item.completed = !item.completed;
+          tmplScope.refresh();
+        }
+      };
+      
+      tmplScope.deleteItem = function(id) {
+        if (!data.items) return;
+        
+        data.items = data.items.filter(function(item) { return item.id !== id; });
+        tmplScope.refresh();
+      };
+      
+      tmplScope.handleKeyPress = function(e) {
+        if (e.key === 'Enter') {
+          tmplScope.addItem();
+        }
+      };
+    ##
+    <div class="demo-ToDoList">
+      <div class="demo-ToDoList-header">
+        <input 
+          class="demo-ToDoList-input" 
+          type="text" 
+          placeholder="Add a new task..." 
+          value="##=inputValue##" 
+          data-bridge-event="##:{input: tmplScope.updateInput, keypress: tmplScope.handleKeyPress}##"
+        >
+        <button class="demo-Counter-button" data-bridge-event="##:{click: tmplScope.addItem}##">+</button>
+      </div>
+      <ul class="demo-ToDoList-items">
+        ##
+          for (let i = 0; i < data.items.length; i++) {
+            let item = data.items[i];
+            let textClass = 'demo-ToDoList-text' + (item.completed ? ' completed' : '');
+        ##
+          <li class="demo-ToDoList-item">
+            <input 
+              class="demo-ToDoList-checkbox" 
+              type="checkbox" 
+              ##=item.completed ? 'checked' : ''## 
+              data-bridge-event="##:{change: function() { tmplScope.toggleItem(item.id); }}##"
+            >
+            <span class="##=textClass##">##=item.text##</span>
+            <span 
+              class="demo-ToDoList-delete" 
+              data-bridge-event="##:{click: function() { tmplScope.deleteItem(item.id); }}##"
+            >×</span>
+          </li>
+        ##
+          }
+        ##
+      </ul>
+    </div>
+    </template>
+    
+    <template id="demo-ColorPicker">
+    <style id="style-demo-ColorPicker">
+      .demo-ColorPicker {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .demo-ColorPicker-controls {
+        display: flex;
+        gap: 15px;
+      }
+      .demo-ColorPicker-slider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .demo-ColorPicker-slider label {
+        width: 20px;
+        text-align: center;
+      }
+      .demo-ColorPicker-preview {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .demo-ColorPicker-value {
+        font-family: monospace;
+        padding: 5px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        text-align: center;
+      }
+    </style>
+    ##
+      let red = data.red || 128;
+      let green = data.green || 128;
+      let blue = data.blue || 128;
+      
+      function updateColor(color, value) {
+        if (color === 'red') {
+          data.red = parseInt(value);
+          redElement.innerText = value;
+        }
+        if (color === 'green') {
+          data.green = parseInt(value);
+          greenElement.innerText = value;
+        }
+        if (color === 'blue') {
+          data.blue = parseInt(value);
+          blueElement.innerText = value;
+        }
+        updateHexColor();
+      }
+      
+      tmplScope.updateRed = function(e) {
+        updateColor('red', e.target.value);
+      };
+      
+      tmplScope.updateGreen = function(e) {
+        updateColor('green', e.target.value);
+      };
+      
+      tmplScope.updateBlue = function(e) {
+        updateColor('blue', e.target.value);
+      };
+    
+      let updateHexColor = function() {
+        let hexColor = '#' + 
+        data.red.toString(16).padStart(2, '0') + 
+        data.green.toString(16).padStart(2, '0') + 
+        data.blue.toString(16).padStart(2, '0');
+        hexColorElement.innerText = hexColor;
+        previewElement.style.backgroundColor = hexColor;
+      }
+    ##
+    <div class="demo-ColorPicker">
+      <div class="demo-ColorPicker-controls">
+        <div class="demo-ColorPicker-preview" data-bridge-var="##:previewElement##" style="background-color: rgb(##=red##, ##=green##, ##=blue##);"></div>
+        <div>
+          <div class="demo-ColorPicker-slider">
+            <label style="color: red;">R</label>
+            <input 
+              type="range" 
+              min="0" 
+              max="255" 
+              value="##=red##" 
+              data-bridge-event="##:{input: tmplScope.updateRed}##"
+            >
+            <span data-bridge-var="##:redElement##">##=red##</span>
+          </div>
+          <div class="demo-ColorPicker-slider">
+            <label style="color: green;">G</label>
+            <input 
+              type="range" 
+              min="0" 
+              max="255" 
+              value="##=green##" 
+              data-bridge-event="##:{input: tmplScope.updateGreen}##"
+            >
+            <span data-bridge-var="##:greenElement##">##=green##</span>
+          </div>
+          <div class="demo-ColorPicker-slider">
+            <label style="color: blue;">B</label>
+            <input 
+              type="range" 
+              min="0" 
+              max="255" 
+              value="##=blue##" 
+              data-bridge-event="##:{input: tmplScope.updateBlue}##"
+            >
+            <span data-bridge-var="##:blueElement##">##=blue##</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-ColorPicker-value" data-bridge-var="##:hexColorElement##"></div>
+    </div>
+    ###
+    updateHexColor();
+    ##
+    </template> 
+</body>

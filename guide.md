@@ -154,11 +154,18 @@ Used for adding comments in the template that won't be rendered.
 
 ### HTML Element Expressions
 
-#### `data-bridge-event="eventType: handler"`
-Attaches event handlers to HTML elements.
+#### `data-bridge-event="##:{eventType: handler}##"`
+Attaches event handlers to HTML elements. Multiple events can be specified by separating them with semicolons.
 
 ```html
-<button data-bridge-event="click: handleClick">Click Me</button>
+<button data-bridge-event="##:{click: handleClick}##">Click Me</button>
+<input data-bridge-event="##:{focus: onFocus; blur: onBlur; input: onChange}##" />
+```
+
+You can also pass parameters to event handlers:
+
+```html
+<button data-bridge-event="##:{click: handleClick('param1', 'param2')}##">Click Me</button>
 ```
 
 #### `data-bridge-load="handler"`
@@ -213,7 +220,7 @@ bridge.tmplTool.addTmpl('example-Counter', `
       };
     ##
     <div>Count: ##=count##</div>
-    <button data-bridge-event="click: tmplScope.increment">+</button>
+    <button data-bridge-event="##:{click: tmplScope.increment}##">+</button>
   </div>
 `);
 
@@ -241,7 +248,7 @@ bridge.tmplTool.addTmpls(`
         background-color: #106ebe;
       }
     </style>
-    <button class="ui-Button" data-bridge-event="click: data.onClick">##=data.label##</button>
+    <button class="ui-Button" data-bridge-event="##:{click: data.onClick}##">##=data.label##</button>
   </template>
 
   <template id="ui-Form">

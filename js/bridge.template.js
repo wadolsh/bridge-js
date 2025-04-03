@@ -582,7 +582,7 @@ if (typeof window === 'undefined') {
       render = new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', 'i18n', source);
     } catch(e) {
     	var debugErrorLine = function(source, e) {
-    	  console.log(tmplId, e.lineNumber, e.columnNumber);
+        console.error(tmplId, e.lineNumber, e.columnNumber);
         new Function(settings.dataName || 'data',  settings.statusName || 'status', 'tmplScope', 'lazyScope', 'i18n', source);
       }
       if (throwError) {

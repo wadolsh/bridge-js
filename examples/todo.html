@@ -42,178 +42,11 @@
   <h2>How it Works</h2>
   
   <h3>Template Definition</h3>
-  <pre><code>bridge.tmplTool.addTmpls(`
-  &lt;template id="app-TodoList"&gt;
-    &lt;style id="style-app-TodoList"&gt;
-      .app-TodoList {
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-      }
-      .app-TodoList-header {
-        display: flex;
-        margin-bottom: 20px;
-      }
-      .app-TodoList-input {
-        flex-grow: 1;
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        border-radius: 4px 0 0 4px;
-      }
-      .app-TodoList-addButton {
-        background-color: #4CAF50;
-        border: none;
-        color: white;
-        padding: 10px 15px;
-        text-align: center;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 0 4px 4px 0;
-      }
-      .app-TodoList-list {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
-      .app-TodoList-item {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-      }
-      .app-TodoList-checkbox {
-        margin-right: 10px;
-      }
-      .app-TodoList-text {
-        flex-grow: 1;
-        padding: 5px 0;
-      }
-      .app-TodoList-text.completed {
-        text-decoration: line-through;
-        color: #888;
-      }
-      .app-TodoList-deleteButton {
-        background-color: #f44336;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 2px 8px;
-        font-size: 14px;
-        cursor: pointer;
-      }
-      .app-TodoList-empty {
-        text-align: center;
-        padding: 20px;
-        color: #888;
-        font-style: italic;
-      }
-    &lt;/style&gt;
-    ##
-      var todos = data.initialTodos || [];
-      var newTodoText = '';
-      
-      tmplScope.updateNewTodoText = function(e) {
-        newTodoText = e.target.value;
-      };
-      
-      tmplScope.addTodo = function() {
-        if (newTodoText.trim() === '') return;
-        
-        todos.push({
-          id: Date.now(),
-          text: newTodoText,
-          completed: false
-        });
-        
-        newTodoText = '';
-        tmplScope.refresh();
-      };
-      
-      tmplScope.toggleTodo = function(id) {
-        for (var i = 0; i < todos.length; i++) {
-          if (todos[i].id === id) {
-            todos[i].completed = !todos[i].completed;
-            break;
-          }
-        }
-        tmplScope.refresh();
-      };
-      
-      tmplScope.deleteTodo = function(id) {
-        for (var i = 0; i < todos.length; i++) {
-          if (todos[i].id === id) {
-            todos.splice(i, 1);
-            break;
-          }
-        }
-        tmplScope.refresh();
-      };
-      
-      tmplScope.handleKeyPress = function(e) {
-        if (e.key === 'Enter') {
-          tmplScope.addTodo();
-        }
-      };
-    ##
-    &lt;div class="app-TodoList"&gt;
-      &lt;div class="app-TodoList-header"&gt;
-        &lt;input 
-          class="app-TodoList-input" 
-          type="text" 
-          placeholder="Add a new task..." 
-          value="##=newTodoText##" 
-          data-bridge-event="input: tmplScope.updateNewTodoText, keypress: tmplScope.handleKeyPress"
-        &gt;
-        &lt;button class="app-TodoList-addButton" data-bridge-event="click: tmplScope.addTodo"&gt;Add&lt;/button&gt;
-      &lt;/div&gt;
-      
-      &lt;ul class="app-TodoList-list"&gt;
-        ##
-          if (todos.length === 0) {
-        ##
-          &lt;li class="app-TodoList-empty"&gt;No tasks yet. Add some!&lt;/li&gt;
-        ##
-          } else {
-            for (var i = 0; i < todos.length; i++) {
-              var todo = todos[i];
-              var textClass = 'app-TodoList-text' + (todo.completed ? ' completed' : '');
-        ##
-          &lt;li class="app-TodoList-item"&gt;
-            &lt;input 
-              class="app-TodoList-checkbox" 
-              type="checkbox" 
-              ##=todo.completed ? 'checked' : ''## 
-              data-bridge-event="change: function() { tmplScope.toggleTodo(##=todo.id##); }"
-            &gt;
-            &lt;span class="##=textClass##"&gt;##=todo.text##&lt;/span&gt;
-            &lt;button 
-              class="app-TodoList-deleteButton" 
-              data-bridge-event="click: function() { tmplScope.deleteTodo(##=todo.id##); }"
-            &gt;×&lt;/button&gt;
-          &lt;/li&gt;
-        ##
-            }
-          }
-        ##
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/template&gt;
-`);
-
-// Create the todo list component and add it to the DOM
-var todoList = tmpl.app.TodoList({
-  initialTodos: [
-    { id: 1, text: 'Learn Bridge-js', completed: true },
-    { id: 2, text: 'Create a Todo List app', completed: false },
-    { id: 3, text: 'Share with others', completed: false }
-  ]
-});
-document.getElementById('todo-container').appendChild(todoList.element);</code></pre>
+  <pre><code id="code"></code></pre>
 
   <script>
     // Define the TodoList template
-    bridge.tmplTool.addTmpls(`
+    let template = `
       <template id="app-TodoList">
         <style id="style-app-TodoList">
           .app-TodoList {
@@ -281,8 +114,11 @@ document.getElementById('todo-container').appendChild(todoList.element);</code><
           }
         </style>
         ##
-          var todos = data.initialTodos || [];
-          var newTodoText = '';
+          // data.initialTodos가 없으면 초기화
+          if (!data.initialTodos) {
+            data.initialTodos = [];
+          }
+          let newTodoText = '';
           
           tmplScope.updateNewTodoText = function(e) {
             newTodoText = e.target.value;
@@ -291,7 +127,7 @@ document.getElementById('todo-container').appendChild(todoList.element);</code><
           tmplScope.addTodo = function() {
             if (newTodoText.trim() === '') return;
             
-            todos.push({
+            data.initialTodos.push({
               id: Date.now(),
               text: newTodoText,
               completed: false
@@ -302,9 +138,9 @@ document.getElementById('todo-container').appendChild(todoList.element);</code><
           };
           
           tmplScope.toggleTodo = function(id) {
-            for (var i = 0; i < todos.length; i++) {
-              if (todos[i].id === id) {
-                todos[i].completed = !todos[i].completed;
+            for (let i = 0; i < data.initialTodos.length; i++) {
+              if (data.initialTodos[i].id === id) {
+                data.initialTodos[i].completed = !data.initialTodos[i].completed;
                 break;
               }
             }
@@ -312,12 +148,9 @@ document.getElementById('todo-container').appendChild(todoList.element);</code><
           };
           
           tmplScope.deleteTodo = function(id) {
-            for (var i = 0; i < todos.length; i++) {
-              if (todos[i].id === id) {
-                todos.splice(i, 1);
-                break;
-              }
-            }
+            data.initialTodos = data.initialTodos.filter(function(todo) {
+              return todo.id !== id;
+            });
             tmplScope.refresh();
           };
           
@@ -334,33 +167,33 @@ document.getElementById('todo-container').appendChild(todoList.element);</code><
               type="text" 
               placeholder="Add a new task..." 
               value="##=newTodoText##" 
-              data-bridge-event="input: tmplScope.updateNewTodoText, keypress: tmplScope.handleKeyPress"
+              data-bridge-event="##:{input: tmplScope.updateNewTodoText, keypress: tmplScope.handleKeyPress}##"
             >
-            <button class="app-TodoList-addButton" data-bridge-event="click: tmplScope.addTodo">Add</button>
+            <button class="app-TodoList-addButton" data-bridge-event="##:{click: tmplScope.addTodo}##">Add</button>
           </div>
           
           <ul class="app-TodoList-list">
             ##
-              if (todos.length === 0) {
+              if (data.initialTodos.length === 0) {
             ##
               <li class="app-TodoList-empty">No tasks yet. Add some!</li>
             ##
               } else {
-                for (var i = 0; i < todos.length; i++) {
-                  var todo = todos[i];
-                  var textClass = 'app-TodoList-text' + (todo.completed ? ' completed' : '');
+                for (let i = 0; i < data.initialTodos.length; i++) {
+                  let todo = data.initialTodos[i];
+                  let textClass = 'app-TodoList-text' + (todo.completed ? ' completed' : '');
             ##
               <li class="app-TodoList-item">
                 <input 
                   class="app-TodoList-checkbox" 
                   type="checkbox" 
                   ##=todo.completed ? 'checked' : ''## 
-                  data-bridge-event="change: function() { tmplScope.toggleTodo(##=todo.id##); }"
+                  data-bridge-event="##:{change: function() { tmplScope.toggleTodo(todo.id); }}##"
                 >
                 <span class="##=textClass##">##=todo.text##</span>
                 <button 
                   class="app-TodoList-deleteButton" 
-                  data-bridge-event="click: function() { tmplScope.deleteTodo(##=todo.id##); }"
+                  data-bridge-event="##:{click: function() { tmplScope.deleteTodo(todo.id); }}##"
                 >×</button>
               </li>
             ##
@@ -370,11 +203,12 @@ document.getElementById('todo-container').appendChild(todoList.element);</code><
           </ul>
         </div>
       </template>
-    `);
+    `;
+    bridge.tmplTool.addTmpls(template);
 
     // Wait for DOM to load then create and add the todo list
     document.addEventListener('DOMContentLoaded', function() {
-      var todoList = tmpl.app.TodoList({
+      let todoList = tmpl.app.TodoList({
         initialTodos: [
           { id: 1, text: 'Learn Bridge-js', completed: true },
           { id: 2, text: 'Create a Todo List app', completed: false },
@@ -382,6 +216,17 @@ document.getElementById('todo-container').appendChild(todoList.element);</code><
         ]
       });
       document.getElementById('todo-container').appendChild(todoList.element);
+      document.getElementById('code').innerText = `bridge.tmplTool.addTmpls(\`${template}\`);
+
+// Create the todo list component and add it to the DOM
+let todoList = tmpl.app.TodoList({
+  initialTodos: [
+    { id: 1, text: 'Learn Bridge-js', completed: true },
+    { id: 2, text: 'Create a Todo List app', completed: false },
+    { id: 3, text: 'Share with others', completed: false }
+  ]
+});
+document.getElementById('todo-container').appendChild(todoList.element);`;
     });
   </script>
 </body>

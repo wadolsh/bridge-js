@@ -1,21 +1,21 @@
 <body>
 
 <script id="docs-Common-Script">
-  var genSidemenu = function(data) {
-    var titleList = data.element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
+  let genSidemenu = function(data) {
+    let titleList = data.element.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id]');
     Array.prototype.forEach.call(titleList, function(element) {
-      var splited = element.id.split('/');
+      let splited = element.id.split('/');
       data.munuList.push({label: element.innerText, class: element.id.replace(/\//g, '_') + ' ' + splited[1]+'/'+splited[2] + ' ' + element.tagName, index: splited[1]+'\\/'+splited[2], hash: '#' + element.id});
     });
   }
 
-  var getSidemenu = function(data) {
+  let getSidemenu = function(data) {
     return function() {
       return data.munuList.map(function(item) {
         return Object.assign(item, {event: function(e, edata, tmplElem) {
 
           if (item.index != data.selectedIndex) {
-            var area = data.contentArea();
+            let area = data.contentArea();
             while (area.firstChild) area.removeChild(area.firstChild);
             data.tmplScope.refresh({index: item.index});
             area.appendChild(data.tmplScope.element);
@@ -27,7 +27,7 @@
               element.classList.add('display');
             });
 
-            var removeTargets = data.tmplScope.element.querySelectorAll('.page:not(#' + item.index + ')');
+            let removeTargets = data.tmplScope.element.querySelectorAll('.page:not(#' + item.index + ')');
             Array.prototype.forEach.call(removeTargets, function(target) {
               target.parentElement.removeChild(target);
             });
@@ -79,7 +79,7 @@
     }
     .docs-Base .sidemenu .list-group {
       overflow-x: auto;
-      height: calc(100% - 56px);
+      height: calc(100% - 57px);
       margin-bottom: 0px;
     }
     .docs-Base .sidemenu .list-group-item {
@@ -122,12 +122,14 @@
       'Docs.label': {
         en: 'Documentation',
         ko: '문서',
-        ja: 'ドキュメント'
+        ja: 'ドキュメント',
+        cn: '文档'
       },
       'Tutorial.label': {
         en: 'Tutorial',
         ko: '따라하기',
-        ja: 'チュートリアル'
+        ja: 'チュートリアル',
+        cn: '教程'
       }
     }
   });
@@ -151,6 +153,7 @@
     {label: 'ENGLISH', lang: 'en', event: langSelect('en')},
     {label: '日本語', lang: 'ja', event: langSelect('ja')},
     {label: '한국어', lang: 'ko', event: langSelect('ko')},
+    {label: '中文(中国)', lang: 'cn', event: langSelect('cn')},
   ];
 
   let navigatorLang = navigator.language.split('-')[0];
@@ -210,18 +213,19 @@
     'docs-Docs.Template.label': {
       en: 'Template Engine',
       ko: '템플릿 엔진',
-      ja: 'テンプレートエンジン'
+      ja: 'テンプレートエンジン',
+      cn: '模板引擎',
     }
   });
   ##
   ##
-  var contentArea = function() {
+  let contentArea = function() {
     return docsMain;
   }
-  var docItems = [
+  let docItems = [
     {label: i18n.Template.label, tmpl: tmpl.docs.DocsTemplate({contentArea: contentArea})}
   ];
-  var selectEvent = function(e) {
+  let selectEvent = function(e) {
     e.target.parentElement.querySelector('.active').classList.remove('active');
     e.target.classList.add('active');
   }
@@ -293,60 +297,1161 @@
         label: {
           en: 'Introduction',
           ko: '소개',
-          ja: '紹介'
+          ja: '紹介',
+          cn: '介绍',
         },
         content: {
           en: `
-              bridge-js helps you create web applications easily. <br/>
-              bridge-js was created with the following goals:
-              <ul>
-                <li>Support creation of SPA(Single Page Application)</li>
-                <li>Helps create reusable Components</li>
-                <li>By creating style, html, and javascript in each template, it helps to create an easy-to-understand Component</li>
-                <li>Provide a way to set the Event Handler inside the Html Tag</li>
-                <li>By combining Components, it helps to create an assembly UI like a block</li>
-              </ul>
+
+<h1>Bridge-js Component Engine Guide</h1>
+<p>The Bridge-js Component Engine is a JavaScript framework for creating web applications with a focus on reusable components. It provides a template-based system that allows you to create, combine, and reuse UI components efficiently.</p>
+
+Github Repository: <a href="https://github.com/wadolsh/bridge-js" target="github">https://github.com/wadolsh/bridge-js</a>
+<br>
+
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#creating-templates">Creating Templates</a></li>
+<li><a href="#creating-components">Creating Components</a></li>
+<li><a href="#template-syntax">Template Syntax</a>
+<ul>
+<li><a href="#basic-expressions">Basic Expressions</a></li>
+<li><a href="#html-element-expressions">HTML Element Expressions</a></li>
+<li><a href="#built-in-variables">Built-in Variables</a></li>
+</ul>
+</li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#advanced-usage">Advanced Usage</a></li>
+</ol>
+<h2 id="introduction">Introduction</h2>
+<p>Bridge-js is designed to support:</p>
+<ul>
+<li>Single Page Applications (SPA)</li>
+<li>Reusable component creation</li>
+<li>Integration of styles, HTML, and JavaScript logic in a single template</li>
+<li>Event handling in HTML tags</li>
+<li>Component composition for building complex UIs</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>To use Bridge-js, include the bridge.template.js script in your HTML file:</p>
+<pre><code class="language-html">&amp;lt;script src="js/bridge.template.js"&gt;&amp;lt;/script&gt;</code></pre>
+<h2 id="creating-templates">Creating Templates</h2>
+<p>There are two main ways to create templates in Bridge-js:</p>
+<h3>Method 1: Using bridge.tmplTool.addTmpl()</h3>
+<pre><code class="language-html">bridge.tmplTool.addTmpl('do-Simple', '&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;');</code></pre>
+<h3>Method 2: Using template tags with bridge.tmplTool.addTmpls()</h3>
+<pre><code class="language-html">let templateString = \`
+  &amp;lt;template id="do-Simple-One"&gt;
+    &amp;lt;div class="do-Simple-One"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="do-Simple-Two"&gt;
+    &amp;lt;style id="style-do-Simple-Two"&gt;
+      .do-Simple-Two {
+        background-color: yellow;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="do-Simple-Two"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;\`;
+  
+bridge.tmplTool.addTmpls(templateString);</code></pre>
+<p>When using the template tag approach:</p>
+<ul>
+<li>The ID attribute determines the component name</li>
+<li>Styles defined within the template are added to the document head</li>
+<li>Style tag IDs should follow the format "style-{template-id}" to prevent conflicts</li>
+</ul>
+<h2 id="creating-components">Creating Components</h2>
+<p>Once templates are defined, you can create components and add them to the DOM:</p>
+<h3>Method 1: Using the tmpl namespace</h3>
+<pre><code class="language-html">let sample = tmpl.do.SimpleSample({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<h3>Method 2: Using bridge.tmpl() function</h3>
+<pre><code class="language-html">let sample = bridge.tmpl('do-Simple-Sample')({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<p>The data you pass (like <code>{label: 'Div Simple'}</code>) is available inside the template as the <code>data</code> object.</p>
+<h2 id="template-syntax">Template Syntax</h2>
+<p>Bridge-js uses a special syntax for template expressions and data binding.</p>
+<h3 id="basic-expressions">Basic Expressions</h3>
+<h4><code>#\#= #\#</code> - Output expression</h4>
+<p>Outputs string content. HTML tags will be treated as HTML.</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#='Sample Text'#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;
+&amp;lt;div style="background-color: #\#=data.bgColor || 'gray'#\#;"&gt;#\#=data.text#\#&amp;lt;/div&gt;</code></pre>
+<p>If a function is specified, its result will be output.</p>
+<h4><code>#\#- #\#</code> - HTML-escaped output expression</h4>
+<p>Outputs string content with HTML escape processing. This prevents HTML tags from being interpreted.</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#-'&amp;lt;div&gt;Sample Text&amp;lt;/div&gt;'#\#&amp;lt;/div&gt; &amp;lt;!-- Will show the actual HTML tags --&gt;
+&amp;lt;div&gt;#\#-data.label#\#&amp;lt;/div&gt;</code></pre>
+<h4><code>#\#% #\#</code> - Component output expression</h4>
+<p>Used to include other components, HTML elements, or strings.</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#%tmpl.another.Component({prop: 'value'})#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#%[comp1, comp2, comp3]#\#&amp;lt;/div&gt; &amp;lt;!-- Array of components --&gt;</code></pre>
+<h4><code>#\# #\#</code> - JavaScript code block</h4>
+<p>Allows you to write JavaScript code directly within templates.</p>
+<pre><code class="language-html">&amp;lt;template id="my-component"&gt;
+  #\#
+    let count = data.count || 0;
+    let displayText = 'Count: ' + count;
+    
+    function incrementCount() {
+      count++;
+      tmplScope.refresh({count: count});
+    }
+    
+    tmplScope.increment = incrementCount;
+  #\#
+  
+  &amp;lt;div&gt;#\#=displayText#\#&amp;lt;/div&gt;
+  &amp;lt;button data-bridge-event="click: tmplScope.increment"&gt;Increment&amp;lt;/button&gt;
+&amp;lt;/template&gt;</code></pre>
+<h4><code>#\#\# #\#</code> - Style expression</h4>
+<p>Used to define style content.</p>
+<h4><code>#\#! #\#</code> - Comment</h4>
+<p>Used for adding comments in the template that won't be rendered.</p>
+<h3 id="html-element-expressions">HTML Element Expressions</h3>
+<h4><code>data-bridge-event="#\#:{eventType: handler}#\#"</code></h4>
+<p>Attaches event handlers to HTML elements. Multiple events can be specified by separating them with semicolons.</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick}#\#"&gt;Click Me&amp;lt;/button&gt;
+&amp;lt;input data-bridge-event="#\#:{focus: onFocus; blur: onBlur; input: onChange}#\#" /&gt;</code></pre>
+<p>You can also pass parameters to event handlers:</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
+<h4><code>data-bridge-load="handler"</code></h4>
+<p>Specifies a function to run when the element is loaded.</p>
+<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<p>Sets properties on the template scope.</p>
+<h4><code>data-bridge-var="var: value"</code></h4>
+<p>Binds a variable to an element.</p>
+<h3 id="built-in-variables">Built-in Variables</h3>
+<p>These variables are available within templates:</p>
+<h4><code>data</code></h4>
+<p>Contains the data passed when creating the component.</p>
+<h4><code>status</code></h4>
+<p>Object for storing state information.</p>
+<h4><code>i18n</code></h4>
+<p>Internationalization object.</p>
+<h4><code>tmplScope</code></h4>
+<p>Reference to the template scope, which contains:</p>
+<ul>
+<li><code>appendTo</code>: Function to append the component to an element</li>
+<li><code>data</code>: The component's data</li>
+<li><code>element</code>: The component's DOM element</li>
+<li><code>refresh</code>: Function to update the component</li>
+<li><code>remove</code>: Function to remove the component</li>
+<li><code>render</code>: Function to render the component</li>
+<li><code>replace</code>: Function to replace the component</li>
+<li><code>status</code>: The component's status</li>
+<li><code>tmplId</code>: The template ID</li>
+<li><code>_id</code>: The component's unique ID</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<h3>Basic Component</h3>
+<pre><code class="language-html">// Define template
+bridge.tmplTool.addTmpl('example-Counter', \`
+  &amp;lt;div&gt;
+    #\#
+      let count = data.initialCount || 0;
+      
+      tmplScope.increment = function() {
+        count++;
+        tmplScope.refresh({count: count});
+      };
+    #\#
+    &amp;lt;div&gt;Count: #\#=count#\#&amp;lt;/div&gt;
+    &amp;lt;button data-bridge-event="#\#:{click: tmplScope.increment}#\#"&gt;+&amp;lt;/button&gt;
+  &amp;lt;/div&gt;
+\`);
+
+// Create and use component
+let counter = tmpl.example.Counter({initialCount: 5});
+document.body.appendChild(counter.element);</code></pre>
+<h3>Component Composition</h3>
+<pre><code class="language-html">// Define templates
+bridge.tmplTool.addTmpls(\`
+  &amp;lt;template id="ui-Button"&gt;
+    &amp;lt;style id="style-ui-Button"&gt;
+      .ui-Button {
+        padding: 8px 16px;
+        background-color: #0078d7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .ui-Button:hover {
+        background-color: #106ebe;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;button class="ui-Button" data-bridge-event="#\#:{click: data.onClick}#\#"&gt;#\#=data.label#\#&amp;lt;/button&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="ui-Form"&gt;
+    &amp;lt;style id="style-ui-Form"&gt;
+      .ui-Form {
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .ui-Form-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="ui-Form"&gt;
+      &amp;lt;div class="ui-Form-title"&gt;#\#=data.title#\#&amp;lt;/div&gt;
+      &amp;lt;div&gt;#\#%data.content#\#&amp;lt;/div&gt;
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+\`);
+
+// Create Form with Button
+let button = tmpl.ui.Button({
+  label: 'Submit',
+  onClick: function() { alert('Form submitted!'); }
+});
+
+let form = tmpl.ui.Form({
+  title: 'Contact Form',
+  content: button
+});
+
+document.body.appendChild(form.element);</code></pre>
+
+<h2>Advanced Usage</h2>
+
+<h3>Lazy Loading Templates</h3>
+<p>You can load templates from external files:</p>
+<pre><code class="language-html">bridge.tmplTool.addTmplByUrl([
+'template/components.html',
+'template/layout.html'
+], function() {
+// Templates are now loaded and ready to use
+let app = tmpl.app.Main({});
+document.body.appendChild(app.element);
+});</code></pre>
+
+<h3>Handling Component State</h3>
+<p>Bridge-js components can maintain and update their state:</p>
+<pre><code class="language-html">let counter = tmpl.app.Counter({initialCount: 0});
+document.body.appendChild(counter.element);
+
+// Later, update the counter's state
+counter.refresh({initialCount: 10});</code></pre>
+
+<h3>Internationalization</h3>
+<pre><code class="language-html">bridge.tmplTool.addI18n('greeting', {
+'en': 'Hello',
+'es': 'Hola',
+'fr': 'Bonjour'
+});
+
+bridge.tmplTool.addTmpl('app-Greeting', \`
+<div>#\#=i18n.greeting#\# #\#=data.name#\#!</div>
+\`);
+
+let greeting = tmpl.app.Greeting({name: 'World'});
+document.body.appendChild(greeting.element);</code></pre>
+
+<p>This guide provides a comprehensive introduction to the Bridge-js Component Engine. For more detailed information, refer to the official documentation or explore the provided sample code.</p>
+
+<p>For more detailed information, check out the <a href="https://wadolsh.github.io/bridge-js/">documentation</a>.</p>
+<br>
+        
               `,
           ko: `
-              bridge-js 은 웹 어플리케이션을 쉽게 제작할 수있게 만들어 졌습니다.<br/>
-              bridge-js 은 다음과 같은 목표를 가지고 제작 되었었습니다.
-              <ul>
-                <li>SPA(Single Page Application) 작성을 지원</li>
-                <li>재사용 가능한 Component 작성을 지원</li>
-                <li>하나의 Template 안에 style, html, javascript 로직을 통합 함으로써 적은 노력으로 Component를 제작 할 수 있도록 함</li>
-                <li>Html Tag 안에 Event Handler 를 설정 가능도록 함</li>
-                <li>Component 끼리 조합 할 수 있도록 함으로써 블록을 조립하듯이 UI를 제작 할 수 있도록 지원</li>
-              </ul>
-              `,
+<h1>Bridge-js 컴포넌트 엔진 가이드</h1>
+<p>Bridge-js 컴포넌트 엔진은 재사용 가능한 컴포넌트에 중점을 둔 웹 애플리케이션 제작을 위한 JavaScript 프레임워크입니다. 효율적으로 UI 컴포넌트를 생성, 결합 및 재사용할 수 있는 템플릿 기반 시스템을 제공합니다.</p>
+
+Github Repository: <a href="https://github.com/wadolsh/bridge-js" target="github">https://github.com/wadolsh/bridge-js</a>
+<br>
+
+<h2>목차</h2>
+<ol>
+<li><a href="#introduction">소개</a></li>
+<li><a href="#installation">설치</a></li>
+<li><a href="#creating-templates">템플릿 생성</a></li>
+<li><a href="#creating-components">컴포넌트 생성</a></li>
+<li><a href="#template-syntax">템플릿 구문</a>
+<ul>
+<li><a href="#basic-expressions">기본 표현식</a></li>
+<li><a href="#html-element-expressions">HTML 요소 표현식</a></li>
+<li><a href="#built-in-variables">내장 변수</a></li>
+</ul>
+</li>
+<li><a href="#examples">예제</a></li>
+<li><a href="#advanced-usage">고급 사용법</a></li>
+</ol>
+<h2 id="introduction">소개</h2>
+<p>Bridge-js는 다음을 지원하도록 설계되었습니다:</p>
+<ul>
+<li>단일 페이지 애플리케이션(SPA)</li>
+<li>재사용 가능한 컴포넌트 생성</li>
+<li>단일 템플릿에서 스타일, HTML 및 JavaScript 로직 통합</li>
+<li>HTML 태그에서 이벤트 처리</li>
+<li>복잡한 UI 구축을 위한 컴포넌트 구성</li>
+</ul>
+<h2 id="installation">설치</h2>
+<p>Bridge-js를 사용하려면 HTML 파일에 bridge.template.js 스크립트를 포함하세요:</p>
+<pre><code class="language-html">&amp;lt;script src="js/bridge.template.js"&gt;&amp;lt;/script&gt;</code></pre>
+<h2 id="creating-templates">템플릿 생성</h2>
+<p>Bridge-js에서 템플릿을 생성하는 두 가지 주요 방법이 있습니다:</p>
+<h3>방법 1: bridge.tmplTool.addTmpl() 사용</h3>
+<pre><code class="language-html">bridge.tmplTool.addTmpl('do-Simple', '&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;');</code></pre>
+<h3>방법 2: bridge.tmplTool.addTmpls()를 이용한 템플릿 태그 사용</h3>
+<pre><code class="language-html">let templateString = \`
+  &amp;lt;template id="do-Simple-One"&gt;
+    &amp;lt;div class="do-Simple-One"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="do-Simple-Two"&gt;
+    &amp;lt;style id="style-do-Simple-Two"&gt;
+      .do-Simple-Two {
+        background-color: yellow;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="do-Simple-Two"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;\`;
+  
+bridge.tmplTool.addTmpls(templateString);</code></pre>
+<p>템플릿 태그 접근 방식을 사용할 때:</p>
+<ul>
+<li>ID 속성이 컴포넌트 이름을 결정합니다</li>
+<li>템플릿 내에 정의된 스타일은 문서 헤드에 추가됩니다</li>
+<li>스타일 태그 ID는 충돌을 방지하기 위해 "style-{template-id}" 형식을 따라야 합니다</li>
+</ul>
+<h2 id="creating-components">컴포넌트 생성</h2>
+<p>템플릿이 정의되면 컴포넌트를 생성하고 DOM에 추가할 수 있습니다:</p>
+<h3>방법 1: tmpl 네임스페이스 사용</h3>
+<pre><code class="language-html">let sample = tmpl.do.SimpleSample({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<h3>방법 2: bridge.tmpl() 함수 사용</h3>
+<pre><code class="language-html">let sample = bridge.tmpl('do-Simple-Sample')({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<p>전달하는 데이터(예: <code>{label: 'Div Simple'}</code>)는 템플릿 내에서 <code>data</code> 객체로 사용할 수 있습니다.</p>
+<h2 id="template-syntax">템플릿 구문</h2>
+<p>Bridge-js는 템플릿 표현식과 데이터 바인딩을 위한 특별한 구문을 사용합니다.</p>
+<h3 id="basic-expressions">기본 표현식</h3>
+<h4><code>#\#= #\#</code> - 출력 표현식</h4>
+<p>문자열 내용을 출력합니다. HTML 태그는 HTML로 처리됩니다.</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#='Sample Text'#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;
+&amp;lt;div style="background-color: #\#=data.bgColor || 'gray'#\#;"&gt;#\#=data.text#\#&amp;lt;/div&gt;</code></pre>
+<p>함수가 지정된 경우 그 결과가 출력됩니다.</p>
+<h4><code>#\#- #\#</code> - HTML 이스케이프 처리된 출력 표현식</h4>
+<p>HTML 이스케이프 처리가 된 문자열 내용을 출력합니다. 이는 HTML 태그가 해석되는 것을 방지합니다.</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#-'&amp;lt;div&gt;Sample Text&amp;lt;/div&gt;'#\#&amp;lt;/div&gt; &amp;lt;!-- 실제 HTML 태그를 보여줍니다 --&gt;
+&amp;lt;div&gt;#\#-data.label#\#&amp;lt;/div&gt;</code></pre>
+<h4><code>#\#% #\#</code> - 컴포넌트 출력 표현식</h4>
+<p>다른 컴포넌트, HTML 요소 또는 문자열을 포함하는 데 사용됩니다.</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#%tmpl.another.Component({prop: 'value'})#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#%[comp1, comp2, comp3]#\#&amp;lt;/div&gt; &amp;lt;!-- 컴포넌트 배열 --&gt;</code></pre>
+<h4><code>#\# #\#</code> - JavaScript 코드 블록</h4>
+<p>템플릿 내에서 직접 JavaScript 코드를 작성할 수 있습니다.</p>
+<pre><code class="language-html">&amp;lt;template id="my-component"&gt;
+  #\#
+    let count = data.count || 0;
+    let displayText = 'Count: ' + count;
+    
+    function incrementCount() {
+      count++;
+      tmplScope.refresh({count: count});
+    }
+    
+    tmplScope.increment = incrementCount;
+  #\#
+  
+  &amp;lt;div&gt;#\#=displayText#\#&amp;lt;/div&gt;
+  &amp;lt;button data-bridge-event="click: tmplScope.increment"&gt;Increment&amp;lt;/button&gt;
+&amp;lt;/template&gt;</code></pre>
+<h4><code>#\#\# #\#</code> - 스타일 표현식</h4>
+<p>스타일 내용을 정의하는 데 사용됩니다.</p>
+<h4><code>#\#! #\#</code> - 주석</h4>
+<p>렌더링되지 않을 템플릿에 주석을 추가하는 데 사용됩니다.</p>
+<h3 id="html-element-expressions">HTML 요소 표현식</h3>
+<h4><code>data-bridge-event="#\#:{eventType: handler}#\#"</code></h4>
+<p>HTML 요소에 이벤트 핸들러를 연결합니다. 세미콜론으로 구분하여 여러 이벤트를 지정할 수 있습니다.</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick}#\#"&gt;Click Me&amp;lt;/button&gt;
+&amp;lt;input data-bridge-event="#\#:{focus: onFocus; blur: onBlur; input: onChange}#\#" /&gt;</code></pre>
+<p>이벤트 핸들러에 매개변수를 전달할 수도 있습니다:</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
+<h4><code>data-bridge-load="handler"</code></h4>
+<p>요소가 로드될 때 실행할 함수를 지정합니다.</p>
+<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<p>템플릿 스코프에 속성을 설정합니다.</p>
+<h4><code>data-bridge-var="var: value"</code></h4>
+<p>변수를 요소에 바인딩합니다.</p>
+<h3 id="built-in-variables">내장 변수</h3>
+<p>템플릿 내에서 다음 변수를 사용할 수 있습니다:</p>
+<h4><code>data</code></h4>
+<p>컴포넌트를 생성할 때 전달된 데이터를 포함합니다.</p>
+<h4><code>status</code></h4>
+<p>상태 정보를 저장하기 위한 객체입니다.</p>
+<h4><code>i18n</code></h4>
+<p>국제화 객체입니다.</p>
+<h4><code>tmplScope</code></h4>
+<p>다음을 포함하는 템플릿 스코프에 대한 참조입니다:</p>
+<ul>
+<li><code>appendTo</code>: 컴포넌트를 요소에 추가하는 함수</li>
+<li><code>data</code>: 컴포넌트의 데이터</li>
+<li><code>element</code>: 컴포넌트의 DOM 요소</li>
+<li><code>refresh</code>: 컴포넌트를 업데이트하는 함수</li>
+<li><code>remove</code>: 컴포넌트를 제거하는 함수</li>
+<li><code>render</code>: 컴포넌트를 렌더링하는 함수</li>
+<li><code>replace</code>: 컴포넌트를 교체하는 함수</li>
+<li><code>status</code>: 컴포넌트의 상태</li>
+<li><code>tmplId</code>: 템플릿 ID</li>
+<li><code>_id</code>: 컴포넌트의 고유 ID</li>
+</ul>
+<h2 id="examples">예제</h2>
+<h3>기본 컴포넌트</h3>
+<pre><code class="language-html">// 템플릿 정의
+bridge.tmplTool.addTmpl('example-Counter', \`
+  &amp;lt;div&gt;
+    #\#
+      let count = data.initialCount || 0;
+      
+      tmplScope.increment = function() {
+        count++;
+        tmplScope.refresh({count: count});
+      };
+    #\#
+    &amp;lt;div&gt;Count: #\#=count#\#&amp;lt;/div&gt;
+    &amp;lt;button data-bridge-event="#\#:{click: tmplScope.increment}#\#"&gt;+&amp;lt;/button&gt;
+  &amp;lt;/div&gt;
+\`);
+
+// 컴포넌트 생성 및 사용
+let counter = tmpl.example.Counter({initialCount: 5});
+document.body.appendChild(counter.element);</code></pre>
+<h3>컴포넌트 구성</h3>
+<pre><code class="language-html">// 템플릿 정의
+bridge.tmplTool.addTmpls(\`
+  &amp;lt;template id="ui-Button"&gt;
+    &amp;lt;style id="style-ui-Button"&gt;
+      .ui-Button {
+        padding: 8px 16px;
+        background-color: #0078d7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .ui-Button:hover {
+        background-color: #106ebe;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;button class="ui-Button" data-bridge-event="#\#:{click: data.onClick}#\#"&gt;#\#=data.label#\#&amp;lt;/button&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="ui-Form"&gt;
+    &amp;lt;style id="style-ui-Form"&gt;
+      .ui-Form {
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .ui-Form-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="ui-Form"&gt;
+      &amp;lt;div class="ui-Form-title"&gt;#\#=data.title#\#&amp;lt;/div&gt;
+      &amp;lt;div&gt;#\#%data.content#\#&amp;lt;/div&gt;
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+\`);
+
+// 버튼이 있는 폼 생성
+let button = tmpl.ui.Button({
+  label: 'Submit',
+  onClick: function() { alert('Form submitted!'); }
+});
+
+let form = tmpl.ui.Form({
+  title: 'Contact Form',
+  content: button
+});
+
+document.body.appendChild(form.element);</code></pre>
+
+<h2>고급 사용법</h2>
+
+<h3>템플릿 지연 로딩</h3>
+<p>외부 파일에서 템플릿을 로드할 수 있습니다:</p>
+<pre><code class="language-html">bridge.tmplTool.addTmplByUrl([
+'template/components.html',
+'template/layout.html'
+], function() {
+// 템플릿이 이제 로드되고 사용할 준비가 되었습니다
+let app = tmpl.app.Main({});
+document.body.appendChild(app.element);
+});</code></pre>
+
+<h3>컴포넌트 상태 처리</h3>
+<p>Bridge-js 컴포넌트는 상태를 유지하고 업데이트할 수 있습니다:</p>
+<pre><code class="language-html">let counter = tmpl.app.Counter({initialCount: 0});
+document.body.appendChild(counter.element);
+
+// 나중에 카운터의 상태 업데이트
+counter.refresh({initialCount: 10});</code></pre>
+
+<h3>국제화</h3>
+<pre><code class="language-html">bridge.tmplTool.addI18n('greeting', {
+'en': 'Hello',
+'es': 'Hola',
+'fr': 'Bonjour'
+});
+
+bridge.tmplTool.addTmpl('app-Greeting', \`
+<div>#\#=i18n.greeting#\# #\#=data.name#\#!</div>
+\`);
+
+let greeting = tmpl.app.Greeting({name: 'World'});
+document.body.appendChild(greeting.element);</code></pre>
+
+<p>이 가이드는 Bridge-js 컴포넌트 엔진에 대한 포괄적인 소개를 제공합니다. 더 자세한 정보는 공식 문서를 참조하거나 제공된 샘플 코드를 탐색하세요.</p>
+
+<p>더 자세한 정보는 <a href="https://wadolsh.github.io/bridge-js/">문서</a>를 확인하세요.</p>
+<br>
+          `,
           ja: `
-              bridge-js は web アプリケーションを簡単に作れるように支援します。<br/>
-              bridge-js は以下の目標を持って作られました。
-              <ul>
-                <li>SPA(Single Page Application) 作成を支援する</li>
-                <li>再利用可能な Component 作成を支援する</li>
-                <li>各 Template 中に style, html, javascript をまとめて作成することで分かりやすい Component の作成を支援する</li>
-                <li>Html Tag の中に Event Handler を設定する方法を提供する</li>
-                <li>Component 同士で組み合わせることで、ブロックのように組み立て UI が作れるように支援する</li>
-              </ul>
-              `
+<h1>Bridge-js コンポーネントエンジンガイド</h1>
+<p>Bridge-js コンポーネントエンジンは、再利用可能なコンポーネントに焦点を当てたウェブアプリケーション作成のための JavaScript フレームワークです。UIコンポーネントを効率的に作成、結合、再利用するためのテンプレートベースのシステムを提供します。</p>
+
+Github Repository: <a href="https://github.com/wadolsh/bridge-js" target="github">https://github.com/wadolsh/bridge-js</a>
+<br>
+
+<h2>目次</h2>
+<ol>
+<li><a href="#introduction">はじめに</a></li>
+<li><a href="#installation">インストール</a></li>
+<li><a href="#creating-templates">テンプレートの作成</a></li>
+<li><a href="#creating-components">コンポーネントの作成</a></li>
+<li><a href="#template-syntax">テンプレート構文</a>
+<ul>
+<li><a href="#basic-expressions">基本的な式</a></li>
+<li><a href="#html-element-expressions">HTML要素の式</a></li>
+<li><a href="#built-in-variables">組み込み変数</a></li>
+</ul>
+</li>
+<li><a href="#examples">例</a></li>
+<li><a href="#advanced-usage">高度な使用法</a></li>
+</ol>
+<h2 id="introduction">はじめに</h2>
+<p>Bridge-jsは以下をサポートするように設計されています：</p>
+<ul>
+<li>シングルページアプリケーション（SPA）</li>
+<li>再利用可能なコンポーネントの作成</li>
+<li>単一のテンプレートでのスタイル、HTML、JavaScriptロジックの統合</li>
+<li>HTMLタグでのイベント処理</li>
+<li>複雑なUIを構築するためのコンポーネント構成</li>
+</ul>
+<h2 id="installation">インストール</h2>
+<p>Bridge-jsを使用するには、HTMLファイルにbridge.template.jsスクリプトを含めてください：</p>
+<pre><code class="language-html">&amp;lt;script src="js/bridge.template.js"&gt;&amp;lt;/script&gt;</code></pre>
+<h2 id="creating-templates">テンプレートの作成</h2>
+<p>Bridge-jsでテンプレートを作成する主な方法は2つあります：</p>
+<h3>方法1：bridge.tmplTool.addTmpl()を使用</h3>
+<pre><code class="language-html">bridge.tmplTool.addTmpl('do-Simple', '&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;');</code></pre>
+<h3>方法2：bridge.tmplTool.addTmpls()を使用したテンプレートタグ</h3>
+<pre><code class="language-html">let templateString = \`
+  &amp;lt;template id="do-Simple-One"&gt;
+    &amp;lt;div class="do-Simple-One"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="do-Simple-Two"&gt;
+    &amp;lt;style id="style-do-Simple-Two"&gt;
+      .do-Simple-Two {
+        background-color: yellow;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="do-Simple-Two"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;\`;
+  
+bridge.tmplTool.addTmpls(templateString);</code></pre>
+<p>テンプレートタグのアプローチを使用する場合：</p>
+<ul>
+<li>ID属性がコンポーネント名を決定します</li>
+<li>テンプレート内で定義されたスタイルはドキュメントのヘッドに追加されます</li>
+<li>スタイルタグのIDは、競合を防ぐために「style-{template-id}」の形式に従う必要があります</li>
+</ul>
+<h2 id="creating-components">コンポーネントの作成</h2>
+<p>テンプレートが定義されると、コンポーネントを作成してDOMに追加できます：</p>
+<h3>方法1：tmpl名前空間の使用</h3>
+<pre><code class="language-html">let sample = tmpl.do.SimpleSample({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<h3>方法2：bridge.tmpl()関数の使用</h3>
+<pre><code class="language-html">let sample = bridge.tmpl('do-Simple-Sample')({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<p>渡すデータ（例：<code>{label: 'Div Simple'}</code>）は、テンプレート内で<code>data</code>オブジェクトとして利用できます。</p>
+<h2 id="template-syntax">テンプレート構文</h2>
+<p>Bridge-jsはテンプレート式とデータバインディングに特別な構文を使用します。</p>
+<h3 id="basic-expressions">基本的な式</h3>
+<h4><code>#\#= #\#</code> - 出力式</h4>
+<p>文字列の内容を出力します。HTMLタグはHTMLとして扱われます。</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#='Sample Text'#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;
+&amp;lt;div style="background-color: #\#=data.bgColor || 'gray'#\#;"&gt;#\#=data.text#\#&amp;lt;/div&gt;</code></pre>
+<p>関数が指定されている場合は、その結果が出力されます。</p>
+<h4><code>#\#- #\#</code> - HTMLエスケープされた出力式</h4>
+<p>HTMLエスケープ処理された文字列内容を出力します。これによりHTMLタグが解釈されるのを防ぎます。</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#-'&amp;lt;div&gt;Sample Text&amp;lt;/div&gt;'#\#&amp;lt;/div&gt; &amp;lt;!-- 実際のHTMLタグが表示されます --&gt;
+&amp;lt;div&gt;#\#-data.label#\#&amp;lt;/div&gt;</code></pre>
+<h4><code>#\#% #\#</code> - コンポーネント出力式</h4>
+<p>他のコンポーネント、HTML要素、または文字列を含めるために使用されます。</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#%tmpl.another.Component({prop: 'value'})#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#%[comp1, comp2, comp3]#\#&amp;lt;/div&gt; &amp;lt;!-- コンポーネントの配列 --&gt;</code></pre>
+<h4><code>#\# #\#</code> - JavaScriptコードブロック</h4>
+<p>テンプレート内で直接JavaScriptコードを記述できます。</p>
+<pre><code class="language-html">&amp;lt;template id="my-component"&gt;
+  #\#
+    let count = data.count || 0;
+    let displayText = 'Count: ' + count;
+    
+    function incrementCount() {
+      count++;
+      tmplScope.refresh({count: count});
+    }
+    
+    tmplScope.increment = incrementCount;
+  #\#
+  
+  &amp;lt;div&gt;#\#=displayText#\#&amp;lt;/div&gt;
+  &amp;lt;button data-bridge-event="click: tmplScope.increment"&gt;Increment&amp;lt;/button&gt;
+&amp;lt;/template&gt;</code></pre>
+<h4><code>#\#\# #\#</code> - スタイル式</h4>
+<p>スタイルの内容を定義するために使用されます。</p>
+<h4><code>#\#! #\#</code> - コメント</h4>
+<p>レンダリングされないテンプレートにコメントを追加するために使用されます。</p>
+<h3 id="html-element-expressions">HTML要素の式</h3>
+<h4><code>data-bridge-event="#\#:{eventType: handler}#\#"</code></h4>
+<p>HTML要素にイベントハンドラーを取り付けます。セミコロンで区切って複数のイベントを指定できます。</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick}#\#"&gt;Click Me&amp;lt;/button&gt;
+&amp;lt;input data-bridge-event="#\#:{focus: onFocus; blur: onBlur; input: onChange}#\#" /&gt;</code></pre>
+<p>イベントハンドラーにパラメータを渡すこともできます：</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
+<h4><code>data-bridge-load="handler"</code></h4>
+<p>要素がロードされたときに実行する関数を指定します。</p>
+<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<p>テンプレートスコープにプロパティを設定します。</p>
+<h4><code>data-bridge-var="var: value"</code></h4>
+<p>変数を要素にバインドします。</p>
+<h3 id="built-in-variables">組み込み変数</h3>
+<p>テンプレート内で以下の変数が利用可能です：</p>
+<h4><code>data</code></h4>
+<p>コンポーネント作成時に渡されたデータを含みます。</p>
+<h4><code>status</code></h4>
+<p>状態情報を保存するためのオブジェクトです。</p>
+<h4><code>i18n</code></h4>
+<p>国際化オブジェクトです。</p>
+<h4><code>tmplScope</code></h4>
+<p>テンプレートスコープへの参照であり、以下を含みます：</p>
+<ul>
+<li><code>appendTo</code>：コンポーネントを要素に追加する関数</li>
+<li><code>data</code>：コンポーネントのデータ</li>
+<li><code>element</code>：コンポーネントのDOM要素</li>
+<li><code>refresh</code>：コンポーネントを更新する関数</li>
+<li><code>remove</code>：コンポーネントを削除する関数</li>
+<li><code>render</code>：コンポーネントをレンダリングする関数</li>
+<li><code>replace</code>：コンポーネントを置き換える関数</li>
+<li><code>status</code>：コンポーネントの状態</li>
+<li><code>tmplId</code>：テンプレートID</li>
+<li><code>_id</code>：コンポーネントの一意のID</li>
+</ul>
+<h2 id="examples">例</h2>
+<h3>基本的なコンポーネント</h3>
+<pre><code class="language-html">// テンプレートの定義
+bridge.tmplTool.addTmpl('example-Counter', \`
+  &amp;lt;div&gt;
+    #\#
+      let count = data.initialCount || 0;
+      
+      tmplScope.increment = function() {
+        count++;
+        tmplScope.refresh({count: count});
+      };
+    #\#
+    &amp;lt;div&gt;Count: #\#=count#\#&amp;lt;/div&gt;
+    &amp;lt;button data-bridge-event="#\#:{click: tmplScope.increment}#\#"&gt;+&amp;lt;/button&gt;
+  &amp;lt;/div&gt;
+\`);
+
+// コンポーネントの作成と使用
+let counter = tmpl.example.Counter({initialCount: 5});
+document.body.appendChild(counter.element);</code></pre>
+<h3>コンポーネントの構成</h3>
+<pre><code class="language-html">// テンプレートの定義
+bridge.tmplTool.addTmpls(\`
+  &amp;lt;template id="ui-Button"&gt;
+    &amp;lt;style id="style-ui-Button"&gt;
+      .ui-Button {
+        padding: 8px 16px;
+        background-color: #0078d7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .ui-Button:hover {
+        background-color: #106ebe;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;button class="ui-Button" data-bridge-event="#\#:{click: data.onClick}#\#"&gt;#\#=data.label#\#&amp;lt;/button&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="ui-Form"&gt;
+    &amp;lt;style id="style-ui-Form"&gt;
+      .ui-Form {
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .ui-Form-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="ui-Form"&gt;
+      &amp;lt;div class="ui-Form-title"&gt;#\#=data.title#\#&amp;lt;/div&gt;
+      &amp;lt;div&gt;#\#%data.content#\#&amp;lt;/div&gt;
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+\`);
+
+// ボタン付きフォームの作成
+let button = tmpl.ui.Button({
+  label: 'Submit',
+  onClick: function() { alert('Form submitted!'); }
+});
+
+let form = tmpl.ui.Form({
+  title: 'Contact Form',
+  content: button
+});
+
+document.body.appendChild(form.element);</code></pre>
+
+<h2>高度な使用法</h2>
+
+<h3>テンプレートの遅延読み込み</h3>
+<p>外部ファイルからテンプレートを読み込むことができます：</p>
+<pre><code class="language-html">bridge.tmplTool.addTmplByUrl([
+'template/components.html',
+'template/layout.html'
+], function() {
+// テンプレートが読み込まれ、使用準備が整いました
+let app = tmpl.app.Main({});
+document.body.appendChild(app.element);
+});</code></pre>
+
+<h3>コンポーネントの状態管理</h3>
+<p>Bridge-jsコンポーネントは状態を維持および更新できます：</p>
+<pre><code class="language-html">let counter = tmpl.app.Counter({initialCount: 0});
+document.body.appendChild(counter.element);
+
+// 後でカウンターの状態を更新
+counter.refresh({initialCount: 10});</code></pre>
+
+<h3>国際化</h3>
+<pre><code class="language-html">bridge.tmplTool.addI18n('greeting', {
+'en': 'Hello',
+'es': 'Hola',
+'fr': 'Bonjour'
+});
+
+bridge.tmplTool.addTmpl('app-Greeting', \`
+<div>#\#=i18n.greeting#\# #\#=data.name#\#!</div>
+\`);
+
+let greeting = tmpl.app.Greeting({name: 'World'});
+document.body.appendChild(greeting.element);</code></pre>
+
+<p>このガイドはBridge-jsコンポーネントエンジンの包括的な紹介を提供します。より詳細な情報については、公式ドキュメントを参照するか、提供されているサンプルコードを探索してください。</p>
+
+<p>より詳細な情報は<a href="https://wadolsh.github.io/bridge-js/">ドキュメント</a>をご確認ください。</p>
+<br>
+          `,
+          cn: `
+<h1>Bridge-js 组件引擎指南</h1>
+<p>Bridge-js 组件引擎是一个专注于可重用组件的 JavaScript 框架，用于创建 Web 应用程序。它提供了一个基于模板的系统，允许您高效地创建、组合和重用 UI 组件。</p>
+
+Github Repository: <a href="https://github.com/wadolsh/bridge-js" target="github">https://github.com/wadolsh/bridge-js</a>
+<br>
+
+<h2>目录</h2>
+<ol>
+<li><a href="#introduction">介绍</a></li>
+<li><a href="#installation">安装</a></li>
+<li><a href="#creating-templates">创建模板</a></li>
+<li><a href="#creating-components">创建组件</a></li>
+<li><a href="#template-syntax">模板语法</a>
+<ul>
+<li><a href="#basic-expressions">基本表达式</a></li>
+<li><a href="#html-element-expressions">HTML 元素表达式</a></li>
+<li><a href="#built-in-variables">内置变量</a></li>
+</ul>
+</li>
+<li><a href="#examples">示例</a></li>
+<li><a href="#advanced-usage">高级用法</a></li>
+</ol>
+<h2 id="introduction">介绍</h2>
+<p>Bridge-js 的设计支持：</p>
+<ul>
+<li>单页应用程序 (SPA)</li>
+<li>创建可重用组件</li>
+<li>在单个模板中集成样式、HTML 和 JavaScript 逻辑</li>
+<li>HTML 标签中的事件处理</li>
+<li>用于构建复杂 UI 的组件组合</li>
+</ul>
+<h2 id="installation">安装</h2>
+<p>要使用 Bridge-js，请在您的 HTML 文件中包含 bridge.template.js 脚本：</p>
+<pre><code class="language-html">&amp;lt;script src="js/bridge.template.js"&gt;&amp;lt;/script&gt;</code></pre>
+<h2 id="creating-templates">创建模板</h2>
+<p>在 Bridge-js 中创建模板有两种主要方法：</p>
+<h3>方法 1：使用 bridge.tmplTool.addTmpl()</h3>
+<pre><code class="language-html">bridge.tmplTool.addTmpl('do-Simple', '&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;');</code></pre>
+<h3>方法 2：使用带有 bridge.tmplTool.addTmpls() 的模板标签</h3>
+<pre><code class="language-html">let templateString = \`
+  &amp;lt;template id="do-Simple-One"&gt;
+    &amp;lt;div class="do-Simple-One"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="do-Simple-Two"&gt;
+    &amp;lt;style id="style-do-Simple-Two"&gt;
+      .do-Simple-Two {
+        background-color: yellow;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="do-Simple-Two"&gt;
+      #\#=data.label#\#
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;\`;
+  
+bridge.tmplTool.addTmpls(templateString);</code></pre>
+<p>使用模板标签方法时：</p>
+<ul>
+<li>ID 属性决定组件名称</li>
+<li>模板内定义的样式会添加到文档头部</li>
+<li>样式标签 ID 应遵循 "style-{template-id}" 格式，以防止冲突</li>
+</ul>
+<h2 id="creating-components">创建组件</h2>
+<p>一旦定义了模板，您可以创建组件并将其添加到 DOM 中：</p>
+<h3>方法 1：使用 tmpl 命名空间</h3>
+<pre><code class="language-html">let sample = tmpl.do.SimpleSample({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<h3>方法 2：使用 bridge.tmpl() 函数</h3>
+<pre><code class="language-html">let sample = bridge.tmpl('do-Simple-Sample')({label: 'Div Simple'});
+document.body.appendChild(sample.element);</code></pre>
+<p>您传递的数据（如 <code>{label: 'Div Simple'}</code>）在模板内部可作为 <code>data</code> 对象使用。</p>
+<h2 id="template-syntax">模板语法</h2>
+<p>Bridge-js 使用特殊语法进行模板表达式和数据绑定。</p>
+<h3 id="basic-expressions">基本表达式</h3>
+<h4><code>#\#= #\#</code> - 输出表达式</h4>
+<p>输出字符串内容。HTML 标签将被作为 HTML 处理。</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#='Sample Text'#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#=data.label#\#&amp;lt;/div&gt;
+&amp;lt;div style="background-color: #\#=data.bgColor || 'gray'#\#;"&gt;#\#=data.text#\#&amp;lt;/div&gt;</code></pre>
+<p>如果指定了函数，将输出其结果。</p>
+<h4><code>#\#- #\#</code> - HTML转义输出表达式</h4>
+<p>输出经过 HTML 转义处理的字符串内容。这可以防止 HTML 标签被解释。</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#-'&amp;lt;div&gt;Sample Text&amp;lt;/div&gt;'#\#&amp;lt;/div&gt; &amp;lt;!-- 将显示实际的 HTML 标签 --&gt;
+&amp;lt;div&gt;#\#-data.label#\#&amp;lt;/div&gt;</code></pre>
+<h4><code>#\#% #\#</code> - 组件输出表达式</h4>
+<p>用于包含其他组件、HTML 元素或字符串。</p>
+<pre><code class="language-html">&amp;lt;div&gt;#\#%tmpl.another.Component({prop: 'value'})#\#&amp;lt;/div&gt;
+&amp;lt;div&gt;#\#%[comp1, comp2, comp3]#\#&amp;lt;/div&gt; &amp;lt;!-- 组件数组 --&gt;</code></pre>
+<h4><code>#\# #\#</code> - JavaScript 代码块</h4>
+<p>允许您直接在模板中编写 JavaScript 代码。</p>
+<pre><code class="language-html">&amp;lt;template id="my-component"&gt;
+  #\#
+    let count = data.count || 0;
+    let displayText = 'Count: ' + count;
+    
+    function incrementCount() {
+      count++;
+      tmplScope.refresh({count: count});
+    }
+    
+    tmplScope.increment = incrementCount;
+  #\#
+  
+  &amp;lt;div&gt;#\#=displayText#\#&amp;lt;/div&gt;
+  &amp;lt;button data-bridge-event="click: tmplScope.increment"&gt;Increment&amp;lt;/button&gt;
+&amp;lt;/template&gt;</code></pre>
+<h4><code>#\#\# #\#</code> - 样式表达式</h4>
+<p>用于定义样式内容。</p>
+<h4><code>#\#! #\#</code> - 注释</h4>
+<p>用于在模板中添加不会被渲染的注释。</p>
+<h3 id="html-element-expressions">HTML 元素表达式</h3>
+<h4><code>data-bridge-event="#\#:{eventType: handler}#\#"</code></h4>
+<p>将事件处理程序附加到 HTML 元素。可以通过分号分隔指定多个事件。</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick}#\#"&gt;Click Me&amp;lt;/button&gt;
+&amp;lt;input data-bridge-event="#\#:{focus: onFocus; blur: onBlur; input: onChange}#\#" /&gt;</code></pre>
+<p>您还可以向事件处理程序传递参数：</p>
+<pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
+<h4><code>data-bridge-load="handler"</code></h4>
+<p>指定元素加载时要运行的函数。</p>
+<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<p>设置模板作用域上的属性。</p>
+<h4><code>data-bridge-var="var: value"</code></h4>
+<p>将变量绑定到元素。</p>
+<h3 id="built-in-variables">内置变量</h3>
+<p>以下变量在模板中可用：</p>
+<h4><code>data</code></h4>
+<p>包含创建组件时传递的数据。</p>
+<h4><code>status</code></h4>
+<p>用于存储状态信息的对象。</p>
+<h4><code>i18n</code></h4>
+<p>国际化对象。</p>
+<h4><code>tmplScope</code></h4>
+<p>模板作用域的引用，包含：</p>
+<ul>
+<li><code>appendTo</code>：将组件追加到元素的函数</li>
+<li><code>data</code>：组件的数据</li>
+<li><code>element</code>：组件的 DOM 元素</li>
+<li><code>refresh</code>：更新组件的函数</li>
+<li><code>remove</code>：移除组件的函数</li>
+<li><code>render</code>：渲染组件的函数</li>
+<li><code>replace</code>：替换组件的函数</li>
+<li><code>status</code>：组件的状态</li>
+<li><code>tmplId</code>：模板 ID</li>
+<li><code>_id</code>：组件的唯一 ID</li>
+</ul>
+<h2 id="examples">示例</h2>
+<h3>基础组件</h3>
+<pre><code class="language-html">// 定义模板
+bridge.tmplTool.addTmpl('example-Counter', \`
+  &amp;lt;div&gt;
+    #\#
+      let count = data.initialCount || 0;
+      
+      tmplScope.increment = function() {
+        count++;
+        tmplScope.refresh({count: count});
+      };
+    #\#
+    &amp;lt;div&gt;Count: #\#=count#\#&amp;lt;/div&gt;
+    &amp;lt;button data-bridge-event="#\#:{click: tmplScope.increment}#\#"&gt;+&amp;lt;/button&gt;
+  &amp;lt;/div&gt;
+\`);
+
+// 创建并使用组件
+let counter = tmpl.example.Counter({initialCount: 5});
+document.body.appendChild(counter.element);</code></pre>
+<h3>组件组合</h3>
+<pre><code class="language-html">// 定义模板
+bridge.tmplTool.addTmpls(\`
+  &amp;lt;template id="ui-Button"&gt;
+    &amp;lt;style id="style-ui-Button"&gt;
+      .ui-Button {
+        padding: 8px 16px;
+        background-color: #0078d7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .ui-Button:hover {
+        background-color: #106ebe;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;button class="ui-Button" data-bridge-event="#\#:{click: data.onClick}#\#"&gt;#\#=data.label#\#&amp;lt;/button&gt;
+  &amp;lt;/template&gt;
+
+  &amp;lt;template id="ui-Form"&gt;
+    &amp;lt;style id="style-ui-Form"&gt;
+      .ui-Form {
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .ui-Form-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+    &amp;lt;/style&gt;
+    &amp;lt;div class="ui-Form"&gt;
+      &amp;lt;div class="ui-Form-title"&gt;#\#=data.title#\#&amp;lt;/div&gt;
+      &amp;lt;div&gt;#\#%data.content#\#&amp;lt;/div&gt;
+    &amp;lt;/div&gt;
+  &amp;lt;/template&gt;
+\`);
+
+// 创建带按钮的表单
+let button = tmpl.ui.Button({
+  label: 'Submit',
+  onClick: function() { alert('Form submitted!'); }
+});
+
+let form = tmpl.ui.Form({
+  title: 'Contact Form',
+  content: button
+});
+
+document.body.appendChild(form.element);</code></pre>
+
+<h2>高级用法</h2>
+
+<h3>懒加载模板</h3>
+<p>您可以从外部文件加载模板：</p>
+<pre><code class="language-html">bridge.tmplTool.addTmplByUrl([
+'template/components.html',
+'template/layout.html'
+], function() {
+// 模板现在已加载并准备使用
+let app = tmpl.app.Main({});
+document.body.appendChild(app.element);
+});</code></pre>
+
+<h3>处理组件状态</h3>
+<p>Bridge-js 组件可以维护和更新其状态：</p>
+<pre><code class="language-html">let counter = tmpl.app.Counter({initialCount: 0});
+document.body.appendChild(counter.element);
+
+// 稍后，更新计数器的状态
+counter.refresh({initialCount: 10});</code></pre>
+
+<h3>国际化</h3>
+<pre><code class="language-html">bridge.tmplTool.addI18n('greeting', {
+'en': 'Hello',
+'es': 'Hola',
+'fr': 'Bonjour'
+});
+
+bridge.tmplTool.addTmpl('app-Greeting', \`
+<div>#\#=i18n.greeting#\# #\#=data.name#\#!</div>
+\`);
+
+let greeting = tmpl.app.Greeting({name: 'World'});
+document.body.appendChild(greeting.element);</code></pre>
+
+<p>本指南提供了对 Bridge-js 组件引擎的全面介绍。有关更详细的信息，请参阅官方文档或探索提供的示例代码。</p>
+
+<p>如需更详细的信息，请查看<a href="https://wadolsh.github.io/bridge-js/">文档</a>。</p>
+<br>
+          `,
         }
       },
     },
   });
   ##
   ##
-  var contentArea = data.contentArea;
-  var index = data.index || 'Intro';
-  var munuList = [];
-  var sideData = {contentArea: contentArea, selectedIndex: null, munuList: munuList, tmplScope: tmplScope};
+  let contentArea = data.contentArea;
+  let index = data.index || 'Intro';
+  let munuList = [];
+  let sideData = {contentArea: contentArea, selectedIndex: null, munuList: munuList, tmplScope: tmplScope};
   tmplScope.getSidemenu = getSidemenu(sideData);
   ##
   <div class="docs-Docs-Template">
     <div class="page" id="Template/Intro">
       <h1 id="Docs/Template/Intro">##=i18n.Intro.label##</h1>
       ##=i18n.Intro.content##
-      Github Repository: <a href="https://github.com/wadolsh/bridge-js" target="github">https://github.com/wadolsh/bridge-js</a>
+
+      ##
+      // Example 1: Button Component
+      let buttonExample = tmpl.demo.Container({
+        title: "Button Component",
+        description: "A simple button component with click event handling.",
+        content: tmpl.demo.Button({
+          label: "Click Me!",
+          onClick: function() {
+            alert("Button clicked!");
+          }
+        })
+      });
+
+      // Example 2: Counter Component
+      let counterExample = tmpl.demo.Container({
+        title: "Counter Component",
+        description: "A counter with increment and decrement functionality.",
+        content: tmpl.demo.Counter({
+          initialCount: 5
+        })
+      });
+
+      // Example 3: Todo List Component
+      let todoExample = tmpl.demo.Container({
+        title: "Todo List Component",
+        description: "A more complex component with state management.",
+        content: tmpl.demo.ToDoList({
+          items: [
+            { id: 1, text: "Learn Bridge-js", completed: true },
+            { id: 2, text: "Build components", completed: false },
+            { id: 3, text: "Create an application", completed: false }
+          ]
+        })
+      });
+
+      // Example 4: Color Picker Component
+      let colorPickerExample = tmpl.demo.Container({
+        title: "Color Picker Component",
+        description: "Interactive component with real-time updates.",
+        content: tmpl.demo.ColorPicker({
+          red: 66,
+          green: 135,
+          blue: 245
+        })
+      });
+      ##
+
+      ##!
+      bridge.tmplTool.addI18ns({
+        'docs-Docs-Template': {
+          Intro: {
+            Sample: {
+              label: {
+                en: 'Samples',
+                ko: '샘플',
+                ja: 'サンプル',
+                cn: '实例',
+              },
+              moreSample: {
+                en: 'Please check out more examples below.',
+                ko: '아래의 더많은 예제를 확인해 보시길 바랍니다.',
+                ja: '下記のより多くの例をご確認ください。',
+                cn: '请查看以下更多示例。',
+              }
+            }
+          }
+        }
+      });
+      ##
+
+      <br>
+      <h2>##=i18n.Intro.Sample.label##</h2>
+      <h3>Component Examples: [<a href ='https://github.com/wadolsh/bridge-js/blob/master/examples/sample.html'>Code</a>]</h3>
+
+      ##%buttonExample##
+      ##%counterExample##
+      ##%colorPickerExample##
+      ##%colorPickerExample##
+
+      <h3>##=i18n.Intro.Sample.moreSample##</h3>
+      <ul>
+        <li>Simple Counter [<a href ='https://github.com/wadolsh/bridge-js/blob/master/examples/counter.html'>Code</a>], [<a href ='https://wadolsh.github.io/bridge-js/examples/counter.html'>Web Page</a>]</li>
+        <li>Todo List [<a href ='https://github.com/wadolsh/bridge-js/blob/master/examples/todo.html'>Code</a>], [<a href ='https://wadolsh.github.io/bridge-js/examples/todo.html'>Web Page</a>]</li>
+        <li>Calculator [<a href ='https://github.com/wadolsh/bridge-js/blob/master/examples/calculator.html'>Code</a>], [<a href ='https://wadolsh.github.io/bridge-js/examples/calculator.html'>Web Page</a>]</li>
+      </ul>
+      <br>
     </div>
+
   ##!
   bridge.tmplTool.addI18ns({
     'docs-Docs-Template': {
@@ -355,56 +1460,66 @@
           en: 'Getting Started',
           ko: '시작하기',
           ja: 'スタートガイド',
+          cn: '入门指南',
         },
         Install: {
           label: {
             en: 'Install',
             ko: '설치',
-            ja: '設置'
+            ja: '設置',
+            cn: '安装'
           },
           content1: {
             en: 'Add bridge.template.js as javascript like below.',
             ko: '아래와 같이 bridge.template.js javascript를 추가해주세요.',
-            ja: '以下のように bridge.template.js を javascript として追加してください。'
+            ja: '以下のように bridge.template.js を javascript として追加してください。',
+            cn: '如下所示添加bridge.template.js作为JavaScript。'
           },
           content2: {
             en: 'Now you can use the template code.',
             ko: '이제 탬플릿 코드를 사용 가능하게 되었었습니다.',
-            ja: 'これでテンプレートコードを使えるようになりました。'
+            ja: 'これでテンプレートコードを使えるようになりました。',
+            cn: '现在您可以使用模板代码了。'
           },
         },
         AddTmpl: {
           label: {
             en: 'Create Template',
             ko: 'Template 만들기',
-            ja: 'Template 作成'
+            ja: 'Template 作成',
+            cn: '创建模板'
           },
           content1: {
             en: `Let's create a simple Template code that outputs some text.`,
             ko: '이제 텍스트를 출력하는 간단한 Template 코드를 만들어 봅시다.',
-            ja: 'テキストを出力する簡単な Template コードを作ってみましょ。'
+            ja: 'テキストを出力する簡単な Template コードを作ってみましょ。',
+            cn: '让我们创建一个输出文本的简单模板代码。'
           },
           content2: {
             en: `Now we can use the 'do.Simple' template code as a Component.`,
             ko: '이제 do.Simple 라는 Template 을 Component 로 사용할 있게 되었습니다.',
-            ja: 'これで do.Simple Template コードを Componentとして使えるようになりました。'
+            ja: 'これで do.Simple Template コードを Componentとして使えるようになりました。',
+            cn: '现在我们可以将“do.Simple”模板代码用作组件。'
           },
         },
         Tmpl: {
           label: {
             en: 'Create Component',
             ko: 'Component 만들기',
-            ja: 'Component 作成'
+            ja: 'Component 作成',
+            cn: '创建组件'
           },
           content1: {
             en: 'Component generation and screen placement are performed as follows.',
             ko: 'Component 의 생성과 화면 배치는 다음과 같이 이루어 집니다.',
-            ja: 'Component の生成と画面配置は以下のように行います。'
+            ja: 'Component の生成と画面配置は以下のように行います。',
+            cn: '组件生成和屏幕放置如下所示。'
           },
           content2: {
             en: 'You can also use it like this.',
             ko: '또는 다음과 같이 사용 할 수도 있습니다.',
-            ja: 'このように使用することも可能です。'
+            ja: 'このように使用することも可能です。',
+            cn: '您也可以像这样使用它。'
           },
           content3: {
             en: `The data passed in {label: 'Div Sample1'} will be used in the Template code with the name 'data'. <br/>
@@ -412,7 +1527,9 @@
             ko: `{label: 'Div Sample1'} 로 넘겨준 데이터는 Template 코드안에서 data 라는 이름으로 넘겨 지게 됩니다.<br/>
                  다음의 데모로 코드의  실행을 확인해 보십시오.`,
             ja: `{label: 'Div Sample1'} で渡したデータは Template コードの中で data と言う名前で使うようになります。<br/>
-                 次でデモでコードの実行を確認してみましょ。`
+                 次でデモでコードの実行を確認してみましょ。`,
+            cn: `在{label: 'Div Sample1'}中传递的数据将在模板代码中以“data”的名称使用。<br/>
+                 现在让我们在演示中查看代码运行情况。`
           },
           content4: {
             en: `A javascript Object is returned when creating a Component. <br/>
@@ -420,7 +1537,9 @@
             ko: `Component 생성시 javascript Object 가 리턴 되어 집니다.<br/>
                  이 object 는 Template 작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.`,
             ja: `Component を生成時に javascript Object がリターンされます。<br/>
-                 この object は Template 作成時に tmplScope と言う名前で使うことになります。`
+                 この object は Template 作成時に tmplScope と言う名前で使うことになります。`,
+            cn: `创建组件时会返回JavaScript对象。<br/>
+                 在创建模板时，该对象将以tmplScope的名称使用。`
           },
           content5: {
             en: `Registering this template one by one using bridge.tmplTool.addTmpl() would be a lot of work. <br/>
@@ -431,7 +1550,10 @@
                  이때에는 bridge.tmplTool.addTmpls() 를 통해 Template 을 등록 합니다.`,
             ja: `bridge.tmplTool.addTmpl() を使用していちいちこのテンプレートを登録することは、大変な作業になります。<br/>
                 bridge.template では、Web Component と同様に template Tag を活用できるようにしています。<br/>
-                その場合は、bridge.tmplTool.addTmpls() を通じて Template を登録します。`
+                その場合は、bridge.tmplTool.addTmpls() を通じて Template を登録します。`,
+            cn: `使用bridge.tmplTool.addTmpl()逐个注册Template可能会成为一项繁重的工作。<br/>
+                bridge.template允许您像Web Component一样使用template标签。<br/>
+                在这种情况下，通过bridge.tmplTool.addTmpls()来注册Template。`,
           },
           content6: {
             en: `You can generate a Component with the name specified in the id of the template Tag. </br>
@@ -454,14 +1576,22 @@
                 style Tag の id が重複する場合、最後に解釈された template の style に置き換えられるため、
                 style Tagのidは "style-{tempalteのid}"で指定することをお勧めします。</br>
                 </br>
-                以下のデモでテンプレート構造と動作を確認してください。`
+                以下のデモでテンプレート構造と動作を確認してください。`,
+            cn: `可以使用template标签中指定的id名称来创建Component。</br>
+                如果使用相同的id加载不同的template，将会替换现有的template。</br>
+                在template标签内定义的style会在解析template时添加到document的head中。</br>
+                当style标签的id重复时，会被最后解析的template的style所替换，
+                因此，建议将style标签的id指定为"style-{template的id}"。</br>
+                </br>
+                请在下方的演示中确认template的结构和操作。`,
           },
         },
         Example: {
           label: {
             en: 'Example',
             ko: '사용예',
-            ja: '使用例'
+            ja: '使用例',
+            cn: '使用示例'
           },
           content1: {
             en: `Let's look at a more practical use case. <br/>
@@ -486,7 +1616,14 @@
                  <a href="template/Material-Design-Lite/" target="_blank">このリンク</a>を参考にしてください。<br/>
                  <br/>
                  bridge.tmplTool.addTmplByUrl()は Array で指定した Template ファイルをローディンクした後に callback を実行します。
-                `
+                `,
+            cn: `让我们看一个更实用的例子。<br/>
+                 通过将常用UI模板化，可以减少代码创建量。<br/>
+                 在这里，我们使用bridge.template创建的Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) bridge.mdl.components.html。<br/>
+                 *关于使用bridge.template创建的Material Design Lite,
+                 请参考<a href="template/Material-Design-Lite/" target="_blank">此链接</a>。<br/>
+                 <br/>
+                 bridge.tmplTool.addTmplByUrl()在加载数组指定的模板文件后执行回调。`
           },
           content2: {
             en: `Click Content1 and Content2 on the demo screen and check the event occurrence.
@@ -495,6 +1632,8 @@
                  Content1 에서는 input 에 값을 넣고 'THIS BUTTON!' 을 클릭해서 입력값의 표시를 확인 해 보시기 바랍니다.`,
             ja: `デモ画面の Content1 と Content2 をクリックし Event 発生を確認してみてくさい。
                 Content1 をクリックし表示される Input にデータを入力し 'THIS BUTTON!' をクリックし入力値の Console 表示を確認してみてください。`,
+            cn: `点击演示屏幕上的Content1和Content2，检查事件发生情况。
+                点击Content1，在显示的输入框中输入数据，点击'THIS BUTTON!'，并查看控制台中输入值的显示。`
           },
         }
       },
@@ -554,12 +1693,14 @@
           en: 'Template Reference',
           ko: '템플릿 레퍼런스 ',
           ja: 'テンプレートリファレンス',
+          cn: '模板参考',
         },
         Expression: {
           label: {
             en: 'Expression',
             ko: '렌더링 표현 ',
             ja: 'レンダリング表現',
+            cn: '表达式',
           },
           'E.content1': {
             en: `Output a string. <br/>
@@ -571,6 +1712,9 @@
             ja: `文字列を出力します。<br/>
                  HTML タグの出力も可能ですが、ブラウザによっては、'<' と '>' を escape する必要があります。<br/>
                  Function が指定指定された場合は Function の実行結果を出力します。`,
+            cn: `输出字符串。<br/>
+                 您也可以输出HTML标签，但可能需要根据您的浏览器转义"<"和">"。<br/>
+                 如果指定了函数，则输出函数的执行结果。`,
           },
           'H.content1': {
             en: `Outputs the escaped string. <br/>
@@ -582,6 +1726,9 @@
             ja: `escape 処理を行った文字列を出力します。<br/>
                  escape 処理は bridge.tmplTool.escapeHtml.escape(); を使用しています。<br/>
                  HTML Tag などを出力する必要がある場合に使用してください。`,
+            cn: `输出转义后的字符串。<br/>
+                 转义处理使用bridge.tmplTool.escapeHtml.escape()。<br/>
+                 当需要输出HTML标签等内容时请使用它。`,
           },
           P: {
             content1: {
@@ -597,24 +1744,30 @@
                    bridge Template の Component 와 HTML Element それと文字列の出力も可能です。<br/>
                    Array で複数の出力対象を配置した場合は、定義した順番で画面に出力されます。<br/>
                    Function が指定指定された場合は Function の実行結果を出力します。`,
+              cn: `输出Component或Element。<br/>
+                   可以输出bridge Template的Component、HTML Element以及字符串。<br/>
+                   若以Array形式放置多个引用，则会按照Array中定义的顺序在屏幕上显示。<br/>
+                   如果指定了Function，则输出Function的结果。`,
             },
             'Option.label': {
               en: `::{false / delay time (millisecond)}`,
               ko: `::{false / 지연시간(millisecond)}`,
               ja: `::{false / 遅延時間(millisecond)}`,
+              cn: `::{false / 延迟时间(millisecond)}`,
             },
             'Option.content1': {
               en: `Synchronous / asynchronous rendering setting. <br/>※If the option is not specified, The default value is false for synchronous rendering.`,
               ko: `동기 / 비동기 렌더링을 설정 할 수 있습니다.<br/>※옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.`,
               ja: `同期 / 非同期レンダリング設定が可能です。<br/>※オプション未指定の場合は、デフォルト値が false で同期したレンダリングになります。`,
+              cn: `同步/异步渲染设置。<br/>※如果未指定选项，默认值为false，为同步渲染。`,
             },
             content2: {
               en: `Since javascript basically operates in a single thread, if you add a large amount of HTML Elements to the screen, they will be displayed on the screen after all DOM rendering has been completed, and<br/>
-                  User operations will not be possible until the loading of the screen is completed. <br/>
-                  Asynchronous rendering with setTimeout is done by pointing out the [::delay time] when adding an HTML Element with #\#% #\#. <br/>
-                  Asynchronous loading prevents screen rendering stalls caused by a large number of HTML Elements. <br/><br/>
-                  The sample code below is an example of asynchronous processing. { ::i*100 } sets the delay time. <br/>
-                  Press the RUN button and check the asynchronous screen rendering.`,
+                   User operations will not be possible until the loading of the screen is completed. <br/>
+                   Asynchronous rendering with setTimeout is done by pointing out the [::delay time] when adding an HTML Element with #\#% #\#. <br/>
+                   Asynchronous loading prevents screen rendering stalls caused by a large number of HTML Elements. <br/><br/>
+                   The sample code below is an example of asynchronous processing. { ::i*100 } sets the delay time. <br/>
+                   Press the RUN button and check the asynchronous screen rendering.`,
               ko: `javascript 는 기본적으로 싱글 스레드로 작동하시 때문에 대량의 HTML Element 를 화면에 추가하게 되면 DOM 렌더링이 끝난 후에 느리게 화면에 출력 되며,<br/>
                    또한 화면 로딩이 끝날때까지 유저는 다른 조작을 할 수 없게 됩니다.<br/>
                    #\#% #\# 로 HTML Element 를 추가 할 때 [::지연시간] 을 지정하게 되면 자동으로 setTimeout 에의한 비동기 렌더링을 실행 하게 됩니다.<br/>
@@ -627,18 +1780,27 @@
                    非同期ローディンクで大量の HTML Element による画面のレンダリング停止を防げます。<br/><br/>
                    下のサンプルコードは非同期の処理の例です。{ ::i*100 } で delay 時間を設定しています。<br/>
                    RUN ボタンを押下して、非同期画面レンダリングを確認してみてください。`,
+              cn: `由于JavaScript基本上是单线程运行的，当向屏幕添加大量HTML元素时，DOM渲染完成后，屏幕输出会变慢，<br/>
+                   而且在屏幕加载完成之前，用户无法进行其他操作。<br/>
+                   当使用#\#% #\#添加HTML元素时，如果指定[::延迟时间]，将自动执行基于setTimeout的异步渲染。<br/>
+                   异步加载的优点是可以防止因大量HTML元素而导致的屏幕渲染停滞现象。<br/><br/>
+                   以下是异步执行的示例。{ ::i*100 }指定了延迟时间。<br/>
+                   按下RUN按钮，您可以看到HTML元素被异步添加。"。`,
             },
           },
           'J.content1': {
             en: `Run javascript. <br/>
-                #\# Code inside #\# is evaluated as javascript. <br/>
-                In this way, mixing javascript and HTML TAG output enables dynamic screen display.`,
+                 #\# Code inside #\# is evaluated as javascript. <br/>
+                 In this way, mixing javascript and HTML TAG output enables dynamic screen display.`,
             ko: `javascript 를 실행 합니다.<br/>
                  #\# #\# 안에 작성된 코드는 javascript 로서 평가 됩니다.<br/>
                  이처럼 javascript 실행중에 HTML TAG 출력을 사용 할 수 있게됨으로서 동적인 화면 출력이 가능해 집니다.`,
             ja: `javascript を実行します。<br/>
                  #\# #\# の中のコードは javascript として評価されます。<br/>
                  このように、javascript と HTML TAG 出力を混ぜることで動的な画面表示が可能になります。`,
+            cn: `运行JavaScript。<br/>
+                 #\# #\# 内的代码被解析为JavaScript。<br/>
+                 通过这种方式，混合JavaScript和HTML标签输出可以实现动态屏幕显示。`,
           },
           'S.content1': {
             en: `Executes javascript after HTML rendering. <br/>
@@ -653,6 +1815,10 @@
                  #\# #\# では javascript が実行中は HTML Tag が DOM になる前の文字列状態のため、 HTML Element として接近することができません。<br/>
                  #\#\# #\# は #\# #\# の評価とHTML Tag 文字列が HTML Element への変換後の状態で実行されるため、Element への接近が可能です。<br/>
                  this を使用して HTML Element へ接近可能です。`,
+            cn: `在HTML渲染后执行JavaScript。<br/>
+                 #\# #\# 无法在JavaScript运行时作为HTML元素访问，因为HTML标签在成为DOM前是字符串状态。<br/>
+                 #\#\# #\# 在评估#\# #\#并将HTML标签字符串转换为HTML元素后执行，因此可以访问元素。<br/>
+                 您可以使用this访问HTML元素。`,
           },
           'Q.content1': {
             en: `Performs any necessary work when loading the Template. <br/>
@@ -664,6 +1830,9 @@
             ja: `Template をローディンクする時に必要な作業を実行します。<br/>
                  #\#! #\# 表現は Template ローディンク時に 1回のみ実行されます。Component 生成時は実行されません。<br/>
                  i18n データローディンクのように、1回のみ実行が必要な初期化作業などをここに定義します。`,
+            cn: `在加载模板时执行必要的工作。<br/>
+                 #\#! #\# 表达式仅在模板加载时执行一次。在创建组件时不执行。<br/>
+                 任何只需要执行一次的初始化工作，如i18n数据加载，都在这里定义。`,
           }
         },
       },
@@ -716,11 +1885,18 @@
     'docs-Docs-Template': {
       Reference: {
         ElementExpression: {
+          label: {
+            en: 'Element Reference',
+            ko: 'Element 참조',
+            ja: 'Element 参照',
+            cn: '元素引用',
+          },
           event: {
             label: {
               en: 'Element Reference',
               ko: 'Element 참조',
               ja: 'Element 参照',
+              cn: '元素引用',
             },
             content1: {
               en: `Specifies an event handler. <br/>
@@ -735,32 +1911,41 @@
                    javascript object で {'event名' : function(event, tmplData, tmplElem, scope) { callback 処理 }} をハンドラーとして指定します。<br/>
                    指定されたイベントハンドラーは addEventListener で Html element へ追加されます。<br/>
                    javascript object ではない Function が指定された場合は click イベントハンドラーの追加して扱われます。`,
+              cn: `指定事件处理程序。<br/>
+                   在javascript对象中指定{'事件名称': function(event, tmplData, tmplElem, scope) { 回调处理 }}作为处理程序。<br/>
+                   指定的事件处理程序通过addEventListener添加到Html元素中。<br/>
+                   如果指定的不是javascript对象而是Function，将被处理为添加click事件处理程序。`,
             },
             Handler: {
               label: {
                 en: `Handler Parameter`,
                 ko: `핸들러 파라메터`,
                 ja: `Event Object`,
+                cn: `处理程序参数`,
               },
               event: {
                 en: `Event Object`,
                 ko: `Event Object`,
                 ja: `Event Object`,
+                cn: `事件对象`,
               },
               tmplData: {
                 en: `Data parameter when creating a Component`,
                 ko: `Component 작성시의 data 파라메터`,
                 ja: `Component 作成時の data パラメーター`,
+                cn: `创建组件时的数据参数`,
               },
               tmplElem: {
                 en: ``,
                 ko: `Component 의 HTML Element`,
                 ja: `Component の HTML Element`,
+                cn: `组件的 HTML 元素`,
               },
               scope: {
                 en: `Component 's HTML Element`,
                 ko: `Component 의 tmplScope`,
                 ja: `Component の tmplScope`,
+                cn: `组件的 tmplScope`,
               },
             },
             Option: {
@@ -768,21 +1953,25 @@
                 en: `Option`,
                 ko: `Option`,
                 ja: `Option`,
+                cn: `选项`,
               },
               handler: {
                 en: ``,
                 ko: `복수의 이벤트 핸들러를 지정할 수 있습니다.`,
                 ja: `複数のイベントハンドラーを指定する場合の表現です。`,
+                cn: `这是指定多个事件处理程序时的表达式。`,
               },
               tmplData: {
                 en: `This is an expression when specifying multiple event handlers.`,
                 ko: `tmplData 입력 받을 데이터를 지정할 수 있습니다.`,
                 ja: `tmplData として使用するデータを強制に指定可能にする表現です。`,
+                cn: `可以指定用作 tmplData 的数据。`,
               },
               content1: {
                 en: `This is a sample code when specifying Option.`,
                 ko: `Option 을 지정하는 경우의 예제`,
                 ja: `Option を指定する場合のサンプルコードです。`,
+                cn: `这是指定选项时的示例代码。`,
               },
             },
           },
@@ -790,16 +1979,19 @@
             en: `Specify a callback and reference the Element if it should be executed after the Element has been loaded.`,
             ko: `Element 가 로딩된 후에 해당 Element 의 참조가 필요한 경우 callback 을 설정해서 Element 를 참조 합니다.`,
             ja: `Element がローディンクされた後に実行する必要がある場合 callback を指定し該当 Element を参照します。`,
+            cn: `如果需要在元素加载后执行，请指定回调并引用该元素。`,
           },
           'scopeKey.content1': {
             en: `Refers the specified Element to the tmplScope.`,
             ko: `지정된 Element 를 tmplScope 에 참조시킵니다.`,
             ja: `指定の Element を tmplScope へ参照させます。`,
+            cn: `将指定元素引用到tmplScope。`,
           },
           'var.content1': {
             en: `Makes the specified Element visible as an internal variable.`,
             ko: `지정된 Element 를 내부 변수로서 참조 합니다.`,
             ja: `指定の Element を内部変数として参照可能にします。`,
+            cn: `将指定元素作为内部变量可见。`,
           },
         }
       }
@@ -872,6 +2064,7 @@
             en: `Built-in variable`,
             ko: `내장 변수`,
             ja: `組み込み変数`,
+            cn: `内置变量`,
           },
           'data.content1': {
             en: `An Object that references the input values used when creating a Component for use within the Template. <br/>
@@ -883,6 +2076,9 @@
             ja: `Component 生成時に使用した入力値を Template 内で使用するために参照する Object です。<br/>
                  Template 登録時に templateSettings の dataKeyName を変えることで名前を変更可能です。<br/>
                  ※example: tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
+            cn: `一个引用创建组件时使用的输入值的对象，供模板内部使用。<br/>
+                您可以通过在注册模板时更改templateSettings的dataKeyName来更改名称。<br/>
+                *示例：tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
           },
           'status.content1': {
             en: `When you refresh and render the Component<br/>
@@ -900,62 +2096,78 @@
                  内部の変化を status へ保管すると refresh, render 後にも再度参照することが可能です。<br/>
                  Template 登録時に templateSettings の statusKeyName を指定することで名前を変更可能です。<br/>
                  ※example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
+            cn: `当您刷新和渲染组件时<br/>
+                 组件数据将用输入值重新初始化，因此您将丢失组件内部发生的任何更改。<br/>
+                 如果您将内部更改存储在status中，刷新和渲染后仍可以引用它。
+                 您可以通过在注册模板时指定templateSetting的statusKeyName来更改名称。<br/>
+                 *示例：tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
           },
           'i18n.content1': {
             en: `Corresponds to bridge.i18n[tmplId]. Shorten i18n reference names in Templates.`,
             ko: `bridge.i18n[tmplId] 에 해당 합니다. Template 안에서 i18n 참조명을 줄여줍니다.`,
             ja: `bridge.i18n[tmplId] に該当します。Template 内で i18n の参照名を短くします。`,
+            cn: `对应于bridge.i18n[tmplId]。缩短模板中i18n引用名。`,
           },
           'lazyScope.content1': {
             en: ``,
             ko: ``,
             ja: ``,
+            cn: ``,
           },
           tmplScope: {
             content1: {
               en: `tmplScope is a reference to Component itself.`,
               ko: `tmplScope 는 Component 자신에 대한 참조 입니다.`,
               ja: `tmplScope は Component 自身の参照です。`,
+              cn: `tmplScope是对组件自身的引用。`,
             },
             content2: {
               en: `A target that can be referenced even before being Element`,
               ko: `Element 화되기전 부터 참조 가능한 대상`,
               ja: `Element 化される前でも参照可能な対象`,
+              cn: `即使在成为元素之前也可以引用的目标`,
             },
             'tmplId.content1': {
               en: `ID of the Template. You can see which template code was used.`,
               ko: `Template 의 ID 입니다. 어떠한 Template 코드를 사용하여 콤퍼넌트가 생성 되었는지 알 수 있습니다.`,
               ja: `Template の ID です。どのテンプレートコードが使用されたのか分かります。`,
+              cn: `模板的ID。您可以看到使用了哪个模板代码。`,
             },
             '_id.content1': {
               en: `ID of the Component. It can be used when you need a unique key like HTML Element id.`,
               ko: `Component 의 ID 입니다. HTML Element の id 같은 unique key가 필요할 경우 사용 합니다.`,
               ja: `Component の ID です。HTML Element の id のように unique key が必要な場合に使用可能です。`,
+              cn: `组件的ID。当您需要像 HTML 元素 id 一样的唯一键时可以使用。`,
             },
             'data.content1': {
               en: `tmplScope can also refer to data, which is the input data when generating a Component.`,
               ko: `Component 생성시의 외부 입력값인 data 를 tmplScope 에서도 참조가 가능합니다.`,
               ja: `Component 生成時の入力データである data を tmplScope でも参照可能です。`,
+              cn: `tmplScope也可以引用data，这是生成组件时的输入数据。`,
             },
             'status.content1': {
               en: `It seems that tmplScope also refers to the status, which is the internally stored value when the Component is created.`,
               ko: `Component 생성시의 내부 보관값인 status 를 tmplScope 에서도 참조가 가능합니다.`,
               ja: `Component 生成時の内部保管値である status を tmplScope でも参照かのうです。`,
+              cn: `tmplScope也可以引用status，即组件创建时的内部存储值。`
             },
             'replace.content1': {
               en: `Replaces the Component being displayed on the screen with another Component.`,
               ko: `화면 표시중인 Component 를 다른 Component 로 교체 합니다.`,
               ja: `画面表示中の Component を ほかの Component と入れ替えます。`,
+              cn: `使用另一个组件替换在屏幕上显示的组件。`
             },
             'remove.content1': {
               en: `Removes the Component from the screen.`,
               ko: `해당 Component 를 화면에서 제거 합니다.`,
               ja: `該当 Component を画面からなくします。`,
+              cn: `从屏幕上移除该组件。`
             },
             'appendTo.content1': {
               en: `Append that Component to parentElement.`,
               ko: `해당 Component 를 parentElement 내에 이동하여 삽입합니다.`,
               ja: `該当 Component を parentElement の内部に移動させ差し込みます。`,
+              cn: `将该组件添加到父元素中。`
             },
             'render.content1': {
               en: `Renders the Component again with the data input value. <br/>
@@ -964,6 +2176,8 @@
                    이전의 data 를 무시 합니다.`,
               ja: `data 入力値で Component を再度レンダリングします。<br/>
                    以前の data は無視されます。`,
+              cn: `使用数据输入值重新渲染组件。<br/>
+                  先前的数据将被忽略。`
             },
             'refresh.content1': {
               en: `Renders the Component again with the data input value. <br/>
@@ -972,16 +2186,20 @@
                    현재 Component 가 가진 data 와 Object.assign() 로 merge 해서 다시 렌더링 하게 됩니다.`,
               ja: `data 入力値で Component を再度レンダリングします。<br/>
                    現在の Component が持つ data と Object.assign() で merge して再度レンダリングします。`,
+              cn: `使用数据输入值重新渲染组件。<br/>
+                   使用Object.assign()将当前组件的数据与输入值合并后重新渲染。`
             },
             'content3': {
               en: `Targets that can be referenced after being Element (can be used with #\#\# #\# )`,
               ko: `Element 화된 이후 부터 참조 가능한 대상 ( #\#\# #\# 에서 사용가능 )`,
               ja: `Element 化された後に参照可能になる対象 ( #\#\# #\# で使用可能 )`,
+              cn: `元素化后可以引用的目标（可在 #\#\# #\# 中使用）`
             },
             'element.content1': {
               en: `References the rendered HTML Element.`,
               ko: `최종 렌더링 된 HTML Element 참조 합니다.`,
               ja: `レンダリング後の HTML Element を参照します。`,
+              cn: `引用渲染后的HTML元素。`
             },
           },
         }
@@ -1064,33 +2282,39 @@
           en: 'Global Engine Setting',
           ko: '엔진 설정',
           ja: 'エンジン設定',
+          cn: '全局引擎设置'
         },
         Setting: {
           label: {
             en: `Template engine setting`,
             ko: `Template Engine 설정`,
             ja: `Template Engine 設定`,
+            cn: `模板引擎设置`,
           },
           content1: {
             en: `You can configure Template Engine options by setting bridge.tmplTool and then loading 'bridge.template.js'.`,
             ko: `bridge.tmplTool 를 설정한 후에 'bridge.template.js' 를 로딩함으로써 Template Engine 의 옵션을 설정 할 수 있습니다.`,
             ja: `bridge.tmplTool を設定してから 'bridge.template.js' をローディンクすることで Template Engine の オプションを設定可能です。`,
+            cn: `您可以通过设置bridge.tmplTool然后加载'bridge.template.js'来配置模板引擎选项。`,
           },
           Option: {
             'showTime.content1': {
               en: ``,
               ko: `true 인 경우 Template 컴파일 처리하는 시간을 Console.log() 로 출력합니다.`,
               ja: `true の場合 Template コンパイル処理の時間を Console.log() に出力します。`,
+              cn: `如果为true，将在Console.log()中输出模板编译处理的时间。`,
             },
             'debug.content1': {
               en: `If true, output the time of Template compilation processing to Console.log().`,
               ko: `true 인 경우 Template Engine 내의 debug 정보를 Console.log() 로 출력 합니다.`,
               ja: `true の場合 Template Engine 内の debug 情報を Console.log() に出力します。`,
+              cn: `如果为true，将在Console.log()中输出模板引擎内的调试信息。`,
             },
             'throwError.content1': {
               en: `If true, output error information that occurred during Template compilation to Console.log().`,
               ko: `true 인 경우 Template 컴파일 처리를 할때 발생 하는 에러를 Console.log() 로 출력 합니다.`,
               ja: `true の場合 Template コンパイル処理時に発生したエラー情報を Console.log() に出力します。`,
+              cn: `如果为true，将在Console.log()中输出模板编译处理过程中发生的错误信息。`,
             },
           }
         }
@@ -1140,6 +2364,7 @@
             en: `bridge.tmplTool configuration`,
             ko: `bridge.tmplTool 구성`,
             ja: `bridge.tmplTool 構成`,
+            cn: `bridge.tmplTool 配置`,
           },
           'escapeHtml.content1': {
             en: `Performs escape and unescape processing for strings. <br/>
@@ -1148,6 +2373,8 @@
                  HTML Tag 를 처리할 때 사용 합니다.`,
             ja: `文字列の escape, unescape 処理を行います。<br/>
                  HTML Tag を処理する場合に使用します。`,
+            cn: `对字符串执行转义和反转义处理。<br/>
+                 在处理HTML标签时使用。`,
           }
         }
       }
@@ -1257,6 +2484,7 @@
               en: `Compile a single Template with the name given by templateName.`,
               ko: `하나의 Template 를 templateName 지정의 이름으로 컴파일 합니다.`,
               ja: `一つの Template を templateName 指定の名前でコンパイルします。`,
+              cn: `使用templateName指定的名称编译单个模板。`,
             },
             content2: {
               en: `Capabilities can be extended by adding or modifying compile-time analysis engines. <br/>
@@ -1273,22 +2501,27 @@
                    Template 해석기의 표현들은 다음과 같이 구성되어 있습니다.`,
               ja: `Template を作成する開発者は専用のコンパイル解析エンジンを追加または修正することで Template を好きな形で作成できます。<br/>
                    Template 解析エンジンは以下のように構成されています。`,
+              cn: `创建模板的开发者可以通过添加或修改专用的编译分析引擎来按自己的方式创建模板。<br/>
+                   模板解析引擎的配置如下：`,
             },
             tmplSettings: {
               'pattern.content1': {
                 en: `The parsing engine specifies a regular expression pattern for detecting expressions to act on.`,
                 ko: `해석기가 작동하는 표현을 검치하기 위한 정규식 패턴을 지정합니다.`,
                 ja: `解析エンジンは作動する表現を検知するための正規表現のパターンを指定します。`,
+                cn: `解析引擎指定一个正则表达式模式来检测要处理的表达式。`,
               },
               'exec.content1': {
                 en: `Defines a parser that processes strings detected by pattern and returns them.`,
                 ko: `pattern 으로 검출한 문자열을 가공하여 return 하는 문자열 해석을 정의 합니다.`,
                 ja: `pattern で検出した文字列を加工し return する 文字列解析を定義します。`,
+                cn: `定义一个解析器，处理由模式检测到的字符串并返回它们。`,
               },
               'lazyExec.content1': {
                 en: `Defines a process for manipulating an Element when it is created after executing exec.`,
                 ko: `exec 의 실행 이후에 Element 의 생성시 Element 를 조작하는 처리를 정의 합니다.`,
                 ja: `exec の実行後に Element の生成時に Element を操作する処理を定義します。`,
+                cn: `定义一个过程，在执行exec后创建元素时操作该元素。`,
               },
             },
           },
@@ -1334,21 +2567,25 @@
             en: `Compile multiple Templates in sets.`,
             ko: `복수의 Template 을 세트로 컴파일 합니다.`,
             ja: `複数の Template をセットでコンパイルします。`,
+            cn: `成组编译多个模板。`,
           },
           'addTmplByUrl.content1': {
             en: `Load and compile the Template set file.`,
             ko: `Template 세트를 담은 파일을 로드 하여 컴파일 합니다.`,
             ja: `Template セットファイルをロードしコンパイルします。`,
+            cn: `加载并编译模板集文件。`,
           },
           'addI18n.content1': {
             en: `Add one key, value for multilingual support.`,
             ko: `다국어 지원을 위한 하나의 key, value 를 추가 합니다.`,
             ja: `多言語支援のための一つの key, value を追加します。`,
+            cn: `为多语言支持添加一个key和value。`,
           },
           'addI18ns.content1': {
             en: `Add multiple keys, values at the same time for multilingual support.`,
             ko: `다국어 지원을 위한 다수의 key, value 를 동시에 추가 합니다.`,
             ja: `多言語支援のための多数の key, value を同時に追加します。`,
+            cn: `为多语言支持同时添加多个key和value。`,
           },
           'genId.content1': {
             en: `A Function that generates the _id when the Component is generated. <br/>
@@ -1357,11 +2594,14 @@
                  Template의 { tmplId + Component 생성순번 } 으로 _id 를 생성 합니다.`,
             ja: `Component 生成時に _id を生成する Function です。<br/>
                  Template は { tmplId + Component 生成順番 } で _id を生成します。`,
+            cn: `在生成组件时生成_id的函数。<br/>
+                 模板使用 { tmplId + 组件生成顺序 } 生成_id。`,
           },
           'tag.content1': {
             en: `A util for generating HTML Elements.`,
             ko: `HTML Element 를 생성하는데 사용하는 util 입니다.`,
             ja: `HTML Element を生成するための util です。`,
+            cn: `用于生成HTML元素的工具。`,
           },
         }
       }
@@ -1399,6 +2639,8 @@
           ##%tmpl.docs.CodeTemplate308101({})##
           ##%tmpl.docs.CodeTemplate308102({})##
     </div>
+
+  <!--
   ##!
   bridge.tmplTool.addI18ns({
     'docs-Docs-Template': {
@@ -1407,6 +2649,7 @@
           en: 'Using Components',
           ko: 'Component 사용',
           ja: 'Component 使用',
+          cn: '使用组件',
         },
       }
     }
@@ -1415,24 +2658,25 @@
     <div class="page" id="Template/Component">
       <h1 id="Docs/Template/Component">##=i18n.Component.label##</h1>
     </div>
-
+  -->
   </div>
+
   ###
   genSidemenu({munuList: munuList, element: this});
 
-  var removeTargets = this.querySelectorAll('.page:not(#' + index + ')');
+  let removeTargets = this.querySelectorAll('.page:not(#' + index + ')');
   Array.prototype.forEach.call(removeTargets, function(target) {
     target.parentElement.removeChild(target);
   });
 
-  var codes = this.querySelectorAll('code:not(.escaped)');
+  let codes = this.querySelectorAll('code:not(.escaped)');
   Array.prototype.forEach.call(codes, function(code) {
     code.innerHTML = code.innerHTML.replace(/^[ \n]*|[ \n]*$/g, '');
   });
   setTimeout(function() {
     Prism.highlightAll();
     setTimeout(function() {
-      var hash = location.hash;
+      let hash = location.hash;
       location.hash = '';
       location.hash = hash;
     }, 200);
@@ -1452,18 +2696,19 @@
     'docs-Tutorial.label': {
       en: 'Calculator',
       ko: '계산기',
-      ja: '計算機'
+      ja: '計算機',
+      cn: '计算器'
     }
   });
   ##
   ##
-  var contentArea = function() {
+  let contentArea = function() {
     return docsMain;
   }
-  var docItems = [
+  let docItems = [
     {label: i18n.label, tmpl: tmpl.docs.TutorialCalculator({contentArea: contentArea})}
   ];
-  var selectEvent = function(e) {
+  let selectEvent = function(e) {
     e.target.parentElement.querySelector('.active').classList.remove('active');
     e.target.classList.add('active');
   }
@@ -1491,16 +2736,16 @@
     'docs-Tutorial-Calculator.label': {
       en: 'Sample Code',
       ko: '코드예',
-      ja: 'サンプルコード'
+      ja: 'サンプルコード',
+      cn: '代码示例'
     }
   });
   ##
   ##
-  var munuList = [];
-  var contentArea = data.contentArea;
-  var index = data.index || 'Intro';
-  var munuList = [];
-  var sideData = {contentArea: contentArea, selectedIndex: null, munuList: munuList, tmplScope: tmplScope};
+  let munuList = [];
+  let contentArea = data.contentArea;
+  let index = data.index || 'Intro';
+  let sideData = {contentArea: contentArea, selectedIndex: null, munuList: munuList, tmplScope: tmplScope};
   tmplScope.getSidemenu = getSidemenu(sideData);
   ##
   <div class="docs-Tutorial-Calculator" id="Calculator">
@@ -1514,10 +2759,10 @@
     //code.innerText = text;
     //Prism.highlightAll();
 
-    var testArea = tmpl.pg.TestArea({
+    let testArea = tmpl.pg.TestArea({
       imports: [{type: 'js', text: 'js/bridge.template.js'}],
       template: text,
-      code: `var calculator = tmpl.Calculator.Board({});
+      code: `let calculator = tmpl.Calculator.Board({});
 document.body.appendChild(calculator.element);`,
       type: 'codeIsTemplateFile',
       showConsole: true

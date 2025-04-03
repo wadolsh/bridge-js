@@ -50,7 +50,7 @@ bridge.tmplTool.addTmpls(`
         border-radius: 4px;
       }
     </style>
-    <button class="ui-Button" data-bridge-event="click: data.onClick">
+    <button class="ui-Button" data-bridge-event="##:{click: data.onClick}##">
       ##=data.label##
     </button>
   </template>
@@ -132,7 +132,7 @@ Bridge-js uses a special syntax for template expressions:
 
 ### HTML Element Expressions
 
-- `data-bridge-event="eventType: handler"` - Attach event handlers
+- `data-bridge-event="##:{eventType: handler}##"` - Attach event handlers
 - `data-bridge-load="handler"` - Run function when element is loaded
 - `data-bridge-scope-key="key: value"` - Set properties on template scope
 - `data-bridge-var="var: value"` - Bind variable to element
@@ -151,7 +151,7 @@ bridge.tmplTool.addTmpl('app-Counter', `
       };
     ##
     <div>Count: ##=count##</div>
-    <button data-bridge-event="click: tmplScope.increment">+</button>
+    <button data-bridge-event="##:{click: tmplScope.increment}##">+</button>
   </div>
 `);
 
@@ -192,9 +192,11 @@ bridge.tmplTool.addTmpl('app-Greeting', `
 
 You can find example applications in the examples directory:
 
-- [Simple Counter](examples/counter.html)
-- [Todo List](examples/todo.html)
-- [Calculator](examples/calculator.html)
+- Component Examples [Code](https://github.com/wadolsh/bridge-js/blob/master/examples/sample.html), [Web Page](https://wadolsh.github.io/bridge-js/examples/sample.html)
+
+- Simple Counter [Code](https://github.com/wadolsh/bridge-js/blob/master/examples/counter.html), [Web Page](https://wadolsh.github.io/bridge-js/examples/counter.html)
+- Todo List [Code](https://github.com/wadolsh/bridge-js/blob/master/examples/todo.html), [Web Page](https://wadolsh.github.io/bridge-js/examples/todo.html)
+- Calculator [Code](https://github.com/wadolsh/bridge-js/blob/master/examples/calculator.html), [Web Page](https://wadolsh.github.io/bridge-js/examples/calculator.html)
 
 ## Documentation
 

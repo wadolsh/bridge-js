@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridge-js Test Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+        .test-results {
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin-top: 25px;
+        }
+        .test-status {
+            font-weight: bold;
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .failure {
+            color: #F44336;
+        }
+        .test-group {
+            background-color: #e9e9e9;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .test-item {
+            padding: 5px;
+            margin: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        #run-tests {
+            display: block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 20px auto;
+            font-size: 1rem;
+        }
+        #run-tests:hover {
+            background-color: #45a049;
+        }
+        #console-output {
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bridge-js Test Suite</h1>
+    
+    <p>This page tests the template syntax and HTML element functionality of the Bridge-js library.</p>
+    
+    <button id="run-tests">Run Tests</button>
+    
+    <div class="test-results">
+        <div id="test-summary">
+            <h2>Test Results</h2>
+            <p>No tests have been run yet.</p>
+        </div>
+        
+        <h3>Console Output:</h3>
+        <div id="console-output"></div>
+    </div>
+    
+    <!-- Test template -->
+    <template id="test-template">
+        <div>
+            <h2>##=data.title##</h2>
+            <p>##=data.content##</p>
+            ##if(data.showButton){##
+                <button data-bridge-event="##:{click: function() { alert('Button was clicked!'); }}##">##=data.buttonText##</button>
+            ##}##
+        </div>
+    </template>
+    
+    <!-- Load Bridge-js library -->
+    <script src="../js/bridge.template.js"></script>
+    
+    <!-- Load test scripts -->
+    <script src="bridge-test-suite.js"></script>
+    <script src="template-tests.js"></script>
+    <script src="html-element-tests.js"></script>
+    <script src="run-tests.js"></script>
+    
+    <script>
+        // Display console output on screen
+        const consoleOutput = document.getElementById('console-output');
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn
+        };
+        
+        console.log = function(...args) {
+            originalConsole.log.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+            ).join(' ');
+            const logElement = document.createElement('div');
+            logElement.textContent = message;
+            consoleOutput.appendChild(logElement);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        };
+        
+        console.error = function(...args) {
+            originalConsole.error.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+            ).join(' ');
+            const logElement = document.createElement('div');
+            logElement.textContent = message;
+            logElement.style.color = 'red';
+            consoleOutput.appendChild(logElement);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        };
+        
+        // Set up test run button
+        document.getElementById('run-tests').addEventListener('click', function() {
+            consoleOutput.innerHTML = '';
+            runAllTests();
+            
+            // Update test results summary
+            const testSummary = document.getElementById('test-summary');
+            testSummary.innerHTML = `
+                <h2>Test Results</h2>
+                <p class="test-status ${BridgeTest.failed === 0 ? 'success' : 'failure'}">
+                    Total Assertions: ${BridgeTest.assertions}, 
+                    Passed: <span class="success">${BridgeTest.passed}</span>, 
+                    Failed: <span class="failure">${BridgeTest.failed}</span>
+                </p>
+                <p>
+                    ${BridgeTest.failed === 0 
+                        ? '<span class="success">✓ All tests passed!</span>' 
+                        : `<span class="failure">✗ ${BridgeTest.failed} tests failed.</span>`
+                    }
+                </p>
+            `;
+        });
+    </script>
+</body>
+</html>

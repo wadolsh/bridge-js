@@ -21,7 +21,7 @@ const BridgeTest = {
       testFn();
       console.log('✓ Success');
     } catch (error) {
-      console.error('✗ Failure:', error.message);
+      console.error('✗ Failure:', error.message, error);
       this.failed++;
     }
   },

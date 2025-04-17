@@ -69,7 +69,7 @@
   var disabled = data.disabled;
   ##
   &lt;##=type## ##=idProp## ##=href ? 'href="' + href + '"' : ''## class="mdl-button mdl-js-button ##=MDL.options('mdl-button--', options)## ##=MDL.is(ripple, 'mdl-js-ripple-effect')## ##=data.class##" ##=MDL.prop(prop)## data-bridge-event="##:event##" ##=disabled ? 'disabled' : ''##&gt;
-    ##if (icon) {##<i class="material-icons" data-bridge-var="##:iconVar##">##=icon##</i>##}##
+    ##if (icon) {##<i class="material-icons" data-bridge-element-ref="##:iconVar##">##=icon##</i>##}##
     ##if (label) {##<span>##%label##</span>##}##
   &lt;/##=type##&gt;
   ##
@@ -144,7 +144,7 @@
   &lt;##=type## class="mdl-chip ##=MDL.options('mdl-chip--', options)## ##=data.class##" data-bridge-event="##:event##"&gt;
     ##if(img) {##<img class="mdl-chip__contact" src="##=img##"></img>##}##
     ##if(contact) {##<span class="mdl-chip__contact ##=contactClass##">##%contact##</span>##}##
-    <span class="mdl-chip__text" data-bridge-var="##:chipText##">##%label##</span>
+    <span class="mdl-chip__text" data-bridge-element-ref="##:chipText##">##%label##</span>
     ##if(action) {##<button type="button" class="mdl-chip__action" data-bridge-event="##:action.event##"><i class="material-icons">##=action.icon##</i></button>##}##
   &lt;/##=type##&gt;
 </template>
@@ -225,7 +225,7 @@
       ##
       <div class="mdl-layout__header-row">
         <!-- Title -->
-        ##if (h.title) {##<div class="mdl-layout-title" data-bridge-var="##:titleArea##">##%(h.title)##</div>##}##
+        ##if (h.title) {##<div class="mdl-layout-title" data-bridge-element-ref="##:titleArea##">##%(h.title)##</div>##}##
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
@@ -260,7 +260,7 @@
       </section>
       ##})##
       ##}##
-      <div class="page-content" data-bridge-var="##:contentArea##">##%content##</div>
+      <div class="page-content" data-bridge-element-ref="##:contentArea##">##%content##</div>
     </main>
   </div>
   ##
@@ -670,7 +670,7 @@
   }
   ##
   &lt;label class="mdl-##=type## mdl-js-##=type## mdl-js-ripple-effect ##=data.class##" ##=MDL.prop(prop)## for="##=_id##"&gt;
-    &lt;input type="##=inputType##" id="##=_id##" ##=name ? 'name="' + name + '"' : ''## class="##=inputClass##" value="##=value##" ##=checked ? 'checked' : ''## data-bridge-var="##:input##" data-bridge-event="##:event##"&gt;
+    &lt;input type="##=inputType##" id="##=_id##" ##=name ? 'name="' + name + '"' : ''## class="##=inputClass##" value="##=value##" ##=checked ? 'checked' : ''## data-bridge-element-ref="##:input##" data-bridge-event="##:event##"&gt;
     ##if (icon) {##<i class="mdl-icon-toggle__label material-icons">##=icon##</i>##}##
     ##if (label) {##<span class="mdl-##=type##__label">##=label##</span>##}##
   </label>
@@ -827,14 +827,14 @@
         ##}##
       ##}##
     <div class="mdl-textfield__expandable-holder">
-      &lt;input class="mdl-textfield__input" type="##=type##" id="##=_id##" name="##=name##" value="##=value##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;
+      &lt;input class="mdl-textfield__input" type="##=type##" id="##=_id##" name="##=name##" value="##=value##" ##=patternProp## data-bridge-event="##:event##" data-bridge-named-element="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;
       <label class="mdl-textfield__label" for="##=_id##">##=label##</label>
     </div>
     ##} else {##
       ##if (rows && rows > 1) {##
-    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;##=value##&lt;/textarea&gt;
+    &lt;textarea class="mdl-textfield__input" rows="##=rows##" id="##=_id##" name="##=name##" ##=patternProp## data-bridge-event="##:event##" data-bridge-named-element="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;##=value##&lt;/textarea&gt;
       ##} else {##
-    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-scope-key="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;
+    &lt;input class="mdl-textfield__input" type="##=type##" ##=patternProp## id="##=_id##" name="##=name##" value="##=value##" data-bridge-event="##:event##" data-bridge-named-element="##:'input'##" ##=MDL.prop(inputProp)## ##=placeholder##&gt;
       ##}##
     ##if (label) {##<label class="mdl-textfield__label" for="##=_id##">##=label##</label>##}##
     ##if (helpMsg) {##<span class="mdl-textfield__help">##%helpMsg##</span>##}##

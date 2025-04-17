@@ -134,8 +134,8 @@ Bridge-js uses a special syntax for template expressions:
 
 - `data-bridge-event="##:{eventType: handler}##"` - Attach event handlers
 - `data-bridge-load="handler"` - Run function when element is loaded
-- `data-bridge-scope-key="key: value"` - Set properties on template scope
-- `data-bridge-var="var: value"` - Bind variable to element
+- `data-bridge-named-element="key: value"` - Set properties on template scope
+- `data-bridge-element-ref="var: value"` - Bind variable to element
 
 ### Example with State Management
 

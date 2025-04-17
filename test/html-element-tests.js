@@ -53,10 +53,10 @@ function runHtmlElementTests() {
       BridgeTest.assertTrue(result.data.clicked, 'Event handler should be called');
     });
     
-    // Scope-key test
-    BridgeTest.it('should support element references via scope-key', function() {
-      bridge.tmplTool.addTmpl('test-scope-key', '<div data-bridge-scope-key="##:\'targetElement\'##">Target</div>');
-      const tmpl = bridge.tmpl('test-scope-key');
+    // named-element test
+    BridgeTest.it('should support element references via named-element', function() {
+      bridge.tmplTool.addTmpl('test-named-element', '<div data-bridge-named-element="##:\'targetElement\'##">Target</div>');
+      const tmpl = bridge.tmpl('test-named-element');
       const result = tmpl({});
       
       BridgeTest.assertTrue(result.targetElement instanceof Element, 'Should be able to access element through scope');
@@ -64,12 +64,27 @@ function runHtmlElementTests() {
       BridgeTest.assertEquals(result.targetElement.textContent, 'Target', 'Referenced element content should be correctly set');
     });
     
+    // data-bridge-element-ref test
+    BridgeTest.it('should reference elements using data-bridge-element-ref', function() {
+      bridge.tmplTool.addTmpl('test-bridge-element-ref', `
+        ##tmplScope.changeText = function(text) { myElement.textContent = text; }##
+        <div data-bridge-element-ref="##:myElement##">Variable Element</div>`);
+      const tmpl = bridge.tmpl('test-bridge-element-ref');
+      const result = tmpl({});
+
+      BridgeTest.assertEquals(result.element.textContent, 'Variable Element', 'Referenced element content should be correctly set');
+
+      // Test updating element through function call
+      result.changeText('Updated Content');
+      BridgeTest.assertEquals(result.element.textContent, 'Updated Content', 'Should be able to update element through data-bridge-element-ref');
+    });
+
     // Template rendering and update test
     BridgeTest.it('should be able to update templates', function() {
       bridge.tmplTool.addTmpl('test-update', '<div>##=data.counter##</div>');
       const tmpl = bridge.tmpl('test-update');
       const result = tmpl({ counter: 1 });
-      
+
       BridgeTest.assertEquals(result.element.textContent, '1', 'Initial rendering should be correct');
       
       // Update template data

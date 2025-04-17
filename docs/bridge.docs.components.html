@@ -123,13 +123,13 @@
         en: 'Documentation',
         ko: '문서',
         ja: 'ドキュメント',
-        cn: '文档'
+        'zh-cn': '文档'
       },
       'Tutorial.label': {
         en: 'Tutorial',
         ko: '따라하기',
         ja: 'チュートリアル',
-        cn: '教程'
+        'zh-cn': '教程'
       }
     }
   });
@@ -153,7 +153,7 @@
     {label: 'ENGLISH', lang: 'en', event: langSelect('en')},
     {label: '日本語', lang: 'ja', event: langSelect('ja')},
     {label: '한국어', lang: 'ko', event: langSelect('ko')},
-    {label: '中文(中国)', lang: 'cn', event: langSelect('cn')},
+    {label: '中文(中国)', lang: 'zh-cn', event: langSelect('zh-cn')},
   ];
 
   let navigatorLang = navigator.language.split('-')[0];
@@ -198,7 +198,7 @@
         })
       ]
     })##
-    <div class="main" data-bridge-var="##:main##"></div>
+    <div class="main" data-bridge-element-ref="##:main##"></div>
   </div>
 </template>
 
@@ -214,7 +214,7 @@
       en: 'Template Engine',
       ko: '템플릿 엔진',
       ja: 'テンプレートエンジン',
-      cn: '模板引擎',
+      'zh-cn': '模板引擎',
     }
   });
   ##
@@ -238,7 +238,7 @@
           ##%tmpl.bs.ListGroup({active: true, items: item.tmpl.getSidemenu()})##
         ##});##
       </div>
-      <div class="col-xs-9 mainArea" data-bridge-var="##:docsMain##"></div>
+      <div class="col-xs-9 mainArea" data-bridge-element-ref="##:docsMain##"></div>
     </div>
   </div>
 </template>
@@ -298,7 +298,7 @@
           en: 'Introduction',
           ko: '소개',
           ja: '紹介',
-          cn: '介绍',
+          'zh-cn': '介绍',
         },
         content: {
           en: `
@@ -424,9 +424,9 @@ document.body.appendChild(sample.element);</code></pre>
 <pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
 <h4><code>data-bridge-load="handler"</code></h4>
 <p>Specifies a function to run when the element is loaded.</p>
-<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<h4><code>data-bridge-named-element="key: value"</code></h4>
 <p>Sets properties on the template scope.</p>
-<h4><code>data-bridge-var="var: value"</code></h4>
+<h4><code>data-bridge-element-ref="var: value"</code></h4>
 <p>Binds a variable to an element.</p>
 <h3 id="built-in-variables">Built-in Variables</h3>
 <p>These variables are available within templates:</p>
@@ -686,9 +686,9 @@ document.body.appendChild(sample.element);</code></pre>
 <pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
 <h4><code>data-bridge-load="handler"</code></h4>
 <p>요소가 로드될 때 실행할 함수를 지정합니다.</p>
-<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<h4><code>data-bridge-named-element="key: value"</code></h4>
 <p>템플릿 스코프에 속성을 설정합니다.</p>
-<h4><code>data-bridge-var="var: value"</code></h4>
+<h4><code>data-bridge-element-ref="var: value"</code></h4>
 <p>변수를 요소에 바인딩합니다.</p>
 <h3 id="built-in-variables">내장 변수</h3>
 <p>템플릿 내에서 다음 변수를 사용할 수 있습니다:</p>
@@ -947,9 +947,9 @@ document.body.appendChild(sample.element);</code></pre>
 <pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
 <h4><code>data-bridge-load="handler"</code></h4>
 <p>要素がロードされたときに実行する関数を指定します。</p>
-<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<h4><code>data-bridge-named-element="key: value"</code></h4>
 <p>テンプレートスコープにプロパティを設定します。</p>
-<h4><code>data-bridge-var="var: value"</code></h4>
+<h4><code>data-bridge-element-ref="var: value"</code></h4>
 <p>変数を要素にバインドします。</p>
 <h3 id="built-in-variables">組み込み変数</h3>
 <p>テンプレート内で以下の変数が利用可能です：</p>
@@ -1086,7 +1086,7 @@ document.body.appendChild(greeting.element);</code></pre>
 <p>より詳細な情報は<a href="https://wadolsh.github.io/bridge-js/">ドキュメント</a>をご確認ください。</p>
 <br>
           `,
-          cn: `
+          'zh-cn': `
 <h1>Bridge-js 组件引擎指南</h1>
 <p>Bridge-js 组件引擎是一个专注于可重用组件的 JavaScript 框架，用于创建 Web 应用程序。它提供了一个基于模板的系统，允许您高效地创建、组合和重用 UI 组件。</p>
 
@@ -1208,9 +1208,9 @@ document.body.appendChild(sample.element);</code></pre>
 <pre><code class="language-html">&amp;lt;button data-bridge-event="#\#:{click: handleClick('param1', 'param2')}#\#"&gt;Click Me&amp;lt;/button&gt;</code></pre>
 <h4><code>data-bridge-load="handler"</code></h4>
 <p>指定元素加载时要运行的函数。</p>
-<h4><code>data-bridge-scope-key="key: value"</code></h4>
+<h4><code>data-bridge-named-element="key: value"</code></h4>
 <p>设置模板作用域上的属性。</p>
-<h4><code>data-bridge-var="var: value"</code></h4>
+<h4><code>data-bridge-element-ref="var: value"</code></h4>
 <p>将变量绑定到元素。</p>
 <h3 id="built-in-variables">内置变量</h3>
 <p>以下变量在模板中可用：</p>
@@ -1420,13 +1420,13 @@ document.body.appendChild(greeting.element);</code></pre>
                 en: 'Samples',
                 ko: '샘플',
                 ja: 'サンプル',
-                cn: '实例',
+                'zh-cn': '实例',
               },
               moreSample: {
                 en: 'Please check out more examples below.',
                 ko: '아래의 더많은 예제를 확인해 보시길 바랍니다.',
                 ja: '下記のより多くの例をご確認ください。',
-                cn: '请查看以下更多示例。',
+                'zh-cn': '请查看以下更多示例。',
               }
             }
           }
@@ -1460,26 +1460,26 @@ document.body.appendChild(greeting.element);</code></pre>
           en: 'Getting Started',
           ko: '시작하기',
           ja: 'スタートガイド',
-          cn: '入门指南',
+          'zh-cn': '入门指南',
         },
         Install: {
           label: {
             en: 'Install',
             ko: '설치',
             ja: '設置',
-            cn: '安装'
+            'zh-cn': '安装'
           },
           content1: {
             en: 'Add bridge.template.js as javascript like below.',
             ko: '아래와 같이 bridge.template.js javascript를 추가해주세요.',
             ja: '以下のように bridge.template.js を javascript として追加してください。',
-            cn: '如下所示添加bridge.template.js作为JavaScript。'
+            'zh-cn': '如下所示添加bridge.template.js作为JavaScript。'
           },
           content2: {
             en: 'Now you can use the template code.',
             ko: '이제 탬플릿 코드를 사용 가능하게 되었었습니다.',
             ja: 'これでテンプレートコードを使えるようになりました。',
-            cn: '现在您可以使用模板代码了。'
+            'zh-cn': '现在您可以使用模板代码了。'
           },
         },
         AddTmpl: {
@@ -1487,19 +1487,19 @@ document.body.appendChild(greeting.element);</code></pre>
             en: 'Create Template',
             ko: 'Template 만들기',
             ja: 'Template 作成',
-            cn: '创建模板'
+            'zh-cn': '创建模板'
           },
           content1: {
             en: `Let's create a simple Template code that outputs some text.`,
             ko: '이제 텍스트를 출력하는 간단한 Template 코드를 만들어 봅시다.',
             ja: 'テキストを出力する簡単な Template コードを作ってみましょ。',
-            cn: '让我们创建一个输出文本的简单模板代码。'
+            'zh-cn': '让我们创建一个输出文本的简单模板代码。'
           },
           content2: {
             en: `Now we can use the 'do.Simple' template code as a Component.`,
             ko: '이제 do.Simple 라는 Template 을 Component 로 사용할 있게 되었습니다.',
             ja: 'これで do.Simple Template コードを Componentとして使えるようになりました。',
-            cn: '现在我们可以将“do.Simple”模板代码用作组件。'
+            'zh-cn': '现在我们可以将“do.Simple”模板代码用作组件。'
           },
         },
         Tmpl: {
@@ -1507,19 +1507,19 @@ document.body.appendChild(greeting.element);</code></pre>
             en: 'Create Component',
             ko: 'Component 만들기',
             ja: 'Component 作成',
-            cn: '创建组件'
+            'zh-cn': '创建组件'
           },
           content1: {
             en: 'Component generation and screen placement are performed as follows.',
             ko: 'Component 의 생성과 화면 배치는 다음과 같이 이루어 집니다.',
             ja: 'Component の生成と画面配置は以下のように行います。',
-            cn: '组件生成和屏幕放置如下所示。'
+            'zh-cn': '组件生成和屏幕放置如下所示。'
           },
           content2: {
             en: 'You can also use it like this.',
             ko: '또는 다음과 같이 사용 할 수도 있습니다.',
             ja: 'このように使用することも可能です。',
-            cn: '您也可以像这样使用它。'
+            'zh-cn': '您也可以像这样使用它。'
           },
           content3: {
             en: `The data passed in {label: 'Div Sample1'} will be used in the Template code with the name 'data'. <br/>
@@ -1528,7 +1528,7 @@ document.body.appendChild(greeting.element);</code></pre>
                  다음의 데모로 코드의  실행을 확인해 보십시오.`,
             ja: `{label: 'Div Sample1'} で渡したデータは Template コードの中で data と言う名前で使うようになります。<br/>
                  次でデモでコードの実行を確認してみましょ。`,
-            cn: `在{label: 'Div Sample1'}中传递的数据将在模板代码中以“data”的名称使用。<br/>
+            'zh-cn': `在{label: 'Div Sample1'}中传递的数据将在模板代码中以“data”的名称使用。<br/>
                  现在让我们在演示中查看代码运行情况。`
           },
           content4: {
@@ -1538,7 +1538,7 @@ document.body.appendChild(greeting.element);</code></pre>
                  이 object 는 Template 작성시 tmplScope 라는 이름으로 접근 할 수 있습니다.`,
             ja: `Component を生成時に javascript Object がリターンされます。<br/>
                  この object は Template 作成時に tmplScope と言う名前で使うことになります。`,
-            cn: `创建组件时会返回JavaScript对象。<br/>
+            'zh-cn': `创建组件时会返回JavaScript对象。<br/>
                  在创建模板时，该对象将以tmplScope的名称使用。`
           },
           content5: {
@@ -1551,7 +1551,7 @@ document.body.appendChild(greeting.element);</code></pre>
             ja: `bridge.tmplTool.addTmpl() を使用していちいちこのテンプレートを登録することは、大変な作業になります。<br/>
                 bridge.template では、Web Component と同様に template Tag を活用できるようにしています。<br/>
                 その場合は、bridge.tmplTool.addTmpls() を通じて Template を登録します。`,
-            cn: `使用bridge.tmplTool.addTmpl()逐个注册Template可能会成为一项繁重的工作。<br/>
+            'zh-cn': `使用bridge.tmplTool.addTmpl()逐个注册Template可能会成为一项繁重的工作。<br/>
                 bridge.template允许您像Web Component一样使用template标签。<br/>
                 在这种情况下，通过bridge.tmplTool.addTmpls()来注册Template。`,
           },
@@ -1577,7 +1577,7 @@ document.body.appendChild(greeting.element);</code></pre>
                 style Tagのidは "style-{tempalteのid}"で指定することをお勧めします。</br>
                 </br>
                 以下のデモでテンプレート構造と動作を確認してください。`,
-            cn: `可以使用template标签中指定的id名称来创建Component。</br>
+            'zh-cn': `可以使用template标签中指定的id名称来创建Component。</br>
                 如果使用相同的id加载不同的template，将会替换现有的template。</br>
                 在template标签内定义的style会在解析template时添加到document的head中。</br>
                 当style标签的id重复时，会被最后解析的template的style所替换，
@@ -1591,7 +1591,7 @@ document.body.appendChild(greeting.element);</code></pre>
             en: 'Example',
             ko: '사용예',
             ja: '使用例',
-            cn: '使用示例'
+            'zh-cn': '使用示例'
           },
           content1: {
             en: `Let's look at a more practical use case. <br/>
@@ -1617,7 +1617,7 @@ document.body.appendChild(greeting.element);</code></pre>
                  <br/>
                  bridge.tmplTool.addTmplByUrl()は Array で指定した Template ファイルをローディンクした後に callback を実行します。
                 `,
-            cn: `让我们看一个更实用的例子。<br/>
+            'zh-cn': `让我们看一个更实用的例子。<br/>
                  通过将常用UI模板化，可以减少代码创建量。<br/>
                  在这里，我们使用bridge.template创建的Material Design Lite (<a href="https://getmdl.io/" target="_blank">https://getmdl.io/</a>) bridge.mdl.components.html。<br/>
                  *关于使用bridge.template创建的Material Design Lite,
@@ -1632,7 +1632,7 @@ document.body.appendChild(greeting.element);</code></pre>
                  Content1 에서는 input 에 값을 넣고 'THIS BUTTON!' 을 클릭해서 입력값의 표시를 확인 해 보시기 바랍니다.`,
             ja: `デモ画面の Content1 と Content2 をクリックし Event 発生を確認してみてくさい。
                 Content1 をクリックし表示される Input にデータを入力し 'THIS BUTTON!' をクリックし入力値の Console 表示を確認してみてください。`,
-            cn: `点击演示屏幕上的Content1和Content2，检查事件发生情况。
+            'zh-cn': `点击演示屏幕上的Content1和Content2，检查事件发生情况。
                 点击Content1，在显示的输入框中输入数据，点击'THIS BUTTON!'，并查看控制台中输入值的显示。`
           },
         }
@@ -1693,14 +1693,14 @@ document.body.appendChild(greeting.element);</code></pre>
           en: 'Template Reference',
           ko: '템플릿 레퍼런스 ',
           ja: 'テンプレートリファレンス',
-          cn: '模板参考',
+          'zh-cn': '模板参考',
         },
         Expression: {
           label: {
             en: 'Expression',
             ko: '렌더링 표현 ',
             ja: 'レンダリング表現',
-            cn: '表达式',
+            'zh-cn': '表达式',
           },
           'E.content1': {
             en: `Output a string. <br/>
@@ -1712,7 +1712,7 @@ document.body.appendChild(greeting.element);</code></pre>
             ja: `文字列を出力します。<br/>
                  HTML タグの出力も可能ですが、ブラウザによっては、'<' と '>' を escape する必要があります。<br/>
                  Function が指定指定された場合は Function の実行結果を出力します。`,
-            cn: `输出字符串。<br/>
+            'zh-cn': `输出字符串。<br/>
                  您也可以输出HTML标签，但可能需要根据您的浏览器转义"<"和">"。<br/>
                  如果指定了函数，则输出函数的执行结果。`,
           },
@@ -1726,7 +1726,7 @@ document.body.appendChild(greeting.element);</code></pre>
             ja: `escape 処理を行った文字列を出力します。<br/>
                  escape 処理は bridge.tmplTool.escapeHtml.escape(); を使用しています。<br/>
                  HTML Tag などを出力する必要がある場合に使用してください。`,
-            cn: `输出转义后的字符串。<br/>
+            'zh-cn': `输出转义后的字符串。<br/>
                  转义处理使用bridge.tmplTool.escapeHtml.escape()。<br/>
                  当需要输出HTML标签等内容时请使用它。`,
           },
@@ -1744,7 +1744,7 @@ document.body.appendChild(greeting.element);</code></pre>
                    bridge Template の Component 와 HTML Element それと文字列の出力も可能です。<br/>
                    Array で複数の出力対象を配置した場合は、定義した順番で画面に出力されます。<br/>
                    Function が指定指定された場合は Function の実行結果を出力します。`,
-              cn: `输出Component或Element。<br/>
+              'zh-cn': `输出Component或Element。<br/>
                    可以输出bridge Template的Component、HTML Element以及字符串。<br/>
                    若以Array形式放置多个引用，则会按照Array中定义的顺序在屏幕上显示。<br/>
                    如果指定了Function，则输出Function的结果。`,
@@ -1753,13 +1753,13 @@ document.body.appendChild(greeting.element);</code></pre>
               en: `::{false / delay time (millisecond)}`,
               ko: `::{false / 지연시간(millisecond)}`,
               ja: `::{false / 遅延時間(millisecond)}`,
-              cn: `::{false / 延迟时间(millisecond)}`,
+              'zh-cn': `::{false / 延迟时间(millisecond)}`,
             },
             'Option.content1': {
               en: `Synchronous / asynchronous rendering setting. <br/>※If the option is not specified, The default value is false for synchronous rendering.`,
               ko: `동기 / 비동기 렌더링을 설정 할 수 있습니다.<br/>※옵션 미지정시의 디폴트 값은 false 로 동기 렌더링을 하게 됩니다.`,
               ja: `同期 / 非同期レンダリング設定が可能です。<br/>※オプション未指定の場合は、デフォルト値が false で同期したレンダリングになります。`,
-              cn: `同步/异步渲染设置。<br/>※如果未指定选项，默认值为false，为同步渲染。`,
+              'zh-cn': `同步/异步渲染设置。<br/>※如果未指定选项，默认值为false，为同步渲染。`,
             },
             content2: {
               en: `Since javascript basically operates in a single thread, if you add a large amount of HTML Elements to the screen, they will be displayed on the screen after all DOM rendering has been completed, and<br/>
@@ -1780,7 +1780,7 @@ document.body.appendChild(greeting.element);</code></pre>
                    非同期ローディンクで大量の HTML Element による画面のレンダリング停止を防げます。<br/><br/>
                    下のサンプルコードは非同期の処理の例です。{ ::i*100 } で delay 時間を設定しています。<br/>
                    RUN ボタンを押下して、非同期画面レンダリングを確認してみてください。`,
-              cn: `由于JavaScript基本上是单线程运行的，当向屏幕添加大量HTML元素时，DOM渲染完成后，屏幕输出会变慢，<br/>
+              'zh-cn': `由于JavaScript基本上是单线程运行的，当向屏幕添加大量HTML元素时，DOM渲染完成后，屏幕输出会变慢，<br/>
                    而且在屏幕加载完成之前，用户无法进行其他操作。<br/>
                    当使用#\#% #\#添加HTML元素时，如果指定[::延迟时间]，将自动执行基于setTimeout的异步渲染。<br/>
                    异步加载的优点是可以防止因大量HTML元素而导致的屏幕渲染停滞现象。<br/><br/>
@@ -1798,7 +1798,7 @@ document.body.appendChild(greeting.element);</code></pre>
             ja: `javascript を実行します。<br/>
                  #\# #\# の中のコードは javascript として評価されます。<br/>
                  このように、javascript と HTML TAG 出力を混ぜることで動的な画面表示が可能になります。`,
-            cn: `运行JavaScript。<br/>
+            'zh-cn': `运行JavaScript。<br/>
                  #\# #\# 内的代码被解析为JavaScript。<br/>
                  通过这种方式，混合JavaScript和HTML标签输出可以实现动态屏幕显示。`,
           },
@@ -1815,7 +1815,7 @@ document.body.appendChild(greeting.element);</code></pre>
                  #\# #\# では javascript が実行中は HTML Tag が DOM になる前の文字列状態のため、 HTML Element として接近することができません。<br/>
                  #\#\# #\# は #\# #\# の評価とHTML Tag 文字列が HTML Element への変換後の状態で実行されるため、Element への接近が可能です。<br/>
                  this を使用して HTML Element へ接近可能です。`,
-            cn: `在HTML渲染后执行JavaScript。<br/>
+            'zh-cn': `在HTML渲染后执行JavaScript。<br/>
                  #\# #\# 无法在JavaScript运行时作为HTML元素访问，因为HTML标签在成为DOM前是字符串状态。<br/>
                  #\#\# #\# 在评估#\# #\#并将HTML标签字符串转换为HTML元素后执行，因此可以访问元素。<br/>
                  您可以使用this访问HTML元素。`,
@@ -1830,7 +1830,7 @@ document.body.appendChild(greeting.element);</code></pre>
             ja: `Template をローディンクする時に必要な作業を実行します。<br/>
                  #\#! #\# 表現は Template ローディンク時に 1回のみ実行されます。Component 生成時は実行されません。<br/>
                  i18n データローディンクのように、1回のみ実行が必要な初期化作業などをここに定義します。`,
-            cn: `在加载模板时执行必要的工作。<br/>
+            'zh-cn': `在加载模板时执行必要的工作。<br/>
                  #\#! #\# 表达式仅在模板加载时执行一次。在创建组件时不执行。<br/>
                  任何只需要执行一次的初始化工作，如i18n数据加载，都在这里定义。`,
           }
@@ -1889,14 +1889,14 @@ document.body.appendChild(greeting.element);</code></pre>
             en: 'Element Reference',
             ko: 'Element 참조',
             ja: 'Element 参照',
-            cn: '元素引用',
+            'zh-cn': '元素引用',
           },
           event: {
             label: {
               en: 'Element Reference',
               ko: 'Element 참조',
               ja: 'Element 参照',
-              cn: '元素引用',
+              'zh-cn': '元素引用',
             },
             content1: {
               en: `Specifies an event handler. <br/>
@@ -1911,7 +1911,7 @@ document.body.appendChild(greeting.element);</code></pre>
                    javascript object で {'event名' : function(event, tmplData, tmplElem, scope) { callback 処理 }} をハンドラーとして指定します。<br/>
                    指定されたイベントハンドラーは addEventListener で Html element へ追加されます。<br/>
                    javascript object ではない Function が指定された場合は click イベントハンドラーの追加して扱われます。`,
-              cn: `指定事件处理程序。<br/>
+              'zh-cn': `指定事件处理程序。<br/>
                    在javascript对象中指定{'事件名称': function(event, tmplData, tmplElem, scope) { 回调处理 }}作为处理程序。<br/>
                    指定的事件处理程序通过addEventListener添加到Html元素中。<br/>
                    如果指定的不是javascript对象而是Function，将被处理为添加click事件处理程序。`,
@@ -1921,31 +1921,31 @@ document.body.appendChild(greeting.element);</code></pre>
                 en: `Handler Parameter`,
                 ko: `핸들러 파라메터`,
                 ja: `Event Object`,
-                cn: `处理程序参数`,
+                'zh-cn': `处理程序参数`,
               },
               event: {
                 en: `Event Object`,
                 ko: `Event Object`,
                 ja: `Event Object`,
-                cn: `事件对象`,
+                'zh-cn': `事件对象`,
               },
               tmplData: {
                 en: `Data parameter when creating a Component`,
                 ko: `Component 작성시의 data 파라메터`,
                 ja: `Component 作成時の data パラメーター`,
-                cn: `创建组件时的数据参数`,
+                'zh-cn': `创建组件时的数据参数`,
               },
               tmplElem: {
                 en: ``,
                 ko: `Component 의 HTML Element`,
                 ja: `Component の HTML Element`,
-                cn: `组件的 HTML 元素`,
+                'zh-cn': `组件的 HTML 元素`,
               },
               scope: {
                 en: `Component 's HTML Element`,
                 ko: `Component 의 tmplScope`,
                 ja: `Component の tmplScope`,
-                cn: `组件的 tmplScope`,
+                'zh-cn': `组件的 tmplScope`,
               },
             },
             Option: {
@@ -1953,25 +1953,25 @@ document.body.appendChild(greeting.element);</code></pre>
                 en: `Option`,
                 ko: `Option`,
                 ja: `Option`,
-                cn: `选项`,
+                'zh-cn': `选项`,
               },
               handler: {
                 en: ``,
                 ko: `복수의 이벤트 핸들러를 지정할 수 있습니다.`,
                 ja: `複数のイベントハンドラーを指定する場合の表現です。`,
-                cn: `这是指定多个事件处理程序时的表达式。`,
+                'zh-cn': `这是指定多个事件处理程序时的表达式。`,
               },
               tmplData: {
                 en: `This is an expression when specifying multiple event handlers.`,
                 ko: `tmplData 입력 받을 데이터를 지정할 수 있습니다.`,
                 ja: `tmplData として使用するデータを強制に指定可能にする表現です。`,
-                cn: `可以指定用作 tmplData 的数据。`,
+                'zh-cn': `可以指定用作 tmplData 的数据。`,
               },
               content1: {
                 en: `This is a sample code when specifying Option.`,
                 ko: `Option 을 지정하는 경우의 예제`,
                 ja: `Option を指定する場合のサンプルコードです。`,
-                cn: `这是指定选项时的示例代码。`,
+                'zh-cn': `这是指定选项时的示例代码。`,
               },
             },
           },
@@ -1979,19 +1979,19 @@ document.body.appendChild(greeting.element);</code></pre>
             en: `Specify a callback and reference the Element if it should be executed after the Element has been loaded.`,
             ko: `Element 가 로딩된 후에 해당 Element 의 참조가 필요한 경우 callback 을 설정해서 Element 를 참조 합니다.`,
             ja: `Element がローディンクされた後に実行する必要がある場合 callback を指定し該当 Element を参照します。`,
-            cn: `如果需要在元素加载后执行，请指定回调并引用该元素。`,
+            'zh-cn': `如果需要在元素加载后执行，请指定回调并引用该元素。`,
           },
           'scopeKey.content1': {
             en: `Refers the specified Element to the tmplScope.`,
             ko: `지정된 Element 를 tmplScope 에 참조시킵니다.`,
             ja: `指定の Element を tmplScope へ参照させます。`,
-            cn: `将指定元素引用到tmplScope。`,
+            'zh-cn': `将指定元素引用到tmplScope。`,
           },
           'var.content1': {
             en: `Makes the specified Element visible as an internal variable.`,
             ko: `지정된 Element 를 내부 변수로서 참조 합니다.`,
             ja: `指定の Element を内部変数として参照可能にします。`,
-            cn: `将指定元素作为内部变量可见。`,
+            'zh-cn': `将指定元素作为内部变量可见。`,
           },
         }
       }
@@ -2047,11 +2047,11 @@ document.body.appendChild(greeting.element);</code></pre>
         ##=i18n.Reference.ElementExpression.load.content1##
         ##%tmpl.docs.CodeTemplate20201({})##
 
-        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-scope-key">data-bridge-scope-key="#\#: #\#"</h4>
+        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-named-element">data-bridge-named-element="#\#: #\#"</h4>
         ##=i18n.Reference.ElementExpression.scopeKey.content1##
         ##%tmpl.docs.CodeTemplate20301({})##
 
-        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-var">data-bridge-var="#\#: #\#"</h4>
+        <h4 id="Docs/Template/Reference/ElementExpression/data-bridge-element-ref">data-bridge-element-ref="#\#: #\#"</h4>
         ##=i18n.Reference.ElementExpression.var.content1##
         ##%tmpl.docs.CodeTemplate20401({})##
 
@@ -2064,7 +2064,7 @@ document.body.appendChild(greeting.element);</code></pre>
             en: `Built-in variable`,
             ko: `내장 변수`,
             ja: `組み込み変数`,
-            cn: `内置变量`,
+            'zh-cn': `内置变量`,
           },
           'data.content1': {
             en: `An Object that references the input values used when creating a Component for use within the Template. <br/>
@@ -2076,7 +2076,7 @@ document.body.appendChild(greeting.element);</code></pre>
             ja: `Component 生成時に使用した入力値を Template 内で使用するために参照する Object です。<br/>
                  Template 登録時に templateSettings の dataKeyName を変えることで名前を変更可能です。<br/>
                  ※example: tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
-            cn: `一个引用创建组件时使用的输入值的对象，供模板内部使用。<br/>
+            'zh-cn': `一个引用创建组件时使用的输入值的对象，供模板内部使用。<br/>
                 您可以通过在注册模板时更改templateSettings的dataKeyName来更改名称。<br/>
                 *示例：tmplTool.addTmpls(templteString, {dataKeyName: "vdataValues"});`,
           },
@@ -2096,7 +2096,7 @@ document.body.appendChild(greeting.element);</code></pre>
                  内部の変化を status へ保管すると refresh, render 後にも再度参照することが可能です。<br/>
                  Template 登録時に templateSettings の statusKeyName を指定することで名前を変更可能です。<br/>
                  ※example: tmplTool.addTmpls(templteString, {statusKeyName: "statusValues"});`,
-            cn: `当您刷新和渲染组件时<br/>
+            'zh-cn': `当您刷新和渲染组件时<br/>
                  组件数据将用输入值重新初始化，因此您将丢失组件内部发生的任何更改。<br/>
                  如果您将内部更改存储在status中，刷新和渲染后仍可以引用它。
                  您可以通过在注册模板时指定templateSetting的statusKeyName来更改名称。<br/>
@@ -2106,68 +2106,68 @@ document.body.appendChild(greeting.element);</code></pre>
             en: `Corresponds to bridge.i18n[tmplId]. Shorten i18n reference names in Templates.`,
             ko: `bridge.i18n[tmplId] 에 해당 합니다. Template 안에서 i18n 참조명을 줄여줍니다.`,
             ja: `bridge.i18n[tmplId] に該当します。Template 内で i18n の参照名を短くします。`,
-            cn: `对应于bridge.i18n[tmplId]。缩短模板中i18n引用名。`,
+            'zh-cn': `对应于bridge.i18n[tmplId]。缩短模板中i18n引用名。`,
           },
           'lazyScope.content1': {
             en: ``,
             ko: ``,
             ja: ``,
-            cn: ``,
+            'zh-cn': ``,
           },
           tmplScope: {
             content1: {
               en: `tmplScope is a reference to Component itself.`,
               ko: `tmplScope 는 Component 자신에 대한 참조 입니다.`,
               ja: `tmplScope は Component 自身の参照です。`,
-              cn: `tmplScope是对组件自身的引用。`,
+              'zh-cn': `tmplScope是对组件自身的引用。`,
             },
             content2: {
               en: `A target that can be referenced even before being Element`,
               ko: `Element 화되기전 부터 참조 가능한 대상`,
               ja: `Element 化される前でも参照可能な対象`,
-              cn: `即使在成为元素之前也可以引用的目标`,
+              'zh-cn': `即使在成为元素之前也可以引用的目标`,
             },
             'tmplId.content1': {
               en: `ID of the Template. You can see which template code was used.`,
               ko: `Template 의 ID 입니다. 어떠한 Template 코드를 사용하여 콤퍼넌트가 생성 되었는지 알 수 있습니다.`,
               ja: `Template の ID です。どのテンプレートコードが使用されたのか分かります。`,
-              cn: `模板的ID。您可以看到使用了哪个模板代码。`,
+              'zh-cn': `模板的ID。您可以看到使用了哪个模板代码。`,
             },
             '_id.content1': {
               en: `ID of the Component. It can be used when you need a unique key like HTML Element id.`,
               ko: `Component 의 ID 입니다. HTML Element の id 같은 unique key가 필요할 경우 사용 합니다.`,
               ja: `Component の ID です。HTML Element の id のように unique key が必要な場合に使用可能です。`,
-              cn: `组件的ID。当您需要像 HTML 元素 id 一样的唯一键时可以使用。`,
+              'zh-cn': `组件的ID。当您需要像 HTML 元素 id 一样的唯一键时可以使用。`,
             },
             'data.content1': {
               en: `tmplScope can also refer to data, which is the input data when generating a Component.`,
               ko: `Component 생성시의 외부 입력값인 data 를 tmplScope 에서도 참조가 가능합니다.`,
               ja: `Component 生成時の入力データである data を tmplScope でも参照可能です。`,
-              cn: `tmplScope也可以引用data，这是生成组件时的输入数据。`,
+              'zh-cn': `tmplScope也可以引用data，这是生成组件时的输入数据。`,
             },
             'status.content1': {
               en: `It seems that tmplScope also refers to the status, which is the internally stored value when the Component is created.`,
               ko: `Component 생성시의 내부 보관값인 status 를 tmplScope 에서도 참조가 가능합니다.`,
               ja: `Component 生成時の内部保管値である status を tmplScope でも参照かのうです。`,
-              cn: `tmplScope也可以引用status，即组件创建时的内部存储值。`
+              'zh-cn': `tmplScope也可以引用status，即组件创建时的内部存储值。`
             },
             'replace.content1': {
               en: `Replaces the Component being displayed on the screen with another Component.`,
               ko: `화면 표시중인 Component 를 다른 Component 로 교체 합니다.`,
               ja: `画面表示中の Component を ほかの Component と入れ替えます。`,
-              cn: `使用另一个组件替换在屏幕上显示的组件。`
+              'zh-cn': `使用另一个组件替换在屏幕上显示的组件。`
             },
             'remove.content1': {
               en: `Removes the Component from the screen.`,
               ko: `해당 Component 를 화면에서 제거 합니다.`,
               ja: `該当 Component を画面からなくします。`,
-              cn: `从屏幕上移除该组件。`
+              'zh-cn': `从屏幕上移除该组件。`
             },
             'appendTo.content1': {
               en: `Append that Component to parentElement.`,
               ko: `해당 Component 를 parentElement 내에 이동하여 삽입합니다.`,
               ja: `該当 Component を parentElement の内部に移動させ差し込みます。`,
-              cn: `将该组件添加到父元素中。`
+              'zh-cn': `将该组件添加到父元素中。`
             },
             'render.content1': {
               en: `Renders the Component again with the data input value. <br/>
@@ -2176,7 +2176,7 @@ document.body.appendChild(greeting.element);</code></pre>
                    이전의 data 를 무시 합니다.`,
               ja: `data 入力値で Component を再度レンダリングします。<br/>
                    以前の data は無視されます。`,
-              cn: `使用数据输入值重新渲染组件。<br/>
+              'zh-cn': `使用数据输入值重新渲染组件。<br/>
                   先前的数据将被忽略。`
             },
             'refresh.content1': {
@@ -2186,20 +2186,20 @@ document.body.appendChild(greeting.element);</code></pre>
                    현재 Component 가 가진 data 와 Object.assign() 로 merge 해서 다시 렌더링 하게 됩니다.`,
               ja: `data 入力値で Component を再度レンダリングします。<br/>
                    現在の Component が持つ data と Object.assign() で merge して再度レンダリングします。`,
-              cn: `使用数据输入值重新渲染组件。<br/>
+              'zh-cn': `使用数据输入值重新渲染组件。<br/>
                    使用Object.assign()将当前组件的数据与输入值合并后重新渲染。`
             },
             'content3': {
               en: `Targets that can be referenced after being Element (can be used with #\#\# #\# )`,
               ko: `Element 화된 이후 부터 참조 가능한 대상 ( #\#\# #\# 에서 사용가능 )`,
               ja: `Element 化された後に参照可能になる対象 ( #\#\# #\# で使用可能 )`,
-              cn: `元素化后可以引用的目标（可在 #\#\# #\# 中使用）`
+              'zh-cn': `元素化后可以引用的目标（可在 #\#\# #\# 中使用）`
             },
             'element.content1': {
               en: `References the rendered HTML Element.`,
               ko: `최종 렌더링 된 HTML Element 참조 합니다.`,
               ja: `レンダリング後の HTML Element を参照します。`,
-              cn: `引用渲染后的HTML元素。`
+              'zh-cn': `引用渲染后的HTML元素。`
             },
           },
         }
@@ -2282,39 +2282,39 @@ document.body.appendChild(greeting.element);</code></pre>
           en: 'Global Engine Setting',
           ko: '엔진 설정',
           ja: 'エンジン設定',
-          cn: '全局引擎设置'
+          'zh-cn': '全局引擎设置'
         },
         Setting: {
           label: {
             en: `Template engine setting`,
             ko: `Template Engine 설정`,
             ja: `Template Engine 設定`,
-            cn: `模板引擎设置`,
+            'zh-cn': `模板引擎设置`,
           },
           content1: {
             en: `You can configure Template Engine options by setting bridge.tmplTool and then loading 'bridge.template.js'.`,
             ko: `bridge.tmplTool 를 설정한 후에 'bridge.template.js' 를 로딩함으로써 Template Engine 의 옵션을 설정 할 수 있습니다.`,
             ja: `bridge.tmplTool を設定してから 'bridge.template.js' をローディンクすることで Template Engine の オプションを設定可能です。`,
-            cn: `您可以通过设置bridge.tmplTool然后加载'bridge.template.js'来配置模板引擎选项。`,
+            'zh-cn': `您可以通过设置bridge.tmplTool然后加载'bridge.template.js'来配置模板引擎选项。`,
           },
           Option: {
             'showTime.content1': {
               en: ``,
               ko: `true 인 경우 Template 컴파일 처리하는 시간을 Console.log() 로 출력합니다.`,
               ja: `true の場合 Template コンパイル処理の時間を Console.log() に出力します。`,
-              cn: `如果为true，将在Console.log()中输出模板编译处理的时间。`,
+              'zh-cn': `如果为true，将在Console.log()中输出模板编译处理的时间。`,
             },
             'debug.content1': {
               en: `If true, output the time of Template compilation processing to Console.log().`,
               ko: `true 인 경우 Template Engine 내의 debug 정보를 Console.log() 로 출력 합니다.`,
               ja: `true の場合 Template Engine 内の debug 情報を Console.log() に出力します。`,
-              cn: `如果为true，将在Console.log()中输出模板引擎内的调试信息。`,
+              'zh-cn': `如果为true，将在Console.log()中输出模板引擎内的调试信息。`,
             },
             'throwError.content1': {
               en: `If true, output error information that occurred during Template compilation to Console.log().`,
               ko: `true 인 경우 Template 컴파일 처리를 할때 발생 하는 에러를 Console.log() 로 출력 합니다.`,
               ja: `true の場合 Template コンパイル処理時に発生したエラー情報を Console.log() に出力します。`,
-              cn: `如果为true，将在Console.log()中输出模板编译处理过程中发生的错误信息。`,
+              'zh-cn': `如果为true，将在Console.log()中输出模板编译处理过程中发生的错误信息。`,
             },
           }
         }
@@ -2364,7 +2364,7 @@ document.body.appendChild(greeting.element);</code></pre>
             en: `bridge.tmplTool configuration`,
             ko: `bridge.tmplTool 구성`,
             ja: `bridge.tmplTool 構成`,
-            cn: `bridge.tmplTool 配置`,
+            'zh-cn': `bridge.tmplTool 配置`,
           },
           'escapeHtml.content1': {
             en: `Performs escape and unescape processing for strings. <br/>
@@ -2373,7 +2373,7 @@ document.body.appendChild(greeting.element);</code></pre>
                  HTML Tag 를 처리할 때 사용 합니다.`,
             ja: `文字列の escape, unescape 処理を行います。<br/>
                  HTML Tag を処理する場合に使用します。`,
-            cn: `对字符串执行转义和反转义处理。<br/>
+            'zh-cn': `对字符串执行转义和反转义处理。<br/>
                  在处理HTML标签时使用。`,
           }
         }
@@ -2484,7 +2484,7 @@ document.body.appendChild(greeting.element);</code></pre>
               en: `Compile a single Template with the name given by templateName.`,
               ko: `하나의 Template 를 templateName 지정의 이름으로 컴파일 합니다.`,
               ja: `一つの Template を templateName 指定の名前でコンパイルします。`,
-              cn: `使用templateName指定的名称编译单个模板。`,
+              'zh-cn': `使用templateName指定的名称编译单个模板。`,
             },
             content2: {
               en: `Capabilities can be extended by adding or modifying compile-time analysis engines. <br/>
@@ -2501,7 +2501,7 @@ document.body.appendChild(greeting.element);</code></pre>
                    Template 해석기의 표현들은 다음과 같이 구성되어 있습니다.`,
               ja: `Template を作成する開発者は専用のコンパイル解析エンジンを追加または修正することで Template を好きな形で作成できます。<br/>
                    Template 解析エンジンは以下のように構成されています。`,
-              cn: `创建模板的开发者可以通过添加或修改专用的编译分析引擎来按自己的方式创建模板。<br/>
+              'zh-cn': `创建模板的开发者可以通过添加或修改专用的编译分析引擎来按自己的方式创建模板。<br/>
                    模板解析引擎的配置如下：`,
             },
             tmplSettings: {
@@ -2509,19 +2509,19 @@ document.body.appendChild(greeting.element);</code></pre>
                 en: `The parsing engine specifies a regular expression pattern for detecting expressions to act on.`,
                 ko: `해석기가 작동하는 표현을 검치하기 위한 정규식 패턴을 지정합니다.`,
                 ja: `解析エンジンは作動する表現を検知するための正規表現のパターンを指定します。`,
-                cn: `解析引擎指定一个正则表达式模式来检测要处理的表达式。`,
+                'zh-cn': `解析引擎指定一个正则表达式模式来检测要处理的表达式。`,
               },
               'exec.content1': {
                 en: `Defines a parser that processes strings detected by pattern and returns them.`,
                 ko: `pattern 으로 검출한 문자열을 가공하여 return 하는 문자열 해석을 정의 합니다.`,
                 ja: `pattern で検出した文字列を加工し return する 文字列解析を定義します。`,
-                cn: `定义一个解析器，处理由模式检测到的字符串并返回它们。`,
+                'zh-cn': `定义一个解析器，处理由模式检测到的字符串并返回它们。`,
               },
               'lazyExec.content1': {
                 en: `Defines a process for manipulating an Element when it is created after executing exec.`,
                 ko: `exec 의 실행 이후에 Element 의 생성시 Element 를 조작하는 처리를 정의 합니다.`,
                 ja: `exec の実行後に Element の生成時に Element を操作する処理を定義します。`,
-                cn: `定义一个过程，在执行exec后创建元素时操作该元素。`,
+                'zh-cn': `定义一个过程，在执行exec后创建元素时操作该元素。`,
               },
             },
           },
@@ -2567,25 +2567,25 @@ document.body.appendChild(greeting.element);</code></pre>
             en: `Compile multiple Templates in sets.`,
             ko: `복수의 Template 을 세트로 컴파일 합니다.`,
             ja: `複数の Template をセットでコンパイルします。`,
-            cn: `成组编译多个模板。`,
+            'zh-cn': `成组编译多个模板。`,
           },
           'addTmplByUrl.content1': {
             en: `Load and compile the Template set file.`,
             ko: `Template 세트를 담은 파일을 로드 하여 컴파일 합니다.`,
             ja: `Template セットファイルをロードしコンパイルします。`,
-            cn: `加载并编译模板集文件。`,
+            'zh-cn': `加载并编译模板集文件。`,
           },
           'addI18n.content1': {
             en: `Add one key, value for multilingual support.`,
             ko: `다국어 지원을 위한 하나의 key, value 를 추가 합니다.`,
             ja: `多言語支援のための一つの key, value を追加します。`,
-            cn: `为多语言支持添加一个key和value。`,
+            'zh-cn': `为多语言支持添加一个key和value。`,
           },
           'addI18ns.content1': {
             en: `Add multiple keys, values at the same time for multilingual support.`,
             ko: `다국어 지원을 위한 다수의 key, value 를 동시에 추가 합니다.`,
             ja: `多言語支援のための多数の key, value を同時に追加します。`,
-            cn: `为多语言支持同时添加多个key和value。`,
+            'zh-cn': `为多语言支持同时添加多个key和value。`,
           },
           'genId.content1': {
             en: `A Function that generates the _id when the Component is generated. <br/>
@@ -2594,14 +2594,14 @@ document.body.appendChild(greeting.element);</code></pre>
                  Template의 { tmplId + Component 생성순번 } 으로 _id 를 생성 합니다.`,
             ja: `Component 生成時に _id を生成する Function です。<br/>
                  Template は { tmplId + Component 生成順番 } で _id を生成します。`,
-            cn: `在生成组件时生成_id的函数。<br/>
+            'zh-cn': `在生成组件时生成_id的函数。<br/>
                  模板使用 { tmplId + 组件生成顺序 } 生成_id。`,
           },
           'tag.content1': {
             en: `A util for generating HTML Elements.`,
             ko: `HTML Element 를 생성하는데 사용하는 util 입니다.`,
             ja: `HTML Element を生成するための util です。`,
-            cn: `用于生成HTML元素的工具。`,
+            'zh-cn': `用于生成HTML元素的工具。`,
           },
         }
       }
@@ -2649,7 +2649,7 @@ document.body.appendChild(greeting.element);</code></pre>
           en: 'Using Components',
           ko: 'Component 사용',
           ja: 'Component 使用',
-          cn: '使用组件',
+          'zh-cn': '使用组件',
         },
       }
     }
@@ -2697,7 +2697,7 @@ document.body.appendChild(greeting.element);</code></pre>
       en: 'Calculator',
       ko: '계산기',
       ja: '計算機',
-      cn: '计算器'
+      'zh-cn': '计算器'
     }
   });
   ##
@@ -2721,7 +2721,7 @@ document.body.appendChild(greeting.element);</code></pre>
           ##%tmpl.bs.ListGroup({active: true, items: item.tmpl.getSidemenu()})##
         ##});##
       </div>
-      <div class="col-xs-9 mainArea" data-bridge-var="##:docsMain##"></div>
+      <div class="col-xs-9 mainArea" data-bridge-element-ref="##:docsMain##"></div>
     </div>
   </div>
 </template>
@@ -2737,7 +2737,7 @@ document.body.appendChild(greeting.element);</code></pre>
       en: 'Sample Code',
       ko: '코드예',
       ja: 'サンプルコード',
-      cn: '代码示例'
+      'zh-cn': '代码示例'
     }
   });
   ##
@@ -2750,7 +2750,7 @@ document.body.appendChild(greeting.element);</code></pre>
   ##
   <div class="docs-Tutorial-Calculator" id="Calculator">
     <h1 id="Tutorial/Calculator">##=i18n.label##</h1>
-    <div data-bridge-var="##:continer##"></div>
+    <div data-bridge-element-ref="##:continer##"></div>
   </div>
   ###
   genSidemenu({munuList: munuList, element: this});

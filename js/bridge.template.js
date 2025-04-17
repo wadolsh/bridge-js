@@ -12,7 +12,7 @@ if (typeof window === 'undefined') {
 }
 */
 
-export const { bridge, tmpl } = function () {
+(function() {
   "use strict";
 
   // Polyfill
@@ -200,42 +200,36 @@ export const { bridge, tmpl } = function () {
         );
       },
     },
-    scopeKey: {
-      pattern: /data-bridge-scope-key="##:([\s\S]+?)##"/g,
+    namedElement: {
+      pattern: /data-bridge-named-element="##:([\s\S]+?)##"/g,
       exec: function (key) {
         let source =
-          "';\nlet eventId = (lazyScope.scopeKeyArray.length);\n__p+='data-bridge-scope-key=\"'+eventId+'\"';\n";
-        source += "lazyScope.scopeKeyArray[eventId] = " + key + ";\n__p+='";
+          "';\nlet eventId = (lazyScope.namedElementArray.length);\n__p+='data-bridge-named-element=\"'+eventId+'\"';\n";
+        source += "lazyScope.namedElementArray[eventId] = " + key + ";\n__p+='";
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
-        lazyScope.scopeKeyArray.forEach(function (key, eventId) {
+        lazyScope.namedElementArray.forEach(function (key, eventId) {
           let $elementTrigger = wrapper.querySelector(
-            '[data-bridge-scope-key="' + eventId + '"]'
+            '[data-bridge-named-element="' + eventId + '"]'
           );
           if (!$elementTrigger) return;
-          delete $elementTrigger.dataset.bridgeScopeKey;
+          delete $elementTrigger.dataset.bridgeNamedElement;
           tmplScope[key] = $elementTrigger;
         });
       },
     },
-    scopeVar: {
-      pattern: /data-bridge-var="##:([\s\S]+?)##"/g,
+    elementRef: {
+      pattern: /data-bridge-element-ref="##:([\s\S]+?)##"/g,
       exec: function (key) {
-        let source =
-          "';\n(() => {let eventId = (lazyScope.scopeVarArray.length);\n__p+='data-bridge-var=\"'+eventId+'\"';\n";
-        source +=
-          "let " +
-          key +
-          " = null;\nlazyScope.scopeVarArray[eventId] = function(target) {" +
-          key +
-          " = target;};})()\n__p+='";
+        var source = "';\nvar eventId = (lazyScope.elementRefArray.length);\n__p+='data-bridge-element-ref=\"'+eventId+'\"';\n";
+        source += "var " + key + " = null;\nlazyScope.elementRefArray[eventId] = function(target) {" + key + " = target;};\n__p+='";
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
-        lazyScope.scopeVarArray.forEach(function (func, eventId) {
+        lazyScope.elementRefArray.forEach(function (func, eventId) {
           let $elementTrigger = wrapper.querySelector(
-            '[data-bridge-var="' + eventId + '"]'
+            '[data-bridge-element-ref="' + eventId + '"]'
           );
           if (!$elementTrigger) return;
           delete $elementTrigger.dataset.bridgeVar;
@@ -391,6 +385,7 @@ export const { bridge, tmpl } = function () {
           tmplScope.trigger[triggerKey] = {};
         }
         Object.keys(eventFunc).forEach(function (eventType) {
+          console.log(eventType);
           if (eventType == "load") {
             //let parentElement = $targetElement || $childTarget.parentElement;
             //eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
@@ -1417,12 +1412,12 @@ export const { bridge, tmpl } = function () {
                     <button data-bridge-event="##:() => source.classList.toggle('hide')##">Compiled source</button>
                   </div>
                   <hr>
-                  <div class="templateText hide" data-bridge-var="##:templateText##">
+                  <div class="templateText hide" data-bridge-element-ref="##:templateText##">
                     <h2>Template source</h2>
                     <pre><code class="language-javascript">##=templateMeta.templateText##</code></pre>
                   </div>
                   <hr>
-                  <div class="source hide" data-bridge-var="##:source##">
+                  <div class="source hide" data-bridge-element-ref="##:source##">
                     <h2>Compiled source</h2>
                     <pre><code class="language-javascript">##=templateMeta.source##</code></pre>
                   </div>
@@ -1455,4 +1450,4 @@ export const { bridge, tmpl } = function () {
           ##`
   );
   return { bridge: root.bridge, tmpl: root.tmpl };
-}.call(this ?? window);
+}).call(this);

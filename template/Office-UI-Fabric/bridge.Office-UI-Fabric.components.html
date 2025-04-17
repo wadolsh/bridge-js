@@ -701,7 +701,7 @@
   ##
   <div class="ms-PeoplePicker ms-PeoplePicker--##=typeClass## ##=data.class##">
     ##if (data.label) {##<label class="ms-Label">##=data.label##</label>##}##
-    <div class="ms-PeoplePicker-searchBox" data-bridge-scope-key="##:'SearchBoxSelection'##">
+    <div class="ms-PeoplePicker-searchBox" data-bridge-named-element="##:'SearchBoxSelection'##">
       ##if(!isOutResultType) (data.selectedItems || []).forEach(function(personaData) {
         personaData.removeElementEvent = removeElementEvent;
         personaData.Persona = Persona;
@@ -753,7 +753,7 @@
       <div class="ms-PeoplePicker-selectedHeader">
         <span class="ms-PeoplePicker-selectedCount"></span> newly added member<span>s</span>
       </div>
-      <ul class="ms-PeoplePicker-selectedPeople" data-bridge-scope-key="##:'SelectedPeople'##">
+      <ul class="ms-PeoplePicker-selectedPeople" data-bridge-named-element="##:'SelectedPeople'##">
         ##(data.selectedItems || []).forEach(function(personaData) {
           personaData.removeElementEvent = removeElementEvent;
           personaData.Persona = Persona;
@@ -797,10 +797,10 @@
   };
   ##
   <div class="ms-ProgressIndicator">
-    <div class="ms-ProgressIndicator-itemName" data-bridge-scope-key="##:'itemName'##">##=data.itemName##</div>
-    <div class="ms-ProgressIndicator-itemProgress" data-bridge-scope-key="##:'itemProgress'##">
+    <div class="ms-ProgressIndicator-itemName" data-bridge-named-element="##:'itemName'##">##=data.itemName##</div>
+    <div class="ms-ProgressIndicator-itemProgress" data-bridge-named-element="##:'itemProgress'##">
       <div class="ms-ProgressIndicator-progressTrack"></div>
-      <div class="ms-ProgressIndicator-progressBar" data-bridge-scope-key="##:'progressBar'##"></div>
+      <div class="ms-ProgressIndicator-progressBar" data-bridge-named-element="##:'progressBar'##"></div>
     </div>
     <div class="ms-ProgressIndicator-itemDescription">##=data.itemDescription##</div>
   </div>

@@ -368,7 +368,7 @@
         ##
         <div class="demo-ColorPicker">
           <div class="demo-ColorPicker-controls">
-            <div class="demo-ColorPicker-preview" data-bridge-var="##:previewElement##" style="background-color: rgb(##=red##, ##=green##, ##=blue##);"></div>
+            <div class="demo-ColorPicker-preview" data-bridge-element-ref="##:previewElement##" style="background-color: rgb(##=red##, ##=green##, ##=blue##);"></div>
             <div>
               <div class="demo-ColorPicker-slider">
                 <label style="color: red;">R</label>
@@ -379,7 +379,7 @@
                   value="##=red##" 
                   data-bridge-event="##:{input: tmplScope.updateRed}##"
                 >
-                <span data-bridge-var="##:redElement##">##=red##</span>
+                <span data-bridge-element-ref="##:redElement##">##=red##</span>
               </div>
               <div class="demo-ColorPicker-slider">
                 <label style="color: green;">G</label>
@@ -390,7 +390,7 @@
                   value="##=green##" 
                   data-bridge-event="##:{input: tmplScope.updateGreen}##"
                 >
-                <span data-bridge-var="##:greenElement##">##=green##</span>
+                <span data-bridge-element-ref="##:greenElement##">##=green##</span>
               </div>
               <div class="demo-ColorPicker-slider">
                 <label style="color: blue;">B</label>
@@ -401,11 +401,11 @@
                   value="##=blue##" 
                   data-bridge-event="##:{input: tmplScope.updateBlue}##"
                 >
-                <span data-bridge-var="##:blueElement##">##=blue##</span>
+                <span data-bridge-element-ref="##:blueElement##">##=blue##</span>
               </div>
             </div>
           </div>
-          <div class="demo-ColorPicker-value" data-bridge-var="##:hexColorElement##"></div>
+          <div class="demo-ColorPicker-value" data-bridge-element-ref="##:hexColorElement##"></div>
         </div>
         ###
         updateHexColor();

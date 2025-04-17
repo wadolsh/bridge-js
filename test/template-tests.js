@@ -20,38 +20,38 @@ function runTemplateTests() {
       
       BridgeTest.assertEquals(result.element.textContent, 'Hello, Bridge!', 'Data should be correctly bound');
     });
-    
+
     // Conditional test (##if...##)
     BridgeTest.it('should support conditionals', function() {
       bridge.tmplTool.addTmpl('test-conditional', '##if(data.show){##Visible##}else{##Hidden##}##');
       const tmpl = bridge.tmpl('test-conditional');
-      
+
       const visibleResult = tmpl({ show: true });
       BridgeTest.assertEquals(visibleResult.element.textContent, 'Visible', 'Should show correct content when condition is true');
-      
+
       const hiddenResult = tmpl({ show: false });
       BridgeTest.assertEquals(hiddenResult.element.textContent, 'Hidden', 'Should show correct content when condition is false');
     });
-    
+
     // Loop test
     BridgeTest.it('should support loops', function() {
       bridge.tmplTool.addTmpl('test-loop', '##for(let i=0; i<data.items.length; i++){##Item: ##=data.items[i]####if(i < data.items.length-1){##, ##}####}##');
       const tmpl = bridge.tmpl('test-loop');
       const result = tmpl({ items: ['A', 'B', 'C'] });
-      
+
       BridgeTest.assertEquals(result.element.textContent, 'Item: A, Item: B, Item: C', 'Loop should work correctly');
     });
-    
+
     // Element insertion test (##%)
     BridgeTest.it('should support element insertion', function() {
       const element = document.createElement('span');
       element.textContent = 'Injected Element';
-      
+
       // Fixing the template by wrapping in a div
       bridge.tmplTool.addTmpl('test-element-insertion', '<div>Before ##%data.element## After</div>');
       const tmpl = bridge.tmpl('test-element-insertion');
       const result = tmpl({ element: element });
-      
+
       BridgeTest.assertTrue(result.element.contains(element), 'Inserted element should be included in the result');
       BridgeTest.assertContains(result.element.textContent, 'Before Injected Element After', 'Content of the inserted element should be included');
     });
@@ -61,7 +61,7 @@ function runTemplateTests() {
       bridge.tmplTool.addTmpl('test-escape', '##-data.html##');
       const tmpl = bridge.tmpl('test-escape');
       const result = tmpl({ html: '<div>Test</div>' });
-      
+
       BridgeTest.assertEquals(result.element.textContent, '<div>Test</div>', 'HTML should be escaped');
       BridgeTest.assertTrue(!result.element.querySelector('div'), 'HTML should not be rendered');
     });

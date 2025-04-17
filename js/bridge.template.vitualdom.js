@@ -225,34 +225,34 @@
         return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
       }
     },
-    scopeKey: {
-      pattern: /data-bridge-scope-key="##:([\s\S]+?)##"/g,
+    namedElement: {
+      pattern: /data-bridge-named-element="##:([\s\S]+?)##"/g,
       exec: function(key) {
-        var source = "';\nvar eventId = (lazyScope.scopeKeyArray.length);\n__p+='data-bridge-scope-key=\"'+eventId+'\"';\n";
-        source += "lazyScope.scopeKeyArray[eventId] = " + key + ";\n__p+='";
+        var source = "';\nvar eventId = (lazyScope.namedElementArray.length);\n__p+='data-bridge-named-element=\"'+eventId+'\"';\n";
+        source += "lazyScope.namedElementArray[eventId] = " + key + ";\n__p+='";
         return source;
       },
       lazyExec: function(data, lazyScope, tmplScope, wrapper) {
-        lazyScope.scopeKeyArray.forEach(function(key, eventId) {
-          var $elementTrigger = wrapper.querySelector('[data-bridge-scope-key="' + eventId + '"]');
+        lazyScope.namedElementArray.forEach(function(key, eventId) {
+          var $elementTrigger = wrapper.querySelector('[data-bridge-named-element="' + eventId + '"]');
           if (!$elementTrigger) return;
-          delete $elementTrigger.dataset.bridgeScopeKey;
+          delete $elementTrigger.dataset.bridgeNamedElement;
           tmplScope[key] = $elementTrigger;
         });
       }
     },
-    scopeVar: {
-      pattern: /data-bridge-var="##:([\s\S]+?)##"/g,
+    elementRef: {
+      pattern: /data-bridge-element-ref="##:([\s\S]+?)##"/g,
       exec: function(key) {
-        var source = "';\nvar eventId = (lazyScope.scopeVarArray.length);\n__p+='data-bridge-var=\"'+eventId+'\"';\n";
-        source += "var " + key + " = null;\nlazyScope.scopeVarArray[eventId] = function(target) {" + key + " = target;};\n__p+='";
+        var source = "';\nvar eventId = (lazyScope.elementRefArray.length);\n__p+='data-bridge-element-ref=\"'+eventId+'\"';\n";
+        source += "var " + key + " = null;\nlazyScope.elementRefArray[eventId] = function(target) {" + key + " = target;};\n__p+='";
         return source;
       },
       lazyExec: function(data, lazyScope, tmplScope, wrapper) {
-        lazyScope.scopeVarArray.forEach(function(func, eventId) {
-          var $elementTrigger = wrapper.querySelector('[data-bridge-var="' + eventId + '"]');
+        lazyScope.elementRefArray.forEach(function(func, eventId) {
+          var $elementTrigger = wrapper.querySelector('[data-bridge-element-ref="' + eventId + '"]');
           if (!$elementTrigger) return;
-          delete $elementTrigger.dataset.bridgeVar;
+          delete $elementTrigger.dataset.bridgeElementRef;
           func.call($elementTrigger, $elementTrigger);
         });
       }

@@ -101,18 +101,18 @@
       options.forEach(function(option) {##
       <div class="##=data.type + (data.inline ? '-inline' : '')## ##=data.optionClass##">
         <label>
-          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value != undefined ? option.value : option)##" ##=BS.prop(data.prop)## ##=(option.checked != undefined) ? (option.checked ? 'checked' : null) : (data.value == (option.value || option)) ? 'checked' : null## data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label == undefined ? option : option.label)##
+          &lt;input type="##=data.type##" name="##=data.name##" value="##=(option.value != undefined ? option.value : option)##" ##=BS.prop(data.prop)## ##=(option.checked != undefined) ? (option.checked ? 'checked' : null) : (data.value == (option.value || option)) ? 'checked' : null## data-bridge-named-element="##:'input'##" data-bridge-event="##:data.event##"&gt;##=(option.label == undefined ? option : option.label)##
         </label>
       </div>
       ##});
     } else if (data.type == 'select') {##
-      <select class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" data-bridge-scope-key="##:'input'##" data-bridge-event="##:data.event##">
+      <select class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" data-bridge-named-element="##:'input'##" data-bridge-event="##:data.event##">
         ##data.options.forEach(function(option) {##
         &lt;option value="##=option.value || option##" ##=data.value == (option.value != undefined ? option.value : option) ? 'selected="selected"' : null##&gt;##=option.label || option##</option>
         ##});##
       </select>
     ##} else {##
-      &lt;input type="##=data.type || 'text'##" class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" value="##=data.value##" placeholder="##=data.placeholder##" ##=data.readonly ? 'readonly' : ''## ##=data.disabled ? 'disabled' : ''## data-bridge-scope-key="##:'input'##" data-bridge-event="##:[enterKeyEvent, data.event]##" ##=data.type == 'search' ? 'list="' + (data.listId || 'datalist_' + data.name) + '"' : null##&gt;
+      &lt;input type="##=data.type || 'text'##" class="form-control ##=size ? 'input-' + size : ''##" name="##=data.name##" value="##=data.value##" placeholder="##=data.placeholder##" ##=data.readonly ? 'readonly' : ''## ##=data.disabled ? 'disabled' : ''## data-bridge-named-element="##:'input'##" data-bridge-event="##:[enterKeyEvent, data.event]##" ##=data.type == 'search' ? 'list="' + (data.listId || 'datalist_' + data.name) + '"' : null##&gt;
         ##if(data.type == 'search' && data.options) {##
         <datalist id="##=data.listId || 'datalist_' + data.name##">
           ##data.options.forEach(function(option) {##
@@ -255,7 +255,7 @@
     }
   }
   ##
-  <ul class="list-group ##=styleClass##" data-bridge-var="##:ul##">
+  <ul class="list-group ##=styleClass##" data-bridge-element-ref="##:ul##">
   ##if (data.items) data.items.forEach(function(selected) {##
     ##if (selected instanceof Element) {##
       ##%selected##
@@ -294,7 +294,7 @@
     e.target.parentElement.classList.add('active');
   }
   ##
-  <ul class="nav nav-##=typeClass## ##=data.class##" data-bridge-var="##:ul##">
+  <ul class="nav nav-##=typeClass## ##=data.class##" data-bridge-element-ref="##:ul##">
   ##if (data.items) data.items.forEach(function(selected) {##
     ##if (selected instanceof Element) {##
       ##%selected##
@@ -455,7 +455,7 @@
         ##%data.header##
         ##if (data.brand) {##<a class="navbar-brand" href="##=data.brand.href || '#'##" data-bridge-event="##:data.brand.event##">##%data.brand.content || data.brand##</a>##}##
       </div>
-      <div class="collapse navbar-collapse" data-bridge-var="##:collapse##">
+      <div class="collapse navbar-collapse" data-bridge-element-ref="##:collapse##">
         ##%data.content##
         ##%data.items ? tmpl.bs.NavbarLi({items: data.items}) : null##
       </div>
@@ -471,7 +471,7 @@
     e.target.parentElement.classList.add('active');
   }
   ##
-  <ul class="nav navbar-nav ##=data.class##" data-bridge-var="##:ul##">
+  <ul class="nav navbar-nav ##=data.class##" data-bridge-element-ref="##:ul##">
     ##items.forEach(function(item) {
       if (item.element) {##
     ##%item##

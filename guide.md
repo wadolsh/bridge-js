@@ -171,10 +171,10 @@ You can also pass parameters to event handlers:
 #### `data-bridge-load="handler"`
 Specifies a function to run when the element is loaded.
 
-#### `data-bridge-scope-key="key: value"`
+#### `data-bridge-named-element="key: value"`
 Sets properties on the template scope.
 
-#### `data-bridge-var="var: value"`
+#### `data-bridge-element-ref="var: value"`
 Binds a variable to an element.
 
 ### Built-in Variables

@@ -501,7 +501,7 @@
   tmplScope.setWindow(targetWindow);
   ##
   <div class="pg-Console-Area" style="##=show ? '' : 'display: none;'##">
-    <div class="logArea" data-bridge-var="##:area##"></div>
+    <div class="logArea" data-bridge-element-ref="##:area##"></div>
     <div class="controlArea">
       ##%tmpl.bs.Field({class: '', size: 'sm', enterKeyEvent: function(e) {
         var command = e.target.value.trim();

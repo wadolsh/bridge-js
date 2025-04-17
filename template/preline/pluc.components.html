@@ -477,7 +477,7 @@
     ##
     <select
       data-bridge-event="##:event##"
-      data-bridge-var="##:select##"
+      data-bridge-element-ref="##:select##"
       ##=bridge.tmplTool.props({
         id: tmplScope._id,
         multiple: multiple,
@@ -562,7 +562,7 @@
     };
     
     ##
-    <input data-bridge-var="##:input##"
+    <input data-bridge-element-ref="##:input##"
       data-bridge-event="##:[enterKeyEvent, event]##"
       ##=bridge.tmplTool.props({
         "type": "text",
@@ -603,7 +603,7 @@
       ##=group.label##
       </span>
       ##}##
-      <input data-bridge-var="##:input##"
+      <input data-bridge-element-ref="##:input##"
         data-bridge-event="##:[enterKeyEvent, event]##"
         ##=bridge.tmplTool.props({
           "type": "text",

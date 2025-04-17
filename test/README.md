@@ -28,7 +28,7 @@ A test suite for validating the functionality of the Bridge-js library.
 2. Nested HTML element creation
 3. Data-bound attributes
 4. Event binding
-5. Element references via scope-key
+5. Element references via named-element
 6. Template rendering and updating
 
 ## Usage

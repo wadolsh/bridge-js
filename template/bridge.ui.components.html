@@ -692,7 +692,7 @@
     ##%tmpl.brui.WindowDrag(Object.assign({style: {left:'20px', right:'40px', top: '0', width: 'initial'}}, data.windowDrag))##
     ##%tmpl.brui.WindowMaximizar(Object.assign({style: {right:'20px', top: '0'}}, data.windowMax))##
     ##%tmpl.brui.WindowCloser(Object.assign({style: {right:'0', top: '0'}}, data.windowClose))##
-    ##if (data.title) { ##<div class="brui-Window-Title ##=data.titleClass##" data-bridge-scope-key="##:'title'##">##=data.title##</div>##}##
+    ##if (data.title) { ##<div class="brui-Window-Title ##=data.titleClass##" data-bridge-named-element="##:'title'##">##=data.title##</div>##}##
     ##if (data.content) { ##<div class="brui-Window-Content ##=data.contentClass##" style="##=data.contentStyle##">##%data.content##</div>##}##
     ##if (data.footer) { ##<div class="brui-Window-Footer ##=data.footerClass##" style="##=data.footerStyle##">##%data.footer##</div>##}##
     ##%bridge.tmpl('brui-WindowResize')(Object.assign({style: {right:'0', bottom: '0'}}, data.windowResize))##
@@ -958,7 +958,7 @@
       }, 10);
     }}##"></span>
     ##}##
-    <span class="brui-SplitterIcon" data-bridge-scope-key="##:'resizeIcon'##" data-bridge-event="##:event##" draggable="true"></span>
+    <span class="brui-SplitterIcon" data-bridge-named-element="##:'resizeIcon'##" data-bridge-event="##:event##" draggable="true"></span>
   </div>
 </template>
 

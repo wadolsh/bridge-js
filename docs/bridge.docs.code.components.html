@@ -152,7 +152,7 @@ tmplScope.getCode = function() {
 </template>
 
 <template id="docs-Code-Template-008-02">
-  <pre><code class="language-javascript escaped" data-bridge-var="##:code##">
+  <pre><code class="language-javascript escaped" data-bridge-element-ref="##:code##">
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate00802.components.html', function(text) {
     code.innerText = text;
@@ -174,7 +174,7 @@ tmplScope.getCode = function() {
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10101.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -206,7 +206,7 @@ document.body.appendChild(sample6.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10201.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -237,7 +237,7 @@ document.body.appendChild(sample6.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10301.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -274,7 +274,7 @@ document.body.appendChild(sample6.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10302.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -308,7 +308,7 @@ tmplScope.getCode = function() {
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10401.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -335,7 +335,7 @@ document.body.appendChild(sample4.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10501.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -354,7 +354,7 @@ document.body.appendChild(sample1.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate10601.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -375,7 +375,7 @@ document.body.appendChild(sample2.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate20101.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -403,7 +403,7 @@ document.body.appendChild(sample4.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate20102.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -425,7 +425,7 @@ document.body.appendChild(sample2.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate20201.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -445,7 +445,7 @@ document.body.appendChild(sample1.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate20301.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -465,7 +465,7 @@ document.body.appendChild(sample1.element);`,
   ##
   var testArea = null;
   ##
-  <div data-bridge-var="##:continer##"></div>
+  <div data-bridge-element-ref="##:continer##"></div>
   ###
   requestGetText('docs/CodeTemplate/docs.CodeTemplate20401.components.html', function(text) {
     testArea = tmpl.pg.TestArea({
@@ -661,7 +661,7 @@ bridge.tmplTool.addI18n('docsDocsTemplate.lable305.example1', {
     en: 'ACCEPT',
     ko: '승인',
     ja: '承認',
-    cn: '批准'
+    'zh-cn': '批准'
 });
 
 bridge.tmplTool.addTmplByUrl([
@@ -687,7 +687,7 @@ bridge.tmplTool.addTmplByUrl([
           {label: 'EN', event: langSelect('en')},
           {label: 'KO', event: langSelect('ko')},
           {label: 'JA', event: langSelect('ja')},
-          {label: 'CN', event: langSelect('cn')}
+          {label: 'ZH-CN', event: langSelect('zh-cn')}
         ]
       },
       content: example1
@@ -726,13 +726,13 @@ bridge.tmplTool.addI18ns({
     en: 'ACCEPT',
     ko: '승인',
     ja: '承認',
-    cn: '批准'
+    'zh-cn': '批准'
   },
   'docsDocsTemplate.lable306.example2': {
     en: 'Template Engin',
     ko: '템플릿 엔진',
     ja: 'テンプレートエンジン',
-    cn: '模板引擎'
+    'zh-cn': '模板引擎'
   }
 });
 

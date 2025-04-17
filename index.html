@@ -22,9 +22,11 @@
     </style>
   </head>
   <body></body>
-  <script type="text/javascript">
+
+  <script>
+
     if (window.location.port == 3001) {
-      var script = document.createElement('script');
+      let script = document.createElement('script');
       script.src = "js/util/bridge.loader.js";
       script.async = '';
       script.onload = function() {
@@ -36,7 +38,7 @@
       document.head.appendChild(script);
     }
 
-    var lang = document.documentElement.lang;
+    let lang = document.documentElement.lang;
     bridge.tmplTool.addTmplByUrl([
         'template/bridge.ui.components.html',
         'template/bridge.pg.components.html',
@@ -48,19 +50,19 @@
         document.body.appendChild(tmpl.docs.Base({}).element);
       /*
       window.onload = function() {
-        var hashArray = location.hash.replace('#', '').split('/');
-        var hash = !hashArray[0] ? 'Docs' : location.hash;
+        let hashArray = location.hash.replace('#', '').split('/');
+        let hash = !hashArray[0] ? 'Docs' : location.hash;
         document.querySelector("a[href='" + hash + "']").click();
       }
       */
     });
 
-    var getTypePresetHeader = {
+    let getTypePresetHeader = {
       text: {},
       json: {'Content-Type': 'application/json'},
       xml: {}
     }
-    var parser = {
+    let parser = {
       text: function(str) {
         return str;
       },
@@ -71,10 +73,10 @@
         return (new DOMParser()).parseFromString(str,"text/xml");
       }
     };
-    var requestFunc = function(url, getType, callback, option) {
+    let requestFunc = function(url, getType, callback, option) {
       //memberObj.log(('URL : ' + url) + (option.body ? ' , BODY : ' + option.body : ''), '');
-      var sidebar = document.querySelector('.sidebar');
-      var xmlhttp = new XMLHttpRequest();
+      let sidebar = document.querySelector('.sidebar');
+      let xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == XMLHttpRequest.DONE) {
           if (xmlhttp.status == 200) {
@@ -91,7 +93,7 @@
       if (option) {
         xmlhttp.open(option.method || 'POST', url, true);
         xmlhttp.timeout = 60000;
-        var presetHeader = getTypePresetHeader[getType || 'text'];
+        let presetHeader = getTypePresetHeader[getType || 'text'];
         Object.keys(presetHeader).forEach(function(key) {
           xmlhttp.setRequestHeader(key, presetHeader[key]);
         })
@@ -106,13 +108,13 @@
       }
       if (sidebar) sidebar.classList.add('send');
     };
-    var requestPost = function(url, body, callback) {
+    let requestPost = function(url, body, callback) {
       requestFunc(url, 'json', callback, {method: 'POST', body: JSON.stringify(body)});
     }
-    var requestGetJson = function(url, callback) {
+    let requestGetJson = function(url, callback) {
       requestFunc(url, 'json', callback, {method: 'GET'});
     }
-    var requestGetText = function(url, callback) {
+    let requestGetText = function(url, callback) {
       requestFunc(url, 'text', callback, {method: 'GET'});
     }
   </script>

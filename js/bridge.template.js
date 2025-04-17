@@ -385,7 +385,6 @@ if (typeof window === 'undefined') {
           tmplScope.trigger[triggerKey] = {};
         }
         Object.keys(eventFunc).forEach(function (eventType) {
-          console.log(eventType);
           if (eventType == "load") {
             //let parentElement = $targetElement || $childTarget.parentElement;
             //eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);

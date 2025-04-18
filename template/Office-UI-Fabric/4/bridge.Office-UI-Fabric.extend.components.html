@@ -6,7 +6,7 @@
     var br = bridge;
     var mode = data.mode || 'login';
     var loginModel = {
-    	signup: {click: function(e, eData, tmplElem) {
+    	signup: {click: function(e) {
         tmplScope.data.mode = 'signup';
         tmplScope.element.render(tmplScope.data);
     	}},

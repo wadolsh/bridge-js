@@ -335,7 +335,7 @@
       startPosition = {x: e.pageX, y: e.pageY};
       clickPosition = {x: e.layerX, y: e.layerY};
     },
-    drag: function(e, edata, tmplElem) {
+    drag: function(e, eventFuncParams) {
       var target = this.parentElement;
       e = e.touches ? e.touches[0] : e;
 
@@ -352,7 +352,7 @@
         target.style.height = (e.pageY - startPosition.y + startSize.y + 2) + 'px';
       }
 
-      if (dragCallback) dragCallback(e, edata, tmplElem);
+      if (dragCallback) dragCallback(e, eventFuncParams);
     },
     touchstart: function(e) {
       //event.mouseover.call(this, e);
@@ -392,14 +392,14 @@
 
   var event = Object.assign({}, BridgeUi.WindowEvents, {
     /*
-    mouseover: function(e, edata, tmplElem) {
+    mouseover: function(e, eventFuncParams) {
       e = e.touches ? e.touches[0] : e;
       target = this.parentElement;
       target.style.position = 'absolute';
       //this.style.opacity = 1;
     },
     */
-    mousedown: function(e, edata, tmplElem) {
+    mousedown: function(e, eventFuncParams) {
       // console.log('mousedown');
       e = e.touches ? e.touches[0] : e;
       target = this.parentElement;
@@ -415,15 +415,15 @@
       dragStatus.y = e.pageY;
       dragStatus.count = 0;
     },
-    mouseup: function(e, edata, tmplElem) {
+    mouseup: function(e, eventFuncParams) {
     },
-    mouseover: function(e, edata, tmplElem) {
+    mouseover: function(e, eventFuncParams) {
       //console.log('mouseover: ', {x:e.pageX, y:e.pageY});
     },
-    mousemove: function(e, edata, tmplElem) {
+    mousemove: function(e, eventFuncParams) {
       //console.log('mousemove: ', {x:e.pageX, y:e.pageY});
     },
-    dragstart: function(e, edata, tmplElem) {
+    dragstart: function(e, eventFuncParams) {
 
 /*
       console.log('dragstart');
@@ -432,7 +432,7 @@
       }
 */
     },
-    drag: function(e, edata, tmplElem) {
+    drag: function(e, eventFuncParams) {
       e = e.touches ? e.touches[0] : e;
 
       deltaStatus.x = e.pageX - dragStatus.x;
@@ -476,19 +476,19 @@
       //console.log('drag2: ', 'pageXY', {x: e.pageX, y: e.pageY}, 'deltaXY', deltaStatus, 'clientXY', {x: e.clientX, y: e.clientY}, 'offsetXY', {x: e.offsetX, y: e.offsetY}, 'styleStatus', styleStatus);
 
     },
-    touchstart: function(e, edata, tmplElem) {
+    touchstart: function(e, eventFuncParams) {
       //event.mouseover.call(this, e);
       event.mousedown.call(this, e);
     },
     /*
-    touchend: function(e, edata, tmplElem) {
+    touchend: function(e, eventFuncParams) {
       var self = this;
       setTimeout(function() {
         event.mouseout.call(self, e);
       }, 1500);
     },
     */
-    touchmove: function(e, edata, tmplElem) {
+    touchmove: function(e, eventFuncParams) {
       event.drag.call(this, e);
     }
   });
@@ -513,7 +513,7 @@
   var icon = null;
 
   var event = Object.assign({}, BridgeUi.WindowEvents, {
-    click: function(e, edata, tmplElem) {
+    click: function(e, eventFuncParams) {
       var target = this.parentElement;
       var classList = e.currentTarget.classList;
 
@@ -554,7 +554,7 @@
         classList.remove('minIcon');
         classList.add('maxIcon');
       }
-      if (clickCallback) clickCallback(e, edata, tmplElem);
+      if (clickCallback) clickCallback(e, eventFuncParams);
     }
   });
   ##
@@ -579,9 +579,9 @@
   var runIconStyle = runIcon.style;
   var runIconKeep = runIcon.keep;
 
-  var runIconScope = tmpl.brui.RunIcon(Object.assign(runIcon, {event: function(e, edata, tmplElem) {
-    runIconStyle = Object.assign(runIconStyle || {}, {left: tmplElem.offsetLeft + 'px', top: tmplElem.offsetTop + 'px'});
-    if (!edata.keep) runIconScope.remove();
+  var runIconScope = tmpl.brui.RunIcon(Object.assign(runIcon, {event: function(e, {data, targetElement}) {
+    runIconStyle = Object.assign(runIconStyle || {}, {left: targetElement.offsetLeft + 'px', top: targetElement.offsetTop + 'px'});
+    if (!data.keep) runIconScope.remove();
     tmplScope.element.parentElement.style.zIndex = BridgeUi.WindowFunc.maxZindex() + 1;
     tmplScope.element.parentElement.style.display = beforeContentDisplay;
     isMin = false;
@@ -595,7 +595,7 @@
   if (runIconCallback) runIconCallback(runIconScope);
 
   var event = Object.assign({}, BridgeUi.WindowEvents, {
-    click: function(e, edata, tmplElem) {
+    click: function(e, eventFuncParams) {
       target = this.parentElement;
       //var content = target.querySelector('.brui-Window-Content');
       //var icons = target.querySelectorAll('.brui-WindowIcon');
@@ -606,7 +606,7 @@
       target.parentElement.appendChild(runIconScope.element || runIconScope);
       isMin = true;
 
-      if (clickCallback) clickCallback(e, edata, tmplElem, tmplScope, runIconScope);
+      if (clickCallback) clickCallback(e, eventFuncParams, tmplScope, runIconScope);
 
       /*
       if (!isMin) {
@@ -683,8 +683,8 @@
   ##
   <div style="left: ##=startLeft + (idx * shiftLeft)##px; top: ##=startTop + (idx * shiftTop)##px; z-index: ##=BridgeUi.WindowFunc.maxZindex() + 1##; ##=data.style##"
         class="brui-Window ##=data.class##"
-        data-bridge-event="##:data.event || function(e, edata, tmplElem){
-          tmplElem.style.zIndex = BridgeUi.WindowFunc.maxZindex() + 1;
+        data-bridge-event="##:data.event || function(e, {targetElement}){
+          targetElement.style.zIndex = BridgeUi.WindowFunc.maxZindex() + 1;
           if (data.clickCallback) data.clickCallback();
         }##">
 
@@ -799,7 +799,7 @@
       blankMove(targetNext, '');
       isMove = false;
     },
-    drag: function(e, edata, tmplElem) {
+    drag: function(e, eventFuncParams) {
       skipRendering++;
       if (skipRendering % 2 !== 0) return;
       skipRendering = 0;
@@ -829,20 +829,20 @@
         targetPrev.style.height = 'calc(' + afterTargePrevHeight + '% - ' + widthMargin + ')';
         targetNext.style.height = 'calc(' + afterTargeHeight + '% - ' + widthMargin + ')';
       }
-      if (dragCallback) dragCallback(e, edata, tmplElem);
+      if (dragCallback) dragCallback(e, eventFuncParams);
     },
     touchstart: function(e) {
 //console.log('touchstart');
       event.dragstart.call(this, e);
     },
-    touchend: function(e, edata, tmplElem) {
+    touchend: function(e, eventFuncParams) {
       //isMove = false;
-      event.dragend.call(this, e, edata, tmplElem);
+      event.dragend.call(this, e, eventFuncParams);
     },
-    touchmove: function(e, edata, tmplElem) {
+    touchmove: function(e, eventFuncParams) {
       //e.preventDefault();
 //console.log('touchmove');
-      event.drag.call(this, e, edata, tmplElem);
+      event.drag.call(this, e, eventFuncParams);
     }
   });
 
@@ -1400,18 +1400,18 @@
   var changeEvent = data.changeEvent;
   ##
   <div class="brui-RangeButton ##=data.class##" style="##=data.style##">
-    <button type="button" class="brui-icon brui-icon-plus" data-bridge-event="##:function(e, edata, tmplElem) {
+    <button type="button" class="brui-icon brui-icon-plus" data-bridge-event="##:function(e, {targetElement}) {
       if (value + step > max) return;
       value += step;
-      tmplElem.value = valueElement.innerText = value;
-      if (changeEvent) changeEvent.call(this, e, value, tmplElem);
+      targetElement.value = valueElement.innerText = value;
+      if (changeEvent) changeEvent.call(this, e, value, targetElement);
     }##"> + </button>
     ##=prefix####%valueElement####=subfix##
-    <button type="button" class="brui-icon brui-icon-minus" data-bridge-event="##:function(e, edata, tmplElem) {
+    <button type="button" class="brui-icon brui-icon-minus" data-bridge-event="##:function(e, {targetElement}) {
       if (value - step < min) return;
       value -= step;
-      tmplElem.value = valueElement.innerText = value;
-      if (changeEvent) changeEvent.call(this, e, value, tmplElem);
+      targetElement.value = valueElement.innerText = value;
+      if (changeEvent) changeEvent.call(this, e, value, targetElement);
     }##"> - </button>
   </div>
 </template>

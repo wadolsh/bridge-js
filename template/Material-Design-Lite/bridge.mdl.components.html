@@ -162,7 +162,7 @@
   tmplScope.showModal = function() {
     tmplScope.element.showModal();
   }
-  tmplScope.close = function(e, edata, tmplElem, scope) {
+  tmplScope.close = function(e) {
     if (close) close.apply(null, arguments);
     tmplScope.element.close();
   };

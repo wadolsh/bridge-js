@@ -12,7 +12,7 @@
   let getSidemenu = function(data) {
     return function() {
       return data.munuList.map(function(item) {
-        return Object.assign(item, {event: function(e, edata, tmplElem) {
+        return Object.assign(item, {event: function(e, {targetElement}) {
 
           if (item.index != data.selectedIndex) {
             let area = data.contentArea();
@@ -20,10 +20,10 @@
             data.tmplScope.refresh({index: item.index});
             area.appendChild(data.tmplScope.element);
             data.selectedIndex = item.index;
-            Array.prototype.forEach.call(tmplElem.querySelectorAll('.display'), function(element) {
+            Array.prototype.forEach.call(targetElement.querySelectorAll('.display'), function(element) {
               element.classList.remove('display');
             });
-            Array.prototype.forEach.call(tmplElem.querySelectorAll('.' + item.index), function(element) {
+            Array.prototype.forEach.call(targetElement.querySelectorAll('.' + item.index), function(element) {
               element.classList.add('display');
             });
 
@@ -1900,19 +1900,19 @@ document.body.appendChild(greeting.element);</code></pre>
             },
             content1: {
               en: `Specifies an event handler. <br/>
-                  Specify {'event name' : function(event, tmplData, tmplElem, scope) { callback processing }} as a handler in the javascript object. <br/>
+                  Specify {'event name' : function(event, { data, customData, targetElement, tmplScope }) { callback processing }} as a handler in the javascript object. <br/>
                   The specified event handler is added to the Html element with addEventListener. <br/>
                   If a Function that is not a javascript object is specified, it will be handled by adding a click event handler.`,
               ko: `이벤트 핸들러를 지정합니다.<br/>
-                   javascript object 로 {'event명' : function(event, tmplData, tmplElem, scope) { callback 처리 }} 으로 핸들러를 지정하게 됩니다.<br/>
+                   javascript object 로 {'event명' : function(event, { data, customData, targetElement, tmplScope }) { callback 처리 }} 으로 핸들러를 지정하게 됩니다.<br/>
                    지정된 이벤트 핸들러들은 addEventListener 로 HTML Element 에 추가 됩니다.<br/>
                    javascript object 가 아닌 Function 으로 지정된 경우는 click 이벤트로서 추가 되게 됩니다.<br/>`,
               ja: `イベントハンドラーを指定します。<br/>
-                   javascript object で {'event名' : function(event, tmplData, tmplElem, scope) { callback 処理 }} をハンドラーとして指定します。<br/>
+                   javascript object で {'event名' : function(event, { data, customData, targetElement, tmplScope }) { callback 処理 }} をハンドラーとして指定します。<br/>
                    指定されたイベントハンドラーは addEventListener で Html element へ追加されます。<br/>
                    javascript object ではない Function が指定された場合は click イベントハンドラーの追加して扱われます。`,
               'zh-cn': `指定事件处理程序。<br/>
-                   在javascript对象中指定{'事件名称': function(event, tmplData, tmplElem, scope) { 回调处理 }}作为处理程序。<br/>
+                   在javascript对象中指定{'事件名称': function(event, { data, customData, targetElement, tmplScope }) { 回调处理 }}作为处理程序。<br/>
                    指定的事件处理程序通过addEventListener添加到Html元素中。<br/>
                    如果指定的不是javascript对象而是Function，将被处理为添加click事件处理程序。`,
             },
@@ -1929,19 +1929,25 @@ document.body.appendChild(greeting.element);</code></pre>
                 ja: `Event Object`,
                 'zh-cn': `事件对象`,
               },
-              tmplData: {
+              data: {
                 en: `Data parameter when creating a Component`,
                 ko: `Component 작성시의 data 파라메터`,
                 ja: `Component 作成時の data パラメーター`,
                 'zh-cn': `创建组件时的数据参数`,
               },
-              tmplElem: {
+              customData: {
+                en: `Data specified with ::{customData}`,
+                ko: `::{customData} 로 지정한 데이터`,
+                ja: `::{customData} で指定されたデータ`,
+                'zh-cn': `使用 ::{customData} 指定的数据`,
+              },
+              targetElement: {
                 en: ``,
                 ko: `Component 의 HTML Element`,
                 ja: `Component の HTML Element`,
                 'zh-cn': `组件的 HTML 元素`,
               },
-              scope: {
+              tmplScope: {
                 en: `Component 's HTML Element`,
                 ko: `Component 의 tmplScope`,
                 ja: `Component の tmplScope`,
@@ -1961,11 +1967,11 @@ document.body.appendChild(greeting.element);</code></pre>
                 ja: `複数のイベントハンドラーを指定する場合の表現です。`,
                 'zh-cn': `这是指定多个事件处理程序时的表达式。`,
               },
-              tmplData: {
-                en: `This is an expression when specifying multiple event handlers.`,
-                ko: `tmplData 입력 받을 데이터를 지정할 수 있습니다.`,
-                ja: `tmplData として使用するデータを強制に指定可能にする表現です。`,
-                'zh-cn': `可以指定用作 tmplData 的数据。`,
+              customData: {
+                en: `Set additional data`,
+                ko: `추가로 데이터를 설정`,
+                ja: `追加のデータを設定`,
+                'zh-cn': `设置附加数据`,
               },
               content1: {
                 en: `This is a sample code when specifying Option.`,
@@ -2004,23 +2010,27 @@ document.body.appendChild(greeting.element);</code></pre>
         <h5>##=i18n.Reference.ElementExpression.event.Handler.label##</h5>
         <table class="option">
           <tr>
-            <th colspan="2">function(event, tmplData, tmplElem, scope) {}</th>
+            <th colspan="2">function(event, { data, customData, targetElement, tmplScope }) {}</th>
           </tr>
           <tr>
             <th>event</th>
             <td>##=i18n.Reference.ElementExpression.event.Handler.event##</td>
           </tr>
           <tr>
-            <th>tmplData</th>
-            <td>##=i18n.Reference.ElementExpression.event.Handler.tmplData##</td>
+            <th>data</th>
+            <td>##=i18n.Reference.ElementExpression.event.Handler.data##</td>
           </tr>
           <tr>
-            <th>tmplElem</th>
-            <td>##=i18n.Reference.ElementExpression.event.Handler.tmplElem##</td>
+            <th>customData</th>
+            <td>##=i18n.Reference.ElementExpression.event.Handler.customData##</td>
           </tr>
           <tr>
-            <th>scope</th>
-            <td>##=i18n.Reference.ElementExpression.event.Handler.scope##</td>
+            <th>targetElement</th>
+            <td>##=i18n.Reference.ElementExpression.event.Handler.targetElement##</td>
+          </tr>
+          <tr>
+            <th>tmplScope</th>
+            <td>##=i18n.Reference.ElementExpression.event.Handler.tmplScope##</td>
           </tr>
         </table>
 
@@ -2028,15 +2038,15 @@ document.body.appendChild(greeting.element);</code></pre>
         <h5>##=i18n.Reference.ElementExpression.event.Option.label##</h5>
         <table class="option">
           <tr>
-            <th colspan="2">※{handler}::{tmplData}<br/>※{handler}::{tmplData}:::{handler}::{tmplData}:::~...</th>
+            <th colspan="2">※{handler}::{customData}<br/>※{handler}::{customData}:::{handler}::{customData}:::~...</th>
           </tr>
           <tr>
             <th>:::{handler}</th>
             <td>##=i18n.Reference.ElementExpression.event.Option.handler##</td>
           </tr>
           <tr>
-            <th>::{tmplData}</th>
-            <td>##=i18n.Reference.ElementExpression.event.Option.tmplData##</td>
+            <th>::{customData}</th>
+            <td>##=i18n.Reference.ElementExpression.event.Option.customData##</td>
           </tr>
         </table>
 

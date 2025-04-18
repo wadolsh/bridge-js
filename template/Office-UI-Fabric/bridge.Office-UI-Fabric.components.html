@@ -33,13 +33,13 @@
       return isKey ? 'is-' + isKey : '';
     },
     ListItem: {
-      toggleSelection: function(e, edata, tmplElem) {
-        tmplElem.classList.toggle('is-selected');
-        var isSelected = tmplElem.classList.contains('is-selected');
+      toggleSelection: function(e, params) {
+        params.targetElement.classList.toggle('is-selected');
+        var isSelected = params.targetElement.classList.contains('is-selected');
         if (edata.selectedFunc && isSelected) {
-          edata.selectedFunc(e, edata, tmplElem);
+          params.data.selectedFunc(e, params);
         } else if (edata.unSelectedFunc) {
-          edata.unSelectedFunc(e, edata, tmplElem);
+          params.data.unSelectedFunc(e, params);
         }
       }
     }
@@ -68,10 +68,10 @@
       }
     ##
     <li class="ms-Pivot-link ms-Pivot-link--##=selected.typeClass## ##=selected.class## ##=data.selected == selected.label ? 'is-selected' : ''##"
-        data-bridge-event="##:selected.event || {triggerKey: 'link' + idx, click: selected.clickEvent || function(e, clickData, tmplElem) {
-            (tmplElem.querySelector('.is-selected') || e.target).classList.remove('is-selected');
+        data-bridge-event="##:selected.event || {triggerKey: 'link' + idx, click: selected.clickEvent || function(e, {data: clickData, targetElement}) {
+            (targetElement.querySelector('.is-selected') || e.target).classList.remove('is-selected');
             e.target.classList.add('is-selected');
-            if (selected.clickCallback) selected.clickCallback.call(tmplElem, e, clickData, selected);
+            if (selected.clickCallback) selected.clickCallback.call(targetElement, e, clickData, selected);
           }}##">
       ##if (selected.icon) {##<i class="##=selected.icon=='ellipsis' ? 'ms-Pivot-ellipsis' : ''## ms-Icon ms-Icon--##=selected.icon##" data-bridge-event="##:selected.iconEvent##"></i>##}##
       ##=selected.label##
@@ -183,20 +183,20 @@
       }
       tmplScope.collectedMetaData = metaData;
     }
-    var checkboxEvent = {click: function(e, evData, tmplElem) {
+    var checkboxEvent = {click: function(e, params) {
       //e.stopPropagation();
       e.target.parentElement.classList.toggle('is-selected');
-      if (data.checkboxEventCallback) data.checkboxEventCallback.call(tmplElem, e, evData);
+      if (data.checkboxEventCallback) data.checkboxEventCallback.call(params.targetElement, e, params);
     }};
     ##
     &lt;thead&gt;
       <!--  ms-bgColor-##=data.bgColor## ms-fontColor-##=data.fontColor## ms-borderColor-##=data.borderColor## -->
       &lt;tr&gt;
         ##if (data.rowCheck) {##
-          &lt;th class="ms-Table-rowCheck" data-bridge-event="##:{click: function(e, data, tmplElem) {
+          &lt;th class="ms-Table-rowCheck" data-bridge-event="##:{click: function(e, {targetElement}) {
           var headerTr = e.target.parentElement;
           var isSelected = headerTr.classList.contains('is-selected');
-          Array.prototype.forEach.call(tmplElem.getElementsByTagName('tr'), function(node) {
+          Array.prototype.forEach.call(targetElement.getElementsByTagName('tr'), function(node) {
             node.classList[isSelected ? 'remove' : 'add']("is-selected");
           });
         }}##"&gt; &lt;/th&gt;
@@ -248,15 +248,15 @@
         metaData.push({name: '$arrayData', label: ''});
       }
     }
-    var checkboxEvent = {click: function(e, evData, tmplElem) {
+    var checkboxEvent = {click: function(e, params) {
       //e.stopPropagation();
       e.target.parentElement.classList.toggle('is-selected');
-      if (data.checkboxEventCallback) data.checkboxEventCallback.call(tmplElem, e, evData);
+      if (data.checkboxEventCallback) data.checkboxEventCallback.call(params.targetElement, e, params);
     }};
     ##
     <!--  ms-bgColor-##=data.bgColor## ms-fontColor-##=data.fontColor## ms-borderColor-##=data.borderColor## -->
-    <div class="ms-Table-row" data-bridge-event="##:{click: function(e, data, tmplElem) {
-        Array.prototype.forEach.call(tmplElem.getElementsByClassName('ms-Table-row'), function(node) {
+    <div class="ms-Table-row" data-bridge-event="##:{click: function(e, {targetElement}) {
+        Array.prototype.forEach.call(targetElement.getElementsByClassName('ms-Table-row'), function(node) {
           //console.log(node.click);
         });
     }}##">
@@ -292,8 +292,8 @@
 <template id="ms-Dialog">
   <div class="ms-Dialog ms-Dialog--##=data.typeClass## ##=data.class##">
     ##
-    var closeEvent = {click: function(e, evData, tmplElem) {
-      tmplElem.parentElement.removeChild(tmplElem);
+    var closeEvent = {click: function(e, {targetElement}) {
+      targetElement.parentElement.removeChild(targetElement);
     }};
     ##
     <div class="ms-Overlay"></div>
@@ -438,13 +438,13 @@
         data.placeholder = data.label;
         delete data.label;
       }
-      var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
-        if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
+      var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, params) {
+        if (e.keyCode == 13) data.enterKeyEvent(e, params);
       }} : null;
-      var loadEvent = function(target, edata, tmplElem) {
-        tmplElem.input = target;
+      var loadEvent = function(target, {data, targetElement}) {
+        targetElement.input = target;
         tmplScope.input = target;
-        if (edata.readonly) target.readOnly = edata.readonly;
+        if (data.readonly) target.readOnly = data.readonly;
       }
     ##
     ##if (data.label) {##<label class="ms-Label">##=data.label##</label>##}##
@@ -465,8 +465,8 @@
 
 <template id="ms-ChoiceField">
   <div class="ms-ChoiceField ##=data.class##" style="##=data.style##">
-    &lt;input id="##=tmplScope._id##" class="ms-ChoiceField-input" type="##=data.type##" name="##=data.name##" value="##=data.value##"  data-bridge-load="##:function(target, edata, tmplElem) {
-      tmplElem.input = target;
+    &lt;input id="##=tmplScope._id##" class="ms-ChoiceField-input" type="##=data.type##" name="##=data.name##" value="##=data.value##"  data-bridge-load="##:function(target, {targetElement}) {
+      targetElement.input = target;
       tmplScope.input = target;
     }##" data-bridge-event="##:data.event##" ##=data.checked ? 'checked' : ''## &gt;
     <label for="##=tmplScope._id##" class="ms-ChoiceField-field">
@@ -521,31 +521,31 @@
   var labelFunc = data.labelFunc;
   var itemSelectEvent = data.itemSelectEvent;
 
-  var itemSelect = function(e, edata, tmplElem) {
+  var itemSelect = function(e, {data: edata, targetElement}) {
     var target = e.target;
-    (tmplElem.querySelector('.is-selected') || target).classList.remove('is-selected');
+    (targetElement.querySelector('.is-selected') || target).classList.remove('is-selected');
     target.classList.add('is-selected');
-    tmplElem.querySelector('.ms-Dropdown-select').value = target.getAttribute('value');
-    tmplElem.querySelector('.ms-Dropdown-title').innerText = data.titleFunc ? data.titleFunc(target.innerText, data) : e.target.innerText;
-    if (itemSelectEvent) itemSelectEvent.call(tmplElem, e, edata, data);
-    tmplElem.classList.toggle('is-open');
+    targetElement.querySelector('.ms-Dropdown-select').value = target.getAttribute('value');
+    targetElement.querySelector('.ms-Dropdown-title').innerText = data.titleFunc ? data.titleFunc(target.innerText, data) : e.target.innerText;
+    if (itemSelectEvent) itemSelectEvent.call(targetElement, e, edata, data);
+    targetElement.classList.toggle('is-open');
   }
   var isSelected = null;
   var selectedData = null;
   ##
   <div class="ms-Dropdown ##=data.class## ##=data.disabled ? 'is-disabled' : ''##" style="##=data.style##" tabindex="0">
     <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--##=data.icon || 'caretDown'##" data-bridge-event="##:data.iconEvent##"></i>
-    <select class="ms-Dropdown-select" name="##=name##" id="##=id##" value="##=value##" data-bridge-load="##:function(target, edata, tmplElem){
+    <select class="ms-Dropdown-select" name="##=name##" id="##=id##" value="##=value##" data-bridge-load="##:function(target, {targetElement}){
       tmplScope.input = target;
       tmplScope.selectValue = function(value) {
-        var target = tmplElem.querySelector('.ms-Dropdown-items li[value=' + value + ']');
+        var target = targetElement.querySelector('.ms-Dropdown-items li[value=' + value + ']');
         if (target) target.click();
       }
       tmplScope.reset = function() {
-        var selected = tmplElem.querySelector('.is-selected')
+        var selected = targetElement.querySelector('.is-selected')
         if (selected) selected.classList.remove('is-selected');
-        tmplElem.querySelector('.ms-Dropdown-select').value = null;
-        tmplElem.querySelector('.ms-Dropdown-title').innerText = null;
+        targetElement.querySelector('.ms-Dropdown-select').value = null;
+        targetElement.querySelector('.ms-Dropdown-title').innerText = null;
       }
     }##">
       ##(data.items || []).forEach(function(selected) {
@@ -556,9 +556,9 @@
       &lt;option value="##=selected[valueKey]##" ##=isSelected ? 'selected' : ''##&gt;##=labelFunc ? labelFunc(selected) : selected[labelKey]##&lt;/option&gt;
       ##});##
     </select>
-    <span class="ms-Dropdown-title" data-bridge-event="##:{click: function(e, data, tmplElem) {
+    <span class="ms-Dropdown-title" data-bridge-event="##:{click: function(e, {targetElement}) {
         e.stopPropagation();
-        tmplElem.classList.toggle('is-open');
+        targetElement.classList.toggle('is-open');
       }}##">##=value ? (labelFunc ? labelFunc(selectedData) : selectedData[labelKey]) : data.title##</span>
     <ul class="ms-Dropdown-items">
     ##data.items.forEach(function(selected) {##
@@ -586,29 +586,29 @@
     <div class="ms-NavBar-fixedMenu" style="##=data.fixedStyle##">
       ##%data.fixedComponet##
     </div>
-    <div class="ms-NavBar-openMenu js-openMenu" data-bridge-event="##:{click: function(e, data, tmplElem) {
+    <div class="ms-NavBar-openMenu js-openMenu" data-bridge-event="##:{click: function(e, {targetElement}) {
       event.stopPropagation();
-      tmplElem.classList.toggle('is-open');
+      targetElement.classList.toggle('is-open');
     }}##">
       <i class="ms-Icon ms-Icon--##=data.menuIcon || 'menu' ##"></i>
     </div>
-    <div class="ms-Overlay" data-bridge-event="##:{click: function(e, data, tmplElem) {
-      tmplElem.classList.remove('is-open');}}##"></div>
-    <ul class="ms-NavBar-items" data-bridge-event="##:{click: function(e, data, tmplElem) {
+    <div class="ms-Overlay" data-bridge-event="##:{click: function(e, {targetElement}) {
+      targetElement.classList.remove('is-open');}}##"></div>
+    <ul class="ms-NavBar-items" data-bridge-event="##:{click: function(e, {targetElement}) {
       event.stopPropagation();
-      tmplElem.classList.toggle('is-open');
+      targetElement.classList.toggle('is-open');
     }}##">
     ##
     var selectedContentKey = data.selectedContentKey || '-';
     items.forEach(function(selected) {
       selected.typeClass = selected.typeClass || data.typeClass;
       selected.name = selected.name || data.name;##
-      <li class="ms-NavBar-item ##=(selectedContentKey && selectedContentKey === selected.contentKey) ? 'is-selected' : null## ms-NavBar-item--##=selected.items ? 'hasMenu' : selected.typeClass##" data-bridge-event="##:[selected.event, {click: function(e, data, tmplElem) {
-          tmplElem.classList.toggle('is-open');
-          var beforeSelected = tmplElem.querySelector('li.is-selected');
+      <li class="ms-NavBar-item ##=(selectedContentKey && selectedContentKey === selected.contentKey) ? 'is-selected' : null## ms-NavBar-item--##=selected.items ? 'hasMenu' : selected.typeClass##" data-bridge-event="##:[selected.event, {click: function(e, {targetElement}) {
+        targetElement.classList.toggle('is-open');
+          var beforeSelected = targetElement.querySelector('li.is-selected');
           if (beforeSelected) beforeSelected.classList.remove('is-selected');
           this.classList.add('is-selected');
-          var openContextualMenu = tmplElem.querySelector('.ms-ContextualMenu.is-open');
+          var openContextualMenu = targetElement.querySelector('.ms-ContextualMenu.is-open');
           var selfContextualMenu = this.querySelector('.ms-ContextualMenu');
           if (openContextualMenu && openContextualMenu != selfContextualMenu) openContextualMenu.classList.remove('is-open');
           if (selected.items) this.querySelector('.ms-ContextualMenu').classList.toggle('is-open');
@@ -620,7 +620,7 @@
         ##if (selected.items) {##
         <ul class="ms-ContextualMenu">
           ##(selected.items || []).forEach(function(subSelected) {##
-          <li class="ms-ContextualMenu-item" href="##=subSelected.contentKey ? '#' + subSelected.contentKey : 'javascript:void(0);'##" data-bridge-event="##:[subSelected.event, function(e, edata, tmplElem) {
+          <li class="ms-ContextualMenu-item" href="##=subSelected.contentKey ? '#' + subSelected.contentKey : 'javascript:void(0);'##" data-bridge-event="##:[subSelected.event, function(e) {
             this.parentElement.classList.remove('is-open');
           }]##">
             <a class="ms-ContextualMenu-link">##=subSelected.label##</a>
@@ -671,7 +671,7 @@
   var isOutResultType = typeClass == 'Facepile' || typeClass == 'membersList';
   var Persona = bridge.tmpl('ms-Persona');
 
-  var removeElementEvent = function(e, edata, tmplElem) {
+  var removeElementEvent = function(e) {
     var parent = this.parentElement;
     /*
     while(parent.tagName != 'LI') {
@@ -681,7 +681,7 @@
     parent.parentElement.removeChild(parent);
   }
 
-  var selectElementEvent = function(e, item, tmplElem) {
+  var selectElementEvent = function(e, {customData: item, targetElement}) {
     item = Object.assign({}, item);
     item.removeElementEvent = removeElementEvent;
     item.Persona = Persona;
@@ -693,7 +693,7 @@
       var searchBoxSelection = bridge.tmpl('ms-PeoplePicker-SearchBoxSelection')(item);
       tmplScope.SearchBoxSelection.insertBefore(searchBoxSelection.element || searchBoxSelection, tmplScope.searchField);
     }
-    if (item.selectElementEventCallBack) item.selectElementEventCallBack.call(this, e, item, tmplElem);
+    if (item.selectElementEventCallBack) item.selectElementEventCallBack.call(this, e, item, targetElement);
   }
 
   var PeoplePickerSelectedSearchBoxSelection = bridge.tmpl('ms-PeoplePicker-SearchBoxSelection');
@@ -710,8 +710,8 @@
       ##});##
       <input class="ms-PeoplePicker-searchField" type="text" placeholder="##=data.placeholder##" data-bridge-event="##:{
         var: 'searchField',
-        click: function(e, edata, tmplElem) {
-          tmplElem.classList.toggle('is-active');
+        click: function(e, {targetElement}) {
+          targetElement.classList.toggle('is-active');
         }, focus: function() {
           this.blur();
         }}##">
@@ -832,15 +832,15 @@
       </div>
     </div>
     ##
-      var actionSelectEvent = {click: function(e, idx, tmplElem) {
-        var active = tmplElem.querySelector('.ms-PersonaCard-action.is-active')
+      var actionSelectEvent = {click: function(e, {customData: idx, targetElement}) {
+        var active = targetElement.querySelector('.ms-PersonaCard-action.is-active')
         if (active) active.classList.remove('is-active');
-        active = tmplElem.querySelector('.ms-PersonaCard-actionDetails.is-active')
+        active = targetElement.querySelector('.ms-PersonaCard-actionDetails.is-active')
         if (active) active.classList.remove('is-active');
 
-        tmplElem.querySelector('.ms-PersonaCard-action.action-' + idx).classList.add('is-active');
-        tmplElem.querySelector('.ms-PersonaCard-actionDetails.detail-' + idx).classList.add('is-active');
-        tmplElem.querySelector('.ms-PersonaCard-details-parent').style.setProperty('margin-left', ('-' + (idx * 100) + '%'), 'important');
+        targetElement.querySelector('.ms-PersonaCard-action.action-' + idx).classList.add('is-active');
+        targetElement.querySelector('.ms-PersonaCard-actionDetails.detail-' + idx).classList.add('is-active');
+        targetElement.querySelector('.ms-PersonaCard-details-parent').style.setProperty('margin-left', ('-' + (idx * 100) + '%'), 'important');
       }}
       var detailExpanderEvent = {click: function(e, data) {
         //e.target.classList.add('is-collapsed');
@@ -966,7 +966,7 @@
         ##if (data.CommandBar) {##
           ##%bridge.tmpl('ms-CommandBar')(data.CommandBar)##
         ##}##
-          <button class="ms-Panel-closeButton ms-PanelAction-close" data-bridge-event="##:function(e, edata, tmplElem) {
+          <button class="ms-Panel-closeButton ms-PanelAction-close" data-bridge-event="##:function(e) {
             tmplScope.close();
           }##">
               <i class="ms-Panel-closeIcon ms-Icon ms-Icon--x"></i>
@@ -1134,8 +1134,8 @@
         <p class="ms-Callout-title">##=data.title##</p>
       </div>
       ##if(data.typeClass instanceof Array ? data.typeClass.includes('close') : data.typeClass != 'close') {##
-      <button class="ms-Callout-close" data-bridge-event="##:function(e, edata, tmplElem) {
-        tmplElem.remove();
+      <button class="ms-Callout-close" data-bridge-event="##:function(e, {targetElement}) {
+        targetElement.remove();
       }##"><i class="ms-Icon ms-Icon--x"></i></button>
       ##}##
       <div class="ms-Callout-inner">
@@ -1159,8 +1159,8 @@
 
 <template id="ms-Toggle">
   ##
-  var loadEvent = function(target, edata, tmplElem) {
-    tmplElem.input = target;
+  var loadEvent = function(target, {targetElement}) {
+    targetElement.input = target;
     tmplScope.input = target;
   }
   ##

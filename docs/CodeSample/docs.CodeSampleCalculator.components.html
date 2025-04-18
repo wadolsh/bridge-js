@@ -26,21 +26,21 @@
     var display = tmpl.Calculator.Display({});
     var formula = '';
     var resetStart = true;
-    var pushDispay = (e, edata, tmplElem) => {
-      if (edata.type == 'sign' && (display.element.innerText == '' || isNaN(display.element.innerText))) {
+    var pushDispay = (e, {data}) => {
+      if (data.type == 'sign' && (display.element.innerText == '' || isNaN(display.element.innerText))) {
         return;
       }
-      if (resetStart && edata.type == 'digit') {
+      if (resetStart && data.type == 'digit') {
         display.element.innerText = '';
         formula = '';
       }
 
-      var displayText = display.element.innerText + ' ' + (edata.label);;
+      var displayText = display.element.innerText + ' ' + (data.label);;
       display.element.innerText = displayText.replace(/([\d.]) ([\d.])/g, '$1$2');
-      formula = formula + (edata.real || edata.label);
+      formula = formula + (data.real || data.label);
       resetStart = false;
     }
-    var calc = (e, edata, tmplElem) => {
+    var calc = (e, {data}) => {
       console.log('formula: ' + formula);
       var calcFunc = new Function('return (' + formula + ');');
       display.element.innerText = calcFunc();

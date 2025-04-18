@@ -69,13 +69,13 @@
       return isKey ? 'is-' + isKey : '';
     },
     ListItem: {
-      toggleSelection: function(e, edata, tmplElem) {
-        tmplElem.classList.toggle('is-selected');
-        var isSelected = tmplElem.classList.contains('is-selected');
+      toggleSelection: function(e, params) {
+        params.targetElement.classList.toggle('is-selected');
+        var isSelected = params.targetElement.classList.contains('is-selected');
         if (edata.selectedFunc && isSelected) {
-          edata.selectedFunc(e, edata, tmplElem);
+          edata.selectedFunc(e, params);
         } else if (edata.unSelectedFunc) {
-          edata.unSelectedFunc(e, edata, tmplElem);
+          edata.unSelectedFunc(e, params);
         }
       }
     }
@@ -1254,7 +1254,7 @@
         ##(data.items || []).forEach(function(item) {##
         <div class="ms-CommandBarItem">
           <button class="ms-CommandBarItem-link" id="##=_id+item.key##" aria-haspopup="##=!!(item.items && item.items.length)##" role="menuitem" aria-label="##=item.ariaLabel || item.name##"
-                  data-bridge-event="##:[function(e, edata, tmplElem){
+                  data-bridge-event="##:[function(e){
                     _onItemClick(item, e);
                   }, item.event]##">
             ##if (!!item.icon) {##<span class="ms-CommandBarItem-icon ms-Icon ms-Icon--##=item.icon##"></span>##}##
@@ -1270,7 +1270,7 @@
         ##(data.farItems || []).forEach(function(item) {##
         <div class="ms-CommandBarItem">
           <button class="ms-CommandBarItem-link" id="##=_id+item.key##" aria-haspopup="##=!!(item.items && item.items.length)##" role="menuitem" aria-label="##=(item.ariaLabel || item.name)##"
-                  data-bridge-event="##:[function(e, edata, tmplElem){
+                  data-bridge-event="##:[function(e){
                     _onItemClick(item, e);
                   }, item.event]##">
             ##if (!!item.icon) {##<span class="ms-CommandBarItem-icon ms-Icon ms-Icon--##=item.icon##"></span>##}##
@@ -1866,7 +1866,7 @@
   var detailsRowCheck = null;
   var event = data.event;
   var extendEvent = Object.assign({
-    click: function(e, edata, tmplElem) {
+    click: function(e) {
       if (selectionMode === 'single') {
         selection.deselectionAll();
       }
@@ -2224,19 +2224,19 @@
   var children = data.children;
   
   var event = Object.assign({
-    focus: function(e, edata, tmplElem) {
+    focus: function(e) {
       if (inputProps && inputProps.onFocus) {
         inputProps.onFocus(e);
       }
       state.isFocused = true;
     },
-    blur: function(e, edata, tmplElem) {
+    blur: function(e) {
       if (inputProps && inputProps.onBlur) {
         inputProps.onBlur(e);
       }
       state.isFocused = false;
     },
-    change: function(e, edata, tmplElem) {
+    change: function(e) {
       var onChange = data.onChange;
       var isChecked = e.target.checked;
 

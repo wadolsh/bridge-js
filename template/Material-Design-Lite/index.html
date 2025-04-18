@@ -261,7 +261,7 @@
             <button data-bridge-event="##:function() {
               tmplScope.element.classList.remove('withPlayGround');
             }##"><i class="material-icons">clear</i></button>
-            <button class="fullscreenButton" data-bridge-event="##:function(e, edata, tmplElem) {
+            <button class="fullscreenButton" data-bridge-event="##:function(e) {
               var main = tmplScope.element.parentElement.parentElement;
               if (main.classList.contains('fullscreenPlayGround')) {
                 main.classList.remove('fullscreenPlayGround');
@@ -1149,7 +1149,7 @@ var menu = tmpl.mdl.Menu({
       'Some Action',
       {label: 'Another Action', options: ['full-bleed-divider']},
       {label: 'Disabled Action', disabled: true},
-      {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+      {label: 'Yet Another Action', event: function(e) {
         alert('event!');
       }}
     ]
@@ -1199,7 +1199,7 @@ var menu = tmpl.mdl.Menu({
       'Some Action',
       {label: 'Another Action'},
       {label: 'Disabled Action', disabled: true},
-      {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+      {label: 'Yet Another Action', event: function(e) {
         alert('event!');
       }}
     ]
@@ -1242,7 +1242,7 @@ var menu = tmpl.mdl.Menu({
       'Some Action',
       {label: 'Another Action'},
       {label: 'Disabled Action', disabled: true},
-      {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+      {label: 'Yet Another Action', event: function(e) {
         alert('event!');
       }}
     ]
@@ -1292,7 +1292,7 @@ var menu = tmpl.mdl.Menu({
       'Some Action',
       {label: 'Another Action'},
       {label: 'Disabled Action', disabled: true},
-      {label: 'Yet Another Action', event: function(e, edata, tmplElem) {
+      {label: 'Yet Another Action', event: function(e) {
         alert('event!');
       }}
     ]

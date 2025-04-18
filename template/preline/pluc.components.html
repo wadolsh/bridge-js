@@ -553,8 +553,8 @@
 
     let props = data.props;
 
-    var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
-      if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
+    var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, params) {
+      if (e.keyCode == 13) data.enterKeyEvent(e, params);
     }} : null;
 
     tmplScope.setValue = (value) => {
@@ -582,8 +582,8 @@
 
     let props = data.props;
 
-    var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
-      if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
+    var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, params) {
+      if (e.keyCode == 13) data.enterKeyEvent(e, params);
     }} : null;
 
     tmplScope.setValue = (value) => {

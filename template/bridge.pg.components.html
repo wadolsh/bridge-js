@@ -99,9 +99,9 @@
   <div class="pg-TestArea ##=hasTemplate ? 'template' : ''## ##=showConsole ? 'console' : ''##">
     ##%templateSpliteArea || codeSpliteArea##
     <div class="controlArea">
-      ##%tmpl.bs.Button({label: 'AUTO REFRESH', icon: 'refresh', styleClass: 'xs ' + (autoRefresh ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+      ##%tmpl.bs.Button({label: 'AUTO REFRESH', icon: 'refresh', styleClass: 'xs ' + (autoRefresh ? 'btn-success' : ''), event: function(e, {targetElement}) {
         autoRefresh = !autoRefresh;
-        tmplElem.classList[autoRefresh ? 'add' : 'remove']('btn-success');
+        targetElement.classList[autoRefresh ? 'add' : 'remove']('btn-success');
       }})##
       ##%tmpl.bs.Button({label: 'CODE RESET', icon: 'repeat', styleClass: 'xs', event: function() {
         runCodeArea.codeMirror.setValue(code);
@@ -109,11 +109,11 @@
       ##%tmpl.bs.Button({label: 'RUN', icon: 'play', styleClass: 'xs', event: function() {
         renderingArea.refreshCode({template: templateCodeArea ? templateCodeArea.codeMirror.getValue() : null, code: runCodeArea.codeMirror.getValue()});
       }})##
-      ##%tmpl.bs.Button({label: 'CONSOLE', icon: '', styleClass: 'xs right ' + (showConsole ? 'btn-info' : ''), event: function(e, edata, tmplElem) {
+      ##%tmpl.bs.Button({label: 'CONSOLE', icon: '', styleClass: 'xs right ' + (showConsole ? 'btn-info' : ''), event: function(e, {targetElement}) {
         showConsole = !showConsole;
         consoleArea.show(showConsole);
         tmplScope.element.classList[showConsole ? 'add' : 'remove']('console');
-        tmplElem.classList[showConsole ? 'add' : 'remove']('btn-info');
+        targetElement.classList[showConsole ? 'add' : 'remove']('btn-info');
       }})##
     </div>
     ##%consoleArea##
@@ -197,9 +197,9 @@
       <div class="runCodeAreaTitle">
         <span>Code</span>
         <div class="control">
-          ##%tmpl.bs.Button({label: 'AUTO REFRESH', icon: 'refresh', styleClass: 'xs ' + (autoRefresh ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+          ##%tmpl.bs.Button({label: 'AUTO REFRESH', icon: 'refresh', styleClass: 'xs ' + (autoRefresh ? 'btn-success' : ''), event: function(e, {targetElement}) {
             autoRefresh = !autoRefresh;
-            tmplElem.classList[autoRefresh ? 'add' : 'remove']('btn-success');
+            targetElement.classList[autoRefresh ? 'add' : 'remove']('btn-success');
           }})##
         </div>
       </div>
@@ -353,10 +353,16 @@
     }
   }
   tmplScope.refreshCode = function(newCode) {
-    if (!iframeDocument) return;
+    if (!iframeDocument) {
+      return;
+    };
     clearBody();
-    if (newCode.code) code = data.code = newCode.code;
-    if (newCode.template) template = data.template = newCode.template;
+    if (newCode.code) {
+      code = data.code = newCode.code;
+    };
+    if (newCode.template) {
+      template = data.template = newCode.template;
+    };
     execScript(code);
   };
   ##
@@ -523,9 +529,9 @@
         targetWindow.console.log(result);
 
       }})##
-      ##%tmpl.bs.Button({label: 'AUTO SCROLL', styleClass: 'xs right '+ (autoScroll ? 'btn-success' : ''), event: function(e, edata, tmplElem) {
+      ##%tmpl.bs.Button({label: 'AUTO SCROLL', styleClass: 'xs right '+ (autoScroll ? 'btn-success' : ''), event: function(e, {targetElement}) {
         autoScroll = !autoScroll;
-        tmplElem.classList[autoScroll ? 'add' : 'remove']('btn-success');
+        targetElement.classList[autoScroll ? 'add' : 'remove']('btn-success');
       }})##
       ##%tmpl.bs.Button({label: 'CLEAR', styleClass: 'xs right', event: function() {
         tmplScope.clear();

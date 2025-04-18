@@ -60,13 +60,14 @@
       return isKey ? 'is-' + isKey : '';
     },
     ListItem: {
-      toggleSelection: function(e, edata, tmplElem) {
+      toggleSelection: function(e, eventFuncParams) {
+        let tmplElem = eventFuncParams.targetElement;
         tmplElem.classList.toggle('is-selected');
         var isSelected = tmplElem.classList.contains('is-selected');
         if (edata.selectedFunc && isSelected) {
-          edata.selectedFunc(e, edata, tmplElem);
+          edata.selectedFunc(e, eventFuncParams);
         } else if (edata.unSelectedFunc) {
-          edata.unSelectedFunc(e, edata, tmplElem);
+          edata.unSelectedFunc(e, eventFuncParams);
         }
       }
     }
@@ -82,8 +83,8 @@
     return tmplScope.input.value;
   }
   var size = data.size;
-  var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, edata, tmplElem, scope) {
-    if (e.keyCode == 13) data.enterKeyEvent(e, edata, tmplElem, scope);
+  var enterKeyEvent = data.enterKeyEvent ? {keyup: function(e, eventFuncParams) {
+    if (e.keyCode == 13) data.enterKeyEvent(e, eventFuncParams);
   }} : null;
   ##
   ##if(data.type == 'hidden') {##
@@ -140,10 +141,10 @@
   var toggleEvent = null;
   if (toggle === true || toggle === false) {
     if (status.isActive == undefined) status.isActive = toggle;
-    toggleEvent = function(e, edata, tmplElem) {
+    toggleEvent = function(e, {targetElement}) {
       status.isActive = !status.isActive;
       if (toggleCallback) toggleCallback(status.isActive);
-      tmplElem.classList[status.isActive ? 'add' : 'remove']('active');
+      targetElementclassList[status.isActive ? 'add' : 'remove']('active');
     }
     event.push(toggleEvent);
     tmplScope.isActive = function() {
@@ -318,7 +319,7 @@
     var activeEvent = null;
     tmplScope.buttons = [];
     if (data.active === true) {
-      var activeEvent = data.activeEvent || function(e, edata, tmplElem) {
+      var activeEvent = data.activeEvent || function(e) {
         var active = tmplScope.element.querySelector('.active');
         if (active) active.classList.remove('active');
         e.target.classList.add('active');
@@ -587,10 +588,10 @@
   }
   if (startNum != endNum) items.push({label: endNum, class: 'fixed'});
 
-  var activeEvent = function(e, edata, tmplElem) {
+  var activeEvent = function(e, {data}) {
     //tmplElem.querySelector('.active').classList.remove('active');
     //e.target.parentElement.classList.add('active');
-    tmplScope.refresh({pageNum: edata.item.label});
+    tmplScope.refresh({pageNum: data.item.label});
   }
 
   tmplScope.getPageLength = function() {
@@ -606,9 +607,9 @@
   <nav aria-label="Page navigation">
     <ul class="pagination pagination-##=data.styleClass## ##=data.class##">
       <li class="##=(pageNum == startNum) ? 'disabled' : ''##">
-        <a href="#" aria-label="Previous" data-bridge-event="##:function(e, edata, tmplElem) {
+        <a href="#" aria-label="Previous" data-bridge-event="##:function(e, {targetElement}) {
           if (pageNum == startNum) return;
-          var active = tmplElem.querySelector('.active');
+          var active = targetElement.querySelector('.active');
           if (active) {
             active.classList.remove('active');
             active.previousElementSibling.firstChild.click();
@@ -621,9 +622,9 @@
         <li class="##=pageNum == item.label ? 'active' : ''##"><a href="#" data-bridge-event="##:[activeEvent, clickCallback]::{data: data, item: item, index: index}##">##=item.label##</a></li>
       ##})##
       <li class="##=(pageNum == endNum) ? 'disabled' : ''##">
-        <a href="#" aria-label="Next" data-bridge-event="##:function(e, edata, tmplElem) {
+        <a href="#" aria-label="Next" data-bridge-event="##:function(e, {targetElement}) {
           if (pageNum == endNum) return;
-          var active = tmplElem.querySelector('.active');
+          var active = targetElement.querySelector('.active');
           if (active) {
             active.classList.remove('active');
             active.nextElementSibling.firstChild.click();

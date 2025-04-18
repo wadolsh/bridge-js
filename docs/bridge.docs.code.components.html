@@ -387,8 +387,8 @@ var sample2 = tmpl.doc20101.tmpl02({label: 'Button 2'});
 document.body.appendChild(sample2.element);
 var sample3 = tmpl.doc20101.tmpl03({label: 'Button 3'});
 document.body.appendChild(sample3.element);
-var sample4 = tmpl.doc20101.tmpl04({label: 'Button 4', event: function(e, edata, tmplElem, scope) {
-  console.log(e.target, edata);
+var sample4 = tmpl.doc20101.tmpl04({label: 'Button 4', event: function(e, {data}) {
+  console.log(e.target, data);
 }});
 document.body.appendChild(sample4.element);`,
       type: 'codeIsTemplateFile',

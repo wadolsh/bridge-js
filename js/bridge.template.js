@@ -173,14 +173,14 @@ if (typeof window === 'undefined') {
     commentArea: {
       pattern: /#\\#([\s\S]+?)#\\#/g,
       exec: function (commentArea) {
-        return "'+\n'##" + commentArea + "##'+\n'";
+        return `'+\n'##${commentArea}##'+\n'`;
       },
     },
     preEvaluate: {
       pattern: /##!([\s\S]+?)##/g,
       exec: function (preEvaluate, tmplId) {
         new Function("tmplId", preEvaluate)(tmplId);
-        return "";
+        return ``;
       },
     },
     interpolate: {
@@ -189,23 +189,14 @@ if (typeof window === 'undefined') {
       exec: function (interpolate) {
         //interpolate = 'typeof (' + interpolate + ')==\'function\' ? (' + interpolate + ')() : (' + interpolate + ')';
         //return "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
-        let interpolateSyntax =
-          "typeof (interpolate)=='function' ? (interpolate)() : (interpolate)";
-        return (
-          "';\n(() => {let interpolate=" +
-          interpolate +
-          ";\n__p+=((__t=(" +
-          interpolateSyntax +
-          "))==null?'':__t);})()\n__p+='"
-        );
+        let interpolateSyntax = `typeof (interpolate)=='function' ? (interpolate)() : (interpolate)`;
+        return (`';(() => {let interpolate=${interpolate};\n__p+=((__t=(${interpolateSyntax}))==null?'':__t);})()\n__p+='`);
       },
     },
     namedElement: {
       pattern: /data-bridge-named-element="##:([\s\S]+?)##"/g,
       exec: function (key) {
-        let source =
-          "';\nlet eventId = (lazyScope.namedElementArray.length);\n__p+='data-bridge-named-element=\"'+eventId+'\"';\n";
-        source += "lazyScope.namedElementArray[eventId] = " + key + ";\n__p+='";
+        let source = `';\nlet eventId = (lazyScope.namedElementArray.length);\n__p+='data-bridge-named-element=\"'+eventId+'\"';\nlazyScope.namedElementArray[eventId] = ${key};\n__p+='`;
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
@@ -222,8 +213,8 @@ if (typeof window === 'undefined') {
     elementRef: {
       pattern: /data-bridge-element-ref="##:([\s\S]+?)##"/g,
       exec: function (key) {
-        var source = "';\nvar eventId = (lazyScope.elementRefArray.length);\n__p+='data-bridge-element-ref=\"'+eventId+'\"';\n";
-        source += "var " + key + " = null;\nlazyScope.elementRefArray[eventId] = function(target) {" + key + " = target;};\n__p+='";
+        var source = `';\nvar eventId = (lazyScope.elementRefArray.length);\n__p+='data-bridge-element-ref=\"'+eventId+'\"';
+var ${key} = null;\nlazyScope.elementRefArray[eventId] = function(target) {${key} = target;};\n__p+='`;
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
@@ -240,15 +231,9 @@ if (typeof window === 'undefined') {
     elementLoad: {
       pattern: /data-bridge-load="##:([\s\S]+?)##"/g,
       exec: function (elementLoad) {
-        let source =
-          "';\nlet eventId = (lazyScope.elementLoadArray.length);\n__p+='data-bridge-load=\"'+eventId+'\"';\n";
         let elementLoadSplitArray = elementLoad.split("::");
-        source +=
-          "lazyScope.elementLoadArray[eventId] = {loadFunc: " +
-          elementLoadSplitArray[0] +
-          ", selectedData: " +
-          elementLoadSplitArray[1] +
-          "};\n__p+='";
+        let source = `';\nlet eventId = (lazyScope.elementLoadArray.length);\n__p+='data-bridge-load=\"'+eventId+'\"';
+lazyScope.elementLoadArray[eventId] = {loadFunc: ${elementLoadSplitArray[0]}, customData: ${elementLoadSplitArray[1]}};\n__p+='`;
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
@@ -262,9 +247,12 @@ if (typeof window === 'undefined') {
           elementLoad.loadFunc.call(
             $elementTrigger,
             $elementTrigger,
-            elementLoad.selectedData || data,
-            parentElement,
-            tmplScope
+            {
+              data: data,
+              customData: elementLoad.customData,
+              targetElement: parentElement,
+              tmplScope: tmplScope,
+            },
           );
         });
       },
@@ -272,25 +260,16 @@ if (typeof window === 'undefined') {
     event: {
       pattern: /data-bridge-event="##:([\s\S]+?)##"/g,
       exec: function (event) {
-        let source =
-          "';\n(() => {let eventId = (lazyScope.eventArray.length);\n__p+='data-bridge-event=\"'+eventId+'\"';\n";
         let eventStrArray = event.split(":::");
+        let source = `';\n(() => {let eventId = (lazyScope.eventArray.length);\n__p+='data-bridge-event=\"'+eventId+'\"';\n`;
         let eventArray = new Array();
         for (let i = 0, size = eventStrArray.length; i < size; i++) {
           let eventSplitArray = eventStrArray[i].split("::");
           eventArray.push(
-            "{eventFunc: " +
-              eventSplitArray[0] +
-              ", $parent: this, selectedData: " +
-              eventSplitArray[1] +
-              "}"
+            `{eventFunc: ${eventSplitArray[0]}, $parent: this, customData: ${eventSplitArray[1]}}`
           );
         }
-
-        source +=
-          "lazyScope.eventArray[eventId] = [" +
-          eventArray.join(",") +
-          "];})()\n__p+='";
+        source += `lazyScope.eventArray[eventId] = [${eventArray.join(",")}];})()\n__p+='`;
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
@@ -298,7 +277,7 @@ if (typeof window === 'undefined') {
         let attacher = self.event.attacher;
         lazyScope.eventArray.forEach(function (selectedArray, eventId) {
           let $elementTrigger = wrapper.querySelector(
-            '[data-bridge-event="' + eventId + '"]'
+            `[data-bridge-event="${eventId}"]`
           );
           if (!$elementTrigger) return;
           delete $elementTrigger.dataset.bridgeEvent;
@@ -308,24 +287,14 @@ if (typeof window === 'undefined') {
               if (selected.eventFunc instanceof Array) {
                 selected.eventFunc.forEach(function (func) {
                   attacher(
-                    self,
-                    data,
-                    lazyScope,
-                    tmplScope,
-                    wrapper,
-                    $elementTrigger,
+                    self, data, lazyScope, tmplScope, wrapper, $elementTrigger,
                     func,
                     selected
                   );
                 });
               } else {
                 attacher(
-                  self,
-                  data,
-                  lazyScope,
-                  tmplScope,
-                  wrapper,
-                  $elementTrigger,
+                  self, data, lazyScope, tmplScope, wrapper, $elementTrigger,
                   selected.eventFunc,
                   selected
                 );
@@ -335,8 +304,10 @@ if (typeof window === 'undefined') {
         });
       },
       trigger: function (target, eventName) {
-        let customEvent = document.createEvent("Event");
-        customEvent.initEvent(eventName, true, true);
+        let customEvent = new Event(eventName, {
+          bubbles: true,
+          cancelable: true
+        });
         target.dispatchEvent(customEvent);
       },
       attacher: function (
@@ -362,7 +333,7 @@ if (typeof window === 'undefined') {
           $elementTrigger,
           null,
           {
-            selectedData: eventData.selectedData,
+            customData: eventData.customData,
             data: data,
             targetElement: $targetElement || $childTarget.parentElement,
             tmplScope: tmplScope,
@@ -372,8 +343,6 @@ if (typeof window === 'undefined') {
         if (eventFunc instanceof Function) {
           $elementTrigger.addEventListener("click", function (event) {
             event.stopPropagation();
-            //let parentElement = $targetElement || $childTarget.parentElement;
-            //eventFunc.call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
             eventFuncParams[1] = event;
             eventFunc.call(...eventFuncParams);
           });
@@ -386,12 +355,10 @@ if (typeof window === 'undefined') {
         }
         Object.keys(eventFunc).forEach(function (eventType) {
           if (eventType == "load") {
-            //let parentElement = $targetElement || $childTarget.parentElement;
-            //eventFunc[eventType].call($elementTrigger, $elementTrigger, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
             eventFuncParams[1] = $elementTrigger;
             eventFunc[eventType].call(...eventFuncParams);
             return;
-          } else if (eventType == "var") {
+          } else if (eventType == "ref") {
             tmplScope[eventFunc[eventType]] = $elementTrigger;
             return;
           } else if (eventType == "triggerKey") {
@@ -400,8 +367,6 @@ if (typeof window === 'undefined') {
 
           $elementTrigger.addEventListener(eventType, function (event) {
             event.stopPropagation();
-            //let parentElement = $targetElement || $childTarget.parentElement;
-            //eventFunc[eventType].call($elementTrigger, event, (eventData.selectedData == undefined ? data : eventData.selectedData), parentElement, tmplScope);
             eventFuncParams[1] = event;
             eventFunc[eventType].call(...eventFuncParams);
           });
@@ -419,13 +384,8 @@ if (typeof window === 'undefined') {
       exec: function (target) {
         let elementSplitArray = target.split("::");
         let source =
-          "';\n(() => {let elementId = (lazyScope.elementArray.length);\n__p+='<template data-bridge-tmpl-element-id=\"'+elementId+'\"></template>";
-        source +=
-          "';\nlazyScope.elementArray[elementId] = {target: " +
-          elementSplitArray[0] +
-          ", nonblocking: " +
-          (elementSplitArray[1] || false) +
-          "};})()\n__p+='";
+          `';\n(() => {let elementId = (lazyScope.elementArray.length);\n__p+='<template data-bridge-tmpl-element-id=\"'+elementId+'\"></template>';
+lazyScope.elementArray[elementId] = {target: ${elementSplitArray[0]}, nonblocking: ${(elementSplitArray[1] || false)}};})()\n__p+='`;
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
@@ -434,7 +394,7 @@ if (typeof window === 'undefined') {
           let childTarget = ele.target;
           let nonblocking = ele.nonblocking;
           let $tmplElement = wrapper.querySelector(
-            'template[data-bridge-tmpl-element-id="' + elementId + '"]'
+            `template[data-bridge-tmpl-element-id="${elementId}"]`
           );
           if (childTarget instanceof Array) {
             let docFragment = document.createDocumentFragment();
@@ -542,10 +502,7 @@ if (typeof window === 'undefined') {
     lazyEvaluate: {
       pattern: /###([\s\S]+?)##/g,
       exec: function (lazyEvaluate) {
-        let source =
-          "';\nlazyScope.lazyEvaluateArray.push(function(data) {" +
-          lazyEvaluate +
-          "});\n__p+='";
+        let source = `';\nlazyScope.lazyEvaluateArray.push(function(data) {${lazyEvaluate}});\n__p+='`;
         return source;
       },
       lazyExec: function (data, lazyScope, tmplScope, wrapper) {
@@ -569,11 +526,7 @@ if (typeof window === 'undefined') {
     escape: {
       pattern: /##-([\s\S]+?)##/g,
       exec: function (escape) {
-        return (
-          "'+\n((__t=(" +
-          escape +
-          "))==null?'':bridge.tmplTool.escapeHtml.escape(__t))+\n'"
-        );
+        return (`'+\n((__t=(${escape}))==null?'':bridge.tmplTool.escapeHtml.escape(__t))+\n'`);
       },
     },
     evaluate: {
@@ -618,11 +571,11 @@ if (typeof window === 'undefined') {
       let escaper = function (match) {
         return map[match];
       };
-      let source = "(?:" + Object.keys(map).join("|") + ")";
+      let source = `(?:${Object.keys(map).join("|")})`;
       let testRegexp = RegExp(source);
       let replaceRegexp = RegExp(source, "g");
       return function (string) {
-        string = string == null ? "" : "" + string;
+        string = string == null ? "" : `${string}`;
         return testRegexp.test(string)
           ? string.replace(replaceRegexp, escaper)
           : string;
@@ -649,8 +602,8 @@ if (typeof window === 'undefined') {
         execArray.push(setting.exec);
       }
       if (setting.lazyExec) {
-        lazyExecArray[key + "Array"] = setting.lazyExec;
-        lazyScope[key + "Array"] = new Array();
+        lazyExecArray[`${key}Array`] = setting.lazyExec;
+        lazyScope[`${key}Array`] = new Array();
       }
     });
     return {
@@ -670,7 +623,7 @@ if (typeof window === 'undefined') {
   let defaultMatcher = matcherFunc(Bridge.templateSettings);
 
   let templateParser = function (tmplId, text, matcher) {
-    if (showTime) console.time("tmpl:" + tmplId);
+    if (showTime) console.time(`tmpl: ${tmplId}`);
 
     let index = 0;
     let source = "";
@@ -699,7 +652,7 @@ if (typeof window === 'undefined') {
       return match;
     });
 
-    if (showTime) console.timeEnd("tmpl:" + tmplId);
+    if (showTime) console.timeEnd(`tmpl: ${tmplId}`);
     return source + text.slice(index).replace(escaper, escapeFunc);
   };
 
@@ -715,19 +668,13 @@ if (typeof window === 'undefined') {
       settings = Object.assign({}, Bridge.templateSettings, tmplSettings);
       matcher = matcherFunc(settings);
     }
-    let source =
-      "/* tmplId: " +
-      tmplId +
-      " */\n//# sourceURL=http://tmpl//" +
-      tmplId.split("-").join("//") +
-      ".js\nlet __t,__p='';\n__p+='";
-    source += templateParser(tmplId, templateText, matcher);
-    source += "';\nreturn __p;";
+    let source = `/* tmplId: ${tmplId} */\n//# sourceURL=http://tmpl//${tmplId.split("-").join("//")}.js\nlet __t,__p='';
+__p+='${templateParser(tmplId, templateText, matcher)}';\nreturn __p;`;
     let render = null;
     try {
       render = new Function(
-        settings.dataName || "data",
-        settings.statusName || "status",
+        settings.dataKeyName,
+        settings.statusKeyName,
         "tmplScope",
         "lazyScope",
         "i18n",
@@ -737,8 +684,8 @@ if (typeof window === 'undefined') {
       let debugErrorLine = function (source, e) {
         console.log(tmplId, e.lineNumber, e.columnNumber);
         new Function(
-          settings.dataName || "data",
-          settings.statusName || "status",
+          settings.dataKeyName,
+          settings.statusKeyName,
           "tmplScope",
           "lazyScope",
           "i18n",
@@ -805,12 +752,12 @@ if (typeof window === 'undefined') {
       let temp = document.createElement("template");
       let returnTarget = null;
 
-      if (showTime) console.time("render:" + tmplId);
+      if (showTime) console.time(`render: ${tmplId}`);
 
       let html = null;
       try {
         html = !data
-          ? "<template></template>"
+          ? `<template></template>`
           : render.call(
               wrapperElement,
               data,
@@ -821,7 +768,7 @@ if (typeof window === 'undefined') {
             );
       } catch (e) {
         let debugErrorLine = function (source) {
-          console.log("Error: ", tmplId);
+          console.log(`Error: ${tmplId}`);
           render.call(
             wrapperElement,
             data,
@@ -838,7 +785,7 @@ if (typeof window === 'undefined') {
           return;
         }
       }
-      if (showTime) console.timeEnd("render:" + tmplId);
+      if (showTime) console.timeEnd(`render: ${tmplId}`);
 
       temp.innerHTML = html;
 
@@ -906,8 +853,7 @@ if (typeof window === 'undefined') {
         let styles = "";
         let sheet = style.sheet;
         for (let i = 0, size = sheet.cssRules.length; i < size; i++) {
-          styles +=
-            "::content " + sheet.cssRules[i].cssText.replace("::content", "");
+          styles += `::content ${sheet.cssRules[i].cssText.replace("::content", "")}`;
         }
         style.innerHTML = styles;
         shadow.appendChild(style);
@@ -986,14 +932,7 @@ if (typeof window === 'undefined') {
 
     Object.defineProperty(tmpl, "name", { value: tmplId, writable: false });
     //tmpl.source = 'function ' + tmplId + '_source (' + (settings.variable || 'data') + '){\n' + source + '}';
-    let tmpl_source =
-      "function " +
-      tmplId +
-      "_source (" +
-      (settings.variable || "data") +
-      "){\n" +
-      source +
-      "}";
+    let tmpl_source = `function ${tmplId}_source (${(settings.variable || "data")}){\n${source}}`;
 
     if (tmplId) {
       let tmplMeta = {
@@ -1311,15 +1250,15 @@ if (typeof window === 'undefined') {
     return propStrArray.join(" ");
   };
 
-  addTmpl("br-Tag", "##%bridge.tmplTool.tag(data[0], data[1])##");
+  addTmpl("br-Tag", `##%bridge.tmplTool.tag(data[0], data[1])##`);
   addTmpl(
     "br-Div",
-    "&lt;div ##=data.id ? 'id=\"' + (data.data === true ? tmplScope._id : data.id) + '\"' : ''## ##=data.class ? 'class=\"' + data.class + '\"' : '' ## ##=data.style ? 'style=\"' + data.style + '\"' : '' ## data-bridge-event=\"##:data.event##\"&gt;" +
-      '##if (typeof data.content === "string") {##' +
-      "##=data.content##" +
-      "##} else {##" +
-      "  ##%data.content##" +
-      "##}##"
+    `&lt;div ##=data.id ? 'id=\"' + (data.data === true ? tmplScope._id : data.id) + '\"' : ''## ##=data.class ? 'class=\"' + data.class + '\"' : '' ## ##=data.style ? 'style=\"' + data.style + '\"' : '' ## data-bridge-event=\"##:data.event##\"&gt;
+      ##if (typeof data.content === "string") {##
+      ##=data.content##
+      ##} else {##
+        ##%data.content##
+      ##}##`
   );
 
   addTmpl(
@@ -1328,10 +1267,10 @@ if (typeof window === 'undefined') {
   );
   addTmpl(
     "br-Select",
-    "&lt;select name=\"##=data.name##\" value=\"##=data.value##\" ##=data.class ? 'class=\"' + data.class + '\"' : '' ## ##=data.style ? 'style=\"' + data.style + '\"' : '' ## data-bridge-event=\"##:data.event##\"&gt;" +
-      '&lt;option class="empty" value=""&gt;##=data.placeholder##&lt;/option&gt;' +
-      "##%data.options.map(function(option) { '&lt;option value=\"' + option.value + '\"' + (data.value == option.value ? 'selected=\"\"' : '') + '&gt;' + option.label + '&lt;/option&gt;'})##" +
-      "&lt;select/&gt;"
+    `&lt;select name=\"##=data.name##\" value=\"##=data.value##\" ##=data.class ? 'class=\"' + data.class + '\"' : '' ## ##=data.style ? 'style=\"' + data.style + '\"' : '' ## data-bridge-event=\"##:data.event##\"&gt;
+      &lt;option class="empty" value=""&gt;##=data.placeholder##&lt;/option&gt;
+      ##%data.options.map(function(option) { '&lt;option value=\"' + option.value + '\"' + (data.value == option.value ? 'selected=\"\"' : '') + '&gt;' + option.label + '&lt;/option&gt;'})##
+      &lt;select/&gt;`
   );
   addTmpl(
     "br-Template-Viewer",
@@ -1433,7 +1372,6 @@ if (typeof window === 'undefined') {
                 </div>
                 ##})##
               </div>
-
             </div>
           </div>
           ###
